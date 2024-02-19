@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+	</PropertyGroup>
+	
+	<ItemGroup>
+
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+
+		<PackageReference Include="System.Text.Json" Version="7.0.4" />
+
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
+
+		<PackageReference Include="NSwag.MSBuild" Version="13.20.0">
+
+			<PrivateAssets>all</PrivateAssets>
+
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+
+		</PackageReference>
+
+	</ItemGroup>
+
+	<ItemGroup>
+
+		<None Update="ApiClient\nswag.json">
+
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+
+		</None>
+
+	</ItemGroup>
+
+	<!--C:\Users\ncdat\.nuget\packages\nswag.msbuild\13.10.8\tools\Net50\dotnet-nswag.exe-->
+
+	<Target Name="NSwag" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">
+
+		<Warning Text="$(NSwagExe_Net50)"></Warning>
+
+		<Exec IgnoreExitCode="true" ContinueOnError="true" WorkingDirectory="$(ProjectDir)\ApiClient" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="$(NSwagExe_Net50) run nswag.json /variables:Configuration=$(Configuration)" />
+
+	</Target>
+</Project>

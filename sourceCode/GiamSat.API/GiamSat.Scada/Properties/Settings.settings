@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="GiamSat.Scada.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ConnectionString" Type="System.String" Scope="User">
+      <Value Profile="(Default)">qFgsKRXrOBXrpXLXV/PyMGuUw2HscP3Q/TloIHzSy61oxi8xaZPrO9puwtsmkH2XUU8nhsJpCGd9Sn2ofJJViGStu1FZ1/AlQmYIkOezl+NefzEKADtw2aDUa+TXjALMnC3JUsQ3SGM=</Value>
+    </Setting>
+    <Setting Name="LogInterval" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">300</Value>
+    </Setting>
+    <Setting Name="DisplayRealtimeInterval" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

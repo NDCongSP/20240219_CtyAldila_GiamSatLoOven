@@ -1,0 +1,111 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudGrid Spacing="1" Class="m-2">
+            <MudItem xs="12">
+                <MudCard Class="rounded-lg h-100 border border-info">
+                    @* <MudCard> *@
+                    <MudCardHeader Style="@($"color:{_theme.Palette.White}; background:{_theme.Palette.SuccessDarken};height: 30px")">
+                        Tình trạng vật nuôi
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid Spacing="1">
+                            <MudItem xs="12">
+                                <MudGrid Spacing="1">
+                                    <MudItem xs="12" sm="3" Class="d-flex flex-row justify-content-end">
+                                        <MudText Typo="Typo.subtitle2" Class="d-flex flex-row">Số lượng ban đầu: </MudText>
+                                        <MudText Typo="Typo.subtitle2" Class="d-flex flex-row" Color="Color.Success">@NangSuat.SoLuongBanDau</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="3" Class="d-flex flex-row justify-content-end">
+                                            <MudText Typo="Typo.subtitle2" Class="d-flex flex-row">Số lượng chết: </MudText>
+                                            <MudText Typo="Typo.subtitle2" Class="d-flex flex-row" Color="Color.Success">@NangSuat.SoLuongChet</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="3" Class="d-flex flex-row justify-content-end">
+                                            <MudText Typo="Typo.subtitle2" Class="d-flex flex-row">Số lượng còn lại: </MudText>
+                                            <MudText Typo="Typo.subtitle2" Class="d-flex flex-row" Color="Color.Success">@NangSuat.SoLuongConLai</MudText>
+                                        </MudItem>
+                                    </MudGrid>
+                                </MudItem>
+                                <MudItem xs="12">
+                                    <MudGrid Spacing="1">
+                                        <MudItem xs="12" sm="3" Class="d-flex flex-row justify-content-end">
+                                            <MudText Typo="Typo.subtitle2" Class="d-flex flex-row">Số lượng hao hụt: </MudText>
+                                            <MudText Typo="Typo.subtitle2" Class="d-flex flex-row" Color="Color.Success">@NangSuat.SoLuongHaoHut</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="3" Class="d-flex flex-row justify-content-end">
+                                            <MudText Typo="Typo.subtitle2" Class="d-flex flex-row">Số lượng bị bệnh: </MudText>
+                                            <MudText Typo="Typo.subtitle2" Class="d-flex flex-row" Color="Color.Success">@NangSuat.SoLuongBiBenh</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="3" Class="d-flex flex-row justify-content-end">
+                                            <MudText Typo="Typo.subtitle2" Class="d-flex flex-row">Số lượng còn đang điều trị: </MudText>
+                                            <MudText Typo="Typo.subtitle2" Class="d-flex flex-row" Color="Color.Success">@NangSuat.SoLuongDangDieuTri</MudText>
+                                        </MudItem>
+                                    </MudGrid>
+                                </MudItem>
+                            </MudGrid>
+
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudCard Class="rounded-lg h-100 border border-info">
+                        @* <MudCard> *@
+                        <MudCardHeader Style="@($"color:{_theme.Palette.White}; background:{_theme.Palette.SuccessDarken};height: 30px")">
+                            Thức ăn
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid Spacing="1">
+                            <MudItem xs="12">
+                                <MudGrid Spacing="1">
+                                    <MudItem xs="12" sm="3" Class="d-flex flex-row justify-content-end">
+                                    <MudText Typo="Typo.subtitle2" Class="d-flex flex-row">Khối lượng ban đầu: </MudText>
+                                    <MudText Typo="Typo.subtitle2" Class="d-flex flex-row" Color="Color.Success">@NangSuat.TongKhoiLuongThucAn</MudText>
+                                    </MudItem>
+                                    @* <MudItem xs="12" sm="3" Class="d-flex flex-row justify-content-end">
+                                        <MudText Typo="Typo.subtitle2" Class="d-flex flex-row">Khối lượng thực tế: </MudText>
+                                        <MudText Typo="Typo.subtitle2" Class="d-flex flex-row" Color="Color.Success">@NangSuat.TongKhoiLuongThucTe</MudText>
+                                    </MudItem> *@
+                                    <MudItem xs="12" sm="3" Class="d-flex flex-row justify-content-end">
+                                        <MudText Typo="Typo.subtitle2" Class="d-flex flex-row">Khối lượng đã sử dụng: </MudText>
+                                        <MudText Typo="Typo.subtitle2" Class="d-flex flex-row" Color="Color.Success">@NangSuat.TongKhoiLuongThucAnDaSuDung</MudText>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudGrid Spacing="1">
+                                    <MudItem xs="12" sm="3" Class="d-flex flex-row justify-content-end">
+                                        <MudText Typo="Typo.subtitle2" Class="d-flex flex-row">Khối lượng/1 con: </MudText>
+                                        <MudText Typo="Typo.subtitle2" Class="d-flex flex-row" Color="Color.Success">@NangSuat.KhoiLuongTren1Con</MudText>
+                                    </MudItem>
+                                    <MudItem xs="12" sm="3" Class="d-flex flex-row justify-content-end">
+                                        <MudText Typo="Typo.subtitle2" Class="d-flex flex-row">Khối lượng theo đầu con: </MudText>
+                                        <MudText Typo="Typo.subtitle2" Class="d-flex flex-row" Color="Color.Success">@NangSuat.KhoiLuongThucAnTheoDauCon</MudText>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudItem>
+                               @*  <MudItem xs="12">
+                                    <MudGrid Spacing="1">
+                                        <MudItem xs="12" sm="3" Class="d-flex flex-row justify-content-end">
+                                            <MudText Typo="Typo.subtitle2" Class="d-flex flex-row">Khối lượng đầu ngày: </MudText>
+                                            <MudText Typo="Typo.subtitle2" Class="d-flex flex-row" Color="Color.Success">@NangSuat.ChotKhoiLuongThucAnDauNgay</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="3" Class="d-flex flex-row justify-content-end">
+                                            <MudText Typo="Typo.subtitle2" Class="d-flex flex-row">Khối lượng cuối ngày: </MudText>
+                                            <MudText Typo="Typo.subtitle2" Class="d-flex flex-row" Color="Color.Success">@NangSuat.ChotKhoiLuongThucAnCuoiNgay</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="3" Class="d-flex flex-row justify-content-end">
+                                            <MudText Typo="Typo.subtitle2" Class="d-flex flex-row">Khối lượng dùng trong ngày: </MudText>
+                                            <MudText Typo="Typo.subtitle2" Class="d-flex flex-row" Color="Color.Success">@NangSuat.KhoiLuongThucAnDungTrongNgay</MudText>
+                                        </MudItem>
+                                    </MudGrid>
+                                </MudItem> *@
+                            </MudGrid>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        </DialogContent>
+        <DialogActions>
+            @* <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton> *@
+        </DialogActions>
+    </MudDialog>

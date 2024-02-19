@@ -1,0 +1,38 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.JSInterop
+@using GiamSat.Interface
+@using GiamSat.Interface.Shared
+@using GiamSat.Interface.Components
+@using GiamSat.Interface.Authorization
+@using MudBlazor
+@using Microsoft.AspNetCore.Components.Authorization
+@using GiamSat.Models
+@using GiamSat.APIClient
+@*@using Blazicons*@
+@*@using Blazorise.LoadingIndicator*@
+
+@inject JwtAuthenticationService _authSerivce
+@*Alert*@
+@inject ISnackbar _snackBar
+@*show form*@
+@inject IDialogService _dialog
+@*redirect*@
+@inject NavigationManager _navigation
+@*@inject Common _common*@
+
+@*inject cac service vao de dung*@
+@inject ISDisplayRealtime _displayRealtimeApiClient
+@inject ISChuongInfo _chuongInfoApiClient
+@*cach 2*@
+@inject IDisplayRealtimeClient _displayRealtimeClient
+@inject IChuongInfoClient _chuongInfoClient
+@inject IDataLogClient _dataLogClient
+
+@inject HttpClient _httpClient 

@@ -1,0 +1,41 @@
+﻿@page "/trend"
+@using System.Globalization
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 my-5">
+            <RadzenCard class="w-100 mb-4" Style="display: flex; align-items: center; gap: 0.5rem" >
+                <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox>
+                <RadzenLabel Text="Smooth" Component="smooth" Style="margin-right: 1rem;"/>
+                <RadzenCheckBox @bind-Value="@showDataLabels" Name="dataLabels"></RadzenCheckBox>
+                <RadzenLabel Text="Show Data Labels" Component="dataLabels" Style="margin-right: 1rem;" />
+                <RadzenCheckBox @bind-Value="@showMarkers" Name="markers"></RadzenCheckBox>
+                <RadzenLabel Text="Show Markers" Component="markers" />
+            </RadzenCard>
+            <RadzenChart @ref="RadzenChart" class="chart">
+                <RadzenLineSeries Smooth="@smooth" Data="@revenue2019" CategoryProperty="Date" Title="2019" LineType="LineType.Dashed" ValueProperty="Revenue">
+                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Diamond" />
+                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                </RadzenLineSeries>
+                <RadzenLineSeries Smooth="@smooth" Data="@revenue2020" CategoryProperty="Date" Title="2020" ValueProperty="Revenue">
+                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Circle"/>
+                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                </RadzenLineSeries>
+
+                <RadzenCategoryAxis Padding="20" Formatter="@FormatAsMonth">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="Date 1" />
+                    <RadzenTicks>
+                        <Template>
+                            <text class="rz-tick-text" style="text-anchor: start; transform: translate(@(context.X)px, @(context.Y + 100)px) rotate(-45deg); font-size:small">@context.Value</text>
+                        </Template>
+                    </RadzenTicks>
+                </RadzenCategoryAxis>
+                <RadzenValueAxis Formatter="@FormatAsUSD">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="Revenue in USD" />
+                </RadzenValueAxis>
+            </RadzenChart>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout Class="col">
+    <MudMainContent Class="w-100 h-100 p-0 p-0">
+        <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex align-center" Style="height:100vh">
+            <MudPaper Elevation="10" Class="border-info" pa-8 Style="width: 500px;">
+                @Body
+            </MudPaper>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>

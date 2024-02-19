@@ -1,0 +1,39 @@
+﻿@inherits LayoutComponentBase
+
+<MudLayout>
+    <MudAppBar Elevation="1" Dense="true">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudText Typo="Typo.h5" Class="ml-3">Giám sát trang trại</MudText>
+        <MudSpacer />
+
+        <MudTooltip Text="@(_isDarkMode?"Chuyển chủ đề sáng":"Chuyển chủ đề tối")" Color="Color.Tertiary" Placement="MudBlazor.Placement.Bottom" Arrow="true">
+            <MudIconButton Icon="@(_isDarkMode?@Icons.Material.Filled.LightMode:@Icons.Material.Filled.DarkMode)" OnClick="OnThemeClick" />
+        </MudTooltip>
+
+        <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+            <ActivatorContent>
+                <MudAvatar Image="images/logo-4ppng-01.png" />
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem>Profile</MudMenuItem>
+                <MudMenuItem OnClick="@OnClockLogout">Sign Out</MudMenuItem>
+            </ChildContent>
+        </MudMenu>
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="@_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="1">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+   @*  <MudTFootRow Class="d-flex justify-end">
+        <MudText Typo="Typo.h6">PT AUTOMATION SOLUTION.</MudText>
+    </MudTFootRow> *@
+</MudLayout>
+
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
+<MudDialogProvider />
+<MudSnackbarProvider />

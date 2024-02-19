@@ -1,0 +1,464 @@
+﻿@page "/"
+@attribute [Authorize]
+@*@attribute [Authorize(Roles = "Admin")]*@@*phan theo quyen*@
+@*@attribute [AllowAnonymous]*@
+
+
+@if (_displayRealtime == null)
+{
+    @*<MudText>Loading....</MudText>*@
+    <div class="spinner center-div"></div>
+}
+else
+{
+    <MudGrid Spacing="2" Class="pt-5">
+        @*Chuong 1*@
+        <MudItem xs="12" sm="6">
+            <MudCard Elevation="25" Class="rounded-lg pb-4 h-100 border border-warning">
+                <MudCardHeader Class="bg-success">
+                    <CardHeaderAvatar>
+                        <MudIcon Icon="@Icons.Filled.Warehouse"></MudIcon>
+                    </CardHeaderAvatar>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5" Align="Align.Center">@_chuong1.TenChuong</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudGrid Spacing="1">
+                        <MudItem xs="12">
+                            <div class="d-flex justify-center">
+                                <MudText Typo="Typo.h5">Chế độ chạy:</MudText>
+                                <MudText Typo="Typo.h5" Color="Color.Secondary">@_chuong1.ActiveStatus</MudText>
+                            </div>
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudGrid Spacing="1">
+                                <MudItem xs="12" sm="4">
+                                    <MudCard Class="pb-4 h-100">
+                                        <MudCardHeader Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">
+                                            <CardHeaderAvatar>
+                                                <MudIcon Icon="@_iconTemperature"></MudIcon>
+                                            </CardHeaderAvatar>
+                                            <CardHeaderContent>
+                                                Nhiệt độ (oC)
+                                            </CardHeaderContent>
+                                        </MudCardHeader>
+                                        <MudCardContent Class="d-flex justify-content-center">
+                                            <MudText Typo="Typo.h4" class="rounded mx-auto d-block">@_chuong1.Temperature</MudText>
+                                        </MudCardContent>
+                                    </MudCard>
+                                </MudItem>
+                                <MudItem xs="12" sm="4">
+                                    <MudCard Class="pb-4 h-100">
+                                        <MudCardHeader Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">
+                                            <CardHeaderAvatar>
+                                                <MudIcon Icon="@_iconHumidity"></MudIcon>
+                                            </CardHeaderAvatar>
+                                            <CardHeaderContent>
+                                                Độ ẩm (%)
+                                            </CardHeaderContent>
+                                        </MudCardHeader>
+                                        <MudCardContent Class="d-flex justify-content-center">
+                                            <MudText Typo="Typo.h4" class="rounded mx-auto d-block">@_chuong1.Humidity</MudText>
+                                        </MudCardContent>
+                                    </MudCard>
+                                </MudItem>
+                                <MudItem xs="12" sm="4">
+                                    <MudCard Class="pb-4 h-100">
+                                        <MudCardHeader Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">
+                                            <CardHeaderAvatar>
+                                                <MudIcon Icon="@_iconFrequency"></MudIcon>
+                                            </CardHeaderAvatar>
+                                            <CardHeaderContent>
+                                                Tần số (Hz)
+                                            </CardHeaderContent>
+                                        </MudCardHeader>
+                                        <MudCardContent Class="d-flex justify-content-center">
+                                            <MudText Typo="Typo.h4" class="rounded mx-auto d-block">@_chuong1.Frequency</MudText>
+                                        </MudCardContent>
+                                    </MudCard>
+                                </MudItem>
+                            </MudGrid>
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudCard Class="pb-4">
+                                <MudCardHeader Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">
+                                    <CardHeaderAvatar>
+                                        <MudIcon Icon="@_iconMonitor"></MudIcon>
+                                    </CardHeaderAvatar>
+                                    <CardHeaderContent>Trạng thái quạt</CardHeaderContent>
+                                </MudCardHeader>
+                                <MudCardContent>
+                                    <MudGrid Spacing="1">
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong1.Fan1Status==1?_fanOn:_fanOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Quạt 1</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong1.Fan2Status==1?_fanOn:_fanOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Quạt 2</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong1.Fan3Status==1?_fanOn:_fanOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Quạt 3</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong1.Fan4Status==1?_fanOn:_fanOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Quạt 4</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong1.CoollerStatus==1?_coolerOn:_coollerOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Dàn mát</MudText>
+                                        </MudItem>
+                                    </MudGrid>
+
+                                    @*<MudChip Icon="@_iconFan" Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">Quạt 1</MudChip>
+                                <MudChip Icon="@_iconFan" Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">Quạt 2</MudChip>
+                                <MudChip Icon="@_iconFan" Style="@($"color:{_theme.Palette.White}; background:{_theme.Palette.GrayDark};")">Quạt 3</MudChip>
+                                <MudChip Icon="@_iconFan" Style="@($"color:{_theme.Palette.White}; background:{_theme.Palette.GrayDark};")">Quạt 4</MudChip>
+                                <MudChip Icon="@_iconCooler" Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">Dàn mát</MudChip>*@
+                                </MudCardContent>
+                            </MudCard>
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+        @*Chuong 2*@
+        <MudItem xs="12" sm="6">
+            <MudCard Elevation="25" Class="rounded-lg pb-4 h-100 border border-warning">
+                <MudCardHeader Class="bg-success">
+                    <CardHeaderAvatar>
+                        <MudIcon Icon="@Icons.Filled.Warehouse"></MudIcon>
+                    </CardHeaderAvatar>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5" Align="Align.Center">@_chuong2.TenChuong</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudGrid Spacing="1">
+                        <MudItem xs="12">
+                            <div class="d-flex justify-center">
+                                <MudText Typo="Typo.h5">Chế độ chạy:</MudText>
+                                <MudText Typo="Typo.h5" Color="Color.Secondary">@_chuong2.ActiveStatus</MudText>
+                            </div>
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudGrid Spacing="1">
+                                <MudItem xs="12" sm="4">
+                                    <MudCard Class="pb-4 h-100">
+                                        <MudCardHeader Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">
+                                            <CardHeaderAvatar>
+                                                <MudIcon Icon="@_iconTemperature"></MudIcon>
+                                            </CardHeaderAvatar>
+                                            <CardHeaderContent>
+                                                Nhiệt độ (oC)
+                                            </CardHeaderContent>
+                                        </MudCardHeader>
+                                        <MudCardContent Class="d-flex justify-content-center">
+                                            <MudText Typo="Typo.h4" class="rounded mx-auto d-block">@_chuong2.Temperature</MudText>
+                                        </MudCardContent>
+                                    </MudCard>
+                                </MudItem>
+                                <MudItem xs="12" sm="4">
+                                    <MudCard Class="pb-4 h-100">
+                                        <MudCardHeader Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">
+                                            <CardHeaderAvatar>
+                                                <MudIcon Icon="@_iconHumidity"></MudIcon>
+                                            </CardHeaderAvatar>
+                                            <CardHeaderContent>
+                                                Độ ẩm (%)
+                                            </CardHeaderContent>
+                                        </MudCardHeader>
+                                        <MudCardContent Class="d-flex justify-content-center">
+                                            <MudText Typo="Typo.h4" class="rounded mx-auto d-block">@_chuong2.Humidity</MudText>
+                                        </MudCardContent>
+                                    </MudCard>
+                                </MudItem>
+                                <MudItem xs="12" sm="4">
+                                    <MudCard Class="pb-4 h-100">
+                                        <MudCardHeader Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">
+                                            <CardHeaderAvatar>
+                                                <MudIcon Icon="@_iconFrequency"></MudIcon>
+                                            </CardHeaderAvatar>
+                                            <CardHeaderContent>
+                                                Tần số (Hz)
+                                            </CardHeaderContent>
+                                        </MudCardHeader>
+                                        <MudCardContent Class="d-flex justify-content-center">
+                                            <MudText Typo="Typo.h4" class="rounded mx-auto d-block">@_chuong2.Frequency</MudText>
+                                        </MudCardContent>
+                                    </MudCard>
+                                </MudItem>
+                            </MudGrid>
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudCard Class="pb-4">
+                                <MudCardHeader Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">
+                                    <CardHeaderAvatar>
+                                        <MudIcon Icon="@_iconMonitor"></MudIcon>
+                                    </CardHeaderAvatar>
+                                    <CardHeaderContent>Trạng thái quạt</CardHeaderContent>
+                                </MudCardHeader>
+                                <MudCardContent>
+                                    <MudGrid Spacing="1">
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong2.Fan1Status==1?_fanOn:_fanOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Quạt 1</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong2.Fan2Status==1?_fanOn:_fanOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Quạt 2</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong2.Fan3Status==1?_fanOn:_fanOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Quạt 3</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong2.Fan4Status==1?_fanOn:_fanOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Quạt 4</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong2.CoollerStatus==1?_coolerOn:_coollerOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Dàn mát</MudText>
+                                        </MudItem>
+                                    </MudGrid>
+
+                                    @*<MudChip Icon="@_iconFan" Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">Quạt 1</MudChip>
+                                <MudChip Icon="@_iconFan" Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">Quạt 2</MudChip>
+                                <MudChip Icon="@_iconFan" Style="@($"color:{_theme.Palette.White}; background:{_theme.Palette.GrayDark};")">Quạt 3</MudChip>
+                                <MudChip Icon="@_iconFan" Style="@($"color:{_theme.Palette.White}; background:{_theme.Palette.GrayDark};")">Quạt 4</MudChip>
+                                <MudChip Icon="@_iconCooler" Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">Dàn mát</MudChip>*@
+                                </MudCardContent>
+                            </MudCard>
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+        @*Chuong 3*@
+        <MudItem xs="12" sm="6">
+            <MudCard Elevation="25" Class="rounded-lg pb-4 h-100 border border-warning">
+                <MudCardHeader Class="bg-success">
+                    <CardHeaderAvatar>
+                        <MudIcon Icon="@Icons.Filled.Warehouse"></MudIcon>
+                    </CardHeaderAvatar>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5" Align="Align.Center">@_chuong3.TenChuong</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudGrid Spacing="1">
+                        <MudItem xs="12">
+                            <div class="d-flex justify-center">
+                                <MudText Typo="Typo.h5">Chế độ chạy:</MudText>
+                                <MudText Typo="Typo.h5" Color="Color.Secondary">@_chuong3.ActiveStatus</MudText>
+                            </div>
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudGrid Spacing="1">
+                                <MudItem xs="12" sm="4">
+                                    <MudCard Class="pb-4 h-100">
+                                        <MudCardHeader Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">
+                                            <CardHeaderAvatar>
+                                                <MudIcon Icon="@_iconTemperature"></MudIcon>
+                                            </CardHeaderAvatar>
+                                            <CardHeaderContent>
+                                                Nhiệt độ (oC)
+                                            </CardHeaderContent>
+                                        </MudCardHeader>
+                                        <MudCardContent Class="d-flex justify-content-center">
+                                            <MudText Typo="Typo.h4" class="rounded mx-auto d-block">@_chuong3.Temperature</MudText>
+                                        </MudCardContent>
+                                    </MudCard>
+                                </MudItem>
+                                <MudItem xs="12" sm="4">
+                                    <MudCard Class="pb-4 h-100">
+                                        <MudCardHeader Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">
+                                            <CardHeaderAvatar>
+                                                <MudIcon Icon="@_iconHumidity"></MudIcon>
+                                            </CardHeaderAvatar>
+                                            <CardHeaderContent>
+                                                Độ ẩm (%)
+                                            </CardHeaderContent>
+                                        </MudCardHeader>
+                                        <MudCardContent Class="d-flex justify-content-center">
+                                            <MudText Typo="Typo.h4" class="rounded mx-auto d-block">@_chuong3.Humidity</MudText>
+                                        </MudCardContent>
+                                    </MudCard>
+                                </MudItem>
+                                <MudItem xs="12" sm="4">
+                                    <MudCard Class="pb-4 h-100">
+                                        <MudCardHeader Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">
+                                            <CardHeaderAvatar>
+                                                <MudIcon Icon="@_iconFrequency"></MudIcon>
+                                            </CardHeaderAvatar>
+                                            <CardHeaderContent>
+                                                Tần số (Hz)
+                                            </CardHeaderContent>
+                                        </MudCardHeader>
+                                        <MudCardContent Class="d-flex justify-content-center">
+                                            <MudText Typo="Typo.h4" class="rounded mx-auto d-block">@_chuong3.Frequency</MudText>
+                                        </MudCardContent>
+                                    </MudCard>
+                                </MudItem>
+                            </MudGrid>
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudCard Class="pb-4">
+                                <MudCardHeader Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">
+                                    <CardHeaderAvatar>
+                                        <MudIcon Icon="@_iconMonitor"></MudIcon>
+                                    </CardHeaderAvatar>
+                                    <CardHeaderContent>Trạng thái quạt</CardHeaderContent>
+                                </MudCardHeader>
+                                <MudCardContent>
+                                    <MudGrid Spacing="1">
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong3.Fan1Status==1?_fanOn:_fanOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Quạt 1</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong3.Fan2Status==1?_fanOn:_fanOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Quạt 2</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong3.Fan3Status==1?_fanOn:_fanOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Quạt 3</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong3.Fan4Status==1?_fanOn:_fanOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Quạt 4</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong3.CoollerStatus==1?_coolerOn:_coollerOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Dàn mát</MudText>
+                                        </MudItem>
+                                    </MudGrid>
+
+                                    @*<MudChip Icon="@_iconFan" Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">Quạt 1</MudChip>
+                                <MudChip Icon="@_iconFan" Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">Quạt 2</MudChip>
+                                <MudChip Icon="@_iconFan" Style="@($"color:{_theme.Palette.White}; background:{_theme.Palette.GrayDark};")">Quạt 3</MudChip>
+                                <MudChip Icon="@_iconFan" Style="@($"color:{_theme.Palette.White}; background:{_theme.Palette.GrayDark};")">Quạt 4</MudChip>
+                                <MudChip Icon="@_iconCooler" Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">Dàn mát</MudChip>*@
+                                </MudCardContent>
+                            </MudCard>
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+        @*Chuong 4*@
+        <MudItem xs="12" sm="6">
+            <MudCard Elevation="25" Class="rounded-lg pb-4 h-100 border border-warning">
+                <MudCardHeader Class="bg-success">
+                    <CardHeaderAvatar>
+                        <MudIcon Icon="@Icons.Filled.Warehouse"></MudIcon>
+                    </CardHeaderAvatar>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5" Align="Align.Center">@_chuong4.TenChuong</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudGrid Spacing="1">
+                        <MudItem xs="12">
+                            <div class="d-flex justify-center">
+                                <MudText Typo="Typo.h5">Chế độ chạy:</MudText>
+                                <MudText Typo="Typo.h5" Color="Color.Secondary">@_chuong4.ActiveStatus</MudText>
+                            </div>
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudGrid Spacing="1">
+                                <MudItem xs="12" sm="4">
+                                    <MudCard Class="pb-4 h-100">
+                                        <MudCardHeader Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">
+                                            <CardHeaderAvatar>
+                                                <MudIcon Icon="@_iconTemperature"></MudIcon>
+                                            </CardHeaderAvatar>
+                                            <CardHeaderContent>
+                                                Nhiệt độ (oC)
+                                            </CardHeaderContent>
+                                        </MudCardHeader>
+                                        <MudCardContent Class="d-flex justify-content-center">
+                                            <MudText Typo="Typo.h4" class="rounded mx-auto d-block">@_chuong4.Temperature</MudText>
+                                        </MudCardContent>
+                                    </MudCard>
+                                </MudItem>
+                                <MudItem xs="12" sm="4">
+                                    <MudCard Class="pb-4 h-100">
+                                        <MudCardHeader Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">
+                                            <CardHeaderAvatar>
+                                                <MudIcon Icon="@_iconHumidity"></MudIcon>
+                                            </CardHeaderAvatar>
+                                            <CardHeaderContent>
+                                                Độ ẩm (%)
+                                            </CardHeaderContent>
+                                        </MudCardHeader>
+                                        <MudCardContent Class="d-flex justify-content-center">
+                                            <MudText Typo="Typo.h4" class="rounded mx-auto d-block">@_chuong4.Humidity</MudText>
+                                        </MudCardContent>
+                                    </MudCard>
+                                </MudItem>
+                                <MudItem xs="12" sm="4">
+                                    <MudCard Class="pb-4 h-100">
+                                        <MudCardHeader Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">
+                                            <CardHeaderAvatar>
+                                                <MudIcon Icon="@_iconFrequency"></MudIcon>
+                                            </CardHeaderAvatar>
+                                            <CardHeaderContent>
+                                                Tần số (Hz)
+                                            </CardHeaderContent>
+                                        </MudCardHeader>
+                                        <MudCardContent Class="d-flex justify-content-center">
+                                            <MudText Typo="Typo.h4" class="rounded mx-auto d-block">@_chuong4.Frequency</MudText>
+                                        </MudCardContent>
+                                    </MudCard>
+                                </MudItem>
+                            </MudGrid>
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudCard Class="pb-4">
+                                <MudCardHeader Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">
+                                    <CardHeaderAvatar>
+                                        <MudIcon Icon="@_iconMonitor"></MudIcon>
+                                    </CardHeaderAvatar>
+                                    <CardHeaderContent>Trạng thái quạt</CardHeaderContent>
+                                </MudCardHeader>
+                                <MudCardContent>
+                                    <MudGrid Spacing="1">
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong4.Fan1Status==1?_fanOn:_fanOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Quạt 1</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong4.Fan2Status==1?_fanOn:_fanOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Quạt 2</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong4.Fan3Status==1?_fanOn:_fanOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Quạt 3</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong4.Fan4Status==1?_fanOn:_fanOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Quạt 4</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="4" Class="d-flex flex-column justify-content-center">
+                                            <img src="@(_chuong4.CoollerStatus==1?_coolerOn:_coollerOff)" style="width: 80px !important" class="rounded mx-auto d-block" />
+                                            <MudText Typo="Typo.subtitle2" class="rounded mx-auto d-block">Dàn mát</MudText>
+                                        </MudItem>
+                                    </MudGrid>
+
+                                    @*<MudChip Icon="@_iconFan" Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">Quạt 1</MudChip>
+                                <MudChip Icon="@_iconFan" Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">Quạt 2</MudChip>
+                                <MudChip Icon="@_iconFan" Style="@($"color:{_theme.Palette.White}; background:{_theme.Palette.GrayDark};")">Quạt 3</MudChip>
+                                <MudChip Icon="@_iconFan" Style="@($"color:{_theme.Palette.White}; background:{_theme.Palette.GrayDark};")">Quạt 4</MudChip>
+                                <MudChip Icon="@_iconCooler" Style="@($"color:{_theme.Palette.Dark}; background:{_theme.Palette.TertiaryLighten};")">Dàn mát</MudChip>*@
+                                </MudCardContent>
+                            </MudCard>
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+}

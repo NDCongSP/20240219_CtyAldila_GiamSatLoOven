@@ -1,0 +1,60 @@
+﻿@inherits LayoutComponentBase
+
+<RadzenLayout Style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body' 'rz-sidebar rz-footer'">
+    <RadzenHeader>
+        <RadzenRow>
+            <RadzenColumn Size="5">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
+                    <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
+                    <RadzenLabel Text="First App Radzen" />
+                </RadzenStack>
+            </RadzenColumn>
+            <RadzenColumn Size="7">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
+                    <RadzenLabel>TEST</RadzenLabel>
+                    <RadzenProfileMenu>
+                        <Template>
+                            <RadzenIcon Icon="account_circle" />
+                        </Template>
+                        <ChildContent>
+                            <RadzenProfileMenuItem Text="Buttons" Path="buttons" Icon="account_circle"></RadzenProfileMenuItem>
+                            <RadzenProfileMenuItem Text="Menu" Path="menu" Icon="line_weight"></RadzenProfileMenuItem>
+                            <RadzenProfileMenuItem Text="FileInput" Path="fileinput" Icon="attach_file"></RadzenProfileMenuItem>
+                            <RadzenProfileMenuItem Text="Dialog" Path="dialog" Icon="perm_media"></RadzenProfileMenuItem>
+                            <RadzenProfileMenuItem Text="Notification" Path="notification" Icon="announcement"></RadzenProfileMenuItem>
+                        </ChildContent>
+                    </RadzenProfileMenu>
+                </RadzenStack>
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenHeader>
+    <RadzenSidebar Responsive="false" Style="width: max-content">
+        <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="false">
+            <RadzenStack AlignItems="Radzen.AlignItems.Center" class="rz-py-4 rz-py-lg-6" Style="padding: var(--rz-panel-menu-item-padding); border-bottom: var(--rz-panel-menu-item-border);">
+                <RadzenImage Path="images/LogoIco.ico" style="width: 48px; height: 48px;"></RadzenImage>
+                @* <RadzenText Text="radzenAppASM" TextStyle="Radzen.Blazor.TextStyle.Subtitle1" class="rz-mb-0" style="color: var(--rz-sidebar-color);" /> *@
+            </RadzenStack>
+            <RadzenPanelMenuItem Text="Overview" Icon="home" />
+            <RadzenPanelMenuItem Text="Dashboard" Icon="dashboard" />
+            <RadzenPanelMenuItem Text="UI Fundamentals" Icon="auto_awesome">
+                <RadzenPanelMenuItem Text="Themes" Icon="color_lens" />
+                <RadzenPanelMenuItem Text="Colors" Icon="invert_colors" />
+            </RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Text="Trend" Icon="home" Path="/trend"/>
+        </RadzenPanelMenu>
+    </RadzenSidebar>
+    <RadzenBody>
+        <div class="rz-p-4">
+            @Body
+        </div>
+    </RadzenBody>
+    <RadzenFooter>
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start">
+            <RadzenLabel>Phuc Thinh Automation Solution.</RadzenLabel>
+        </RadzenStack>
+    </RadzenFooter>
+</RadzenLayout>
+
+@code {
+    bool sidebarExpanded = true;
+}

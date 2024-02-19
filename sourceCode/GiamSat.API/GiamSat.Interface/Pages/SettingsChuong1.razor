@@ -1,0 +1,154 @@
+﻿@page "/c1"
+@attribute [Authorize(Roles = "Admin")]
+@*@attribute [AllowAnonymous]*@
+
+@using System.ComponentModel.DataAnnotations
+
+<EditForm Model="@stepModel" OnValidSubmit="OnValidSubmit" OnInvalidSubmit="OnInvalidSubmit">
+    <DataAnnotationsValidator />
+
+    <MudGrid Spacing="1" Class="m-2">
+        <MudItem xs="12">
+            <MudCard>
+                <MudCardContent>
+                    <MudGrid Spacing="1" Class="pt-2">
+                        <MudItem xs="12">
+                            <MudCard Class="m-2">
+                                <MudCardHeader Class="bg-success h-4">Cài đặt giai đoạn</MudCardHeader>
+                                <MudCardContent>
+                                    <MudGrid Spacing="1">
+                                        <MudItem xs="12">
+                                            <MudSelect @bind-Value="enumValue" Label="CHỌN GIAI ĐOẠN" HelperText="Chọn giai đoạn để cài đặt các thông số" OpenIcon="@Icons.Material.Filled.LocalDrink" AdornmentColor="Color.Secondary" Variant="Variant.Outlined">
+                                                @foreach (StepRun item in Enum.GetValues(typeof(StepRun)))
+                                                {
+                                                    <MudSelectItem Value="@item">@item</MudSelectItem>
+                                                }
+                                            </MudSelect>
+                                        </MudItem>
+                                        <MudItem xs="12">
+                                            <MudGrid Spacing="1">
+                                                <MudItem xs="12" sm="3">
+                                                    <MudNumericField Label="Từ ngày" HelperText="Ngày bắt đầu giai đoạn" Class="m-2"
+                                                                     @bind-Value="@stepModel.FromDate" For="@(()=>@stepModel.FromDate)"></MudNumericField>
+                                                </MudItem>
+                                                <MudItem xs="12" sm="3">
+                                                    <MudNumericField Label="Đến ngày" HelperText="Ngày kết thúc giai đoạn" Class="m-2"
+                                                                     @bind-Value="@stepModel.ToDate" For="@(()=>@stepModel.ToDate)"></MudNumericField>
+                                                </MudItem>
+                                                <MudItem xs="12" sm="3">
+                                                    <MudNumericField Label="Số quạt chạy cố định" Class="m-2"
+                                                                     @bind-Value="@stepModel.StaticFanRun" For="@(()=>@stepModel.StaticFanRun)"></MudNumericField>
+                                                </MudItem>
+                                                <MudItem xs="12" sm="3">
+                                                    <MudNumericField Label="Nhiệt bật dàn mát (oC)" Class="m-2"
+                                                                     @bind-Value="@stepModel.TempRunCooler" For="@(()=>@stepModel.LowFrequency)"></MudNumericField>
+                                                </MudItem>
+                                            </MudGrid>
+                                        </MudItem>
+                                        <MudItem xs="12">
+                                            <MudGrid Spacing="1">
+                                                <MudItem xs="12" sm="3">
+                                                    <MudNumericField Label="Nhiệt độ cao (oC)" Class="m-2"
+                                                                     @bind-Value="@stepModel.HightTemperature" For="@(()=>@stepModel.HightTemperature)"></MudNumericField>
+                                                </MudItem>
+                                                <MudItem xs="12" sm="3">
+                                                    <MudNumericField Label="Nhiệt độ thấp (oC)" Class="m-2"
+                                                                     @bind-Value="@stepModel.Lowtemperature" For="@(()=>@stepModel.Lowtemperature)"></MudNumericField>
+                                                </MudItem>
+                                                <MudItem xs="12" sm="3">
+                                                    <MudNumericField Label="Tần số cao (Hz)" Class="m-2"
+                                                                     @bind-Value="@stepModel.HightFrequency" For="@(()=>@stepModel.HightFrequency)"></MudNumericField>
+                                                </MudItem>
+                                                <MudItem xs="12" sm="3">
+                                                    <MudNumericField Label="Tần số thấp (Hz)" Class="m-2"
+                                                                     @bind-Value="@stepModel.LowFrequency" For="@(()=>@stepModel.LowFrequency)"></MudNumericField>
+                                                </MudItem>
+                                            </MudGrid>
+                                        </MudItem>
+                                        <MudItem xs="12">
+                                            <MudGrid Spacing="1">
+                                                <MudItem xs="12" sm="3">
+                                                    <MudNumericField Label="Nhiệt độ bật quạt 1 (oC)" Class="m-2"
+                                                                     @bind-Value="@stepModel.TempRunFan1" For="@(()=>@stepModel.TempRunFan1)"></MudNumericField>
+                                                </MudItem>
+                                                <MudItem xs="12" sm="3">
+                                                    <MudNumericField Label="Nhiệt độ bật quạt 2 (oC)" Class="m-2"
+                                                                     @bind-Value="@stepModel.TempRunFan2" For="@(()=>@stepModel.TempRunFan2)"></MudNumericField>
+                                                </MudItem>
+                                                <MudItem xs="12" sm="3">
+                                                    <MudNumericField Label="Nhiệt độ bật quạt 3 (oC)" Class="m-2"
+                                                                     @bind-Value="@stepModel.TempRunFan3" For="@(()=>@stepModel.TempRunFan3)"></MudNumericField>
+                                                </MudItem>
+                                                <MudItem xs="12" sm="3">
+                                                    <MudNumericField Label="Nhiệt độ bật quạt 4 (oC)" Class="m-2"
+                                                                     @bind-Value="@stepModel.TempRunFan4" For="@(()=>@stepModel.TempRunFan4)"></MudNumericField>
+                                                </MudItem>
+                                            </MudGrid>
+                                        </MudItem>
+                                    </MudGrid>
+
+                                </MudCardContent>
+                            </MudCard>
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudCard Class="m-2">
+                                <MudCardHeader Class="bg-success">Cài đặt chung</MudCardHeader>
+                                <MudCardContent>
+                                    <MudGrid Spacing="1" Class="m-2">
+                                        <MudItem xs="12" sm="3">
+                                            <MudNumericField Label="Thời gian chạy dàn mát (phút)" Class="m-2"
+                                                             @bind-Value="@stepModel.TimeOnCooler" For="@(()=>@stepModel.TimeOnCooler)"></MudNumericField>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="3">
+                                            <MudNumericField Label="Thời gian nghỉ dàn mát (phút)" Class="m-2"
+                                                             @bind-Value="@stepModel.TimeOffCooler" For="@(()=>@stepModel.TimeOffCooler)"></MudNumericField>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="3">
+                                            <MudNumericField Label="Quạt 1" Class="m-2"
+                                                             @bind-Value="@stepModel.Fan1" For="@(()=>@stepModel.Fan1)"></MudNumericField>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="3">
+                                            <MudNumericField Label="Quat 2" Class="m-2"
+                                                             @bind-Value="@stepModel.Fan2" For="@(()=>@stepModel.Fan2)"></MudNumericField>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="3">
+                                            <MudNumericField Label="Quat 3" Class="m-2"
+                                                             @bind-Value="@stepModel.Fan3" For="@(()=>@stepModel.Fan3)"></MudNumericField>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="3">
+                                            <MudNumericField Label="Quat 4" Class="m-2"
+                                                             @bind-Value="@stepModel.Fan4" For="@(()=>@stepModel.Fan4)"></MudNumericField>
+                                        </MudItem>
+                                    </MudGrid>
+                                </MudCardContent>
+                            </MudCard>
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Cập nhật</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12">
+            <MudPaper Class="pa-4 mud-height-full">
+                <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+                @if (success)
+                {
+                    <MudText Color="Color.Success">Success</MudText>
+                }
+                else
+                {
+                    <MudText Color="@Color.Error">
+                        <ValidationSummary />
+                    </MudText>
+                }
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>

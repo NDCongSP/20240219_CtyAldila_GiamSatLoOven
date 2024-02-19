@@ -1,0 +1,46 @@
+﻿@page "/login"
+@layout LoginLayout
+@attribute [AllowAnonymous]
+
+<EditForm Model="@_model" OnValidSubmit="HandleLogin">
+    <MudGrid Spacing="1" Class="pa-5">
+        <MudItem xs="12">
+            <div class="d-flex justify-center">
+                <img src="/images/logo-4ppng-01.png" style="width: 260px !important" />
+            </div>
+            <MudText Typo="Typo.h5" Color="Color.Success" Class="d-flex justify-center">Login</MudText>
+        </MudItem>
+
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <MudItem xs="12">
+            <MudTextField T="string" Label="User name"
+                          @bind-Value="_model.Username"
+                          Variant="Variant.Outlined"
+                          For="()=>_model.Username" />
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudTextField @bind-Value="_model.Password"
+                          Label="Password"
+                          Variant="Variant.Outlined"
+                          InputType="@_passwordInput"
+                          Adornment="Adornment.End"
+                          AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="OnTogglePasswordVisibility" />
+        </MudItem>
+
+        <MudDivider Class="w-100 mt-2 mb-2" />
+
+        <MudItem xs="12" Class="d-flex justify-center">
+            <MudButton ButtonType="MudBlazor.ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       FullWidth="true"
+                       Size="MudBlazor.Size.Large"
+                       Style="width: 100%;">
+                Submit
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</EditForm>

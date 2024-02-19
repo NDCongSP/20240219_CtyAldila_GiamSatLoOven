@@ -1,0 +1,29 @@
+﻿@inherits LayoutComponentBase
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudText Typo="Typo.h5" Class="ml-3">Giám sát trang trại</MudText>
+        <MudSpacer />
+        @*<MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />*@
+        <MudMenu Icon="@Icons.Material.Filled.MoreVert" ActivationEvent="@MouseEvent.MouseOver">
+            <MudMenuItem>Profile</MudMenuItem>
+            @*<MudMenuItem>Theme</MudMenuItem>
+                <MudMenuItem>Usage</MudMenuItem>*@
+            <MudMenuItem OnClick="@OnClockLogout">Sign Out</MudMenuItem>
+        </MudMenu>
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="@_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
