@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +23,12 @@ namespace GiamSat.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        readonly ApplicationDbContext _context;
+
+        public Startup(IConfiguration configuration, ApplicationDbContext context = null)
         {
             Configuration = configuration;
+            _context = context;
         }
 
         public IConfiguration Configuration { get; }
@@ -37,6 +41,66 @@ namespace GiamSat.API
             // For Entity Framework
             GlobalVariable.ConString = EncodeMD5.DecryptString(Configuration.GetConnectionString("ConnStr"), "PTAut0m@t!0n30!)@)20");
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(GlobalVariable.ConString));
+
+            #region khoi tao data
+            var c = new ConfigModel()
+            {
+                DeadbandAlarm = 5,//5s
+                Gain = 1,
+                DataLogInterval = 5,//5s
+                DataLogWhenRunProfileInterval = 1//1s
+            };
+
+            OvensInfo ov = new OvensInfo();
+
+            for (int i = 1; i <= 13; i++)
+            {
+                var steps = new List<StepModel>();
+                steps.Add(new StepModel()
+                {
+                    Id = 1,
+                    StepType = EnumProfileStepType.RampTime,
+                    Hours = 1,
+                    Minutes = 30,
+                    Seconds = 1,
+                    SetPoint = 170
+                });
+                steps.Add(new StepModel()
+                {
+                    Id = 2,
+                    StepType = EnumProfileStepType.Soak,
+                    Hours = 0,
+                    Minutes = 50,
+                    Seconds = 10,
+                    SetPoint = 171
+                });
+
+                var profiles = new List<ProfileModel>();
+                profiles.Add(new ProfileModel()
+                {
+                    Id = 1,
+                    Name = $"Profile {i}",
+                    Steps = steps
+                });
+
+                ov.Add(new OvenInfoModel()
+                {
+                    Id=i,
+                    Name=$"Profile {1}",
+                    Profiles=profiles
+                });
+
+            }
+
+            var ft01 = new FT01()
+            {
+                Id =Guid.NewGuid(),
+                C000 = JsonConvert.SerializeObject(c),
+                C001 = JsonConvert.SerializeObject(ov)
+            };
+
+
+            #endregion
 
             // For Identity
             services.AddIdentity<IdentityUser, IdentityRole>(o =>
@@ -86,15 +150,12 @@ namespace GiamSat.API
             services.AddControllers();
 
             //AddRepoServices(services);//add transient tu dong
-            services.AddTransient<ISDisplayRealtime, SDisplayRealtime>();
-            services.AddTransient<ISDataLog, SDataLog>();
-            services.AddTransient<ISChuongInfo, SChuongInfo>();
-            services.AddTransient<ISRealtimeDisplay,SRealtimeDisplay>();
-            services.AddTransient<ISFT100, SFT100>();
-            services.AddTransient<ISFT101, SFT101>();
-            services.AddTransient<ISAlarmLog, SAlarmLog>();
-            services.AddTransient<ISAlarmSettings, SAlarmSettings>();
 
+            services.AddTransient<ISFT01, SFT01>();
+            services.AddTransient<ISFT02, SFT02>();
+            services.AddTransient<ISFT03, SFT03>();
+            services.AddTransient<ISFT04, SFT04>();
+            services.AddTransient<ISFT05, SFT05>();
             services.AddScoped<SCommon>();
 
             services.AddSwaggerGen(c =>
@@ -128,7 +189,7 @@ namespace GiamSat.API
                 .AllowAnyMethod()
                 .AllowAnyOrigin()
                 .WithExposedHeaders("Content-Disposition")));
-            
+
             //services.AddCors();
 
         }

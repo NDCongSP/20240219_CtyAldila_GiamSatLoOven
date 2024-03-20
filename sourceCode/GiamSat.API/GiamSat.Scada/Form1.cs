@@ -24,7 +24,7 @@ namespace GiamSat.Scada
         private double[] _khoiLuongSilo = { 0, 0, 0, 0 };
         private RealtimeList _realtimeData = new RealtimeList();
 
-        private List<DataLogModel> _dataLog = new List<DataLogModel>();
+        private List<FT03> _dataLog = new List<FT03>();
         private List<ChuongInfoModel> _chuongInfo = new List<ChuongInfoModel>();
 
         private Timer _timer = new Timer();
@@ -86,7 +86,7 @@ namespace GiamSat.Scada
                 {
                     _chuongId.Add(item.Id);
 
-                    _dataLog.Add(new DataLogModel()
+                    _dataLog.Add(new FT03()
                     {
                         ChuongId = item.Id,
                         TenChuong = item.TenChuong,

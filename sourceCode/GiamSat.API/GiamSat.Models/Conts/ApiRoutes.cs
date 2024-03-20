@@ -12,7 +12,6 @@ namespace GiamSat.Models
     {
         public const string GetById = "{id}";
         public const string GetAll = "";
-        public const string Test = "test";
         /// <summary>
         /// HttpPost.
         /// </summary>
@@ -45,29 +44,26 @@ namespace GiamSat.Models
             public const string GetFromToByName = "GetByName/{from}/{to}/{tenChuong}";
         }
 
-        public static class ChuongInfo
-        {
-            public const string BasePath = "api/ChuongInfo";
-            public const string Test = "test";
-            public const string GetByName = "GetByName/{id}";
-        }
-        public static class FT100
-        {
-            public const string BasePath = "api/FT100";
-        }
-        public static class FT101
-        {
-            public const string BasePath = "api/FT101";
-        }
 
-        public static class AlarmSettings
+        public static class FT01
         {
-            public const string BasePath = "api/AlarmSettings";
+            public const string BasePath = "api/FT01";
         }
-
-        public static class AlarmLog
+        public static class FT02
         {
-            public const string BasePath = "api/AlarmLog";
+            public const string BasePath = "api/FT02";
+        }
+        public static class FT03
+        {
+            public const string BasePath = "api/FT03";
+        }
+        public static class FT04
+        {
+            public const string BasePath = "api/FT04";
+        }
+        public static class FT05
+        {
+            public const string BasePath = "api/FT05";
         }
     }
 }

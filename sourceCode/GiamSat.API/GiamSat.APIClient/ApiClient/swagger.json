@@ -5,344 +5,6 @@
     "version": "v1"
   },
   "paths": {
-    "/api/AlarmLog": {
-      "get": {
-        "tags": [
-          "AlarmLog"
-        ],
-        "operationId": "AlarmLog_GetAll",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmLogModelListResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmLogModelListResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmLogModelListResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/AlarmLog/{id}": {
-      "get": {
-        "tags": [
-          "AlarmLog"
-        ],
-        "operationId": "AlarmLog_GetById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmLogModelResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmLogModelResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmLogModelResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/AlarmLog/insert": {
-      "post": {
-        "tags": [
-          "AlarmLog"
-        ],
-        "operationId": "AlarmLog_Insert",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AlarmLogModel"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AlarmLogModel"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/AlarmLogModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmLogModelResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmLogModelResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmLogModelResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/AlarmLog/update": {
-      "post": {
-        "tags": [
-          "AlarmLog"
-        ],
-        "operationId": "AlarmLog_Update",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AlarmLogModel"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AlarmLogModel"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/AlarmLogModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmLogModelResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmLogModelResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmLogModelResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/AlarmSettings": {
-      "get": {
-        "tags": [
-          "AlarmSettings"
-        ],
-        "operationId": "AlarmSettings_GetAll",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmSettingsModelListResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmSettingsModelListResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmSettingsModelListResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/AlarmSettings/{id}": {
-      "get": {
-        "tags": [
-          "AlarmSettings"
-        ],
-        "operationId": "AlarmSettings_GetById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmSettingsModelResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmSettingsModelResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmSettingsModelResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/AlarmSettings/insert": {
-      "post": {
-        "tags": [
-          "AlarmSettings"
-        ],
-        "operationId": "AlarmSettings_Insert",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AlarmSettingsModel"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AlarmSettingsModel"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/AlarmSettingsModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmSettingsModelResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmSettingsModelResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmSettingsModelResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/AlarmSettings/update": {
-      "post": {
-        "tags": [
-          "AlarmSettings"
-        ],
-        "operationId": "AlarmSettings_Update",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AlarmSettingsModel"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AlarmSettingsModel"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/AlarmSettingsModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmSettingsModelResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmSettingsModelResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AlarmSettingsModelResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/fusion/auth/SignOut": {
       "post": {
         "tags": [
@@ -968,39 +630,29 @@
         }
       }
     },
-    "/api/ChuongInfo/GetByName/{id}": {
+    "/api/FT01": {
       "get": {
         "tags": [
-          "ChuongInfo"
+          "FT01"
         ],
-        "operationId": "ChuongInfo_GetByName",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "operationId": "FT01_GetAll",
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChuongInfoModelResult"
+                  "$ref": "#/components/schemas/FT01ListResult"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChuongInfoModelResult"
+                  "$ref": "#/components/schemas/FT01ListResult"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChuongInfoModelResult"
+                  "$ref": "#/components/schemas/FT01ListResult"
                 }
               }
             }
@@ -1008,42 +660,12 @@
         }
       }
     },
-    "/api/ChuongInfo": {
+    "/api/FT01/{id}": {
       "get": {
         "tags": [
-          "ChuongInfo"
+          "FT01"
         ],
-        "operationId": "ChuongInfo_GetAll",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ChuongInfoModelListResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ChuongInfoModelListResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ChuongInfoModelListResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/ChuongInfo/{id}": {
-      "get": {
-        "tags": [
-          "ChuongInfo"
-        ],
-        "operationId": "ChuongInfo_GetById",
+        "operationId": "FT01_GetById",
         "parameters": [
           {
             "name": "id",
@@ -1061,17 +683,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChuongInfoModelResult"
+                  "$ref": "#/components/schemas/FT01Result"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChuongInfoModelResult"
+                  "$ref": "#/components/schemas/FT01Result"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChuongInfoModelResult"
+                  "$ref": "#/components/schemas/FT01Result"
                 }
               }
             }
@@ -1079,27 +701,27 @@
         }
       }
     },
-    "/api/ChuongInfo/insert": {
+    "/api/FT01/insert": {
       "post": {
         "tags": [
-          "ChuongInfo"
+          "FT01"
         ],
-        "operationId": "ChuongInfo_Insert",
+        "operationId": "FT01_Insert",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChuongInfoModel"
+                "$ref": "#/components/schemas/FT01"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChuongInfoModel"
+                "$ref": "#/components/schemas/FT01"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/ChuongInfoModel"
+                "$ref": "#/components/schemas/FT01"
               }
             }
           }
@@ -1110,17 +732,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChuongInfoModelResult"
+                  "$ref": "#/components/schemas/FT01Result"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChuongInfoModelResult"
+                  "$ref": "#/components/schemas/FT01Result"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChuongInfoModelResult"
+                  "$ref": "#/components/schemas/FT01Result"
                 }
               }
             }
@@ -1128,27 +750,27 @@
         }
       }
     },
-    "/api/ChuongInfo/update": {
+    "/api/FT01/update": {
       "post": {
         "tags": [
-          "ChuongInfo"
+          "FT01"
         ],
-        "operationId": "ChuongInfo_Update",
+        "operationId": "FT01_Update",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChuongInfoModel"
+                "$ref": "#/components/schemas/FT01"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChuongInfoModel"
+                "$ref": "#/components/schemas/FT01"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/ChuongInfoModel"
+                "$ref": "#/components/schemas/FT01"
               }
             }
           }
@@ -1159,997 +781,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChuongInfoModelResult"
+                  "$ref": "#/components/schemas/FT01Result"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChuongInfoModelResult"
+                  "$ref": "#/components/schemas/FT01Result"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChuongInfoModelResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/DataLog/GetByName/{from}/{to}/{tenChuong}": {
-      "get": {
-        "tags": [
-          "DataLog"
-        ],
-        "operationId": "DataLog_GetFromToByName",
-        "parameters": [
-          {
-            "name": "from",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "to",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "tenChuong",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataLogModelListResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataLogModelListResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataLogModelListResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/DataLog": {
-      "get": {
-        "tags": [
-          "DataLog"
-        ],
-        "operationId": "DataLog_GetAll",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataLogModelListResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataLogModelListResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataLogModelListResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/DataLog/{id}": {
-      "get": {
-        "tags": [
-          "DataLog"
-        ],
-        "operationId": "DataLog_GetById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataLogModelResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataLogModelResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataLogModelResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/DataLog/insert": {
-      "post": {
-        "tags": [
-          "DataLog"
-        ],
-        "operationId": "DataLog_Insert",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DataLogModel"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DataLogModel"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/DataLogModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataLogModelResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataLogModelResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataLogModelResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/DataLog/update": {
-      "post": {
-        "tags": [
-          "DataLog"
-        ],
-        "operationId": "DataLog_Update",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DataLogModel"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DataLogModel"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/DataLogModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataLogModelResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataLogModelResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DataLogModelResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/DisplayRealtime/updatetenchuong": {
-      "post": {
-        "tags": [
-          "DisplayRealtime"
-        ],
-        "operationId": "DisplayRealtime_UpdateTenChuong",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DisplayRealTimeModel"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DisplayRealTimeModel"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/DisplayRealTimeModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/DisplayRealTimeModelResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DisplayRealTimeModelResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DisplayRealTimeModelResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/DisplayRealtime": {
-      "get": {
-        "tags": [
-          "DisplayRealtime"
-        ],
-        "operationId": "DisplayRealtime_GetAll",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/DisplayRealTimeModelListResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DisplayRealTimeModelListResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DisplayRealTimeModelListResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/DisplayRealtime/{id}": {
-      "get": {
-        "tags": [
-          "DisplayRealtime"
-        ],
-        "operationId": "DisplayRealtime_GetById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/DisplayRealTimeModelResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DisplayRealTimeModelResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DisplayRealTimeModelResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/DisplayRealtime/insert": {
-      "post": {
-        "tags": [
-          "DisplayRealtime"
-        ],
-        "operationId": "DisplayRealtime_Insert",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DisplayRealTimeModel"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DisplayRealTimeModel"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/DisplayRealTimeModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/DisplayRealTimeModelResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DisplayRealTimeModelResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DisplayRealTimeModelResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/DisplayRealtime/update": {
-      "post": {
-        "tags": [
-          "DisplayRealtime"
-        ],
-        "operationId": "DisplayRealtime_Update",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DisplayRealTimeModel"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DisplayRealTimeModel"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/DisplayRealTimeModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/DisplayRealTimeModelResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DisplayRealTimeModelResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DisplayRealTimeModelResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/FT100": {
-      "get": {
-        "tags": [
-          "FT100"
-        ],
-        "operationId": "FT100_GetAll",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT100ListResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT100ListResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT100ListResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/FT100/{id}": {
-      "get": {
-        "tags": [
-          "FT100"
-        ],
-        "operationId": "FT100_GetById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT100Result"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT100Result"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT100Result"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/FT100/insert": {
-      "post": {
-        "tags": [
-          "FT100"
-        ],
-        "operationId": "FT100_Insert",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FT100"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FT100"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/FT100"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT100Result"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT100Result"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT100Result"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/FT100/update": {
-      "post": {
-        "tags": [
-          "FT100"
-        ],
-        "operationId": "FT100_Update",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FT100"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FT100"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/FT100"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT100Result"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT100Result"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT100Result"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/FT101": {
-      "get": {
-        "tags": [
-          "FT101"
-        ],
-        "operationId": "FT101_GetAll",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT101ListResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT101ListResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT101ListResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/FT101/{id}": {
-      "get": {
-        "tags": [
-          "FT101"
-        ],
-        "operationId": "FT101_GetById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT101Result"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT101Result"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT101Result"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/FT101/insert": {
-      "post": {
-        "tags": [
-          "FT101"
-        ],
-        "operationId": "FT101_Insert",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FT101"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FT101"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/FT101"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT101Result"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT101Result"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT101Result"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/FT101/update": {
-      "post": {
-        "tags": [
-          "FT101"
-        ],
-        "operationId": "FT101_Update",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FT101"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FT101"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/FT101"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT101Result"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT101Result"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FT101Result"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/RealtimeDisplay/GetTop1": {
-      "get": {
-        "tags": [
-          "RealtimeDisplay"
-        ],
-        "operationId": "RealtimeDisplay_GetTop1",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/RealtimeDisplayModelResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RealtimeDisplayModelResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RealtimeDisplayModelResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/RealtimeDisplay": {
-      "get": {
-        "tags": [
-          "RealtimeDisplay"
-        ],
-        "operationId": "RealtimeDisplay_GetAll",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/RealtimeDisplayModelListResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RealtimeDisplayModelListResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RealtimeDisplayModelListResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/RealtimeDisplay/{id}": {
-      "get": {
-        "tags": [
-          "RealtimeDisplay"
-        ],
-        "operationId": "RealtimeDisplay_GetById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/RealtimeDisplayModelResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RealtimeDisplayModelResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RealtimeDisplayModelResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/RealtimeDisplay/insert": {
-      "post": {
-        "tags": [
-          "RealtimeDisplay"
-        ],
-        "operationId": "RealtimeDisplay_Insert",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RealtimeDisplayModel"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RealtimeDisplayModel"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/RealtimeDisplayModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/RealtimeDisplayModelResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RealtimeDisplayModelResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RealtimeDisplayModelResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/RealtimeDisplay/update": {
-      "post": {
-        "tags": [
-          "RealtimeDisplay"
-        ],
-        "operationId": "RealtimeDisplay_Update",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RealtimeDisplayModel"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RealtimeDisplayModel"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/RealtimeDisplayModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/RealtimeDisplayModelResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RealtimeDisplayModelResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RealtimeDisplayModelResult"
+                  "$ref": "#/components/schemas/FT01Result"
                 }
               }
             }
@@ -2545,477 +1187,6 @@
   },
   "components": {
     "schemas": {
-      "AlarmLogModel": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "tagName": {
-            "type": "string",
-            "nullable": true
-          },
-          "value": {
-            "type": "string",
-            "nullable": true
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
-          "ack": {
-            "type": "boolean"
-          },
-          "createdDate": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "ackDate": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "isActived": {
-            "type": "boolean"
-          }
-        },
-        "additionalProperties": false
-      },
-      "AlarmLogModelListResult": {
-        "type": "object",
-        "properties": {
-          "messages": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "succeeded": {
-            "type": "boolean"
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AlarmLogModel"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "AlarmLogModelResult": {
-        "type": "object",
-        "properties": {
-          "messages": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "succeeded": {
-            "type": "boolean"
-          },
-          "data": {
-            "$ref": "#/components/schemas/AlarmLogModel"
-          }
-        },
-        "additionalProperties": false
-      },
-      "AlarmSettingsModel": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "emailsString": {
-            "type": "string",
-            "nullable": true
-          },
-          "ccString": {
-            "type": "string",
-            "nullable": true
-          },
-          "enabled": {
-            "type": "boolean",
-            "nullable": true
-          },
-          "host": {
-            "type": "string",
-            "nullable": true
-          },
-          "port": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "enableSSL": {
-            "type": "boolean",
-            "nullable": true
-          },
-          "credentialEmail": {
-            "type": "string",
-            "nullable": true
-          },
-          "credentialPassword": {
-            "type": "string",
-            "nullable": true
-          },
-          "timeout": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "createdDate": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "isActived": {
-            "type": "boolean",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "AlarmSettingsModelListResult": {
-        "type": "object",
-        "properties": {
-          "messages": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "succeeded": {
-            "type": "boolean"
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AlarmSettingsModel"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "AlarmSettingsModelResult": {
-        "type": "object",
-        "properties": {
-          "messages": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "succeeded": {
-            "type": "boolean"
-          },
-          "data": {
-            "$ref": "#/components/schemas/AlarmSettingsModel"
-          }
-        },
-        "additionalProperties": false
-      },
-      "ChuongInfoModel": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "tenChuong": {
-            "type": "string",
-            "nullable": true
-          },
-          "configSettings": {
-            "type": "string",
-            "nullable": true
-          },
-          "isActive": {
-            "type": "boolean",
-            "nullable": true
-          },
-          "createdDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "numIndex": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "flagUpdate": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ChuongInfoModelListResult": {
-        "type": "object",
-        "properties": {
-          "messages": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "succeeded": {
-            "type": "boolean"
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ChuongInfoModel"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ChuongInfoModelResult": {
-        "type": "object",
-        "properties": {
-          "messages": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "succeeded": {
-            "type": "boolean"
-          },
-          "data": {
-            "$ref": "#/components/schemas/ChuongInfoModel"
-          }
-        },
-        "additionalProperties": false
-      },
-      "DataLogModel": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "chuongId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "tenChuong": {
-            "type": "string",
-            "nullable": true
-          },
-          "nhietDo": {
-            "type": "number",
-            "format": "double"
-          },
-          "doAm": {
-            "type": "number",
-            "format": "double"
-          },
-          "frequency": {
-            "type": "number",
-            "format": "double"
-          },
-          "createdDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "isActive": {
-            "type": "boolean"
-          }
-        },
-        "additionalProperties": false
-      },
-      "DataLogModelListResult": {
-        "type": "object",
-        "properties": {
-          "messages": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "succeeded": {
-            "type": "boolean"
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DataLogModel"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "DataLogModelResult": {
-        "type": "object",
-        "properties": {
-          "messages": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "succeeded": {
-            "type": "boolean"
-          },
-          "data": {
-            "$ref": "#/components/schemas/DataLogModel"
-          }
-        },
-        "additionalProperties": false
-      },
-      "DisplayRealTimeModel": {
-        "type": "object",
-        "properties": {
-          "chuongId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "tenChuong": {
-            "type": "string",
-            "nullable": true
-          },
-          "temperature": {
-            "type": "number",
-            "format": "double"
-          },
-          "humidity": {
-            "type": "number",
-            "format": "double"
-          },
-          "frequency": {
-            "type": "number",
-            "format": "double"
-          },
-          "fan1Status": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "fan2Status": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "fan3Status": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "fan4Status": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "coollerStatus": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "connectStatus": {
-            "type": "string",
-            "nullable": true
-          },
-          "activeStatus": {
-            "type": "string",
-            "nullable": true
-          },
-          "isActive": {
-            "type": "boolean"
-          },
-          "createdDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "hightTemperature": {
-            "type": "number",
-            "format": "double"
-          },
-          "lowtemperature": {
-            "type": "number",
-            "format": "double"
-          },
-          "numIndex": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "currentDay": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "currentStep": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalDay": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "quaTai": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "chayDuPhong": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
-      "DisplayRealTimeModelListResult": {
-        "type": "object",
-        "properties": {
-          "messages": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "succeeded": {
-            "type": "boolean"
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DisplayRealTimeModel"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "DisplayRealTimeModelResult": {
-        "type": "object",
-        "properties": {
-          "messages": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "succeeded": {
-            "type": "boolean"
-          },
-          "data": {
-            "$ref": "#/components/schemas/DisplayRealTimeModel"
-          }
-        },
-        "additionalProperties": false
-      },
       "EditUserCommand": {
         "type": "object",
         "properties": {
@@ -3029,114 +1200,34 @@
         },
         "additionalProperties": false
       },
-      "FT100": {
+      "FT01": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
             "format": "uuid"
           },
-          "createdDate": {
+          "c000": {
             "type": "string",
-            "format": "date-time"
-          },
-          "modifyDate": {
-            "type": "string",
-            "format": "date-time",
             "nullable": true
           },
-          "endDate": {
+          "c001": {
             "type": "string",
-            "format": "date-time",
             "nullable": true
           },
-          "isActived": {
+          "actived": {
             "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "createdMachine": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "FT100ListResult": {
-        "type": "object",
-        "properties": {
-          "messages": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "succeeded": {
-            "type": "boolean"
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FT100"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "FT100Result": {
-        "type": "object",
-        "properties": {
-          "messages": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "succeeded": {
-            "type": "boolean"
-          },
-          "data": {
-            "$ref": "#/components/schemas/FT100"
-          }
-        },
-        "additionalProperties": false
-      },
-      "FT101": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "fT100Id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "details": {
-            "type": "string",
-            "nullable": true
+            "format": "int32"
           },
           "createdDate": {
             "type": "string",
             "format": "date-time",
             "nullable": true
-          },
-          "isActived": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "createdMachine": {
-            "type": "string",
-            "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "FT101ListResult": {
+      "FT01ListResult": {
         "type": "object",
         "properties": {
           "messages": {
@@ -3152,14 +1243,14 @@
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/FT101"
+              "$ref": "#/components/schemas/FT01"
             },
             "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "FT101Result": {
+      "FT01Result": {
         "type": "object",
         "properties": {
           "messages": {
@@ -3173,7 +1264,7 @@
             "type": "boolean"
           },
           "data": {
-            "$ref": "#/components/schemas/FT101"
+            "$ref": "#/components/schemas/FT01"
           }
         },
         "additionalProperties": false
@@ -3242,75 +1333,6 @@
           "data": {
             "type": "string",
             "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "RealtimeDisplayModel": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "displayData": {
-            "type": "string",
-            "nullable": true
-          },
-          "isActived": {
-            "type": "boolean",
-            "nullable": true
-          },
-          "createdDate": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "createdMachine": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "RealtimeDisplayModelListResult": {
-        "type": "object",
-        "properties": {
-          "messages": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "succeeded": {
-            "type": "boolean"
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RealtimeDisplayModel"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "RealtimeDisplayModelResult": {
-        "type": "object",
-        "properties": {
-          "messages": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "succeeded": {
-            "type": "boolean"
-          },
-          "data": {
-            "$ref": "#/components/schemas/RealtimeDisplayModel"
           }
         },
         "additionalProperties": false

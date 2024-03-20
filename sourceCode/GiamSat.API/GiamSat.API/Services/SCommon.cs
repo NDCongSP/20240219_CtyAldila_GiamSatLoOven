@@ -1,5 +1,4 @@
 ﻿using GiamSat.Models;
-using GiamSat.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,28 +8,19 @@ namespace GiamSat.API
 {
     public class SCommon
     {
-        public ISDisplayRealtime SDisplayRealtime { get; private set; }
-        public ISDataLog  SDataLog { get;private set; }
+        public ISFT01 SFT01 { get; private set; }
+        public ISFT02 SFT02 { get; private set; }
+        public ISFT03 SFT03 { get; private set; }
+        public ISFT04 SFT04 { get; private set; }
+        public ISFT05 SFT05 { get; private set; }
 
-        public ISChuongInfo SChuongInfo { get;private set; }
-        public ISRealtimeDisplay SRealtimeDisplay { get; private set; }
-        public ISFT100 SFT100 { get; private set; }
-        public ISFT101 SFT101 { get; private set; }
-
-        public ISAlarmLog SAlarmLog { get; private set; }
-        public ISAlarmSettings SAlarmSettings { get; private set; }
-
-        public SCommon(ISDisplayRealtime sDisplayRealtime, ISDataLog sDataLog, ISChuongInfo sChuongInfo, ISRealtimeDisplay sRealtimeDisplay = null
-            , ISFT100 sFT100 = null, ISFT101 sFT101 = null, ISAlarmLog sAlarmLog = null, ISAlarmSettings sAlarmSettings = null)
+        public SCommon(ISFT01 sFT01 = null, ISFT02 sFT02 = null, ISFT03 sFT03 = null, ISFT04 sFT04 = null, ISFT05 sFT05 = null)
         {
-            SDisplayRealtime = sDisplayRealtime;
-            SDataLog = sDataLog;
-            SChuongInfo = sChuongInfo;
-            SRealtimeDisplay = sRealtimeDisplay;
-            SFT100 = sFT100;
-            SFT101 = sFT101;
-            SAlarmLog = sAlarmLog;
-            SAlarmSettings = sAlarmSettings;
+            SFT01 = sFT01;
+            SFT02 = sFT02;
+            SFT03 = sFT03;
+            SFT04 = sFT04;
+            SFT05 = sFT05;
         }
     }
 }

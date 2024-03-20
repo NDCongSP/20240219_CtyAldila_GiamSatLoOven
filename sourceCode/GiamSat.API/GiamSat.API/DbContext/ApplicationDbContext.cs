@@ -15,15 +15,12 @@ namespace GiamSat.API
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<DataLogModel>();
-            builder.Entity<ChuongInfoModel>();
+            builder.Entity<FT01>();
+            builder.Entity<FT02>();
             //builder.Entity<DisplayRealTimeModel>().HasNoKey();//table không sử dụng khóa chính
-            builder.Entity<DisplayRealTimeModel>();
-            builder.Entity<RealtimeDisplayModel>();
-            builder.Entity<FT100>();
-            builder.Entity<FT101>();
-            builder.Entity<AlarmLogModel>();
-            builder.Entity<AlarmSettingsModel>();
+            builder.Entity<FT03>();
+            builder.Entity<FT04>();
+            builder.Entity<FT05>();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -31,13 +28,10 @@ namespace GiamSat.API
             base.OnConfiguring(optionsBuilder);
         }
 
-        public DbSet<GiamSat.Models.DataLogModel> DataLogModel { get; set; }
-        public DbSet<GiamSat.Models.ChuongInfoModel> ChuongInfoModel { get; set; }
-        public DbSet<GiamSat.Models.DisplayRealTimeModel> DisplayRealTimeModel { get; set; }
-        public DbSet<GiamSat.Models.RealtimeDisplayModel> RealTimeDisplayModel { get; set; }
-        public DbSet<GiamSat.Models.FT100> FT100 { get; set; }
-        public DbSet<GiamSat.Models.FT101> FT101 { get; set; }
-        public DbSet<GiamSat.Models.AlarmLogModel> AlarmLogModel { get; set; }
-        public DbSet<GiamSat.Models.AlarmSettingsModel> AlarmSettingsModel { get; set; }
+        public DbSet<GiamSat.Models.FT01> FT01 { get; set; }
+        public DbSet<GiamSat.Models.FT02> FT02 { get; set; }
+        public DbSet<GiamSat.Models.FT03> FT03 { get; set; }
+        public DbSet<GiamSat.Models.FT04> FT04 { get; set; }
+        public DbSet<GiamSat.Models.FT05> FT05 { get; set; }
     }
 }

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace GiamSat.API.Controllers
 {
-    
+
     [Route("api/[controller]")]
     [ApiController]
     public class AuthenticateController : ControllerBase
@@ -148,27 +148,26 @@ namespace GiamSat.API.Controllers
             if (userExists == null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User not found!" });
 
-            if (model.OldPassword!= userExists.PasswordHash)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "The old password is wrong." });
-            }
-
             if (model.NewPassword != model.ReNewPassword)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "New password does not match." });
             }
 
-            //IdentityUser user = new()
-            //{
-            //    Email = model.Email,
-            //    SecurityStamp = Guid.NewGuid().ToString(),
-            //    UserName = model.Username
-            //};
+            var result = await _userManager.ChangePasswordAsync(userExists, model.OldPassword, model.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = $"Update pass failed! Please check user details and try again." });
+            }
+
+            //update kieu ko can nhap pass cu
+            //_userManager.RemovePasswordAsync(userExists);
+            //_userManager.AddPasswordAsync(userExists, "password moi");
 
             //if (!result.Succeeded)
             //    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
-            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+            return Ok(new Response { Status = "Success", Message = "User update successfully!" });
         }
 
 
