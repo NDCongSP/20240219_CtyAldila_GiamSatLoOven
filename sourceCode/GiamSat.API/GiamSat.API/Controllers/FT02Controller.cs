@@ -9,11 +9,11 @@ namespace GiamSat.API.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class FT01Controller : BaseController<Guid,FT01>,ISFT01
+    public class FT02Controller : BaseController<Guid, FT02>, ISFT02
     {
         readonly SCommon _sCommon;
 
-        public FT01Controller(SCommon sCommon=null):base(sCommon.SFT01)
+        public FT02Controller(SCommon sCommon = null) : base(sCommon.SFT02)
         {
             _sCommon = sCommon;
         }

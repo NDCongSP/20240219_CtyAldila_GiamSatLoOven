@@ -18,8 +18,9 @@ namespace GiamSat.Models
         [Key]
         public Guid Id { get; set; }
         public string? C000 { get; set; }
-        public bool? Actived { get; set; } = true;
+        public int Actived { get; set; } = 1;
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
         public DateTime? CreatedDate { get; set; }=DateTime.Now;
-        public string? CreatedMachine { get; set; }
+        public string? CreatedMachine { get; set; }=Environment.MachineName;
     }
 }

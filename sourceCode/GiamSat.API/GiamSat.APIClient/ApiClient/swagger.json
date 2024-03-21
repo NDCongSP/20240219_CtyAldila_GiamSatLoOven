@@ -799,6 +799,682 @@
         }
       }
     },
+    "/api/FT02": {
+      "get": {
+        "tags": [
+          "FT02"
+        ],
+        "operationId": "FT02_GetAll",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT02ListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT02ListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT02ListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT02/{id}": {
+      "get": {
+        "tags": [
+          "FT02"
+        ],
+        "operationId": "FT02_GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT02Result"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT02Result"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT02Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT02/insert": {
+      "post": {
+        "tags": [
+          "FT02"
+        ],
+        "operationId": "FT02_Insert",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT02"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT02"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT02"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT02Result"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT02Result"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT02Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT02/update": {
+      "post": {
+        "tags": [
+          "FT02"
+        ],
+        "operationId": "FT02_Update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT02"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT02"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT02"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT02Result"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT02Result"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT02Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT03": {
+      "get": {
+        "tags": [
+          "FT03"
+        ],
+        "operationId": "FT03_GetAll",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT03ListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT03ListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT03ListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT03/{id}": {
+      "get": {
+        "tags": [
+          "FT03"
+        ],
+        "operationId": "FT03_GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT03Result"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT03Result"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT03Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT03/insert": {
+      "post": {
+        "tags": [
+          "FT03"
+        ],
+        "operationId": "FT03_Insert",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT03"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT03"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT03"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT03Result"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT03Result"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT03Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT03/update": {
+      "post": {
+        "tags": [
+          "FT03"
+        ],
+        "operationId": "FT03_Update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT03"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT03"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT03"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT03Result"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT03Result"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT03Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT04": {
+      "get": {
+        "tags": [
+          "FT04"
+        ],
+        "operationId": "FT04_GetAll",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT04ListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT04ListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT04ListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT04/{id}": {
+      "get": {
+        "tags": [
+          "FT04"
+        ],
+        "operationId": "FT04_GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT04Result"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT04Result"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT04Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT04/insert": {
+      "post": {
+        "tags": [
+          "FT04"
+        ],
+        "operationId": "FT04_Insert",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT04"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT04"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT04"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT04Result"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT04Result"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT04Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT04/update": {
+      "post": {
+        "tags": [
+          "FT04"
+        ],
+        "operationId": "FT04_Update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT04"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT04"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT04"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT04Result"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT04Result"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT04Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT05": {
+      "get": {
+        "tags": [
+          "FT05"
+        ],
+        "operationId": "FT05_GetAll",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT05ListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT05ListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT05ListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT05/{id}": {
+      "get": {
+        "tags": [
+          "FT05"
+        ],
+        "operationId": "FT05_GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT05Result"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT05Result"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT05Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT05/insert": {
+      "post": {
+        "tags": [
+          "FT05"
+        ],
+        "operationId": "FT05_Insert",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT05"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT05"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT05"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT05Result"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT05Result"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT05Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT05/update": {
+      "post": {
+        "tags": [
+          "FT05"
+        ],
+        "operationId": "FT05_Update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT05"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT05"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT05"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT05Result"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT05Result"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT05Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/fusion/kvs/Set": {
       "post": {
         "tags": [
@@ -1265,6 +1941,315 @@
           },
           "data": {
             "$ref": "#/components/schemas/FT01"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT02": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "c000": {
+            "type": "string",
+            "nullable": true
+          },
+          "actived": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdMachine": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT02ListResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FT02"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT02Result": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/FT02"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT03": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ovenId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ovenName": {
+            "type": "string",
+            "nullable": true
+          },
+          "temperature": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isActive": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdMachine": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT03ListResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FT03"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT03Result": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/FT03"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT04": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ovenId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ovenName": {
+            "type": "string",
+            "nullable": true
+          },
+          "temperature": {
+            "type": "number",
+            "format": "double"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "actived": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdMachine": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT04ListResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FT04"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT04Result": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/FT04"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT05": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ovenId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ovenName": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "ack": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "ackDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "actived": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT05ListResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FT05"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT05Result": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/FT05"
           }
         },
         "additionalProperties": false

@@ -43,61 +43,92 @@ namespace GiamSat.API
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(GlobalVariable.ConString));
 
             #region khoi tao data
-            var c = new ConfigModel()
-            {
-                DeadbandAlarm = 5,//5s
-                Gain = 1,
-                DataLogInterval = 5,//5s
-                DataLogWhenRunProfileInterval = 1//1s
-            };
+            //var c = new ConfigModel()
+            //{
+            //    DeadbandAlarm = 5,//5s
+            //    Gain = 1,
+            //    DataLogInterval = 5,//5s
+            //    DataLogWhenRunProfileInterval = 1//1s
+            //};
 
-            OvensInfo ov = new OvensInfo();
+            //OvensInfo ov = new OvensInfo();
 
-            for (int i = 1; i <= 13; i++)
-            {
-                var steps = new List<StepModel>();
-                steps.Add(new StepModel()
-                {
-                    Id = 1,
-                    StepType = EnumProfileStepType.RampTime,
-                    Hours = 1,
-                    Minutes = 30,
-                    Seconds = 1,
-                    SetPoint = 170
-                });
-                steps.Add(new StepModel()
-                {
-                    Id = 2,
-                    StepType = EnumProfileStepType.Soak,
-                    Hours = 0,
-                    Minutes = 50,
-                    Seconds = 10,
-                    SetPoint = 171
-                });
+            //for (int i = 1; i <= 13; i++)
+            //{
+            //    var steps = new List<StepModel>();
+            //    steps.Add(new StepModel()
+            //    {
+            //        Id = 1,
+            //        StepType = EnumProfileStepType.RampTime,
+            //        Hours = 1,
+            //        Minutes = 30,
+            //        Seconds = 1,
+            //        SetPoint = 170
+            //    });
+            //    steps.Add(new StepModel()
+            //    {
+            //        Id = 2,
+            //        StepType = EnumProfileStepType.Soak,
+            //        Hours = 0,
+            //        Minutes = 50,
+            //        Seconds = 10,
+            //        SetPoint = 171
+            //    });
 
-                var profiles = new List<ProfileModel>();
-                profiles.Add(new ProfileModel()
-                {
-                    Id = 1,
-                    Name = $"Profile {i}",
-                    Steps = steps
-                });
+            //    var profiles = new List<ProfileModel>();
+            //    profiles.Add(new ProfileModel()
+            //    {
+            //        Id = 1,
+            //        Name = $"Profile {i}",
+            //        Steps = steps
+            //    });
 
-                ov.Add(new OvenInfoModel()
-                {
-                    Id=i,
-                    Name=$"Profile {1}",
-                    Profiles=profiles
-                });
+            //    ov.Add(new OvenInfoModel()
+            //    {
+            //        Id = i,
+            //        Name = $"Oven {i}",
+            //        Profiles = profiles
+            //    });
 
-            }
+            //}
 
-            var ft01 = new FT01()
-            {
-                Id =Guid.NewGuid(),
-                C000 = JsonConvert.SerializeObject(c),
-                C001 = JsonConvert.SerializeObject(ov)
-            };
+            //var ft01 = new FT01()
+            //{
+            //    Id = Guid.NewGuid(),
+            //    C000 = JsonConvert.SerializeObject(c),
+            //    C001 = JsonConvert.SerializeObject(ov)
+            //};
+
+            //var d = new RealtimeDisplays();
+
+            //for (int i = 1; i <= 13; i++)
+            //{
+            //    d.Add(new RealtimeDisplayModel()
+            //    {
+            //        OvenId = i,
+            //        OvenName = $"Oven {i}",
+            //        Status = "GOOD",
+            //        Door = "CLOSE",
+            //        Temperature = 150 + i,
+            //        ProfileNumber_CurrentStatus = 1,
+            //        ProfileName = "Profile 1",
+            //        ProfileStepNumber_CurrentStatus = 1,
+            //        ProfileStepType_CurrentStatus = EnumProfileStepType.RampTime,
+            //        HoursRemaining_CurrentStatus = 1,
+            //        MinutesRemaining_CurrentStatus = 10,
+            //        SecondsRemaining_CurrentStatus = 5
+            //    });
+            //}
+
+            
+
+            //var ft02 = new FT02()
+            //{
+            //    C000 = JsonConvert.SerializeObject(d),
+            //    CreatedDate = DateTime.Now,
+            //    CreatedMachine = Environment.MachineName,
+            //};
+            //var dd = JsonConvert.SerializeObject(ft02);
 
 
             #endregion

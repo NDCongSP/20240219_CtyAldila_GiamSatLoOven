@@ -11,7 +11,7 @@ namespace GiamSat.Models
     /// </summary>
     public class RealtimeDisplayModel
     {
-        public Guid OvenId { get; set; }
+        public int OvenId { get; set; }
         public string OvenName { get; set; }
         /// <summary>
         /// Trạng thái lò Chạy/Dừng.
@@ -22,16 +22,16 @@ namespace GiamSat.Models
         /// Trạng thái cửa.
         /// 1-đóng; 0- mở.
         /// </summary>
-        public int Door { get; set; }
+        public string Door { get; set; }
         /// <summary>
         /// Profile đang chạy.
         /// </summary>
-        public string ProfileNumber_CurrentStatus { get; set; }
+        public int ProfileNumber_CurrentStatus { get; set; }
         public string ProfileName { get; set; }
         /// <summary>
         /// Bước đang chạy.
         /// </summary>
-        public string ProfileStepNumber_CurrentStatus { get; set; }
+        public int ProfileStepNumber_CurrentStatus { get; set; }
         /// <summary>
         /// Kiểu bước chạy.
         /// RampTime,RampRate,Soak,Kump,End

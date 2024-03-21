@@ -1,0 +1,31 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using GiamSat.APIClient
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.JSInterop
+@using GiamSat.UI
+@using GiamSat.UI.Shared
+@using Microsoft.AspNetCore.Components.Authorization
+@using Radzen
+@using Radzen.Blazor
+
+@*NotificationService*@
+@inject NotificationService _notificationService
+@*show form*@
+@inject DialogService _dialogService
+@*redirect*@
+@inject NavigationManager _navigation
+
+@inject JwtAuthenticationService _authSerivce
+@inject IJSRuntime _js
+
+@inject IFT01Client _ft01Client
+@inject IFT02Client _ft02Client
+@inject IFT03Client _ft03Client
+@inject IFT04Client _ft04Client
+@inject IFT05Client _ft05Client

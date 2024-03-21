@@ -19,12 +19,14 @@ namespace GiamSat.Models
         public int OvenId { get; set; }
         public string OvenName { get; set; }
         public double Temperature { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
         public DateTime StartTime { get; set; }
         /// <summary>
         /// sẽ được log vào khi lò chuyển trạng thái từ đang run sang dùng profile.
         /// </summary>
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
         public DateTime? EndTime { get; set; }
         public int Actived { get; set; } = 1;
-        public string CreatedMachine { get; set; }
+        public string CreatedMachine { get; set; } = Environment.MachineName;
     }
 }

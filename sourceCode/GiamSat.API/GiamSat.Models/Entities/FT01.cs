@@ -27,6 +27,7 @@ namespace GiamSat.Models
         /// </summary>
         public string? C001 { get; set; }
         public int Actived { get; set; } = 1;
-        public DateTime? CreatedDate { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
+        public DateTime? CreatedDate { get; set; }=DateTime.Now;
     }
 }

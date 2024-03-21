@@ -20,8 +20,10 @@ namespace GiamSat.Models
         public string OvenName { get; set; }
         public string? Description { get; set; }
         public int ACK { get; set; } = 0;
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
         public DateTime? CreatedDate { get; set; } = DateTime.Now;
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
         public DateTime? ACKDate { get; set; } = DateTime.Now;
-        public bool Actived { get; set; } = true;
+        public int Actived { get; set; } = 1;
     }
 }
