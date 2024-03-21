@@ -1,12 +1,17 @@
 ﻿@inherits LayoutComponentBase
 
+<RadzenContextMenu />
+<RadzenDialog />
+<RadzenNotification />
+<RadzenTooltip />
+
 <RadzenLayout Style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body' 'rz-sidebar rz-footer'">
     <RadzenHeader>
         <RadzenRow>
             <RadzenColumn Size="5">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
                     <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
-                    <RadzenLabel Text="First App Radzen" />
+                    <RadzenLabel Text="Giám Sát Lò Oven" />
                 </RadzenStack>
             </RadzenColumn>
             <RadzenColumn Size="7">
@@ -34,7 +39,7 @@
         </div>
     </RadzenBody>
     <RadzenFooter>
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
             <RadzenLabel>Phuc Thinh Automation Solution.</RadzenLabel>
         </RadzenStack>
     </RadzenFooter>

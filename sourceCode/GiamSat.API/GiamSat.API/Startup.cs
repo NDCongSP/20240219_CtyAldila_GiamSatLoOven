@@ -1,4 +1,4 @@
-using GiamSat.Models;
+﻿using GiamSat.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -99,36 +99,37 @@ namespace GiamSat.API
             //    C001 = JsonConvert.SerializeObject(ov)
             //};
 
-            //var d = new RealtimeDisplays();
+            var d = new RealtimeDisplays();
 
-            //for (int i = 1; i <= 13; i++)
-            //{
-            //    d.Add(new RealtimeDisplayModel()
-            //    {
-            //        OvenId = i,
-            //        OvenName = $"Oven {i}",
-            //        Status = "GOOD",
-            //        Door = "CLOSE",
-            //        Temperature = 150 + i,
-            //        ProfileNumber_CurrentStatus = 1,
-            //        ProfileName = "Profile 1",
-            //        ProfileStepNumber_CurrentStatus = 1,
-            //        ProfileStepType_CurrentStatus = EnumProfileStepType.RampTime,
-            //        HoursRemaining_CurrentStatus = 1,
-            //        MinutesRemaining_CurrentStatus = 10,
-            //        SecondsRemaining_CurrentStatus = 5
-            //    });
-            //}
+            for (int i = 1; i <= 13; i++)
+            {
+                d.Add(new RealtimeDisplayModel()
+                {
+                    OvenId = i,
+                    OvenName = $"Oven {i}",
+                    Status = "Đang chạy",
+                    ConectionStatus="GOOD",
+                    Door = "CLOSE",
+                    Temperature = 150 + i,
+                    ProfileNumber_CurrentStatus = 1,
+                    ProfileName = "Profile 1",
+                    ProfileStepNumber_CurrentStatus = 1,
+                    ProfileStepType_CurrentStatus = EnumProfileStepType.RampTime,
+                    HoursRemaining_CurrentStatus = 1,
+                    MinutesRemaining_CurrentStatus = 10,
+                    SecondsRemaining_CurrentStatus = 5
+                });
+            }
 
-            
 
-            //var ft02 = new FT02()
-            //{
-            //    C000 = JsonConvert.SerializeObject(d),
-            //    CreatedDate = DateTime.Now,
-            //    CreatedMachine = Environment.MachineName,
-            //};
-            //var dd = JsonConvert.SerializeObject(ft02);
+
+            var ft02 = new FT02()
+            {
+                C000 = JsonConvert.SerializeObject(d),
+                CreatedDate = DateTime.Now,
+                CreatedMachine = Environment.MachineName,
+            };
+            var dd = JsonConvert.SerializeObject(ft02);
 
 
             #endregion

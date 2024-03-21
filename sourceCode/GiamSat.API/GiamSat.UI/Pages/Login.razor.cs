@@ -55,10 +55,5 @@ namespace GiamSat.UI.Pages
         {
             Console.WriteLine($"{name} -> ResetPassword for user: {value}");
         }
-
-        void OnClick()
-        {
-            _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = "Button Clicked", Detail = "" });
-        }
     }
 }

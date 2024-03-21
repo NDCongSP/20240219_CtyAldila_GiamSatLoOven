@@ -17,6 +17,10 @@ namespace GiamSat.Models
         /// Trạng thái lò Chạy/Dừng.
         /// </summary>
         public string Status { get; set; }
+        /// <summary>
+        /// trạng thái kết nối modbus đến lò.
+        /// </summary>
+        public string ConectionStatus { get; set; }
         public double Temperature { get; set; } = 0;
         /// <summary>
         /// Trạng thái cửa.
