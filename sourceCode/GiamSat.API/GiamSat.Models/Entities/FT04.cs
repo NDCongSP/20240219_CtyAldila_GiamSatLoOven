@@ -17,7 +17,7 @@ namespace GiamSat.Models
         [Key]
         public Guid Id { get; set; }
         public int OvenId { get; set; }
-        public string OvenName { get; set; }
+        public string OvenName { get; set; }    
         public double Temperature { get; set; }
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
         public DateTime StartTime { get; set; }

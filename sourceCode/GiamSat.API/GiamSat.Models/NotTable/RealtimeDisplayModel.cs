@@ -15,12 +15,14 @@ namespace GiamSat.Models
         public string OvenName { get; set; }
         /// <summary>
         /// Trạng thái lò Chạy/Dừng.
+        /// 0-Dừng; 1- Chạy.
         /// </summary>
-        public string Status { get; set; }
+        public int Status { get; set; }
         /// <summary>
         /// trạng thái kết nối modbus đến lò.
+        /// 1-Kết nối; 0 - mất kết nối.
         /// </summary>
-        public string ConnectionStatus { get; set; }
+        public int ConnectionStatus { get; set; }
         /// <summary>
         /// Cảnh báo. 1 là cảnh báo, 0 là bình thường.
         /// </summary>
