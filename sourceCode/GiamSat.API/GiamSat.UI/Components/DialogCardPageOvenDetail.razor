@@ -1,0 +1,80 @@
+﻿@page "/DialogCardPageOvenDetail/{OvenId}"
+
+<RadzenStack Gap="1rem" Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
+    <RadzenRow>
+        <RadzenColumn Size="12" SizeMD="4" Class="rz-p-4 rz-border-radius-1" Style="border: var(--rz-grid-cell-border)">
+            <RadzenText TextStyle="TextStyle.Subtitle1">Thông tin chung</RadzenText>
+            <RadzenRow RowGap="0">
+                <RadzenColumn SizeXS=12 SizeSM="4">
+                    <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Nhiệt độ</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.Temperature</b></RadzenText>
+                </RadzenColumn>
+                <RadzenColumn SizeXS=12 SizeSM="4">
+                    <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Trạng thái</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.Status</b></RadzenText>
+                </RadzenColumn>
+                <RadzenColumn SizeXS=12 SizeSM="4">
+                    <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Cửa lò</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.Door</b></RadzenText>
+                </RadzenColumn>
+                <RadzenColumn SizeXS=12 SizeSM="4">
+                    <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Trạng thái kết nối</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.ConnectionStatus</b></RadzenText>
+                </RadzenColumn>
+            </RadzenRow>
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="8" Class="rz-p-4 rz-border-radius-1" Style="border: var(--rz-grid-cell-border)">
+            <RadzenText TextStyle="TextStyle.Subtitle1">Thông tin profile đang chạy</RadzenText>
+            <RadzenRow RowGap="0">
+                <RadzenColumn SizeXS=12 SizeSM="3">
+                    <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Profile</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.ProfileName</b></RadzenText>
+                </RadzenColumn>
+                <RadzenColumn SizeXS=12 SizeSM="3">
+                    <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Step</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.ProfileStepNumber_CurrentStatus</b></RadzenText>
+                </RadzenColumn>
+                <RadzenColumn SizeXS=12 SizeSM="3">
+                    <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Step type</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.ProfileStepType_CurrentStatus</b></RadzenText>
+                </RadzenColumn>
+                <RadzenColumn SizeXS=12 SizeSM="3">
+                    <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Thời gian chạy còn lại</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.HoursRemaining_CurrentStatus:@_ovenDisplayInfo.MinutesRemaining_CurrentStatus:@_ovenDisplayInfo.SecondsRemaining_CurrentStatus"</b></RadzenText>
+                </RadzenColumn>
+                <RadzenColumn SizeXS=12 SizeSM="3">
+                    <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Ngưỡng nhiệt độ cảnh báo</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.TemperatureHighLevel</b></RadzenText>
+                </RadzenColumn>
+            </RadzenRow>
+        </RadzenColumn>
+    </RadzenRow>
+    <RadzenRow>
+        <RadzenColumn SizeXS="12" class="rz-mt-4">
+            <RadzenChart @ref="RadzenChart" class="chart ">
+                <RadzenLineSeries Smooth="@smooth" Data="@_ovenData" CategoryProperty="Date" Title=@_ovenDisplayInfo.OvenName LineType="LineType.Dashed" ValueProperty="Temperature">
+                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Diamond" />
+                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                </RadzenLineSeries>
+
+                <RadzenCategoryAxis Padding="20" Formatter="@FormatAsMonth">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="Thời gian" />
+                    <RadzenTicks>
+                        <Template>
+                            <text class="rz-tick-text" style="text-anchor: start; transform: translate(@(context.X)px, @(context.Y + 100)px) rotate(-45deg); font-size:small">@context.Value</text>
+                        </Template>
+                    </RadzenTicks>
+                </RadzenCategoryAxis>
+                <RadzenValueAxis Formatter="@FormatAsUSD">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="Nhiệt độ (oC)" />
+                </RadzenValueAxis>
+            </RadzenChart>
+        </RadzenColumn>
+    </RadzenRow>
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End" Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-mt-4">
+        <RadzenButton Click="@((args) => _dialogService.Close(true))" Variant="Variant.Flat" Shade="Shade.Dark" Text="Close" Icon="close"
+                      Style="width: 120px" class="rz-mt-8" />
+    </RadzenStack>
+</RadzenStack>

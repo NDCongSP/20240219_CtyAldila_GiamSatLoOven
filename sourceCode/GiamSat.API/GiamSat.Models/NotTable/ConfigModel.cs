@@ -24,5 +24,20 @@ namespace GiamSat.Models
         /// Chu kỳ thời gian log data khi chạy profile.
         /// </summary>
         public int DataLogWhenRunProfileInterval { get; set; }
+
+        #region cấu hình cho UI
+        /// <summary>
+        /// Timer quét ở trang chính
+        /// </summary>
+        public int RefreshInterval { get; set; }
+        /// <summary>
+        /// timer quét oe dialogPage realtime chảt
+        /// </summary>
+        public int ChartRefreshInterval { get; set; }
+        /// <summary>
+        /// số điểm trên realtime chart
+        /// </summary>
+        public int ChartPointNum { get; set; }
+        #endregion
     }
 }

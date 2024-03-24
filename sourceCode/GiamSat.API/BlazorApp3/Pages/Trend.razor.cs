@@ -92,6 +92,7 @@ namespace BlazorApp3.Pages
 
             return string.Empty;
         }
+
         List<DataItem> revenue2019 = new List<DataItem>() {
             new DataItem
             {

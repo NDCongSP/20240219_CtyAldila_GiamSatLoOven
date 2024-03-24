@@ -39,7 +39,6 @@ namespace GiamSat.UI
                     else
                     {
                         _navigation.NavigateTo("/login");
-
                     }
                 }
             }

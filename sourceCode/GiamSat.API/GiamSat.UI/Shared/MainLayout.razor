@@ -1,37 +1,38 @@
 ﻿@inherits LayoutComponentBase
 
+<RadzenComponents />
 <RadzenContextMenu />
 <RadzenDialog />
 <RadzenNotification />
 <RadzenTooltip />
 
-<RadzenLayout Style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body' 'rz-sidebar rz-footer'">
+<RadzenLayout Style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body' 'rz-sidebar rz-footer' position: relative">
     <RadzenHeader>
         <RadzenRow>
             <RadzenColumn Size="5">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
-                    <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
+                    <RadzenSidebarToggle Click="@(() => _sidebarExpanded = !_sidebarExpanded)" />
                     <RadzenLabel Text="Giám Sát Lò Oven" />
                 </RadzenStack>
             </RadzenColumn>
             <RadzenColumn Size="7">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
-                    <RadzenLabel>User</RadzenLabel>
+                    <RadzenLabel>@GlobalVariable.UserName</RadzenLabel>
                     <RadzenProfileMenu>
                         <Template>
                             <RadzenIcon Icon="account_circle" />
                         </Template>
                         <ChildContent>
-                            <RadzenProfileMenuItem Text="User info" Path="buttons" Icon="account_circle"></RadzenProfileMenuItem>
-                            <RadzenProfileMenuItem Text="Logout" Path="menu" Icon="line_weight"></RadzenProfileMenuItem>
+                            <RadzenProfileMenuItem Text="User info" Path="/userinfo" Icon="account_circle"></RadzenProfileMenuItem>
+                            <RadzenProfileMenuItem Text="Logout" Path="/login" Icon="line_weight"></RadzenProfileMenuItem>
                         </ChildContent>
                     </RadzenProfileMenu>
                 </RadzenStack>
             </RadzenColumn>
         </RadzenRow>
     </RadzenHeader>
-    <RadzenSidebar Responsive="false" Style="width: max-content">
-        <NavMenu sidebarExpanded=@sidebarExpanded/>
+        <RadzenSidebar Responsive="false" @bind-Expanded="@_sidebarExpanded">
+        <NavMenu/>
     </RadzenSidebar>
     <RadzenBody>
         <div class="rz-p-4">

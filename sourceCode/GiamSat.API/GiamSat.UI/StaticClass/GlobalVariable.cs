@@ -9,5 +9,7 @@ namespace GiamSat.UI
         public static int ChartRefreshInterval { get; set; } = 1000;
 
         public static int ChartPointNum { get; set;} = 10;
+        public static Guid UserId { get; set; }
+        public static string UserName { get; set; } = "user";
     }
 }

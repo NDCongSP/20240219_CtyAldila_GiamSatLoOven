@@ -20,7 +20,11 @@ namespace GiamSat.Models
         /// <summary>
         /// trạng thái kết nối modbus đến lò.
         /// </summary>
-        public string ConectionStatus { get; set; }
+        public string ConnectionStatus { get; set; }
+        /// <summary>
+        /// Cảnh báo. 1 là cảnh báo, 0 là bình thường.
+        /// </summary>
+        public int Alarm { get; set; }
         public double Temperature { get; set; } = 0;
         /// <summary>
         /// Trạng thái cửa.
@@ -44,5 +48,10 @@ namespace GiamSat.Models
         public int HoursRemaining_CurrentStatus { get; set; }
         public int MinutesRemaining_CurrentStatus { get; set; }
         public int SecondsRemaining_CurrentStatus { get; set; }
+
+        /// <summary>
+        /// Ngưỡng cao nhiệt độ. Dùng để cảnh báo.
+        /// </summary>
+        public double TemperatureHighLevel { get; set; }
     }
 }

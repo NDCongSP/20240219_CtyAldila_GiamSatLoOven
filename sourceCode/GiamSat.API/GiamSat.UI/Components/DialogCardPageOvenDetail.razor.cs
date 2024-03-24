@@ -1,36 +1,32 @@
-﻿using DocumentFormat.OpenXml.Drawing;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.Office2016.Excel;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.InkML;
 using GiamSat.Models;
-using GiamSat.UI.Components;
+using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using Radzen;
-using System.Globalization;
+using Radzen.Blazor;
 using System.Timers;
 
-namespace GiamSat.UI.Pages
+namespace GiamSat.UI.Components
 {
-    public partial class Index
+    public partial class DialogCardPageOvenDetail
     {
-        private RealtimeDisplays? _displayRealtime;
+        [Parameter] public int OvenId { get; set; }
 
+        RealtimeDisplayModel _ovenDisplayInfo { get; set; } = new RealtimeDisplayModel();
         private System.Timers.Timer _timer;
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            //if (firstRender)
-            //{
-            //    //await RadzenChart.Resize(width:100, height: 200);
-            //    _timer.Interval = 1000;
-            //    _timer.Elapsed += RefreshData;
+        bool smooth = false;
+        bool showDataLabels = true;
+        bool showMarkers = true;
 
-            //    _timer.Enabled = true;
-            //}
+        Radzen.Blazor.RadzenChart RadzenChart = new Radzen.Blazor.RadzenChart();
+        List<DataItem> _ovenData = new List<DataItem>();
 
-            //await base.OnAfterRenderAsync(firstRender);
-        }
         protected override async Task OnInitializedAsync()
         {
+            await base.OnInitializedAsync();
+
             try
             {
                 var res = await _ft02Client.GetAllAsync();
@@ -45,7 +41,8 @@ namespace GiamSat.UI.Pages
                         return;
                     }
 
-                    _displayRealtime = JsonConvert.DeserializeObject<RealtimeDisplays>(_dataFromDB.FirstOrDefault().C000);
+                    var displayRealtime = JsonConvert.DeserializeObject<RealtimeDisplays>(_dataFromDB.FirstOrDefault().C000);
+                    _ovenDisplayInfo = displayRealtime.FirstOrDefault(x => x.OvenId == OvenId);
                 }
                 else
                 {
@@ -61,7 +58,11 @@ namespace GiamSat.UI.Pages
                 _timer.Enabled = true;
                 #endregion
             }
-            catch { }
+            catch (Exception ex)
+            {
+                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Error", Detail = ex.Message, Duration = 4000 });
+                return;
+            }
         }
 
         private async void RefreshData(object? sender, ElapsedEventArgs e)
@@ -80,20 +81,44 @@ namespace GiamSat.UI.Pages
                         return;
                     }
 
-                    _displayRealtime = JsonConvert.DeserializeObject<RealtimeDisplays>(_dataFromDB.FirstOrDefault().C000);
+                    var displayRealtime = JsonConvert.DeserializeObject<RealtimeDisplays>(_dataFromDB.FirstOrDefault().C000);
+                    _ovenDisplayInfo = displayRealtime.FirstOrDefault(x => x.OvenId == OvenId);
                 }
+
+                if (_ovenData.Count >= 30)
+                {
+                    _ovenData.RemoveAt(0);
+                }
+
+                string date = DateTime.Now.AddSeconds(10).ToString("yyyy-MM-dd HH:mm:ss");
+
+                _ovenData.Add(new DataItem()
+                {
+                    Date = date,
+                    Temperature = _ovenDisplayInfo.Temperature
+                });
+
+                await RadzenChart.Reload();
 
                 StateHasChanged(); // NOTE: MUST CALL StateHasChanged() BECAUSE THIS IS TRIGGERED BY A TIMER INSTEAD OF A USER EVENT
             }
             catch { }
         }
 
-        private async void OnClick(int ovenId, string ovenName)
+        string FormatAsUSD(object value)
         {
-            await _dialogService.OpenAsync<DialogCardPageOvenDetail>(ovenName,
-              new Dictionary<string, object>() { { "OvenId", ovenId } },
-              new DialogOptions() { Width = "1500px", Height = "700px", Resizable = true, Draggable = true ,CloseDialogOnOverlayClick=true}
-              );
+            return ((double)value).ToString();
         }
+
+        string FormatAsMonth(object value)
+        {
+            if (value != null)
+            {
+                return Convert.ToDateTime(value).ToString("HH:mm:ss");
+            }
+
+            return string.Empty;
+        }
+
     }
 }
