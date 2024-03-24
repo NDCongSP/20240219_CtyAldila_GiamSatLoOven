@@ -18,22 +18,22 @@
             <RadzenColumn Size="7">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
                     <RadzenLabel>@GlobalVariable.UserName</RadzenLabel>
-                    <RadzenProfileMenu>
-                        <Template>
-                            <RadzenIcon Icon="account_circle" />
-                        </Template>
-                        <ChildContent>
-                            <RadzenProfileMenuItem Text="User info" Path="/userinfo" Icon="account_circle"></RadzenProfileMenuItem>
-                            <RadzenProfileMenuItem Text="Logout" Path="/login" Icon="line_weight"></RadzenProfileMenuItem>
-                        </ChildContent>
-                    </RadzenProfileMenu>
-                </RadzenStack>
-            </RadzenColumn>
-        </RadzenRow>
-    </RadzenHeader>
+                        <RadzenProfileMenu>
+                            <Template>
+                                <RadzenIcon Icon="account_circle" />
+                            </Template>
+                            <ChildContent>
+                                <RadzenProfileMenuItem Text="User info" Path="/userinfo" Icon="account_circle"></RadzenProfileMenuItem>
+                                <RadzenProfileMenuItem Text="Logout" Path="/login" Icon="line_weight"></RadzenProfileMenuItem>
+                            </ChildContent>
+                        </RadzenProfileMenu>
+                    </RadzenStack>
+                </RadzenColumn>
+            </RadzenRow>
+        </RadzenHeader>
         <RadzenSidebar Responsive="false" @bind-Expanded="@_sidebarExpanded">
-        <NavMenu/>
-    </RadzenSidebar>
+            <NavMenu/>
+        </RadzenSidebar>
     <RadzenBody>
         <div class="rz-p-4">
             @Body

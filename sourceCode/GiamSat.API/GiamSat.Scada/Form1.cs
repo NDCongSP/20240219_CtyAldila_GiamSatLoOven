@@ -67,7 +67,7 @@ namespace GiamSat.Scada
             _timer.Enabled = true;
             _timer.Tick += _timer_Tick;
 
-            _startTime = _startTimeDisplay = DateTime.Now;
+            _startTime = _startTimeDisplay = _endTime = _endTimeDisplay = DateTime.Now;
             _taskDataLog = new Task(() => LogData());
             _taskDataLog.Start();
 
@@ -173,9 +173,27 @@ namespace GiamSat.Scada
         {
             while (true)
             {
-                _endTime = DateTime.Now;
-                _totalTime = (_endTime - _startTime).TotalSeconds;
-                _totalTimeDisplay = (_endTimeDisplay - _startTimeDisplay).TotalSeconds;
+                _endTime = _endTimeDisplay = DateTime.Now;
+                _totalTime = (_endTime - _startTime).TotalMilliseconds;
+                _totalTimeDisplay = (_endTimeDisplay - _startTimeDisplay).TotalMilliseconds;
+
+                //realtime display
+                if (_totalTimeDisplay >= GlobalVariable.ConfigSystem.DisplayRealtimeInterval)
+                {
+                    _startTimeDisplay = DateTime.Now;
+                    //log data
+                    using (var con = GlobalVariable.GetDbConnection())
+                    {
+                        var para = new DynamicParameters();
+                        con.Execute("Truncate table FT02");
+                        var displayData = JsonConvert.SerializeObject(_displayRealtime);
+                        para = null;
+                        para = new DynamicParameters();
+                        para.Add("C000", displayData);
+                        para.Add("createdDate", DateTime.Now);
+                        con.Execute("sp_FT02Insert", param: para, commandType: CommandType.StoredProcedure);
+                    }
+                }
 
                 //data log
                 if (_totalTime >= GlobalVariable.ConfigSystem.DataLogInterval)
@@ -193,24 +211,6 @@ namespace GiamSat.Scada
 
                             con.Execute("sp_FT03Insert", param: para, commandType: CommandType.StoredProcedure);
                         }
-                    }
-                }
-
-                //realtime display
-                if (_totalTimeDisplay < GlobalVariable.ConfigSystem.DisplayRealtimeInterval)
-                {
-                    _startTimeDisplay = DateTime.Now;
-                    //log data
-                    using (var con = GlobalVariable.GetDbConnection())
-                    {
-                        var para = new DynamicParameters();
-                        con.Execute("Truncate table FT02");
-                        var displayData = JsonConvert.SerializeObject(_displayRealtime);
-                        para = null;
-                        para = new DynamicParameters();
-                        para.Add("C000", displayData);
-                        para.Add("createdDate", DateTime.Now);
-                        con.Execute("sp_FT02Insert", param: para, commandType: CommandType.StoredProcedure);
                     }
                 }
 

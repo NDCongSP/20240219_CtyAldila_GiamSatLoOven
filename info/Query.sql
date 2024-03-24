@@ -5,7 +5,8 @@ SELECT *
   FROM [Oven].[dbo].[FT02]
 
 SELECT *
-  FROM [Oven].[dbo].[FT03]
+FROM [Oven].[dbo].[FT03]
+ORDER BY CreatedDate DESC
 
 SELECT *
   FROM [Oven].[dbo].[FT04]

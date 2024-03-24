@@ -8,7 +8,7 @@ namespace GiamSat.UI.Shared
 {
     public partial class MainLayout
     {
-        bool _sidebarExpanded = true;
+        bool _sidebarExpanded = false;
 
         protected override async Task OnInitializedAsync()
         {
