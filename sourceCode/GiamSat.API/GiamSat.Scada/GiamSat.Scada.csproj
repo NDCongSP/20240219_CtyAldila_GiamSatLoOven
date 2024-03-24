@@ -38,10 +38,10 @@
       <HintPath>..\packages\Dapper.2.0.151\lib\net461\Dapper.dll</HintPath>
     </Reference>
     <Reference Include="EasyScada.Core">
-      <HintPath>C:\Program Files (x86)\PT Automation Solution\Easy Driver Server\Toolkit\EasyScada.Core.dll</HintPath>
+      <HintPath>..\..\..\..\20211201EasyScada\20211201EasyScada\Toolkit\EasyScada.Core.dll</HintPath>
     </Reference>
     <Reference Include="EasyScada.Winforms.Controls">
-      <HintPath>C:\Program Files (x86)\PT Automation Solution\Easy Driver Server\Toolkit\EasyScada.Winforms.Controls.dll</HintPath>
+      <HintPath>..\..\..\..\20211201EasyScada\20211201EasyScada\Toolkit\EasyScada.Winforms.Controls.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -98,6 +98,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GiamSat.Models\GiamSat.Models.csproj">

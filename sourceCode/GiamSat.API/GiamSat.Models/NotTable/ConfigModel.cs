@@ -15,15 +15,19 @@ namespace GiamSat.Models
         /// <summary>
         /// Quy định số lẻ nhiệt độ, nhân với giá trị nhiệt độ đọc về để có số lẻ hay không.
         /// </summary>
-        public double Gain { get; set; }
+        public double Gain { get; set; } = 1;
         /// <summary>
         /// Chu kỳ thời gian log data (ms).
         /// </summary>
-        public int DataLogInterval { get; set; }
+        public int DataLogInterval { get; set; } = 5000;
         /// <summary>
         /// Chu kỳ thời gian log data khi chạy profile.
         /// </summary>
-        public int DataLogWhenRunProfileInterval { get; set; }
+        public int DataLogWhenRunProfileInterval { get; set; } = 1000;
+        /// <summary>
+        /// Thời gian ghi giá trị hiển thị lên web.
+        /// </summary>
+        public int DisplayRealtimeInterval { get; set; } = 1000;//chu kỳ update data hiển thị. đơn vị giây
 
         #region cấu hình cho UI
         /// <summary>

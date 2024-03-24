@@ -16,8 +16,8 @@ namespace GiamSat.Scada
         {
             //đọc các giá trị khởi tạo ban đầu
             GlobalVariable.ConnectionString = EncodeMD5.DecryptString(Properties.Settings.Default.ConnectionString, "PTAut0m@t!0n30!)@)20");
-            GlobalVariable.LogInterval = Properties.Settings.Default.LogInterval;
-            GlobalVariable.DisplayRealtimeInterval = Properties.Settings.Default.DisplayRealtimeInterval;
+            //GlobalVariable.LogInterval = Properties.Settings.Default.LogInterval;
+            //GlobalVariable.DisplayRealtimeInterval = Properties.Settings.Default.DisplayRealtimeInterval;
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
