@@ -14,5 +14,9 @@ namespace GiamSat.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public List<ProfileModel> Profiles { get; set; }
+        /// <summary>
+        /// Lưu thông tin tag path, để phục vụ cho sự kiện tagCHanged.
+        /// </summary>
+        public string Path { get; set; }
     }
 }

@@ -3,7 +3,7 @@ SetupPage,401303,Word,100,ReadAndWrite,1,0,
 DigitalInput1Status,400202,Word,100,ReadAndWrite,1,0,
 Temperature,400201,Word,100,ReadAndWrite,1,0,400101
 ProfileNumber_CurrentStatus,404101,Word,100,ReadAndWrite,1,0,ID cua pro hien dang run
-ProfileStepNumber_Current Status,404102,Word,100,ReadAndWrite,1,0,
+ProfileStepNumber_CurrentStatus,404102,Word,100,ReadAndWrite,1,0,
 ProfileStepType_CurrentStatus,404103,Word,100,ReadAndWrite,1,0,
 HoursRemaining_CurrentStatus,404120,Word,100,ReadAndWrite,1,0,
 MinutesRemaining_CurrentStatus,404121,Word,100,ReadAndWrite,1,0,

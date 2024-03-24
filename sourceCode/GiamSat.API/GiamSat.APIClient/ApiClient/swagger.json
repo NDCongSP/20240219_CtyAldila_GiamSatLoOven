@@ -2038,7 +2038,7 @@
             "type": "string",
             "format": "date-time"
           },
-          "isActive": {
+          "actived": {
             "type": "integer",
             "format": "int32"
           },

@@ -14,6 +14,10 @@ namespace GiamSat.Models
         public int OvenId { get; set; }
         public string OvenName { get; set; }
         /// <summary>
+        /// Lưu thông tin tag path, để phục vụ cho sự kiện tagCHanged.
+        /// </summary>
+        public string Path { get; set; }
+        /// <summary>
         /// Trạng thái lò Chạy/Dừng.
         /// 0-Dừng; 1- Chạy.
         /// </summary>

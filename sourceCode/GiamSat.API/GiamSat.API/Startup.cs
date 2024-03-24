@@ -100,11 +100,13 @@ namespace GiamSat.API
                     Steps = steps
                 });
 
+                var chanel = i <= 5 ? 1 : i > 5 && i <= 10 ? 2 : 3;
                 ov.Add(new OvenInfoModel()
                 {
                     Id = i,
                     Name = $"Oven {i}",
-                    Profiles = profiles
+                    Profiles = profiles,
+                    Path = $"Local Station/Channel{chanel}/Oven{i}"
                 });
 
             }

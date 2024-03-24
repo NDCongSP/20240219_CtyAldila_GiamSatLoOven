@@ -24,7 +24,7 @@ namespace GiamSat.Models
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
-        public int IsActive { get; set; } = 1;
+        public int Actived { get; set; } = 1;
         public string? CreatedMachine { get; set; }=Environment.MachineName;
     }
 }

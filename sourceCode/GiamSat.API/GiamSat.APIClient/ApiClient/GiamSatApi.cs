@@ -5349,10 +5349,10 @@ namespace GiamSat.APIClient
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
         public System.DateTime CreatedDate { get; set; } = default!;
 
-        [System.Text.Json.Serialization.JsonPropertyName("isActive")]
+        [System.Text.Json.Serialization.JsonPropertyName("actived")]
 
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
-        public int IsActive { get; set; } = default!;
+        public int Actived { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("createdMachine")]
 
