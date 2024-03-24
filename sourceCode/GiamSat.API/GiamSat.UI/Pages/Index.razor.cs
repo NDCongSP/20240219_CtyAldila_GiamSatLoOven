@@ -98,7 +98,7 @@ namespace GiamSat.UI.Pages
 
         private async void OnClick(int ovenId, string ovenName)
         {
-            await _dialogService.OpenAsync<DialogCardPageOvenDetail>(ovenName,
+            await _dialogService.OpenAsync<DialogCardPageOvenDetail>($"{ovenName} details",
               new Dictionary<string, object>() { { "OvenId", ovenId } },
               new DialogOptions() { Width = "1500px", Height = "700px", Resizable = true, Draggable = true ,CloseDialogOnOverlayClick=true}
               );
