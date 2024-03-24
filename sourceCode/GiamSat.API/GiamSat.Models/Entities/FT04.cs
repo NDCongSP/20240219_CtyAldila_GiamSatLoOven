@@ -28,5 +28,9 @@ namespace GiamSat.Models
         public DateTime? EndTime { get; set; }
         public int Actived { get; set; } = 1;
         public string CreatedMachine { get; set; } = Environment.MachineName;
+        /// <summary>
+        /// Số thứ tự mỗi lần chạy.được tạo ra mỗi khi bắt đầu run profile.
+        /// </summary>
+        public Guid ZIndex { get; set; }
     }
 }

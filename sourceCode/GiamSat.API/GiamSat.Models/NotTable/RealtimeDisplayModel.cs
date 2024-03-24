@@ -32,7 +32,7 @@ namespace GiamSat.Models
         /// Trạng thái cửa.
         /// 1-đóng; 0- mở.
         /// </summary>
-        public string Door { get; set; }
+        public int DoorStatus{ get; set; }
         /// <summary>
         /// Profile đang chạy.
         /// </summary>
@@ -55,5 +55,9 @@ namespace GiamSat.Models
         /// Ngưỡng cao nhiệt độ. Dùng để cảnh báo.
         /// </summary>
         public double TemperatureHighLevel { get; set; }
+        /// <summary>
+        /// Số thứ tự mỗi lần chạy.được tạo ra mỗi khi bắt đầu run profile.Dùng cho việc lưu dataLog khi run Profile.
+        /// </summary>
+        public Guid ZIndex { get; set; }
     }
 }

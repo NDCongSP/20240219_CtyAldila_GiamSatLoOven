@@ -16,10 +16,6 @@ namespace GiamSat.UI.Components
         RealtimeDisplayModel _ovenDisplayInfo { get; set; } = new RealtimeDisplayModel();
         private System.Timers.Timer _timer;
 
-        bool smooth = false;
-        bool showDataLabels = true;
-        bool showMarkers = true;
-
         Radzen.Blazor.RadzenChart RadzenChart = new Radzen.Blazor.RadzenChart();
         List<DataItem> _ovenData = new List<DataItem>();
 
@@ -53,7 +49,7 @@ namespace GiamSat.UI.Components
                 }
 
                 #region Timer refresh data
-                _timer = new System.Timers.Timer(GlobalVariable.RefreshInterval);
+                _timer = new System.Timers.Timer(GlobalVariable.ConfigSystem.RefreshInterval);
                 _timer.Elapsed += RefreshData;
                 _timer.Enabled = true;
                 #endregion
@@ -85,7 +81,7 @@ namespace GiamSat.UI.Components
                     _ovenDisplayInfo = displayRealtime.FirstOrDefault(x => x.OvenId == OvenId);
                 }
 
-                if (_ovenData.Count >= 30)
+                if (_ovenData.Count >= GlobalVariable.ConfigSystem.ChartPointNum)
                 {
                     _ovenData.RemoveAt(0);
                 }

@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using GiamSat.APIClient;
 using Microsoft.AspNetCore.Components;
+using Newtonsoft.Json;
 using Radzen;
 using Radzen.Blazor;
 
@@ -29,6 +30,7 @@ namespace GiamSat.UI.Pages
                     _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Successfull", Detail = "Login OK", Duration = 4000 });
                     //await InvokeAsync(StateHasChanged);
                     //StateHasChanged();
+
                     _navigation.NavigateTo("/");
                 }
                 else

@@ -11,15 +11,15 @@
                 </RadzenColumn>
                 <RadzenColumn SizeXS=12 SizeSM="4">
                     <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Trạng thái</RadzenText>
-                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.Status</b></RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@(_ovenDisplayInfo.Status == 1 ? "Chạy" : "Dừng")</b></RadzenText>
                 </RadzenColumn>
                 <RadzenColumn SizeXS=12 SizeSM="4">
                     <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Cửa lò</RadzenText>
-                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.Door</b></RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@(_ovenDisplayInfo.DoorStatus == 1 ? "Đóng" : "Mở")</b></RadzenText>
                 </RadzenColumn>
                 <RadzenColumn SizeXS=12 SizeSM="4">
                     <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Trạng thái kết nối</RadzenText>
-                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.ConnectionStatus</b></RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@(_ovenDisplayInfo.ConnectionStatus == 1 ? "Kết nối" : "Mất kết nối")</b></RadzenText>
                 </RadzenColumn>
             </RadzenRow>
         </RadzenColumn>
@@ -40,7 +40,7 @@
                 </RadzenColumn>
                 <RadzenColumn SizeXS=12 SizeSM="3">
                     <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Thời gian chạy còn lại</RadzenText>
-                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.HoursRemaining_CurrentStatus:@_ovenDisplayInfo.MinutesRemaining_CurrentStatus:@_ovenDisplayInfo.SecondsRemaining_CurrentStatus"</b></RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.HoursRemaining_CurrentStatus:@_ovenDisplayInfo.MinutesRemaining_CurrentStatus:@_ovenDisplayInfo.SecondsRemaining_CurrentStatus</b></RadzenText>
                 </RadzenColumn>
                 <RadzenColumn SizeXS=12 SizeSM="3">
                     <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Ngưỡng nhiệt độ cảnh báo</RadzenText>
@@ -52,9 +52,9 @@
     <RadzenRow>
         <RadzenColumn SizeXS="12" class="rz-mt-4">
             <RadzenChart @ref="RadzenChart" class="chart ">
-                <RadzenLineSeries Smooth="@smooth" Data="@_ovenData" CategoryProperty="Date" Title=@_ovenDisplayInfo.OvenName LineType="LineType.Dashed" ValueProperty="Temperature">
-                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Diamond" />
-                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                <RadzenLineSeries Smooth="@GlobalVariable.ConfigSystem.Smooth" Data="@_ovenData" CategoryProperty="Date" Title=@_ovenDisplayInfo.OvenName LineType="LineType.Dashed" ValueProperty="Temperature">
+                    <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Diamond" />
+                    <RadzenSeriesDataLabels Visible="@GlobalVariable.ConfigSystem.ShowDataLabels" />
                 </RadzenLineSeries>
 
                 <RadzenCategoryAxis Padding="20" Formatter="@FormatAsMonth">

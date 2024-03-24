@@ -19,9 +19,9 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 var config = builder.Configuration;
 
-GlobalVariable.RefreshInterval = int.TryParse(config["AppSettings:RefreshInterval"].ToString(), out int value) ? value : 1000;
-GlobalVariable.ChartRefreshInterval = int.TryParse(config["AppSettings:ChartRefreshInterval"].ToString(), out value) ? value : 1000;
-GlobalVariable.ChartPointNum = int.TryParse(config["AppSettings:ChartPointNum"].ToString(), out value) ? value : 10;
+//GlobalVariable.RefreshInterval = int.TryParse(config["AppSettings:RefreshInterval"].ToString(), out int value) ? value : 1000;
+//GlobalVariable.ChartRefreshInterval = int.TryParse(config["AppSettings:ChartRefreshInterval"].ToString(), out value) ? value : 1000;
+//GlobalVariable.ChartPointNum = int.TryParse(config["AppSettings:ChartPointNum"].ToString(), out value) ? value : 10;
 
 
 builder.Services.AddBlazoredLocalStorage();

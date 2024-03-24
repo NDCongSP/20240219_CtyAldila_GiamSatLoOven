@@ -33,6 +33,14 @@ namespace GiamSat.UI.Pages
         {
             try
             {
+                #region Get configsystem
+                var resC = await _ft01Client.GetAllAsync();
+                if (resC != null)
+                {
+                    GlobalVariable.ConfigSystem = JsonConvert.DeserializeObject<GiamSat.Models.ConfigModel>(resC.Data.ToList().FirstOrDefault().C000);
+                }
+                #endregion
+
                 var res = await _ft02Client.GetAllAsync();
 
                 if (res.Succeeded)
@@ -56,7 +64,7 @@ namespace GiamSat.UI.Pages
                 }
 
                 #region Timer refresh data
-                _timer = new System.Timers.Timer(GlobalVariable.RefreshInterval);
+                _timer = new System.Timers.Timer(GlobalVariable.ConfigSystem.RefreshInterval);
                 _timer.Elapsed += RefreshData;
                 _timer.Enabled = true;
                 #endregion
