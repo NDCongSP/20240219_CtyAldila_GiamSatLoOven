@@ -3,16 +3,17 @@
         <RadzenImage Path="images/logoAldila.ico" style="width: 48px; height: 48px;"></RadzenImage>
         @* <RadzenText Text="radzenAppASM" TextStyle="Radzen.Blazor.TextStyle.Subtitle1" class="rz-mb-0" style="color: var(--rz-sidebar-color);" /> *@
     </RadzenStack>
-    <RadzenPanelMenuItem Text="Dashboard" Icon="dashboard" Path="/" />
-    <RadzenPanelMenuItem Text="Settings" Icon="settings">
+    <RadzenPanelMenuItem Text="Trang chủ" Icon="dashboard" Path="/" />
+    <RadzenPanelMenuItem Text="Cấu hình Oven" Icon="settings_applications">
         <ChildContent>
             @foreach (var item in _ovensInfo)
             {
-                linkC = $"/Settings/{item.Id}";
+                linkC = $"/ovenconfig/{item.Id}";
                 <RadzenPanelMenuItem Text=@item.Name Icon="label_important" Path=@linkC />
             }
         </ChildContent>
     </RadzenPanelMenuItem>
-    <RadzenPanelMenuItem Text="Trend" Icon="insights" Path="/realtimetrend" />
-    <RadzenPanelMenuItem Text="Reports" Icon="description" Path="/report" />
+    <RadzenPanelMenuItem Text="Biểu đồ" Icon="insights" Path="/realtimetrend" />
+    <RadzenPanelMenuItem Text="Báo cáo" Icon="description" Path="/report" />
+    <RadzenPanelMenuItem Text="Cài đặt" Icon="description" Path="/settings" />
 </RadzenPanelMenu>

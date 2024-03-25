@@ -1,0 +1,70 @@
+﻿@page "/ovenconfig/{OvenId}"
+@using GiamSat.Models
+@attribute [Authorize]
+
+<div Class="rz-p-0 rz-p-md-12">
+    @if (@_ovenInfo == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <RadzenText TextStyle="TextStyle.Subtitle2">@_ovenInfo.Name</RadzenText>
+        <RadzenTemplateForm Data="@_ovenInfo" Submit="@((OvenInfoModel args) => { Submit(args); })">
+            <RadzenRow Gap="2rem" Class="rz-p-0 rz-p-lg-4">
+                <RadzenColumn SizeXS="12" SizeMD="6">
+                    <RadzenStack>
+                        <RadzenFieldset Text="Thông tin chung">
+                            <RadzenStack Gap="1rem">
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenColumn SizeXS="12" SizeMD="4">
+                                        <RadzenLabel Text="Tên lò" Component="Name" />
+                                    </RadzenColumn>
+                                    <RadzenColumn SizeXS="12" SizeMD="8">
+                                        <RadzenTextBox Style="width: 100%;" Name="Name" />
+                                    </RadzenColumn>
+                                </RadzenRow>
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenColumn SizeXS="12" SizeMD="4">
+                                        <RadzenLabel Text="Tag Path" Component="Path" />
+                                    </RadzenColumn>
+                                    <RadzenColumn SizeXS="12" SizeMD="8">
+                                        <RadzenTextBox Style="width: 100%;" Name="Path" />
+                                    </RadzenColumn>
+                                </RadzenRow>
+                            </RadzenStack>
+                        </RadzenFieldset>
+                    </RadzenStack>
+                </RadzenColumn>
+                <RadzenColumn SizeXS="12" SizeMD="6">
+                    <RadzenStack>
+                        <RadzenFieldset Text="Profile">
+                            <RadzenStack Gap="1rem">
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenColumn SizeXS="12" SizeMD="4">
+                                        <RadzenLabel Text="Tên lò" Component="Name" />
+                                    </RadzenColumn>
+                                    <RadzenColumn SizeXS="12" SizeMD="8">
+                                        <RadzenTextBox Style="width: 100%;" Name="Name" />
+                                    </RadzenColumn>
+                                </RadzenRow>
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenColumn SizeXS="12" SizeMD="4">
+                                        <RadzenLabel Text="Tag Path" Component="Path" />
+                                    </RadzenColumn>
+                                    <RadzenColumn SizeXS="12" SizeMD="8">
+                                        <RadzenTextBox Style="width: 100%;" Name="Path" />
+                                    </RadzenColumn>
+                                </RadzenRow>
+                            </RadzenStack>
+                        </RadzenFieldset>
+                    </RadzenStack>
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
+                <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Save" />
+                <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Large" Icon="cancel" Text="Cancel" Click="@Cancel" />
+            </RadzenStack>
+        </RadzenTemplateForm>
+    }
+</div>

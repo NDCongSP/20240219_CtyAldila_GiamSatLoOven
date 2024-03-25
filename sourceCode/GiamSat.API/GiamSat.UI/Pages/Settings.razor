@@ -1,35 +1,112 @@
-﻿@page "/settings/{OvenId}"
+﻿@page "/settings"
 @using GiamSat.Models
 @attribute [Authorize]
 
 <div Class="rz-p-0 rz-p-md-12">
-    @if (@_ovenInfo == null)
+    @if (_configInfo == null)
     {
         <p><em>Loading...</em></p>
     }
     else
     {
-        <RadzenText TextStyle="TextStyle.Subtitle2">@_ovenInfo.Name</RadzenText>
-        <RadzenTemplateForm Data="@_ovenInfo" Submit="@((OvenInfoModel args) => { Submit(args); })">
+        <RadzenTemplateForm Data="@_configInfo" Submit="@((ConfigModel args) => { Submit(args); })">
             <RadzenRow Gap="2rem" Class="rz-p-0 rz-p-lg-4">
-                <RadzenColumn SizeXS="12" SizeMD="12">
+                <RadzenColumn SizeXS="12" SizeMD="6">
                     <RadzenStack>
                         <RadzenFieldset Text="Thông tin chung">
                             <RadzenStack Gap="1rem">
                                 <RadzenRow AlignItems="AlignItems.Center">
                                     <RadzenColumn SizeXS="12" SizeMD="4">
-                                        <RadzenLabel Text="Tên lò" Component="Name" />
+                                        <RadzenLabel Text="DeadbandAlarm (ms)" Component="DeadbandAlarm" />
                                     </RadzenColumn>
                                     <RadzenColumn SizeXS="12" SizeMD="8">
-                                        <RadzenTextBox Style="width: 100%;" Name="Name" />
+                                        <RadzenNumeric @bind-Value=@_configInfo.DeadbandAlarm TextAlign="TextAlign.Right"
+                                                       InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
                                     </RadzenColumn>
                                 </RadzenRow>
                                 <RadzenRow AlignItems="AlignItems.Center">
                                     <RadzenColumn SizeXS="12" SizeMD="4">
-                                        <RadzenLabel Text="Tag Path" Component="Path" />
+                                        <RadzenLabel Text="Gain" Component="Gain" />
                                     </RadzenColumn>
                                     <RadzenColumn SizeXS="12" SizeMD="8">
-                                        <RadzenTextBox Style="width: 100%;" Name="Path"/>
+                                        <RadzenNumeric Placeholder="0.0" Step="0.1" @bind-Value=@_configInfo.Gain TextAlign="TextAlign.Right"
+                                                       InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                                    </RadzenColumn>
+                                </RadzenRow>
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenColumn SizeXS="12" SizeMD="4">
+                                        <RadzenLabel Text="DataLogInterval (ms)" Component="DataLogInterval" />
+                                    </RadzenColumn>
+                                    <RadzenColumn SizeXS="12" SizeMD="8">
+                                        <RadzenNumeric @bind-Value=@_configInfo.DataLogInterval TextAlign="TextAlign.Right"
+                                                       InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                                    </RadzenColumn>
+                                </RadzenRow>
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenColumn SizeXS="12" SizeMD="4">
+                                        <RadzenLabel Text="DataLogWhenRunProfileInterval (ms)" Component="DataLogWhenRunProfileInterval" />
+                                    </RadzenColumn>
+                                    <RadzenColumn SizeXS="12" SizeMD="8">
+                                        <RadzenNumeric @bind-Value=@_configInfo.DataLogWhenRunProfileInterval TextAlign="TextAlign.Right"
+                                                       InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                                    </RadzenColumn>
+                                </RadzenRow>
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenColumn SizeXS="12" SizeMD="4">
+                                        <RadzenLabel Text="DisplayRealtimeUpdateInterval (ms)" Component="DisplayRealtimeInterval" />
+                                    </RadzenColumn>
+                                    <RadzenColumn SizeXS="12" SizeMD="8">
+                                        <RadzenNumeric @bind-Value=@_configInfo.DisplayRealtimeInterval TextAlign="TextAlign.Right"
+                                                       InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                                    </RadzenColumn>
+                                </RadzenRow>
+                            </RadzenStack>
+                        </RadzenFieldset>
+                    </RadzenStack>
+                </RadzenColumn>
+                <RadzenColumn SizeXS="12" SizeMD="6">
+                    <RadzenStack>
+                        <RadzenFieldset Text="UI">
+                            <RadzenStack Gap="1rem">
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenColumn SizeXS="12" SizeMD="4">
+                                        <RadzenLabel Text="RefreshInterval (ms)" Component="RefreshInterval" />
+                                    </RadzenColumn>
+                                    <RadzenColumn SizeXS="12" SizeMD="8">
+                                        <RadzenNumeric @bind-Value=@_configInfo.RefreshInterval TextAlign="TextAlign.Right"
+                                                       InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                                    </RadzenColumn>
+                                </RadzenRow>
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenColumn SizeXS="12" SizeMD="4">
+                                        <RadzenLabel Text="ChartRefreshInterval (ms)" Component="ChartRefreshInterval" />
+                                    </RadzenColumn>
+                                    <RadzenColumn SizeXS="12" SizeMD="8">
+                                        <RadzenNumeric @bind-Value=@_configInfo.ChartRefreshInterval TextAlign="TextAlign.Right"
+                                                       InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                                    </RadzenColumn>
+                                </RadzenRow>
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenColumn SizeXS="12" SizeMD="4">
+                                        <RadzenLabel Text="ChartPointNum" Component="ChartPointNum" />
+                                    </RadzenColumn>
+                                    <RadzenColumn SizeXS="12" SizeMD="8">
+                                        <RadzenNumeric @bind-Value=@_configInfo.ChartPointNum TextAlign="TextAlign.Right"
+                                                       InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+                                    </RadzenColumn>
+                                </RadzenRow>
+                                <RadzenRow AlignItems="AlignItems.Center">
+                                    <RadzenColumn SizeXS=12 SizeSM="3">
+                                        <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Chart-Smooth</RadzenText>
+                                        <RadzenCheckBox @bind-Value=@_configInfo.Smooth Name="Smooth" />
+                                    </RadzenColumn>
+                                    <RadzenColumn SizeXS=12 SizeSM="3">
+                                        <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Chart-ShowDataLabels</RadzenText>
+                                        <RadzenCheckBox @bind-Value=@_configInfo.ShowDataLabels Name="ShowDataLabels" />
+                                    </RadzenColumn>
+                                    <RadzenColumn SizeXS=12 SizeSM="3">
+                                        <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Chart-ShowMarkers</RadzenText>
+                                        <RadzenCheckBox @bind-Value=@_configInfo.ShowMarkers Name="ShowMarkers" />
                                     </RadzenColumn>
                                 </RadzenRow>
                             </RadzenStack>
@@ -38,8 +115,8 @@
                 </RadzenColumn>
             </RadzenRow>
             <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
-                <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Save" />
-                <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Large" Icon="cancel" Text="Cancel" Click="@Cancel" />
+                <RadzenButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Save" />
+                @* <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Large" Icon="cancel" Text="Cancel" Click="@Cancel" /> *@
             </RadzenStack>
         </RadzenTemplateForm>
     }

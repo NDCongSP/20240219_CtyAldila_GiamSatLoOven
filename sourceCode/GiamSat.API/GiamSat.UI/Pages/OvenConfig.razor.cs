@@ -6,25 +6,31 @@ using Radzen;
 
 namespace GiamSat.UI.Pages
 {
-    public partial class Settings
+    public partial class OvenConfig
     {
+        [Parameter]
+        public string OvenId { get; set; }
 
         Variant variant = Variant.Outlined;
 
-        private List<APIClient.FT01> _ft01 = new List<GiamSat.APIClient.FT01>();
-        private ConfigModel _configInfo = new ConfigModel();
+        private List<APIClient.FT01> _ft01 = new List<APIClient.FT01>();
+        private OvenInfoModel _ovenInfo = new OvenInfoModel();
+        private int _ovenId = 0;
+
 
         protected override async Task OnInitializedAsync()
         {
             try
             {
+                _ovenId = int.TryParse(OvenId, out int value) ? value : 0;
+
                 var res = await _ft01Client.GetAllAsync();
 
-                if (!res.Succeeded)
+                if (res == null)
                     return;
-
                 _ft01 = res.Data.ToList();
-                _configInfo = JsonConvert.DeserializeObject<ConfigModel>(_ft01.FirstOrDefault().C000);
+
+                _ovenInfo = JsonConvert.DeserializeObject<OvensInfo>(res.Data.FirstOrDefault().C001).FirstOrDefault(x => x.Id == _ovenId);
             }
             catch (Exception ex)
             {
@@ -39,16 +45,16 @@ namespace GiamSat.UI.Pages
             }
         }
 
-        async void Submit(ConfigModel arg)
+        async void Submit(OvenInfoModel arg)
         {
             try
             {
-                var modelUpdate = _ft01.FirstOrDefault();
-                modelUpdate.C000 = JsonConvert.SerializeObject(arg);
+                var model = _ft01.FirstOrDefault();
+                model.C001 = JsonConvert.SerializeObject(arg);
 
-                var res = await _ft01Client.UpdateAsync(modelUpdate);
+                var res=await _ft01Client.UpdateAsync(model);
 
-                if (!res.Succeeded)
+                if(!res.Succeeded)
                 {
                     _notificationService.Notify(new NotificationMessage()
                     {
@@ -65,7 +71,7 @@ namespace GiamSat.UI.Pages
                 {
                     Severity = NotificationSeverity.Success,
                     Summary = "Success",
-                    Detail = "Cập nhật thành công.",
+                    Detail = "Cập nhật thành công",
                     Duration = 4000
                 });
             }
@@ -73,7 +79,7 @@ namespace GiamSat.UI.Pages
             {
                 _notificationService.Notify(new NotificationMessage()
                 {
-                    Severity = NotificationSeverity.Success,
+                    Severity = NotificationSeverity.Error,
                     Summary = "Error",
                     Detail = ex.Message,
                     Duration = 4000
@@ -84,7 +90,7 @@ namespace GiamSat.UI.Pages
 
         void Cancel()
         {
-            
+            var b = 10;
         }
     }
 }
