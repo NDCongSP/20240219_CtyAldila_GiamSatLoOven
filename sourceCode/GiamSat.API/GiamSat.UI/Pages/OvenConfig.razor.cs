@@ -1,8 +1,10 @@
 ﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.InkML;
 using GiamSat.Models;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using Radzen;
+using Radzen.Blazor;
 
 namespace GiamSat.UI.Pages
 {
@@ -17,9 +19,21 @@ namespace GiamSat.UI.Pages
         private OvenInfoModel _ovenInfo = new OvenInfoModel();
         private int _ovenId = 0;
 
+        RadzenDataGrid<ProfileModel> _profileGrid;
+        IList<ProfileModel> _profile;
 
-        protected override async Task OnInitializedAsync()
+        async Task OpenProfile(int profileId)
         {
+            var d = 1;
+            //await DialogService.OpenAsync<DialogCardPage>($"Order {orderId}",
+            //      new Dictionary<string, object>() { { "OrderID", orderId } },
+            //      new DialogOptions() { Width = "700px", Height = "520px" });
+        }
+
+        protected override async Task OnParametersSetAsync()
+        {
+            await base.OnParametersSetAsync();
+
             try
             {
                 _ovenId = int.TryParse(OvenId, out int value) ? value : 0;
@@ -31,6 +45,35 @@ namespace GiamSat.UI.Pages
                 _ft01 = res.Data.ToList();
 
                 _ovenInfo = JsonConvert.DeserializeObject<OvensInfo>(res.Data.FirstOrDefault().C001).FirstOrDefault(x => x.Id == _ovenId);
+                _profile = _ovenInfo.Profiles;
+            }
+            catch (Exception ex)
+            {
+                _notificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = ex.Message,
+                    Duration = 4000
+                });
+                return;
+            }
+        }
+        protected override async Task OnInitializedAsync()
+        { 
+            await base.OnInitializedAsync();
+            try
+            {
+                _ovenId = int.TryParse(OvenId, out int value) ? value : 0;
+
+                var res = await _ft01Client.GetAllAsync();
+
+                if (res == null)
+                    return;
+                _ft01 = res.Data.ToList();
+
+                _ovenInfo = JsonConvert.DeserializeObject<OvensInfo>(res.Data.FirstOrDefault().C001).FirstOrDefault(x => x.Id == _ovenId);
+                _profile = _ovenInfo.Profiles;
             }
             catch (Exception ex)
             {
@@ -50,8 +93,10 @@ namespace GiamSat.UI.Pages
             try
             {
                 var model = _ft01.FirstOrDefault();
-                model.C001 = JsonConvert.SerializeObject(arg);
 
+                var ovenUpdate = JsonConvert.DeserializeObject<List<ProfileModel>>(model.C001).FirstOrDefault(x=>x.Id == _ovenId);
+
+                
                 var res=await _ft01Client.UpdateAsync(model);
 
                 if(!res.Succeeded)
@@ -91,6 +136,11 @@ namespace GiamSat.UI.Pages
         void Cancel()
         {
             var b = 10;
+        }
+
+        void ShowTooltip(ElementReference elementReference, TooltipOptions options = null)
+        {
+            _tooltipService.Open(elementReference, "Local Station/Channel/Device", options);
         }
     }
 }
