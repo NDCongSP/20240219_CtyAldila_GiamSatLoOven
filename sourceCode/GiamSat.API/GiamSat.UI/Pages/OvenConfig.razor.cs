@@ -44,7 +44,7 @@ namespace GiamSat.UI.Pages
                     return;
                 _ft01 = res.Data.ToList();
 
-                _ovenInfo = JsonConvert.DeserializeObject<OvensInfo>(res.Data.FirstOrDefault().C001).FirstOrDefault(x => x.Id == _ovenId);
+                _ovenInfo = JsonConvert.DeserializeObject<OvensInfo>(_ft01.FirstOrDefault().C001).FirstOrDefault(x => x.Id == _ovenId);
                 _profile = _ovenInfo.Profiles;
             }
             catch (Exception ex)
@@ -60,7 +60,7 @@ namespace GiamSat.UI.Pages
             }
         }
         protected override async Task OnInitializedAsync()
-        { 
+        {
             await base.OnInitializedAsync();
             try
             {
@@ -94,12 +94,21 @@ namespace GiamSat.UI.Pages
             {
                 var model = _ft01.FirstOrDefault();
 
-                var ovenUpdate = JsonConvert.DeserializeObject<List<ProfileModel>>(model.C001).FirstOrDefault(x=>x.Id == _ovenId);
+                //lấy ra list tất cả các lò Oven
+                var ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(model.C001);
 
-                
-                var res=await _ft01Client.UpdateAsync(model);
+                #region cập nhật lại các thông số của oven được chọn để
+                var ovenUpdate = ovensInfo.FirstOrDefault(x => x.Id == _ovenId);
+                ovenUpdate.Name=arg.Name;
+                ovenUpdate.Path=arg.Path;
+                ovenUpdate.Profiles=arg.Profiles;
+                #endregion
 
-                if(!res.Succeeded)
+                model.C001 = JsonConvert.SerializeObject(ovensInfo);
+
+                var res = await _ft01Client.UpdateAsync(model);
+
+                if (!res.Succeeded)
                 {
                     _notificationService.Notify(new NotificationMessage()
                     {
