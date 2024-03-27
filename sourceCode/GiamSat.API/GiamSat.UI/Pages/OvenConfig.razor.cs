@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml.InkML;
 using DocumentFormat.OpenXml.Office2019.Drawing.Model3D;
 using GiamSat.Models;
+using GiamSat.UI.Components;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using Radzen;
@@ -24,15 +25,15 @@ namespace GiamSat.UI.Pages
         RadzenDataGrid<ProfileModel> _profileGrid;
 
 
-        async Task OpenProfile(int profileId)
+        async Task OpenItem(int profileId)
         {
-            var d = 1;
-            //await DialogService.OpenAsync<DialogCardPage>($"Order {orderId}",
-            //      new Dictionary<string, object>() { { "OrderID", orderId } },
-            //      new DialogOptions() { Width = "700px", Height = "520px" });
+            var model = _ft01.FirstOrDefault();
+            await _dialogService.OpenAsync<DialogCardPageEditProfile>($"Chỉnh sửa profile ID: {profileId}",
+                  new Dictionary<string, object>() { { "Model", model }, { "OvenId", _ovenId }, { "ProfileID", profileId } },
+                  new DialogOptions() { Width = "1500px", Height = "700px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true });
         }
 
-        async Task DeleteProfile(int profileId)
+        async Task DeleteItem(int profileId)
         {
             try
             {
@@ -88,7 +89,7 @@ namespace GiamSat.UI.Pages
             }
         }
 
-        async Task AddNewProfile(int ovenId)
+        async Task AddNewItem(int ovenId)
         {
             try
             {

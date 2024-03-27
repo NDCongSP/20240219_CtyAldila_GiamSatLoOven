@@ -36,7 +36,7 @@
                         <RadzenFieldset Text="Profile">
                             <RadzenStack Orientation=Orientation.Vertical Gap="1rem">
                                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End" Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-mt-2">
-                                    <RadzenButton Click=@(args => AddNewProfile(_ovenInfo.Id)) Variant="Variant.Flat" Shade="Shade.Dark"
+                                    <RadzenButton Click=@(args => AddNewItem(_ovenInfo.Id)) Variant="Variant.Flat" Shade="Shade.Dark"
                                                   Text="Thêm profile" Icon="add_circle" ButtonStyle="ButtonStyle.Dark" />
                                 </RadzenStack>
                                 <RadzenDataGrid @ref="_profileGrid" AllowFiltering="true" FilterPopupRenderMode="PopupRenderMode.OnDemand" AllowPaging="true" PageSize="5" AllowSorting="true"
@@ -51,9 +51,9 @@
                                         </RadzenDataGridColumn>
                                         <RadzenDataGridColumn TItem="ProfileModel" Filterable="false" Sortable="true" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
                                             <Template Context="data">
-                                                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => OpenProfile(data.Id))" @onclick:stopPropagation="true">
+                                                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => OpenItem(data.Id))" @onclick:stopPropagation="true">
                                                 </RadzenButton>
-                                                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteProfile(data.Id))" @onclick:stopPropagation="true">
+                                                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteItem(data.Id))" @onclick:stopPropagation="true">
                                                 </RadzenButton>
                                                 @* <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click=@(() => OpenProfile(data.Id)) Text="@data.Id.ToString()">@data.Steps.Count</RadzenButton> *@
                                                 </Template>
