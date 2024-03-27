@@ -20,7 +20,7 @@ namespace GiamSat.UI.Pages
         private int _ovenId = 0;
 
         RadzenDataGrid<ProfileModel> _profileGrid;
-        IList<ProfileModel> _profile;
+
 
         async Task OpenProfile(int profileId)
         {
@@ -28,6 +28,96 @@ namespace GiamSat.UI.Pages
             //await DialogService.OpenAsync<DialogCardPage>($"Order {orderId}",
             //      new Dictionary<string, object>() { { "OrderID", orderId } },
             //      new DialogOptions() { Width = "700px", Height = "520px" });
+        }
+
+        async Task DeleteProfile(int profileId)
+        {
+            var model = _ft01.FirstOrDefault();
+            var ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(model.C001);
+            var ovenUpdate = ovensInfo.FirstOrDefault(x => x.Id == _ovenId);
+            var profile = ovenUpdate.Profiles.Where(x => x.Id == profileId).FirstOrDefault();
+
+            var confirm = await _dialogService.Confirm($"Bạn chắc chắn muốn xóa profile {profile.Name}", "Xóa profile", new ConfirmOptions()
+            {
+                OkButtonText = "Yes",
+                CancelButtonText = "No",
+            });
+
+            if (confirm == false) return;
+
+            var res = await _ft01Client.UpdateAsync(model);
+            if (!res.Succeeded)
+            {
+                _notificationService.Notify(new NotificationMessage()
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary= "Error",
+                    Detail="Cập nhật thất bại.",
+                    Duration=4000
+                });
+                return;
+            }
+
+            _notificationService.Notify(new NotificationMessage()
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Success",
+                Detail = "Cập nhật thành công.",
+                Duration = 4000
+            });
+        }
+
+        async Task AddNewProfile(int ovenId)
+        {
+            var confirm = await _dialogService.Confirm("Bạn chắc chắn muốn thêm profile?", "Tạo mới profile", new ConfirmOptions()
+            {
+                OkButtonText = "Yes",
+                CancelButtonText = "No"
+            });
+
+            if (confirm == false) return;
+
+            var model = _ft01.FirstOrDefault();
+
+            //lấy ra list tất cả các lò Oven
+            var ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(model.C001);
+
+            #region cập nhật lại các thông số của oven được chọn để
+            var ovenUpdate = ovensInfo.FirstOrDefault(x => x.Id == _ovenId);
+
+            var maxIdProfile = ovenUpdate.Profiles.ToArray().Count();
+
+            //var maxIdProfileCurrent = JsonConvert.DeserializeObject<ProfileModel>(ovenUpdate.Profiles).Max;
+            ovenUpdate.Profiles.Add(new ProfileModel()
+            {
+                Id = maxIdProfile + 1,
+                Name = $"Profile {maxIdProfile + 1}"
+            });
+            #endregion
+
+            model.C001 = JsonConvert.SerializeObject(ovensInfo);
+
+            var data = await _ft01Client.UpdateAsync(model);
+
+            if (!data.Succeeded)
+            {
+                _notificationService.Notify(new NotificationMessage()
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "Cập nhật thất bại.",
+                    Duration = 4000
+                });
+                return;
+            }
+
+            _notificationService.Notify(new NotificationMessage()
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Tạo profile",
+                Detail = "Cập nhật thành công.",
+                Duration = 4000
+            });
         }
 
         protected override async Task OnParametersSetAsync()
@@ -45,7 +135,6 @@ namespace GiamSat.UI.Pages
                 _ft01 = res.Data.ToList();
 
                 _ovenInfo = JsonConvert.DeserializeObject<OvensInfo>(_ft01.FirstOrDefault().C001).FirstOrDefault(x => x.Id == _ovenId);
-                _profile = _ovenInfo.Profiles;
             }
             catch (Exception ex)
             {
@@ -73,7 +162,6 @@ namespace GiamSat.UI.Pages
                 _ft01 = res.Data.ToList();
 
                 _ovenInfo = JsonConvert.DeserializeObject<OvensInfo>(res.Data.FirstOrDefault().C001).FirstOrDefault(x => x.Id == _ovenId);
-                _profile = _ovenInfo.Profiles;
             }
             catch (Exception ex)
             {
@@ -99,9 +187,9 @@ namespace GiamSat.UI.Pages
 
                 #region cập nhật lại các thông số của oven được chọn để
                 var ovenUpdate = ovensInfo.FirstOrDefault(x => x.Id == _ovenId);
-                ovenUpdate.Name=arg.Name;
-                ovenUpdate.Path=arg.Path;
-                ovenUpdate.Profiles=arg.Profiles;
+                ovenUpdate.Name = arg.Name;
+                ovenUpdate.Path = arg.Path;
+                ovenUpdate.Profiles = arg.Profiles;
                 #endregion
 
                 model.C001 = JsonConvert.SerializeObject(ovensInfo);
@@ -125,7 +213,7 @@ namespace GiamSat.UI.Pages
                 {
                     Severity = NotificationSeverity.Success,
                     Summary = "Success",
-                    Detail = "Cập nhật thành công",
+                    Detail = "Cập nhật thành công.",
                     Duration = 4000
                 });
             }
