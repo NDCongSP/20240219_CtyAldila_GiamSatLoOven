@@ -82,10 +82,113 @@ namespace GiamSat.Scada
             {
                 var para = new DynamicParameters();
 
+                Loop:
                 var ft01 = con.Query<FT01>("sp_FT01GetAll", commandType: CommandType.StoredProcedure).ToList();
 
                 if (ft01.Count <= 0)
-                    return;
+                {
+                    #region khoi tao data
+                    var c = new ConfigModel()
+                    {
+                        DeadbandAlarm = 5000,//5s
+                        Gain = 1,
+                        DataLogInterval = 5000,//5s
+                        DataLogWhenRunProfileInterval = 1000//1s
+                        ,
+                        DisplayRealtimeInterval = 1000
+                        ,
+                        RefreshInterval = 1000
+                        ,
+                        ChartRefreshInterval = 1000
+                        ,
+                        ChartPointNum = 30
+                        ,Smooth=true
+                        ,ShowDataLabels = true
+                        ,ShowMarkers = true
+                    };
+
+                    OvensInfo ov = new OvensInfo();
+
+                    for (int i = 1; i <= 13; i++)
+                    {
+                        var steps = new List<StepModel>();
+                        steps.Add(new StepModel()
+                        {
+                            Id = 1,
+                            StepType = EnumProfileStepType.RampTime,
+                            Hours = 1,
+                            Minutes = 30,
+                            Seconds = 1,
+                            SetPoint = 170
+                        });
+                        steps.Add(new StepModel()
+                        {
+                            Id = 2,
+                            StepType = EnumProfileStepType.Soak,
+                            Hours = 0,
+                            Minutes = 50,
+                            Seconds = 10,
+                            SetPoint = 171
+                        });
+                        steps.Add(new StepModel()
+                        {
+                            Id = 3,
+                            StepType = EnumProfileStepType.End,
+                            Hours = 0,
+                            Minutes = 0,
+                            Seconds = 0,
+                            SetPoint = 0
+                        });
+
+                        var profiles = new List<ProfileModel>();
+                        profiles.Add(new ProfileModel()
+                        {
+                            Id = 1,
+                            Name = $"Profile 1",
+                            Steps = steps
+                        });
+
+                        var chanel = i <= 5 ? 1 : i > 5 && i <= 10 ? 2 : 3;
+                        ov.Add(new OvenInfoModel()
+                        {
+                            Id = i,
+                            Name = $"Oven {i}",
+                            Profiles = profiles,
+                            Path = $"Local Station/Channel{chanel}/Oven{i}"
+                        });
+
+                    }
+
+                    var ft01Insert = new FT01()
+                    {
+                        Id = Guid.NewGuid(),
+                        C000 = JsonConvert.SerializeObject(c),
+                        C001 = JsonConvert.SerializeObject(ov)
+                    };
+
+                    var p = new DynamicParameters();
+                    p.Add("c000", ft01Insert.C000);
+                    p.Add("c001", ft01Insert.C001);
+
+                    var r = con.Execute("sp_FT01Insert", param: p, commandType: CommandType.StoredProcedure);
+
+                    if (r > 0) goto Loop;
+
+                        #endregion
+                        return;
+                }
+
+                if (this.InvokeRequired)
+                {
+                    this?.Invoke(new Action(() =>
+                    {
+                        _labDBServer.Text = "DB Connected";
+                    }));
+                }
+                else
+                {
+                    _labDBServer.Text = "DB Connected";
+                }
 
                 GlobalVariable.ConfigSystem = JsonConvert.DeserializeObject<ConfigModel>(ft01.FirstOrDefault().C000);
                 _ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(ft01.FirstOrDefault().C001);

@@ -27,7 +27,13 @@ namespace GiamSat.UI.Pages
                     token = success.Token;
                     login = success;
 
-                    _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Successfull", Detail = "Login OK", Duration = 4000 });
+                    _notificationService.Notify(new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Success,
+                        Summary = "Successfull",
+                        Detail = "Login OK",
+                        Duration = 4000
+                    });
                     //await InvokeAsync(StateHasChanged);
                     //StateHasChanged();
 
@@ -35,16 +41,24 @@ namespace GiamSat.UI.Pages
                 }
                 else
                 {
-                    _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Error", Detail = "Login fail", Duration = 4000 });
-
-                    StateHasChanged();
+                    _notificationService.Notify(new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Error,
+                        Summary = "Error",
+                        Detail = "Login fail",
+                        Duration = 4000
+                    });
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Error", Detail = "Login fail", Duration = 4000 });
-
-                StateHasChanged();
+                _notificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = $"Login fail: {ex.Message}",
+                    Duration = 4000
+                });
             }
         }
 

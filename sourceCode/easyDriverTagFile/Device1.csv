@@ -1,0 +1,43 @@
+Name,Address,DataType,RefreshRate,AccessPermission,Gain,Offset,Description
+SetupPage,401303,Word,100,ReadAndWrite,1,0,
+DigitalInput1Status,400202,Word,100,ReadAndWrite,1,0,
+Temperature,400101,Word,100,ReadAndWrite,1,0,400101
+ProfileNumber_CurrentStatus,404101,Word,100,ReadAndWrite,1,0,ID cua pro hien dang run
+ProfileStepNumber_CurrentStatus,404102,Word,100,ReadAndWrite,1,0,
+ProfileStepType_CurrentStatus,404103,Word,100,ReadAndWrite,1,0,
+HoursRemaining_CurrentStatus,404120,Word,100,ReadAndWrite,1,0,
+MinutesRemaining_CurrentStatus,404121,Word,100,ReadAndWrite,1,0,
+SecondsRemaining_CurrentStatus,404122,Word,100,ReadAndWrite,1,0,
+SetPointCh1_CurrentStatus,404123,Word,100,ReadAndWrite,1,0,
+EndSetPointCh1_CurrentStatus,404130,Word,100,ReadAndWrite,1,0,EndSetPointCh1
+ProfileNumber_Settings,404001,Word,100,ReadAndWrite,1,0,chon profile
+ProfileStepNumber_Settings,404002,Word,100,ReadAndWrite,1,0,Chon step number
+EditProfileAction_Settings,404003,Word,100,ReadAndWrite,1,0,
+ProfileStepType_Settings,404004,Word,100,ReadAndWrite,1,0,
+StepTimeHours_Settings,404010,Word,100,ReadAndWrite,1,0,
+StepTimeMinutes_Settings,404011,Word,100,ReadAndWrite,1,0,
+StepTimeSeconds_Settings,404012,Word,100,ReadAndWrite,1,0,
+RateValue_Settings,404044,Word,100,ReadAndWrite,1,0,
+RampSetPointChannel1_Settings,404045,Word,100,ReadAndWrite,1,0,
+RampSetPointChannel2_Settings,404046,Word,100,ReadAndWrite,1,0,
+SaveChanges_Settings,400026,Word,100,ReadAndWrite,1,0,ghi gia tri 0 de luu
+Profile1Name_C1,403501,Word,100,ReadAndWrite,1,0,
+Profile1Name_C2,403502,Word,100,ReadAndWrite,1,0,
+Profile1Name_C3,403503,Word,100,ReadAndWrite,1,0,
+Profile1Name_C4,403504,Word,100,ReadAndWrite,1,0,
+Profile1Name_C5,403505,Word,100,ReadAndWrite,1,0,
+Profile1Name_C6,403506,Word,100,ReadAndWrite,1,0,
+Profile1Name_C7,403507,Word,100,ReadAndWrite,1,0,
+Profile1Name_C8,403508,Word,100,ReadAndWrite,1,0,
+Profile1Name_C9,403509,Word,100,ReadAndWrite,1,0,
+Profile1Name_C10,403510,Word,100,ReadAndWrite,1,0,
+Profile2Name_C1,403511,Word,100,ReadAndWrite,1,0,
+Profile2Name_C2,403512,Word,100,ReadAndWrite,1,0,
+Profile2Name_C3,403513,Word,100,ReadAndWrite,1,0,
+Profile2Name_C4,403514,Word,100,ReadAndWrite,1,0,
+Profile2Name_C5,403515,Word,100,ReadAndWrite,1,0,
+Profile2Name_C6,403516,Word,100,ReadAndWrite,1,0,
+Profile2Name_C7,403517,Word,100,ReadAndWrite,1,0,
+Profile2Name_C8,403518,Word,100,ReadAndWrite,1,0,
+Profile2Name_C9,403519,Word,100,ReadAndWrite,1,0,
+Profile2Name_C10,403520,Word,100,ReadAndWrite,1,0,

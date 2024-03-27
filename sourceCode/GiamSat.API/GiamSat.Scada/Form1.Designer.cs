@@ -33,6 +33,7 @@ namespace GiamSat.Scada
             this.easyDriverConnector1 = new EasyScada.Winforms.Controls.EasyDriverConnector(this.components);
             this._pnStatus = new System.Windows.Forms.Panel();
             this._labTime = new System.Windows.Forms.Label();
+            this._labDBServer = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.easyDriverConnector1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -66,11 +67,22 @@ namespace GiamSat.Scada
             this._labTime.TabIndex = 2;
             this._labTime.Text = "DateTime";
             // 
+            // _labDBServer
+            // 
+            this._labDBServer.AutoSize = true;
+            this._labDBServer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._labDBServer.Location = new System.Drawing.Point(30, 402);
+            this._labDBServer.Name = "_labDBServer";
+            this._labDBServer.Size = new System.Drawing.Size(116, 20);
+            this._labDBServer.TabIndex = 3;
+            this._labDBServer.Text = "DB Disconnect";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(956, 444);
+            this.Controls.Add(this._labDBServer);
             this.Controls.Add(this._labTime);
             this.Controls.Add(this._pnStatus);
             this.Name = "Form1";
@@ -86,6 +98,7 @@ namespace GiamSat.Scada
         private EasyScada.Winforms.Controls.EasyDriverConnector easyDriverConnector1;
         private System.Windows.Forms.Panel _pnStatus;
         private System.Windows.Forms.Label _labTime;
+        private System.Windows.Forms.Label _labDBServer;
     }
 }
 

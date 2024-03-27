@@ -43,82 +43,82 @@ namespace GiamSat.API
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(GlobalVariable.ConString));
 
             #region khoi tao data
-            var c = new ConfigModel()
-            {
-                DeadbandAlarm = 5000,//5s
-                Gain = 1,
-                DataLogInterval = 5000,//5s
-                DataLogWhenRunProfileInterval = 1000//1s
-                ,
-                DisplayRealtimeInterval = 1000
-                ,
-                RefreshInterval = 1000
-                ,
-                ChartRefreshInterval = 1000
-                ,
-                ChartPointNum = 30
-            };
+            //var c = new ConfigModel()
+            //{
+            //    DeadbandAlarm = 5000,//5s
+            //    Gain = 1,
+            //    DataLogInterval = 5000,//5s
+            //    DataLogWhenRunProfileInterval = 1000//1s
+            //    ,
+            //    DisplayRealtimeInterval = 1000
+            //    ,
+            //    RefreshInterval = 1000
+            //    ,
+            //    ChartRefreshInterval = 1000
+            //    ,
+            //    ChartPointNum = 30
+            //};
 
-            OvensInfo ov = new OvensInfo();
+            //OvensInfo ov = new OvensInfo();
 
-            for (int i = 1; i <= 13; i++)
-            {
-                var steps = new List<StepModel>();
-                steps.Add(new StepModel()
-                {
-                    Id = 1,
-                    StepType = EnumProfileStepType.RampTime,
-                    Hours = 1,
-                    Minutes = 30,
-                    Seconds = 1,
-                    SetPoint = 170
-                });
-                steps.Add(new StepModel()
-                {
-                    Id = 2,
-                    StepType = EnumProfileStepType.Soak,
-                    Hours = 0,
-                    Minutes = 50,
-                    Seconds = 10,
-                    SetPoint = 171
-                });
-                steps.Add(new StepModel()
-                {
-                    Id = 3,
-                    StepType = EnumProfileStepType.End,
-                    Hours = 0,
-                    Minutes = 0,
-                    Seconds = 0,
-                    SetPoint = 0
-                });
+            //for (int i = 1; i <= 13; i++)
+            //{
+            //    var steps = new List<StepModel>();
+            //    steps.Add(new StepModel()
+            //    {
+            //        Id = 1,
+            //        StepType = EnumProfileStepType.RampTime,
+            //        Hours = 1,
+            //        Minutes = 30,
+            //        Seconds = 1,
+            //        SetPoint = 170
+            //    });
+            //    steps.Add(new StepModel()
+            //    {
+            //        Id = 2,
+            //        StepType = EnumProfileStepType.Soak,
+            //        Hours = 0,
+            //        Minutes = 50,
+            //        Seconds = 10,
+            //        SetPoint = 171
+            //    });
+            //    steps.Add(new StepModel()
+            //    {
+            //        Id = 3,
+            //        StepType = EnumProfileStepType.End,
+            //        Hours = 0,
+            //        Minutes = 0,
+            //        Seconds = 0,
+            //        SetPoint = 0
+            //    });
 
-                var profiles = new List<ProfileModel>();
-                profiles.Add(new ProfileModel()
-                {
-                    Id = 1,
-                    Name = $"Profile {i}",
-                    Steps = steps
-                });
+            //    var profiles = new List<ProfileModel>();
+            //    profiles.Add(new ProfileModel()
+            //    {
+            //        Id = 1,
+            //        Name = $"Profile {i}",
+            //        Steps = steps
+            //    });
 
-                var chanel = i <= 5 ? 1 : i > 5 && i <= 10 ? 2 : 3;
-                ov.Add(new OvenInfoModel()
-                {
-                    Id = i,
-                    Name = $"Oven {i}",
-                    Profiles = profiles,
-                    Path = $"Local Station/Channel{chanel}/Oven{i}"
-                });
+            //    var chanel = i <= 5 ? 1 : i > 5 && i <= 10 ? 2 : 3;
+            //    ov.Add(new OvenInfoModel()
+            //    {
+            //        Id = i,
+            //        Name = $"Oven {i}",
+            //        Profiles = profiles,
+            //        Path = $"Local Station/Channel{chanel}/Oven{i}"
+            //    });
 
-            }
+            //}
 
-            var ft01 = new FT01()
-            {
-                Id = Guid.NewGuid(),
-                C000 = JsonConvert.SerializeObject(c),
-                C001 = JsonConvert.SerializeObject(ov)
-            };
+            //var ft01 = new FT01()
+            //{
+            //    Id = Guid.NewGuid(),
+            //    C000 = JsonConvert.SerializeObject(c),
+            //    C001 = JsonConvert.SerializeObject(ov)
+            //};
 
-            var con = JsonConvert.SerializeObject(ft01);
+            //var con = JsonConvert.SerializeObject(ft01);
 
             //var d = new RealtimeDisplays();
 
