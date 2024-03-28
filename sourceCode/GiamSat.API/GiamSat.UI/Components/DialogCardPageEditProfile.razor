@@ -22,21 +22,21 @@
             <RadzenStack>
                 <RadzenFieldset Text="Steps">
                     <RadzenStack Orientation="Orientation.Vertical" Gap="1rem">
-                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End" Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-mt-2">
+                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-mt-2">
                             <RadzenButton Click=@(args => AddNewItem(_profileInfo.Id)) Variant="Variant.Flat" Shade="Shade.Dark"
                                           Text="Thêm Step" Icon="add_circle" ButtonStyle="ButtonStyle.Dark" />
                         </RadzenStack>
                         <RadzenDataGrid @ref="_stepGrid" Data="_profileInfo.Steps" TItem="StepModel" AllowFiltering="true" FilterPopupRenderMode="PopupRenderMode.OnDemand" AllowPaging="true" PageSize="5" AllowSorting="true">
                             <Columns>
                                 <RadzenDataGridColumn TItem="StepModel" Property="Id" Title="Id" />
-                                <RadzenDataGridColumn TItem="StepModel" Property="StepType" Title="Tên" />
+                                <RadzenDataGridColumn TItem="StepModel" Property="StepType" Title="Tên bước chạy" />
                                 <RadzenDataGridColumn TItem="StepModel" Property="SetPoint" Title="Nhiệt độ cài (oC)" />
                                 <RadzenDataGridColumn TItem="StepModel" Property="Hours" Title="Giờ" />
                                 <RadzenDataGridColumn TItem="StepModel" Property="Minutes" Title="Phút" />
                                 <RadzenDataGridColumn TItem="StepModel" Property="Seconds" Title="Giây" />
                                 <RadzenDataGridColumn TItem="StepModel" Filterable="false" Sortable="true" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
                                     <Template Context="data">
-                                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => OpenItem(data.Id))" @onclick:stopPropagation="true">
+                                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => OpenItem(_profileInfo.Id, data.Id))" @onclick:stopPropagation="true">
                                         </RadzenButton>
                                         <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteItem(data.Id))" @onclick:stopPropagation="true">
                                         </RadzenButton>

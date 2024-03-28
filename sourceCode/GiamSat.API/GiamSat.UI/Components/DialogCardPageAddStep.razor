@@ -1,0 +1,63 @@
+﻿@page "/dialogcardPageAddStep/{StepID}"
+@using GiamSat.Models
+
+<RadzenTemplateForm Data="@_stepInfo" Submit="@((StepModel args) => { Submit(args); })">
+    <RadzenRow Gap="2rem" Class="rz-p-0 rz-p-lg-4">
+        <RadzenColumn SizeXS="12" SizeMD="12">
+            <RadzenStack>
+                <RadzenFieldset Text="Cài đặt bước">
+                    <RadzenStack Gap="1rem">
+                        <RadzenRow AlignItems="AlignItems.Center">
+                            <RadzenColumn SizeXS=12 SizeSM="4">
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">ID bước</RadzenText>
+                                <RadzenNumeric @bind-Value=@_stepInfo.Id TextAlign="TextAlign.Right"
+                                               InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"
+                                               Style="width:100%" />
+                            </RadzenColumn>
+                            <RadzenColumn SizeXS=12 SizeSM="4">
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Tên bước chạy</RadzenText>
+                                <RadzenDropDown @bind-Value="@_stepInfo.StepType" TextProperty="Text" ValueProperty="Value"
+                                                InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "buttons justify content" }})"
+                                                Data="@(Enum.GetValues(typeof(EnumProfileStepType)).Cast<EnumProfileStepType>().Select(t => new { Text = $"{t}", Value = t }))"
+                                                Size="ButtonSize.Small" Style="width:100%" />
+                            </RadzenColumn>
+                            <RadzenColumn SizeXS=12 SizeSM="4">
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Ngưỡng nhiệt độ</RadzenText>
+                                <RadzenNumeric @bind-Value=@_stepInfo.SetPoint TextAlign="TextAlign.Right"
+                                               InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"
+                                               Style="width:100%" />
+                            </RadzenColumn>
+                        </RadzenRow>
+                        <RadzenFieldset Text="Thời gian chạy">
+                            <RadzenRow AlignItems="AlignItems.Center">
+                                <RadzenColumn SizeXS=12 SizeSM="4">
+                                    <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Giờ</RadzenText>
+                                    <RadzenNumeric @bind-Value=@_stepInfo.Hours TextAlign="TextAlign.Right"
+                                                   InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"
+                                                   Style="width:100%" />
+                                </RadzenColumn>
+                                <RadzenColumn SizeXS=12 SizeSM="4">
+                                    <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Phút</RadzenText>
+                                    <RadzenNumeric @bind-Value=@_stepInfo.Minutes TextAlign="TextAlign.Right"
+                                                   InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"
+                                                   Style="width:100%" />
+                                </RadzenColumn>
+                                <RadzenColumn SizeXS=12 SizeSM="4">
+                                    <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Giây</RadzenText>
+                                    <RadzenNumeric @bind-Value=@_stepInfo.Seconds TextAlign="TextAlign.Right"
+                                                   InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})"
+                                                   Style="width:100%" />
+                                </RadzenColumn>
+                            </RadzenRow>
+                        </RadzenFieldset>
+                    </RadzenStack>
+                </RadzenFieldset>
+            </RadzenStack>
+        </RadzenColumn>
+    </RadzenRow>
+
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
+        <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Lưu" />
+        @* <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Large" Icon="cancel" Text="Cancel" Click="@Cancel" /> *@
+    </RadzenStack>
+</RadzenTemplateForm>

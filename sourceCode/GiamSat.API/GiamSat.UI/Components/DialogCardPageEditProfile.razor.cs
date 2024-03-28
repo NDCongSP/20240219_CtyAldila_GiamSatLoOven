@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.InkML;
 using GiamSat.APIClient;
 using GiamSat.Models;
@@ -13,12 +14,11 @@ namespace GiamSat.UI.Components
     public partial class DialogCardPageEditProfile
     {
         [Parameter]
-        public APIClient.FT01 Model { get; set; }
-        [Parameter]
         public int OvenId { get; set; }
         [Parameter] public int ProfileId { get; set; }
-        
-        
+
+        private APIClient.FT01 _ft01 = new APIClient.FT01();
+
         private ProfileModel _profileInfo = new ProfileModel();
 
         RadzenDataGrid<StepModel> _stepGrid;
@@ -28,58 +28,96 @@ namespace GiamSat.UI.Components
         {
             await base.OnInitializedAsync();
 
-            //order = dbContext.Orders.Where(o => o.OrderID == OrderID)
-            //.Include("Customer")
-            //                  .Include("Employee").FirstOrDefault();
+            RefreshData();
+        }
 
-            //orderDetails = dbContext.OrderDetails.Include("Order").ToList();
+        async void RefreshData()
+        {
+            try
+            {
+                var res = await _ft01Client.GetAllAsync();
 
-            var ovensInfo=JsonConvert.DeserializeObject<OvensInfo>(Model.C001);
-            var ovenInfo=ovensInfo.FirstOrDefault(x=>x.Id==OvenId);
-            _profileInfo = ovenInfo.Profiles.FirstOrDefault(x=>x.Id==ProfileId);
+                if (!res.Succeeded)
+                {
+                    _notificationService.Notify(new NotificationMessage()
+                    {
+                        Severity = NotificationSeverity.Error,
+                        Summary = "Error",
+                        Detail = "Không có dữu liệu",
+                        Duration = 4000
+                    });
+                    return;
+                }
+
+                _ft01 = res.Data.ToList().FirstOrDefault();
+
+                var ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(_ft01.C001);
+                var ovenInfo = ovensInfo.FirstOrDefault(x => x.Id == OvenId);
+                _profileInfo = ovenInfo.Profiles.FirstOrDefault(x => x.Id == ProfileId);
+            }
+            catch (Exception ex)
+            {
+                _notificationService.Notify(new NotificationMessage()
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = ex.Message,
+                    Detail = ex.StackTrace,
+                    Duration = 40000
+                });
+                return;
+            }
+
+            StateHasChanged();
         }
 
         async void Submit(ProfileModel arg)
         {
             try
             {
+                var confirm = await _dialogService.Confirm("Bạn chắc chắn muốn lưu thông tin?", "Cập nhật profile", new ConfirmOptions()
+                {
+                    OkButtonText = "Yes",
+                    CancelButtonText = "No",
+                    AutoFocusFirstElement = true,
+                });
+
+                if (confirm == null || confirm == false) return;
+
                 //lấy ra list tất cả các lò Oven
-                var ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(Model.C001);
+                var ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(_ft01.C001);
 
-                //#region cập nhật lại các thông số của oven được chọn để
                 var ovenUpdate = ovensInfo.FirstOrDefault(x => x.Id == OvenId);
-                var profiInfo=ovenUpdate.Profiles.FirstOrDefault(x=>x.Id == ProfileId);
+                var profileInfo = ovenUpdate.Profiles.FirstOrDefault(x => x.Id == ProfileId);
+                profileInfo.Name = arg.Name;
+                profileInfo.Steps = arg.Steps;
 
+                _ft01.C001 = JsonConvert.SerializeObject(ovensInfo);
 
-                //    ovenUpdate.Name = arg.Name;
-                //    ovenUpdate.Path = arg.Path;
-                //    ovenUpdate.Profiles = arg.Profiles;
-                //    #endregion
+                var res = await _ft01Client.UpdateAsync(_ft01);
 
-                //    Model.C001 = JsonConvert.SerializeObject(ovensInfo);
+                if (!res.Succeeded)
+                {
+                    _notificationService.Notify(new NotificationMessage()
+                    {
+                        Severity = NotificationSeverity.Error,
+                        Summary = "Error",
+                        Detail = "Cập nhật thất bại.",
+                        Duration = 4000
+                    });
 
-                //    var res = await _ft01Client.UpdateAsync(Model);
+                    return;
+                }
 
-                //    if (!res.Succeeded)
-                //    {
-                //        _notificationService.Notify(new NotificationMessage()
-                //        {
-                //            Severity = NotificationSeverity.Error,
-                //            Summary = "Error",
-                //            Detail = "Cập nhật thất bại.",
-                //            Duration = 4000
-                //        });
+                _notificationService.Notify(new NotificationMessage()
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Success",
+                    Detail = "Cập nhật thành công.",
+                    Duration = 4000
+                });
 
-                //        return;
-                //    }
-
-                //    _notificationService.Notify(new NotificationMessage()
-                //    {
-                //        Severity = NotificationSeverity.Success,
-                //        Summary = "Success",
-                //        Detail = "Cập nhật thành công.",
-                //        Duration = 4000
-                //    });
+                _dialogService.Close("Success");
+                //RefreshData();
             }
             catch (Exception ex)
             {
@@ -94,72 +132,86 @@ namespace GiamSat.UI.Components
             }
         }
 
-        async    void AddNewItem(int profileId)
+        async void AddNewItem(int profileId)
         {
+            var res = await _dialogService.OpenAsync<DialogCardPageAddStep>($"Thêm bước chạy cho profile Id: {profileId}",
+                    new Dictionary<string, object>() { { "Model", _ft01 }, { "OvenId", OvenId }, { "ProfileID", profileId }, { "StepId", 0 } },
+                    new DialogOptions() { Width = "1000px", Height = "500px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true });
 
+            if (res == "Success")
+            {
+                RefreshData();
+            }
         }
-        async Task OpenItem(int profileId)
+        async Task OpenItem(int profileId, int stepId)
         {
-            //var model = _ft01.FirstOrDefault();
-            //await _dialogService.OpenAsync<DialogCardPageEditProfile>($"Chỉnh sửa profile: {profileId}",
-            //      new Dictionary<string, object>() { { "Model", model }, { "OvenId", _ovenId }, { "ProfileID", profileId } },
-            //      new DialogOptions() { Width = "700px", Height = "520px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true });
+            var res = await _dialogService.OpenAsync<DialogCardPageAddStep>($"Sửa bước chạy Id: {stepId}",
+                     new Dictionary<string, object>() { { "Model", _ft01 }, { "OvenId", OvenId }, { "ProfileID", profileId }, { "StepId", stepId } },
+                     new DialogOptions() { Width = "1000px", Height = "500px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true });
+
+            if (res == "Success")
+            {
+                RefreshData();
+            }
         }
 
-        async Task DeleteItem(int profileId)
+        async Task DeleteItem(int stepId)
         {
-            //try
-            //{
-            //    var model = _ft01.FirstOrDefault();
-            //    var ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(model.C001);
-            //    var ovenUpdate = ovensInfo.FirstOrDefault(x => x.Id == _ovenId);
-            //    var profile = ovenUpdate.Profiles.Where(x => x.Id == profileId).FirstOrDefault();
+            try
+            {
+                var ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(_ft01.C001);
+                var ovenUpdate = ovensInfo.FirstOrDefault(x => x.Id == OvenId);
+                var profile = ovenUpdate.Profiles.Where(x => x.Id == _profileInfo.Id).FirstOrDefault();
+                var step = profile.Steps.FirstOrDefault(x => x.Id == stepId);
 
-            //    var confirm = await _dialogService.Confirm($"Bạn chắc chắn muốn xóa profile {profile.Name}", "Xóa profile", new ConfirmOptions()
-            //    {
-            //        OkButtonText = "Yes",
-            //        CancelButtonText = "No",
-            //    });
+                var confirm = await _dialogService.Confirm($"Bạn chắc chắn muốn xóa profile {profile.Name}", "Xóa profile"
+                    , new ConfirmOptions()
+                    {
+                        OkButtonText = "Yes",
+                        CancelButtonText = "No",
+                        AutoFocusFirstElement = true,
+                    });
 
-            //    if (confirm == false) return;
+                if (confirm == null || confirm == false) return;
 
-            //    ovenUpdate.Profiles.Remove(profile);
-            //    model.C001 = JsonConvert.SerializeObject(ovensInfo);
-            //    var res = await _ft01Client.UpdateAsync(model);
-            //    if (!res.Succeeded)
-            //    {
-            //        _notificationService.Notify(new NotificationMessage()
-            //        {
-            //            Severity = NotificationSeverity.Error,
-            //            Summary = "Error",
-            //            Detail = "Cập nhật thất bại.",
-            //            Duration = 4000
-            //        });
-            //        return;
-            //    }
+                profile.Steps.Remove(step);
+                _ft01.C001 = JsonConvert.SerializeObject(ovensInfo);
+                var res = await _ft01Client.UpdateAsync(_ft01);
 
-            //    _notificationService.Notify(new NotificationMessage()
-            //    {
-            //        Severity = NotificationSeverity.Success,
-            //        Summary = "Success",
-            //        Detail = "Cập nhật thành công.",
-            //        Duration = 4000
-            //    });
+                if (!res.Succeeded)
+                {
+                    _notificationService.Notify(new NotificationMessage()
+                    {
+                        Severity = NotificationSeverity.Error,
+                        Summary = "Error",
+                        Detail = "Cập nhật thất bại.",
+                        Duration = 4000
+                    });
+                    return;
+                }
 
-            //    RefreshData();
-            //}
-            //catch (Exception ex)
-            //{
-            //    _notificationService.Notify(new NotificationMessage()
-            //    {
-            //        Severity = NotificationSeverity.Error,
-            //        Summary = "Error",
-            //        Detail = ex.Message,
-            //        Duration = 4000
-            //    });
+                _notificationService.Notify(new NotificationMessage()
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Success",
+                    Detail = "Cập nhật thành công.",
+                    Duration = 4000
+                });
 
-            //    return;
-            //}
+                RefreshData();
+            }
+            catch (Exception ex)
+            {
+                _notificationService.Notify(new NotificationMessage()
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = ex.Message,
+                    Duration = 4000
+                });
+
+                return;
+            }
         }
     }
 }

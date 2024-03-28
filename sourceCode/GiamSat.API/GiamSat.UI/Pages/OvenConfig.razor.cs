@@ -28,9 +28,14 @@ namespace GiamSat.UI.Pages
         async Task OpenItem(int profileId)
         {
             var model = _ft01.FirstOrDefault();
-            await _dialogService.OpenAsync<DialogCardPageEditProfile>($"Chỉnh sửa profile ID: {profileId}",
-                  new Dictionary<string, object>() { { "Model", model }, { "OvenId", _ovenId }, { "ProfileID", profileId } },
-                  new DialogOptions() { Width = "1500px", Height = "700px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true });
+            var res = await _dialogService.OpenAsync<DialogCardPageEditProfile>($"Chỉnh sửa profile ID: {profileId}",
+                    new Dictionary<string, object>() { { "OvenId", _ovenId }, { "ProfileID", profileId } },
+                    new DialogOptions() { Width = "1000px", Height = "750px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true });
+
+            if (res == "Success")
+            {
+                RefreshData();
+            }
         }
 
         async Task DeleteItem(int profileId)
@@ -46,9 +51,10 @@ namespace GiamSat.UI.Pages
                 {
                     OkButtonText = "Yes",
                     CancelButtonText = "No",
+                    AutoFocusFirstElement = true,
                 });
 
-                if (confirm == false) return;
+                if (confirm == null || confirm == false) return;
 
                 ovenUpdate.Profiles.Remove(profile);
                 model.C001 = JsonConvert.SerializeObject(ovensInfo);
@@ -96,10 +102,11 @@ namespace GiamSat.UI.Pages
                 var confirm = await _dialogService.Confirm("Bạn chắc chắn muốn thêm profile?", "Tạo mới profile", new ConfirmOptions()
                 {
                     OkButtonText = "Yes",
-                    CancelButtonText = "No"
+                    CancelButtonText = "No",
+                    AutoFocusFirstElement = true,
                 });
 
-                if (confirm == false) return;
+                if (confirm == null || confirm == false) return;
 
                 var model = _ft01.FirstOrDefault();
 
@@ -218,6 +225,15 @@ namespace GiamSat.UI.Pages
         {
             try
             {
+                var confirm = await _dialogService.Confirm("Bạn chắc chắn muốn lưu thông tin?", "Lưu thông tin", new ConfirmOptions()
+                {
+                    OkButtonText = "Yes",
+                    CancelButtonText = "No",
+                    AutoFocusFirstElement = true,
+                });
+
+                if (confirm == null || confirm == false) return;
+
                 var model = _ft01.FirstOrDefault();
 
                 //lấy ra list tất cả các lò Oven
@@ -254,6 +270,8 @@ namespace GiamSat.UI.Pages
                     Detail = "Cập nhật thành công.",
                     Duration = 4000
                 });
+
+                RefreshData();
             }
             catch (Exception ex)
             {
