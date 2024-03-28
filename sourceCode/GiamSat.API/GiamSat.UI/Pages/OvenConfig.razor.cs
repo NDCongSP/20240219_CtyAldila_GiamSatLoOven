@@ -23,14 +23,16 @@ namespace GiamSat.UI.Pages
         private int _ovenId = 0;
 
         RadzenDataGrid<ProfileModel> _profileGrid;
-
+        IEnumerable<int> _pageSizeOptions = new int[] { 5, 10, 20, 30};
+        bool _showPagerSummary = true;
+        string _pagingSummaryFormat = "Displaying page {0} of {1} <b>(total {2} records)</b>";
 
         async Task OpenItem(int profileId)
         {
             var model = _ft01.FirstOrDefault();
             var res = await _dialogService.OpenAsync<DialogCardPageEditProfile>($"Chỉnh sửa profile ID: {profileId}",
                     new Dictionary<string, object>() { { "OvenId", _ovenId }, { "ProfileID", profileId } },
-                    new DialogOptions() { Width = "1000px", Height = "750px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true });
+                    new DialogOptions() { Width = "1200px", Height = "880px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true });
 
             if (res == "Success")
             {

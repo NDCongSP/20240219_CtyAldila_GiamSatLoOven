@@ -40,7 +40,8 @@
                                                   Text="Thêm profile" Icon="add_circle" ButtonStyle="ButtonStyle.Dark" />
                                 </RadzenStack>
                                 <RadzenDataGrid @ref="_profileGrid" AllowFiltering="true" FilterPopupRenderMode="PopupRenderMode.OnDemand" AllowPaging="true" PageSize="5" AllowSorting="true"
-                                                Data="@_ovenInfo.Profiles" TItem="ProfileModel">
+                                                Data="@_ovenInfo.Profiles" TItem="ProfileModel"
+                                                ShowPagingSummary=@_showPagerSummary PagingSummaryFormat="@_pagingSummaryFormat" PageSizeOptions="@_pageSizeOptions">
                                     <Columns>
                                         <RadzenDataGridColumn TItem="ProfileModel" Property="Id" Title="Id" />
                                         <RadzenDataGridColumn TItem="ProfileModel" Property="Name" Title="Tên" />

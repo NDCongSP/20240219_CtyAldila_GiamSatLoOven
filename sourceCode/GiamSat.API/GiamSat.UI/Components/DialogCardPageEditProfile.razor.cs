@@ -22,7 +22,9 @@ namespace GiamSat.UI.Components
         private ProfileModel _profileInfo = new ProfileModel();
 
         RadzenDataGrid<StepModel> _stepGrid;
-
+        IEnumerable<int> _pageSizeOptions = new int[] { 5, 10, 20, 30 };
+        bool _showPagerSummary = true;
+        string _pagingSummaryFormat = "Displaying page {0} of {1} <b>(total {2} records)</b>";
 
         protected override async Task OnInitializedAsync()
         {
@@ -136,7 +138,7 @@ namespace GiamSat.UI.Components
         {
             var res = await _dialogService.OpenAsync<DialogCardPageAddStep>($"Thêm bước chạy cho profile Id: {profileId}",
                     new Dictionary<string, object>() { { "Model", _ft01 }, { "OvenId", OvenId }, { "ProfileID", profileId }, { "StepId", 0 } },
-                    new DialogOptions() { Width = "1000px", Height = "500px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true });
+                    new DialogOptions() { Width = "1200px", Height = "470px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true });
 
             if (res == "Success")
             {
@@ -147,7 +149,7 @@ namespace GiamSat.UI.Components
         {
             var res = await _dialogService.OpenAsync<DialogCardPageAddStep>($"Sửa bước chạy Id: {stepId}",
                      new Dictionary<string, object>() { { "Model", _ft01 }, { "OvenId", OvenId }, { "ProfileID", profileId }, { "StepId", stepId } },
-                     new DialogOptions() { Width = "1000px", Height = "500px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true });
+                     new DialogOptions() { Width = "1200px", Height = "470px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true });
 
             if (res == "Success")
             {

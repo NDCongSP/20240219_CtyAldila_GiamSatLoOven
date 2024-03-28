@@ -26,10 +26,12 @@
                             <RadzenButton Click=@(args => AddNewItem(_profileInfo.Id)) Variant="Variant.Flat" Shade="Shade.Dark"
                                           Text="Thêm Step" Icon="add_circle" ButtonStyle="ButtonStyle.Dark" />
                         </RadzenStack>
-                        <RadzenDataGrid @ref="_stepGrid" Data="_profileInfo.Steps" TItem="StepModel" AllowFiltering="true" FilterPopupRenderMode="PopupRenderMode.OnDemand" AllowPaging="true" PageSize="5" AllowSorting="true">
+                        <RadzenDataGrid @ref="_stepGrid" Data="_profileInfo.Steps" TItem="StepModel" AllowFiltering="true" FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                                        AllowPaging="true" PageSize="5" AllowSorting="true"
+                                        ShowPagingSummary=@_showPagerSummary PagingSummaryFormat="@_pagingSummaryFormat" PageSizeOptions="@_pageSizeOptions">
                             <Columns>
                                 <RadzenDataGridColumn TItem="StepModel" Property="Id" Title="Id" />
-                                <RadzenDataGridColumn TItem="StepModel" Property="StepType" Title="Tên bước chạy" />
+                                <RadzenDataGridColumn TItem="StepModel" Property="StepType" Title="Kiểu bước chạy" />
                                 <RadzenDataGridColumn TItem="StepModel" Property="SetPoint" Title="Nhiệt độ cài (oC)" />
                                 <RadzenDataGridColumn TItem="StepModel" Property="Hours" Title="Giờ" />
                                 <RadzenDataGridColumn TItem="StepModel" Property="Minutes" Title="Phút" />
