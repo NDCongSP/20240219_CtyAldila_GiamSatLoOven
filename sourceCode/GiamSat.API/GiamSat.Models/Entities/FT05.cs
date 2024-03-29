@@ -16,8 +16,19 @@ namespace GiamSat.Models
     {
         [Key]
         public Guid Id { get; set; }
+        #region Các thông số của mẻ nung
         public int OvenId { get; set; }
         public string OvenName { get; set; }
+        public int ProfileId { get; set; }
+        public string ProfileName { get; set; }
+        public int StepId { get; set; }
+        public string StepName { get; set; }
+        public double Setpoint { get; set; }
+        public int Hours { get; set; }
+        public int Minutes { get; set; }
+        public int Seconds { get; set; }
+        #endregion
+        public double Temperature { get; set; }
         public string? Description { get; set; }
         public int ACK { get; set; } = 0;
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]

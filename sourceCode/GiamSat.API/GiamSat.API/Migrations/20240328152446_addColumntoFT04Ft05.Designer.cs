@@ -4,6 +4,7 @@ using GiamSat.API;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GiamSat.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240328152446_addColumntoFT04Ft05")]
+    partial class addColumntoFT04Ft05
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,7 +45,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT01", (string)null);
+                    b.ToTable("FT01");
                 });
 
             modelBuilder.Entity("GiamSat.Models.FT02", b =>
@@ -65,7 +68,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT02", (string)null);
+                    b.ToTable("FT02");
                 });
 
             modelBuilder.Entity("GiamSat.Models.FT03", b =>
@@ -94,7 +97,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT03", (string)null);
+                    b.ToTable("FT03");
                 });
 
             modelBuilder.Entity("GiamSat.Models.FT04", b =>
@@ -153,7 +156,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT04", (string)null);
+                    b.ToTable("FT04");
                 });
 
             modelBuilder.Entity("GiamSat.Models.FT05", b =>
@@ -212,7 +215,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT05", (string)null);
+                    b.ToTable("FT05");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

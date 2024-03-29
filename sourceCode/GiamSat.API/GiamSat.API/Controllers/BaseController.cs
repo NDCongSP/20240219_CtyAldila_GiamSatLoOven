@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace GiamSat.API.Controllers
 {
-    //[Authorize]//không cần xét role, login vào là gọi đc API    
+    [Authorize]//không cần xét role, login vào là gọi đc API    
     [Route("api/[controller]")]
     [ApiController]
     //[ApiController,JsonifyErrors]

@@ -44,6 +44,29 @@ namespace GiamSat.API
             }
         }
 
+        public async Task<Result<List<FT03>>> GetFilter([Body]FilterModel model)
+        {
+            try
+            {
+                if (model.GetAll)
+                {
+                    var d = _context.FT03
+                        .Where<FT03>(x => x.CreatedDate >= model.FromDate && x.CreatedDate <= model.ToDate).OrderByDescending(x => x.CreatedDate).ToList();
+                    return await Result<List<FT03>>.SuccessAsync(d);
+                }
+                else
+                {
+                    var d = _context.FT03
+                       .Where<FT03>(x => x.OvenId == model.OvenId && x.CreatedDate >= model.FromDate && x.CreatedDate <= model.ToDate).OrderByDescending(x => x.CreatedDate).ToList();
+                    return await Result<List<FT03>>.SuccessAsync(d);
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Result<List<FT03>>.FailAsync(ex.Message);
+            }
+        }
+
         public async Task<Result<FT03>> Insert([Body] FT03 model)
         {
             try

@@ -8,7 +8,7 @@ namespace GiamSat.API
     public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        {
+        {            
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -25,6 +25,7 @@ namespace GiamSat.API
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            
             base.OnConfiguring(optionsBuilder);
         }
 

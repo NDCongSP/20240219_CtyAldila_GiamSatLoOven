@@ -38,7 +38,8 @@
                                 <RadzenDataGridColumn TItem="StepModel" Property="Seconds" Title="Giây" />
                                 <RadzenDataGridColumn TItem="StepModel" Filterable="false" Sortable="true" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
                                     <Template Context="data">
-                                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => OpenItem(_profileInfo.Id, data.Id))" @onclick:stopPropagation="true">
+                                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                                      Click="@(args => OpenItem(_profileInfo.Id, data.Id))" @onclick:stopPropagation="true">
                                         </RadzenButton>
                                         <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteItem(data.Id))" @onclick:stopPropagation="true">
                                         </RadzenButton>

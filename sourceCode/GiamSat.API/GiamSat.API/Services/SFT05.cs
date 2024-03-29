@@ -44,6 +44,11 @@ namespace GiamSat.API
             }
         }
 
+        public Task<Result<List<FT05>>> GetFilter([Body] FilterModel model)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Result<FT05>> Insert([Body] FT05 model)
         {
             try

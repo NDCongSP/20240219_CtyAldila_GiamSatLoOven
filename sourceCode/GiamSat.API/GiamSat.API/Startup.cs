@@ -251,6 +251,14 @@ namespace GiamSat.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            #region Migration DB
+            using var scope = app.ApplicationServices.CreateScope();
+            //create DB
+            //scope.ServiceProvider.GetService<ApplicationDbContext>().Database.EnsureCreated();
+            //create table
+            scope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
+            #endregion
+
             if (env.IsDevelopment() || env.IsProduction())
             {
                 app.UseDeveloperExceptionPage();

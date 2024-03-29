@@ -2,14 +2,7 @@
 @attribute [Authorize]
 
 <div Class="rz-p-0 rz-p-md-12">
-    <RadzenCard class="w-100 mb-4" Style="display: flex; align-items: center; gap: 0.5rem">
-        <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox>
-        <RadzenLabel Text="Smooth" Component="smooth" Style="margin-right: 1rem;" />
-        <RadzenCheckBox @bind-Value="@showDataLabels" Name="dataLabels"></RadzenCheckBox>
-        <RadzenLabel Text="Show Data Labels" Component="dataLabels" Style="margin-right: 1rem;" />
-        <RadzenCheckBox @bind-Value="@showMarkers" Name="markers"></RadzenCheckBox>
-        <RadzenLabel Text="Show Markers" Component="markers" />
-    </RadzenCard>
+   
     <RadzenChart @ref="RadzenChart" class="chart" Style="height:300px">
         @foreach(var item in _displayRealtime)
         {
