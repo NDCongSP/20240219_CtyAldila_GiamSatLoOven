@@ -100,7 +100,7 @@ namespace GiamSat.UI.Pages
         {
             await _dialogService.OpenAsync<DialogCardPageOvenDetail>($"{ovenName} details",
               new Dictionary<string, object>() { { "OvenId", ovenId } },
-              new DialogOptions() { Width = "1500px", Height = "700px", Resizable = true, Draggable = true ,CloseDialogOnOverlayClick=true}
+              new DialogOptions() { Width = "1500px", Height = "800px", Resizable = true, Draggable = true ,CloseDialogOnOverlayClick=true}
               );
         }
     }

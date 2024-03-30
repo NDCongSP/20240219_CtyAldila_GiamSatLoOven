@@ -1,7 +1,7 @@
 {
   "entryAssembly": "GiamSat.UI",
   "resources": {
-    "hash": "sha256-1Tp7eaNnFqTQM3O0Ipc+sJTliktGgzG3e9Un1R9CnZk=",
+    "hash": "sha256-WdD7A3lyvzBoDSykCjxH0JeC41vOcLSmeQPfxa8j3Ms=",
     "runtime": {
       "dotnet.7.0.14.r9qraxa684.js": "sha256-DrptWQb0Z7nrxhGsoQg7o/WX3+AnZDJ8HmIwFvAJMeo=",
       "dotnet.timezones.blat": "sha256-t5xviiOQTfAsF0UDhmcyalKiaehUmf/sqJl97tmPM0M=",
@@ -21,9 +21,9 @@
       "DeepCloner.dll": "sha256-0z32Jj39dxvhAObryD60N1OemfRoFvti9RLp8VkWXSI=",
       "DocumentFormat.OpenXml.dll": "sha256-WI0HvcDdgox9sH0Er0LEfUiwktks7Lt/9uY/l0G0iXQ=",
       "ExcelNumberFormat.dll": "sha256-18Rbjk4QJ4MeL8jN+UH69R0opm/qz8qqc32nMmLntQc=",
-      "GiamSat.APIClient.dll": "sha256-SAsQ7ja8DP/dQNFghyUrfj6pblXILsfMtBn+3BTrGDY=",
-      "GiamSat.Models.dll": "sha256-h7GJHuWzQBJdO7UzoNzJGVk0TeeuUC+Q/kLbt/7Myng=",
-      "GiamSat.UI.dll": "sha256-ysyF9+9g2wCtEERX4fYqpZPTjcc8AtXinZJQ31SdkRI=",
+      "GiamSat.APIClient.dll": "sha256-ZOfjmLC+7PNgAgAljmkXGK9lnIM1yU2zaSu8KEWQuQ8=",
+      "GiamSat.Models.dll": "sha256-rSw5PEuVMrit9JBeUjR7lqszZQ5eOKBw4wbUQbFc4/I=",
+      "GiamSat.UI.dll": "sha256-xYg7AdqDPoVIHBMqwPfub0qvTyh2DhjDa/lrMNWe6Lg=",
       "Irony.dll": "sha256-hDJwSTOExuHtGx+S1jGUSwj16IHDx6IhCCTxiZFSzL0=",
       "Microsoft.AspNetCore.Authorization.dll": "sha256-bS4VLvVtXx7OJQVuaD8Lpa79uGAGNC42NQl3Dr5ceuI=",
       "Microsoft.AspNetCore.Components.Authorization.dll": "sha256-D3yCOKbOelvTqOROw7lVFkLEcuZOkjMsWMsECVmeg7s=",

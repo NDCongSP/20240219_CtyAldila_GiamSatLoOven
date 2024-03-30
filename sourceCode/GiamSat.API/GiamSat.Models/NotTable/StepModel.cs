@@ -1,10 +1,12 @@
-﻿namespace GiamSat.Models
+﻿using System;
+
+namespace GiamSat.Models
 {
     public class StepModel
     {
         public int Id { get; set; }
         public EnumProfileStepType StepType { get; set; }
-        
+
         /// <summary>
         /// Thời gian chạy (h).
         /// </summary>

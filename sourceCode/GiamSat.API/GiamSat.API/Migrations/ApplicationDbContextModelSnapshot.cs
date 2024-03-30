@@ -42,7 +42,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT01", (string)null);
+                    b.ToTable("FT01");
                 });
 
             modelBuilder.Entity("GiamSat.Models.FT02", b =>
@@ -65,7 +65,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT02", (string)null);
+                    b.ToTable("FT02");
                 });
 
             modelBuilder.Entity("GiamSat.Models.FT03", b =>
@@ -94,7 +94,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT03", (string)null);
+                    b.ToTable("FT03");
                 });
 
             modelBuilder.Entity("GiamSat.Models.FT04", b =>
@@ -105,6 +105,9 @@ namespace GiamSat.API.Migrations
 
                     b.Property<int>("Actived")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedMachine")
                         .HasColumnType("nvarchar(max)");
@@ -139,6 +142,9 @@ namespace GiamSat.API.Migrations
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<int>("StepId")
                         .HasColumnType("int");
 
@@ -153,7 +159,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT04", (string)null);
+                    b.ToTable("FT04");
                 });
 
             modelBuilder.Entity("GiamSat.Models.FT05", b =>
@@ -212,7 +218,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT05", (string)null);
+                    b.ToTable("FT05");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

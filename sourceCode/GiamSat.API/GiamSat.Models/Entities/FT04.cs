@@ -40,6 +40,9 @@ namespace GiamSat.Models
         /// Nhiệt độ thực tế
         /// </summary>
         public double Temperature { get; set; }
+        /// <summary>
+        /// Chính là BeginTime.
+        /// </summary>
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
         public DateTime StartTime { get; set; }
         /// <summary>
@@ -49,5 +52,13 @@ namespace GiamSat.Models
         public DateTime? EndTime { get; set; }
         public int Actived { get; set; } = 1;
         public string CreatedMachine { get; set; } = Environment.MachineName;
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
+        public DateTime CreatedDate { get; set; }
+
+        /// <summary>
+        /// Trạng thái của lò.
+        /// 1-CHẠY 0-DỪNG.
+        /// </summary>
+        public int Status { get; set; }
     }
 }

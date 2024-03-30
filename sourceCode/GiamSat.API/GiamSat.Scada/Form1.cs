@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using GiamSat.Models;
 using EasyScada.Winforms.Controls;
 using System.Diagnostics;
+using System.Linq.Expressions;
 
 
 namespace GiamSat.Scada
@@ -35,7 +36,8 @@ namespace GiamSat.Scada
         private DateTime _startTime, _endTime, _startTimeDisplay, _endTimeDisplay;
         private double _totalTime = 0, _totalTimeDisplay = 0;
 
-        private Task _taskDataLog, _taskDataLogProfile;
+        private Task _taskDataLog, _taskDataLogProfile, _taskAlarm;
+
 
         #region Email
         private Email _email = new Email();
@@ -63,16 +65,20 @@ namespace GiamSat.Scada
 
             easyDriverConnector1.Started += EasyDriverConnector1_Started;
 
-            _timer.Interval = 500;
-            _timer.Enabled = true;
-            _timer.Tick += _timer_Tick;
+            //_timer.Interval = 500;
+            //_timer.Tick += _timer_Tick;
+            //_timer.Enabled = true;
 
             _startTime = _startTimeDisplay = _endTime = _endTimeDisplay = DateTime.Now;
+
             _taskDataLog = new Task(() => LogData());
             _taskDataLog.Start();
 
             //_taskDataLogProfile = new Task(() => LogDataProfile());
-            //_taskDataLog.Start();
+            //_taskDataLogProfile.Start();
+
+            //_taskAlarm = new Task(() => CheckAlarm());
+            //_taskAlarm.Start();
         }
 
         #region Methods
@@ -82,7 +88,7 @@ namespace GiamSat.Scada
             {
                 var para = new DynamicParameters();
 
-                Loop:
+            Loop:
                 var ft01 = con.Query<FT01>("sp_FT01GetAll", commandType: CommandType.StoredProcedure).ToList();
 
                 if (ft01.Count <= 0)
@@ -90,7 +96,7 @@ namespace GiamSat.Scada
                     #region khoi tao data
                     var c = new ConfigModel()
                     {
-                        DeadbandAlarm = 5000,//5s
+                        TimeTempChange = 5000,//5s
                         Gain = 1,
                         DataLogInterval = 5000,//5s
                         DataLogWhenRunProfileInterval = 1000//1s
@@ -101,10 +107,15 @@ namespace GiamSat.Scada
                         ,
                         ChartRefreshInterval = 1000
                         ,
+                        TimeCheckOvenRunStatus = 5//5s
+                        ,
                         ChartPointNum = 30
-                        ,Smooth=true
-                        ,ShowDataLabels = true
-                        ,ShowMarkers = true
+                        ,
+                        Smooth = true
+                        ,
+                        ShowDataLabels = true
+                        ,
+                        ShowMarkers = true
                     };
 
                     OvensInfo ov = new OvensInfo();
@@ -147,6 +158,12 @@ namespace GiamSat.Scada
                             Name = $"Profile 1",
                             Steps = steps
                         });
+                        profiles.Add(new ProfileModel()
+                        {
+                            Id = 2,
+                            Name = $"Profile 2",
+                            Steps = steps
+                        });
 
                         var chanel = i <= 5 ? 1 : i > 5 && i <= 10 ? 2 : 3;
                         ov.Add(new OvenInfoModel()
@@ -174,8 +191,8 @@ namespace GiamSat.Scada
 
                     if (r > 0) goto Loop;
 
-                        #endregion
-                        return;
+                    #endregion
+                    return;
                 }
 
                 if (this.InvokeRequired)
@@ -194,9 +211,13 @@ namespace GiamSat.Scada
                 _ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(ft01.FirstOrDefault().C001);
 
                 _alarmFlag = new bool[_ovensInfo.Count];
+                var index = 0;
 
                 foreach (var item in _ovensInfo)
                 {
+                    _alarmFlag[index] = false;
+                    index += 1;
+
                     _OvenId.Add(item.Id);
 
                     _dataLog.Add(new FT03()
@@ -211,11 +232,15 @@ namespace GiamSat.Scada
                         OvenName = item.Name,
                     });
 
+                    var dt = DateTime.Now;
                     _displayRealtime.Add(new RealtimeDisplayModel()
                     {
                         OvenId = item.Id,
                         OvenName = item.Name,
-                        Path = item.Path
+                        Path = item.Path,
+                        StartTime = dt,
+                        StopTime = dt,
+                        OvenInfo = item
                     });
                 }
 
@@ -235,8 +260,6 @@ namespace GiamSat.Scada
         {
             while (true)
             {
-                var datetime = DateTime.Now;//get thoi gian bắt đầu của 
-
                 //log data
                 using (var con = GlobalVariable.GetDbConnection())
                 {
@@ -245,17 +268,58 @@ namespace GiamSat.Scada
                     {
                         try
                         {
-                            foreach (var item in _displayRealtime)
+                            foreach (var item in _dataLogProfile)
                             {
                                 if (item.Status == 1)
                                 {
                                     var para = new DynamicParameters();
-                                    para.Add("OvenId", item.OvenId);
-                                    para.Add("OvenName", item.OvenName);
-                                    para.Add("Temperature", item.Temperature);
-                                    para.Add("StartDate", datetime);
+                                    para.Add("ovenId", item.OvenId);
+                                    para.Add("ovenName", item.OvenName);
+                                    para.Add("temperature  ", item.Temperature);
+                                    para.Add("startTime", item.StartTime);
+                                    para.Add("endTime", item.EndTime);
+                                    para.Add("zIndex", item.ZIndex);
+                                    para.Add("hours", item.Hours);
+                                    para.Add("minutes", item.Minutes);
+                                    para.Add("seconds", item.Seconds);
+                                    para.Add("profileId", item.ProfileId);
+                                    para.Add("profileName", item.ProfileName);
+                                    para.Add("stepId", item.StepId);
+                                    para.Add("stepName", item.StepName);
+                                    para.Add("stepName", item.StepName);
+                                    para.Add("setPoint", item.Setpoint);
+                                    para.Add("status", item.Status);
+                                    para.Add("createdDate", DateTime.Now);
 
                                     con.Execute("sp_FT04Insert", param: para, commandType: CommandType.StoredProcedure, transaction: tran);
+                                }
+                                else if (item.Status == 0 && item.ZIndex != Guid.Empty)
+                                {
+                                    item.Status = item.Status;
+                                    item.EndTime = DateTime.Now;
+
+                                    var para = new DynamicParameters();
+                                    para.Add("ovenId", item.OvenId);
+                                    para.Add("ovenName", item.OvenName);
+                                    para.Add("temperature  ", item.Temperature);
+                                    para.Add("startTime", item.StartTime);
+                                    para.Add("endTime", item.EndTime);
+                                    para.Add("zIndex", item.ZIndex);
+                                    para.Add("hours", item.Hours);
+                                    para.Add("minutes", item.Minutes);
+                                    para.Add("seconds", item.Seconds);
+                                    para.Add("profileId", item.ProfileId);
+                                    para.Add("profileName", item.ProfileName);
+                                    para.Add("stepId", item.StepId);
+                                    para.Add("stepName", item.StepName);
+                                    para.Add("stepName", item.StepName);
+                                    para.Add("setPoint", item.Setpoint);
+                                    para.Add("status", item.Status);
+                                    para.Add("createdDate", DateTime.Now);
+
+                                    con.Execute("sp_FT04Insert", param: para, commandType: CommandType.StoredProcedure, transaction: tran);
+
+                                    item.ZIndex = Guid.Empty;
                                 }
                             }
                             tran.Commit();
@@ -317,6 +381,52 @@ namespace GiamSat.Scada
                     }
                 }
 
+                #region Kiểm tra xem lò chạy hay dùng để log data và cảnh báo
+                foreach (var item in _displayRealtime)
+                {
+                    if (item.IsLoaded)
+                    {
+                        item.StopTime = DateTime.Now;
+                        if ((item.StopTime - item.StartTime).TotalSeconds <= GlobalVariable.ConfigSystem.TimeCheckOvenRunStatus
+                            && (item.StopTime - item.StartTime).TotalSeconds > 0)
+                        {
+                            if (item.Status == 0)
+                            {
+                                //goij lai su kien tag chacge de get profile id hien tai
+                                //        ProfileNumber_CurrentStatus_ValueChanged(easyDriverConnector1.GetTag($"{item.Path}/ProfileNumber_CurrentStatus")
+                                //, new TagValueChangedEventArgs(easyDriverConnector1.GetTag($"{item.Path}/ProfileNumber_CurrentStatus")
+                                //, "", easyDriverConnector1.GetTag($"{item.Path}/ProfileNumber_CurrentStatus").Value));
+
+                                //lấy các thông tin còn thiếu cho model realtimeDisplay
+                                item.BeginTime = DateTime.Now;//lấy thời gian bắt đầu chạy profile
+                                item.Status = 1;
+                                item.ZIndex = Guid.NewGuid();
+
+                                var profile = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus);
+                                item.ProfileName = profile?.Name;
+
+                                //khoi tao model để lưu data run profile, chay owr task dataLogProfile
+                                var du = _dataLogProfile.FirstOrDefault(x => x.OvenId == item.OvenId);
+                                du.ProfileId = item.ProfileNumber_CurrentStatus;
+                                du.ProfileName = item.ProfileName;
+                                du.StepId = item.ProfileStepNumber_CurrentStatus;
+                                du.StepName = item.ProfileStepType_CurrentStatus.ToString();
+                                du.Setpoint = item.SetPoint;
+                                du.ZIndex = item.ZIndex;
+                                du.StartTime = item.BeginTime;
+                                du.Status = item.Status;
+                            }
+                        }
+                        else
+                        {
+                            item.Status = 0;
+                            item.ZIndex = Guid.Empty;
+                            item.ProfileName = null;
+                        }
+                    }
+                }
+                #endregion
+
                 System.Threading.Thread.Sleep(100);
             }
         }
@@ -341,16 +451,63 @@ namespace GiamSat.Scada
                 _labTime.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
             }
 
-            //UpdateSettingsFormWeb();
+            #region check alarm
+            var index = 1;
+            foreach (var item in _displayRealtime)
+            {
+                if (item.Status == 1)
+                {
+                    //rampTime tăng nhiệt
+                    if (item.SetPointLastStep < item.SetPoint)
+                    {
+                        if (true)
+                        {
+
+                        }
+                    }
+                    //soak
+                    else if (item.SetPointLastStep == item.SetPoint)
+                    {
+
+                    }
+                    //rampTime giảm nhiệt
+                    else if (item.SetPointLastStep > item.SetPoint)
+                    {
+
+                    }
+
+                    #region Check cảnh báo khi kết thúc step
+                    if (item.EndStep == 1 && item.Temperature < (item.SetPoint - GlobalVariable.ConfigSystem.ToleranceTemp)
+                        && item.Temperature > (item.SetPoint + GlobalVariable.ConfigSystem.ToleranceTemp))
+                    {
+                        easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
+                        _alarmFlag[index - 1] = true;
+
+                        //log DB alarm
+
+                        item.EndStep = 0;
+                    }
+                    #endregion
+
+                    easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
+                    _alarmFlag[index - 1] = true;
+                }
+
+                index += 1;
+            }
+            #endregion
 
             t.Enabled = true;
         }
 
         private void EasyDriverConnector1_Started(object sender, EventArgs e)
         {
-            #region Chuong 1
+            int index = 1;
+
             foreach (var item in _ovensInfo)
             {
+                easyDriverConnector1.GetTag($"{item.Path}/Temperature").QualityChanged += Temperature_QualityChanged;
+
                 easyDriverConnector1.GetTag($"{item.Path}/Temperature").ValueChanged += Temperature_ValueChanged;
                 easyDriverConnector1.GetTag($"{item.Path}/DigitalInput1Status").ValueChanged += DigitalInput1Status_ValueChanged;
                 easyDriverConnector1.GetTag($"{item.Path}/ProfileNumber_CurrentStatus").ValueChanged += ProfileNumber_CurrentStatus_ValueChanged;
@@ -361,6 +518,7 @@ namespace GiamSat.Scada
                 easyDriverConnector1.GetTag($"{item.Path}/SecondsRemaining_CurrentStatus").ValueChanged += SecondsRemaining_CurrentStatus_ValueChanged;
                 easyDriverConnector1.GetTag($"{item.Path}/EndSetPointCh1_CurrentStatus").ValueChanged += EndSetPointCh1_CurrentStatus_ValueChanged;
 
+                #region Comment
                 //easyDriverConnector1.GetTag($"{item.Path}/Profile1Name_C1").ValueChanged += Profile1Name_C1_ValueChanged;
                 //easyDriverConnector1.GetTag($"{item.Path}/Profile1Name_C2").ValueChanged += Profile1Name_C2_ValueChanged;
                 //easyDriverConnector1.GetTag($"{item.Path}/Profile1Name_C3").ValueChanged += Profile1Name_C3_ValueChanged;
@@ -386,6 +544,11 @@ namespace GiamSat.Scada
                 //Profile1Name_C1_ValueChanged(easyDriverConnector1.GetTag($"{item.Path}/Profile1Name_C1")
                 //   , new TagValueChangedEventArgs(easyDriverConnector1.GetTag($"{item.Path}/Profile1Name_C1")
                 //   , "", easyDriverConnector1.GetTag($"{item.Path}/Profile1Name_C1").Value));
+                #endregion
+
+                Temperature_QualityChanged(easyDriverConnector1.GetTag($"{item.Path}/Temperature")
+             , new TagQualityChangedEventArgs(easyDriverConnector1.GetTag($"{item.Path}/Temperature")
+             , Quality.Uncertain, easyDriverConnector1.GetTag($"{item.Path}/Temperature").Quality));
 
                 Temperature_ValueChanged(easyDriverConnector1.GetTag($"{item.Path}/Temperature")
                     , new TagValueChangedEventArgs(easyDriverConnector1.GetTag($"{item.Path}/Temperature")
@@ -423,9 +586,9 @@ namespace GiamSat.Scada
                     , new TagValueChangedEventArgs(easyDriverConnector1.GetTag($"{item.Path}/EndSetPointCh1_CurrentStatus")
                     , "", easyDriverConnector1.GetTag($"{item.Path}/EndSetPointCh1_CurrentStatus").Value));
 
-
+                easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
+                index += 1;
             }
-            #endregion
 
             if (_pnStatus.InvokeRequired)
             {
@@ -455,6 +618,20 @@ namespace GiamSat.Scada
         }
 
         #region Event tag value change
+        private void Temperature_QualityChanged(object sender, TagQualityChangedEventArgs e)
+        {
+            var path = e.Tag.Parent.Path;
+
+            foreach (var item in _displayRealtime)
+            {
+                if (item.Path == path)
+                {
+                    item.ConnectionStatus = e.NewQuality == Quality.Good ? 1 : 0;
+                    return;
+                }
+            }
+        }
+
         private void Temperature_ValueChanged(object sender, TagValueChangedEventArgs e)
         {
             var path = e.Tag.Parent.Path;
@@ -465,7 +642,10 @@ namespace GiamSat.Scada
                 {
                     //Debug.WriteLine($"{path}/Tempperature: {e.NewValue}");
                     item.Temperature = double.TryParse(e.NewValue, out double value) ? value : item.Temperature;
-                    item.ConnectionStatus = e.Tag.Quality == Quality.Good ? 1 : 0;
+
+                    var logProfie = _dataLogProfile.FirstOrDefault(x => x.OvenId == item.OvenId);
+                    logProfie.Temperature = item.Temperature;
+
                     return;
                 }
             }
@@ -479,7 +659,8 @@ namespace GiamSat.Scada
             {
                 if (item.Path == path)
                 {
-                    item.DoorStatus = e.NewValue == "1" ? 1 : 0;
+                    //Watlow tra tin hieu ve khi co tác động là 0, còn không tác động là 1.
+                    item.DoorStatus = e.NewValue == "1" ? 0 : 1;
                     return;
                 }
             }
@@ -493,7 +674,7 @@ namespace GiamSat.Scada
             {
                 if (item.Path == path)
                 {
-                    item.TemperatureHighLevel = double.TryParse(e.NewValue, out double value) ? value : item.TemperatureHighLevel;
+                    item.SetPoint = double.TryParse(e.NewValue, out double value) ? value : item.SetPoint;
                     return;
                 }
             }
@@ -508,6 +689,19 @@ namespace GiamSat.Scada
                 if (item.Path == path)
                 {
                     item.SecondsRemaining_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.SecondsRemaining_CurrentStatus;
+                    item.StartTime = DateTime.Now;
+
+                    if (!item.IsLoaded)
+                    {
+                        item.StopTime = item.StartTime;
+                        item.IsLoaded = true;
+                    }
+
+                    if (item.HoursRemaining_CurrentStatus == 0 && item.MinutesRemaining_CurrentStatus == 0 && item.SecondsRemaining_CurrentStatus == 0)
+                    {
+                        item.EndStep = 1;
+                    }
+
                     return;
                 }
             }
@@ -522,6 +716,11 @@ namespace GiamSat.Scada
                 if (item.Path == path)
                 {
                     item.MinutesRemaining_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.MinutesRemaining_CurrentStatus;
+
+                    if (item.HoursRemaining_CurrentStatus == 0 && item.MinutesRemaining_CurrentStatus == 0 && item.SecondsRemaining_CurrentStatus == 0)
+                    {
+                        item.EndStep = 1;
+                    }
                     return;
                 }
             }
@@ -536,6 +735,11 @@ namespace GiamSat.Scada
                 if (item.Path == path)
                 {
                     item.HoursRemaining_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.HoursRemaining_CurrentStatus;
+
+                    if (item.HoursRemaining_CurrentStatus == 0 && item.MinutesRemaining_CurrentStatus == 0 && item.SecondsRemaining_CurrentStatus == 0)
+                    {
+                        item.EndStep = 1;
+                    }
                     return;
                 }
             }
@@ -568,6 +772,21 @@ namespace GiamSat.Scada
                 if (item.Path == path)
                 {
                     item.ProfileStepNumber_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.ProfileStepNumber_CurrentStatus;
+
+                    if (item.ProfileStepNumber_CurrentStatus <= 1) item.SetPointLastStep = item.Temperature;
+                    else item.SetPointLastStep = item.SetPoint;
+
+                    //cập nhật các thông số cảu step mới vào để chạy
+                    var step = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus)
+                        .Steps.FirstOrDefault(x => x.Id == item.ProfileStepNumber_CurrentStatus);
+
+                    if (step!=null)
+                    {
+                        item.Hours = (int)(step?.Hours); item.Minutes = (int)(step?.Minutes); item.Seconds = (int)(step?.Seconds);
+                        item.SetPoint = (double)(step?.SetPoint);
+                        item.TempRange = Math.Round(Math.Abs((item.SetPoint - item.SetPointLastStep)), 2);
+                    }
+
                     return;
                 }
             }
@@ -582,6 +801,9 @@ namespace GiamSat.Scada
                 if (item.Path == path)
                 {
                     item.ProfileNumber_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.ProfileNumber_CurrentStatus;
+
+                    //var profile = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus);
+                    //item.ProfileName = profile?.Name;
                     return;
                 }
             }

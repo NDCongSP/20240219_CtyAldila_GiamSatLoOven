@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,9 +35,9 @@ namespace GiamSat.Models
         public double Temperature { get; set; } = 0;
         /// <summary>
         /// Trạng thái cửa.
-        /// 1-đóng; 0- mở.
+        /// 0-đóng; 1- mở.
         /// </summary>
-        public int DoorStatus{ get; set; }
+        public int DoorStatus { get; set; }
         /// <summary>
         /// Profile đang chạy.
         /// </summary>
@@ -54,14 +55,88 @@ namespace GiamSat.Models
         public int HoursRemaining_CurrentStatus { get; set; }
         public int MinutesRemaining_CurrentStatus { get; set; }
         public int SecondsRemaining_CurrentStatus { get; set; }
+        /// <summary>
+        /// dùng để lưu lại data giây chạy phục vị cho việc xác định máy chạy hay là máy dừng.
+        /// </summary>
+        public int SecondsRemaining_CurrentStatusOld { get; set; }
 
+        /// <summary>
+        /// Chốt thời gian bắt đầu chạy profile để tính thời gian chạy, so sánh với thời gian cài đặt nếu không đạt nhiệt độ để cảnh báo.
+        /// </summary>
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
+        public DateTime BeginTime { get; set; }
+
+        #region Canh bao cua  bước
+        /// <summary>
+        /// Thời gian chạy (h).
+        /// </summary>
+        public int Hours { get; set; }
+        /// <summary>
+        /// Thời gian chạy (m).
+        /// </summary>
+        public int Minutes { get; set; }
+        /// <summary>
+        /// Thời gian chạy (s).
+        /// </summary>
+        public int Seconds { get; set; }
+        /// <summary>
+        /// Nhiệt độ cao nhất của bước chạy trước, dùng để so sánh với setPoint của step kế tiếp, để biết nhiệt độ đang muốn điều khiển tăng hay giảm để so sánh cảnh báo cho đúng.
+        /// </summary>
+        /// 
+        public double SetPointLastStep { get; set; }
         /// <summary>
         /// Ngưỡng cao nhiệt độ. Dùng để cảnh báo.
         /// </summary>
-        public double TemperatureHighLevel { get; set; }
+        public double SetPoint { get; set; }
+        /// <summary>
+        /// Khoảng nhiệt độ của bước chạy cần tăng.
+        /// </summary>
+        public double TempRange { get; set; }
+        /// <summary>
+        /// Tổng thời gian chạy của bước thính theo phút.
+        /// </summary>
+        public double TotalTimeRunMinute
+        {
+            set { }
+            get
+            {
+                var tt = TimeSpan.FromHours(Hours).TotalMinutes + TimeSpan.FromMinutes(Minutes).TotalMinutes + TimeSpan.FromSeconds(Seconds).TotalMinutes;
+                return Math.Round(tt, 2);
+            }
+        }
+        /// <summary>
+        /// Thời gian cần thay đổi theo từng phút.
+        ///  TempRange / TotalTimeRunMinute.
+        ///  Dung cho việc cảnh báo.
+        /// </summary>
+        public double TempRateMinute
+        {
+            set { }
+            get { return Math.Round(TempRange / TotalTimeRunMinute, 2); }
+        }
+
+        /// <summary>
+        /// Được bật lên khi hết thời gian, để cảnh báo vào set xem nhiệt độ có đạt ko để cảnh báo, rồi mới cho về 0.
+        /// </summary>
+        public int EndStep { get; set; } = 0;
+        #endregion
+
+        /// <summary>
+        /// thời gian dùng để tính sự thay đổi giá trị của tag second để biết được lò đang chạy hay dừng.
+        /// </summary>
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
+        public DateTime StartTime { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
+        public DateTime StopTime { get; set; }
+
         /// <summary>
         /// Số thứ tự mỗi lần chạy.được tạo ra mỗi khi bắt đầu run profile.Dùng cho việc lưu dataLog khi run Profile.
         /// </summary>
         public Guid ZIndex { get; set; }
+        public OvenInfoModel OvenInfo { get; set; }
+        /// <summary>
+        /// báo khởi tạo.
+        /// </summary>
+        public bool IsLoaded { get; set; } = false;
     }
 }

@@ -9,9 +9,10 @@ namespace GiamSat.Models
     public class ConfigModel
     {
         /// <summary>
-        /// Độ trễ thời gian cảnh báo (ms).
+        /// Thời gian này dùng để check nhiệt độ để cảnh báo trong suốt quá trình chạy lò (ms)..
+        /// Sau khoảng thời gian này mà lò ko thay đổi nhiệt độ thì sẽ cảnh báo
         /// </summary>
-        public int DeadbandAlarm { get; set; }
+        public int TimeTempChange { get; set; }
         /// <summary>
         /// Quy định số lẻ nhiệt độ, nhân với giá trị nhiệt độ đọc về để có số lẻ hay không.
         /// </summary>
@@ -28,6 +29,16 @@ namespace GiamSat.Models
         /// Thời gian ghi giá trị hiển thị lên web (ms).
         /// </summary>
         public int DisplayRealtimeInterval { get; set; } = 1000;//chu kỳ update data hiển thị. đơn vị giây
+
+        /// <summary>
+        /// Thời gian để đếm nhận biết lò chạy hay dùng. Nếu giá trị Second trả về ko thay đổi sau khoảng thời gian này thì sẽ cảnh báo lò dừng.
+        /// Đơn vị (s).
+        /// </summary>
+        public int TimeCheckOvenRunStatus { get; set; } = 5;//(s)
+        /// <summary>
+        /// Nhiệt độ sai số 
+        /// </summary>
+        public int ToleranceTemp { get; set; } = 2;
 
         #region cấu hình cho UI
         /// <summary>
