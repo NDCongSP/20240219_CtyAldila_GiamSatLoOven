@@ -34,7 +34,7 @@ namespace GiamSat.Models
         /// Thời gian để đếm nhận biết lò chạy hay dùng. Nếu giá trị Second trả về ko thay đổi sau khoảng thời gian này thì sẽ cảnh báo lò dừng.
         /// Đơn vị (s).
         /// </summary>
-        public int TimeCheckOvenRunStatus { get; set; } = 5;//(s)
+        public int CountSecondStop { get; set; } = 5;//(s)
         /// <summary>
         /// Nhiệt độ sai số 
         /// </summary>

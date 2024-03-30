@@ -43,6 +43,7 @@ namespace GiamSat.Models
         /// </summary>
         public int ProfileNumber_CurrentStatus { get; set; }
         public string ProfileName { get; set; }
+        public EnumProfileStepType StepName { get; set; }
         /// <summary>
         /// Bước đang chạy.
         /// </summary>
@@ -59,6 +60,8 @@ namespace GiamSat.Models
         /// dùng để lưu lại data giây chạy phục vị cho việc xác định máy chạy hay là máy dừng.
         /// </summary>
         public int SecondsRemaining_CurrentStatusOld { get; set; }
+        //đếm số lần second mới và second cũ giống nhau, để đưa ra tín hiệu lò dừng chạy.
+        public int CountSecondStop { get; set; }
 
         /// <summary>
         /// Chốt thời gian bắt đầu chạy profile để tính thời gian chạy, so sánh với thời gian cài đặt nếu không đạt nhiệt độ để cảnh báo.
@@ -122,21 +125,22 @@ namespace GiamSat.Models
         #endregion
 
         /// <summary>
-        /// thời gian dùng để tính sự thay đổi giá trị của tag second để biết được lò đang chạy hay dừng.
-        /// </summary>
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
-        public DateTime StartTime { get; set; }
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
-        public DateTime StopTime { get; set; }
-
-        /// <summary>
         /// Số thứ tự mỗi lần chạy.được tạo ra mỗi khi bắt đầu run profile.Dùng cho việc lưu dataLog khi run Profile.
+        /// được tạo trong sự kiện tag value changed ProfileNumber_CurrentStatus_ValueChanged
         /// </summary>
         public Guid ZIndex { get; set; }
         public OvenInfoModel OvenInfo { get; set; }
-        /// <summary>
-        /// báo khởi tạo.
-        /// </summary>
+
+        public bool StatusFlag { get; set; } = false;
+        public bool AlarmFlag { get; set; } = false;
         public bool IsLoaded { get; set; } = false;
+
+        //dung cho việc xác định máy chạy hay dừng, dựa vào sự kiện tag value changed của tag second.
+        public DateTime StatusTimeBegin { get; set; }
+        public DateTime StatusTimeEnd { get; set; }
+        /// <summary>
+        /// =2 thi moi cho lưu data profile.
+        /// </summary>
+        public int CountSecondTagChange { get; set; } = 0;
     }
 }

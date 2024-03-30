@@ -8,13 +8,15 @@ SELECT *
 FROM [Oven].[dbo].[FT03]
 ORDER BY CreatedDate DESC
 
-SELECT *
+SELECT top 10 *
   FROM [Oven].[dbo].[FT04]
+where OvenId=11
+order by CreatedDate desc
 
 SELECT *
   FROM [Oven].[dbo].[FT05]
 
-  --truncate table ft01
+  --truncate table ft04
 
   --update FT01 set C000=N'{"Smooth":true,"ShowDataLabels":false,"ShowMarkers":true,"DeadbandAlarm":5000,"Gain":1.0,"DataLogInterval":5000,"DataLogWhenRunProfileInterval":1000,"DisplayRealtimeInterval":1000,"RefreshInterval":1000,"ChartRefreshInterval":1000,"ChartPointNum":30}' where Id='189764EE-8F32-41BF-5438-08DC4BF6CF34'
 

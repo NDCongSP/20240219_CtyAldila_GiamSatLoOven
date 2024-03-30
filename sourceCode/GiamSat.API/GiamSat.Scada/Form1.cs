@@ -74,11 +74,8 @@ namespace GiamSat.Scada
             _taskDataLog = new Task(() => LogData());
             _taskDataLog.Start();
 
-            //_taskDataLogProfile = new Task(() => LogDataProfile());
-            //_taskDataLogProfile.Start();
-
-            //_taskAlarm = new Task(() => CheckAlarm());
-            //_taskAlarm.Start();
+            _taskDataLogProfile = new Task(() => LogDataProfile());
+            _taskDataLogProfile.Start();
         }
 
         #region Methods
@@ -99,7 +96,7 @@ namespace GiamSat.Scada
                         TimeTempChange = 5000,//5s
                         Gain = 1,
                         DataLogInterval = 5000,//5s
-                        DataLogWhenRunProfileInterval = 1000//1s
+                        DataLogWhenRunProfileInterval = 5000//1s
                         ,
                         DisplayRealtimeInterval = 1000
                         ,
@@ -107,7 +104,7 @@ namespace GiamSat.Scada
                         ,
                         ChartRefreshInterval = 1000
                         ,
-                        TimeCheckOvenRunStatus = 5//5s
+                        CountSecondStop = 5//5 lần
                         ,
                         ChartPointNum = 30
                         ,
@@ -238,9 +235,15 @@ namespace GiamSat.Scada
                         OvenId = item.Id,
                         OvenName = item.Name,
                         Path = item.Path,
-                        StartTime = dt,
-                        StopTime = dt,
-                        OvenInfo = item
+                        OvenInfo = item,
+                        StatusFlag = false,
+                        AlarmFlag = false,
+                        Status = 0,
+                        Alarm = 0,
+                        ConnectionStatus = 0,
+                        ZIndex = Guid.Empty,
+                        IsLoaded = false,
+                        CountSecondTagChange = 0,
                     });
                 }
 
@@ -268,52 +271,47 @@ namespace GiamSat.Scada
                     {
                         try
                         {
-                            foreach (var item in _dataLogProfile)
+                            foreach (var item in _displayRealtime)
                             {
-                                if (item.Status == 1)
+                                if (item.Status == 1 && item.ZIndex != Guid.Empty && item.Temperature > 0 && item.CountSecondTagChange >= 2)
                                 {
                                     var para = new DynamicParameters();
                                     para.Add("ovenId", item.OvenId);
                                     para.Add("ovenName", item.OvenName);
                                     para.Add("temperature  ", item.Temperature);
-                                    para.Add("startTime", item.StartTime);
-                                    para.Add("endTime", item.EndTime);
+                                    para.Add("startTime", item.BeginTime);
+                                    //para.Add("endTime", null);
                                     para.Add("zIndex", item.ZIndex);
                                     para.Add("hours", item.Hours);
                                     para.Add("minutes", item.Minutes);
                                     para.Add("seconds", item.Seconds);
-                                    para.Add("profileId", item.ProfileId);
+                                    para.Add("profileId", item.ProfileNumber_CurrentStatus);
                                     para.Add("profileName", item.ProfileName);
-                                    para.Add("stepId", item.StepId);
-                                    para.Add("stepName", item.StepName);
-                                    para.Add("stepName", item.StepName);
-                                    para.Add("setPoint", item.Setpoint);
+                                    para.Add("stepId", item.ProfileStepNumber_CurrentStatus);
+                                    para.Add("stepName", item.ProfileStepType_CurrentStatus);
+                                    para.Add("setPoint", item.SetPoint);
                                     para.Add("status", item.Status);
                                     para.Add("createdDate", DateTime.Now);
 
                                     con.Execute("sp_FT04Insert", param: para, commandType: CommandType.StoredProcedure, transaction: tran);
                                 }
-                                else if (item.Status == 0 && item.ZIndex != Guid.Empty)
+                                else if (item.Status == 0 && item.ZIndex != Guid.Empty && item.Temperature > 0 && item.CountSecondTagChange >= 2)
                                 {
-                                    item.Status = item.Status;
-                                    item.EndTime = DateTime.Now;
-
                                     var para = new DynamicParameters();
                                     para.Add("ovenId", item.OvenId);
                                     para.Add("ovenName", item.OvenName);
                                     para.Add("temperature  ", item.Temperature);
-                                    para.Add("startTime", item.StartTime);
-                                    para.Add("endTime", item.EndTime);
+                                    para.Add("startTime", item.BeginTime);
+                                    para.Add("endTime", DateTime.Now);
                                     para.Add("zIndex", item.ZIndex);
                                     para.Add("hours", item.Hours);
                                     para.Add("minutes", item.Minutes);
                                     para.Add("seconds", item.Seconds);
-                                    para.Add("profileId", item.ProfileId);
+                                    para.Add("profileId", item.ProfileNumber_CurrentStatus);
                                     para.Add("profileName", item.ProfileName);
-                                    para.Add("stepId", item.StepId);
-                                    para.Add("stepName", item.StepName);
-                                    para.Add("stepName", item.StepName);
-                                    para.Add("setPoint", item.Setpoint);
+                                    para.Add("stepId", item.ProfileStepNumber_CurrentStatus);
+                                    para.Add("stepName", item.ProfileStepType_CurrentStatus);
+                                    para.Add("setPoint", item.SetPoint);
                                     para.Add("status", item.Status);
                                     para.Add("createdDate", DateTime.Now);
 
@@ -384,46 +382,59 @@ namespace GiamSat.Scada
                 #region Kiểm tra xem lò chạy hay dùng để log data và cảnh báo
                 foreach (var item in _displayRealtime)
                 {
-                    if (item.IsLoaded)
+                    //if (!item.IsLoaded)
+                    //{
+                    //    item.SecondsRemaining_CurrentStatusOld = item.SecondsRemaining_CurrentStatus;
+                    //    item.StatusTimeBegin = item.StatusTimeEnd;
+                    //    item.IsLoaded = true;
+
+                    //    return;
+                    //}
+
+                    item.StatusTimeEnd = DateTime.Now;
+                    if ((item.StatusTimeEnd - item.StatusTimeBegin).TotalSeconds <= GlobalVariable.ConfigSystem.CountSecondStop && item.StatusFlag == false)
                     {
-                        item.StopTime = DateTime.Now;
-                        if ((item.StopTime - item.StartTime).TotalSeconds <= GlobalVariable.ConfigSystem.TimeCheckOvenRunStatus
-                            && (item.StopTime - item.StartTime).TotalSeconds > 0)
-                        {
-                            if (item.Status == 0)
-                            {
-                                //goij lai su kien tag chacge de get profile id hien tai
-                                //        ProfileNumber_CurrentStatus_ValueChanged(easyDriverConnector1.GetTag($"{item.Path}/ProfileNumber_CurrentStatus")
-                                //, new TagValueChangedEventArgs(easyDriverConnector1.GetTag($"{item.Path}/ProfileNumber_CurrentStatus")
-                                //, "", easyDriverConnector1.GetTag($"{item.Path}/ProfileNumber_CurrentStatus").Value));
+                        item.Status = 1;//báo lò đang chạy.
+                        item.ZIndex = Guid.NewGuid();
+                        item.CountSecondStop = 0;
+                        item.StatusFlag = true;
+                    }
+                    if ((item.StatusTimeEnd - item.StatusTimeBegin).TotalSeconds > GlobalVariable.ConfigSystem.CountSecondStop && item.StatusFlag == true)
+                    {
+                        //item.CountSecondStop += 1;
 
-                                //lấy các thông tin còn thiếu cho model realtimeDisplay
-                                item.BeginTime = DateTime.Now;//lấy thời gian bắt đầu chạy profile
-                                item.Status = 1;
-                                item.ZIndex = Guid.NewGuid();
-
-                                var profile = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus);
-                                item.ProfileName = profile?.Name;
-
-                                //khoi tao model để lưu data run profile, chay owr task dataLogProfile
-                                var du = _dataLogProfile.FirstOrDefault(x => x.OvenId == item.OvenId);
-                                du.ProfileId = item.ProfileNumber_CurrentStatus;
-                                du.ProfileName = item.ProfileName;
-                                du.StepId = item.ProfileStepNumber_CurrentStatus;
-                                du.StepName = item.ProfileStepType_CurrentStatus.ToString();
-                                du.Setpoint = item.SetPoint;
-                                du.ZIndex = item.ZIndex;
-                                du.StartTime = item.BeginTime;
-                                du.Status = item.Status;
-                            }
-                        }
-                        else
+                        //if (item.CountSecondStop > GlobalVariable.ConfigSystem.CountSecondStop)
                         {
                             item.Status = 0;
-                            item.ZIndex = Guid.Empty;
-                            item.ProfileName = null;
+                            //item.ZIndex = Guid.Empty;//được xóa khi đã log profile trạng thái dừng thành công LogProfile                            
+                            item.StatusFlag = false;
                         }
                     }
+
+                    //if (item.SecondsRemaining_CurrentStatus != item.SecondsRemaining_CurrentStatusOld)
+                    //{
+                    //    if (item.StatusFlag == false)
+                    //    {
+                    //        item.Status = 1;//báo lò đang chạy.
+                    //        item.ZIndex = Guid.NewGuid();
+                    //        item.CountSecondStop = 0;
+                    //        item.StatusFlag = true;
+                    //    }
+                    //}
+                    //else if (item.SecondsRemaining_CurrentStatus == item.SecondsRemaining_CurrentStatusOld && item.StatusFlag == true)
+                    //{
+                    //    item.CountSecondStop += 1;
+
+                    //    if (item.CountSecondStop > GlobalVariable.ConfigSystem.CountSecondStop)
+                    //    {
+                    //        item.Status = 0;
+                    //        item.ZIndex = Guid.Empty;
+                    //        item.ProfileName = null;
+                    //        item.StatusFlag = false;
+                    //    }
+                    //}
+
+                    Debug.WriteLine($"{item.OvenName} status: {item.Status}");
                 }
                 #endregion
 
@@ -641,10 +652,7 @@ namespace GiamSat.Scada
                 if (item.Path == path)
                 {
                     //Debug.WriteLine($"{path}/Tempperature: {e.NewValue}");
-                    item.Temperature = double.TryParse(e.NewValue, out double value) ? value : item.Temperature;
-
-                    var logProfie = _dataLogProfile.FirstOrDefault(x => x.OvenId == item.OvenId);
-                    logProfie.Temperature = item.Temperature;
+                    item.Temperature = double.TryParse(e.NewValue, out double value) ? Math.Round(value * GlobalVariable.ConfigSystem.Gain, 1) : item.Temperature;
 
                     return;
                 }
@@ -688,19 +696,20 @@ namespace GiamSat.Scada
             {
                 if (item.Path == path)
                 {
-                    item.SecondsRemaining_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.SecondsRemaining_CurrentStatus;
-                    item.StartTime = DateTime.Now;
+                    item.StatusTimeBegin = DateTime.Now;
 
-                    if (!item.IsLoaded)
-                    {
-                        item.StopTime = item.StartTime;
-                        item.IsLoaded = true;
-                    }
+                    item.SecondsRemaining_CurrentStatusOld = item.SecondsRemaining_CurrentStatus;
+
+                    item.SecondsRemaining_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.SecondsRemaining_CurrentStatus;
 
                     if (item.HoursRemaining_CurrentStatus == 0 && item.MinutesRemaining_CurrentStatus == 0 && item.SecondsRemaining_CurrentStatus == 0)
                     {
                         item.EndStep = 1;
                     }
+
+                    if (item.CountSecondTagChange > 10000) item.CountSecondTagChange = 2;
+
+                    item.CountSecondTagChange += 1;
 
                     return;
                 }
@@ -780,13 +789,30 @@ namespace GiamSat.Scada
                     var step = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus)
                         .Steps.FirstOrDefault(x => x.Id == item.ProfileStepNumber_CurrentStatus);
 
-                    if (step!=null)
+                    if (step != null)
                     {
+                        item.StepName = step.StepType;
                         item.Hours = (int)(step?.Hours); item.Minutes = (int)(step?.Minutes); item.Seconds = (int)(step?.Seconds);
                         item.SetPoint = (double)(step?.SetPoint);
                         item.TempRange = Math.Round(Math.Abs((item.SetPoint - item.SetPointLastStep)), 2);
                     }
 
+                    var profile = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus);
+                    item.ProfileName = profile?.Name;
+
+                    //khoi tao model để lưu data run profile, chay owr task dataLogProfile
+                    var du = _dataLogProfile.FirstOrDefault(x => x.OvenId == item.OvenId);
+                    du.ProfileId = item.ProfileNumber_CurrentStatus;
+                    du.ProfileName = item.ProfileName;
+                    du.StepId = item.ProfileStepNumber_CurrentStatus;
+                    du.StepName = item.ProfileStepType_CurrentStatus.ToString();
+                    du.Setpoint = item.SetPoint;
+                    du.ZIndex = item.ZIndex;
+                    du.StartTime = item.BeginTime;
+                    du.Status = item.Status;
+                    du.Hours = item.Hours;
+                    du.Minutes = item.Minutes;
+                    du.Seconds = item.Seconds;
                     return;
                 }
             }
@@ -802,8 +828,10 @@ namespace GiamSat.Scada
                 {
                     item.ProfileNumber_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.ProfileNumber_CurrentStatus;
 
-                    //var profile = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus);
-                    //item.ProfileName = profile?.Name;
+                    item.BeginTime = DateTime.Now;//lấy thời gian bắt đầu chạy profile
+
+                    var profile = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus);
+                    item.ProfileName = profile?.Name;
                     return;
                 }
             }
