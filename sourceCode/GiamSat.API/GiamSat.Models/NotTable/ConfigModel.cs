@@ -36,9 +36,13 @@ namespace GiamSat.Models
         /// </summary>
         public int CountSecondStop { get; set; } = 5;//(s)
         /// <summary>
-        /// Nhiệt độ sai số 
+        /// Nhiệt độ sai số cọng vào thêm để alarm.
         /// </summary>
         public int ToleranceTemp { get; set; } = 2;
+        /// <summary>
+        /// Nhiệt độ sai số trừ vào để tắt alarm.
+        /// </summary>
+        public int ToleranceTempOut { get; set; } = 1;
 
         #region cấu hình cho UI
         /// <summary>

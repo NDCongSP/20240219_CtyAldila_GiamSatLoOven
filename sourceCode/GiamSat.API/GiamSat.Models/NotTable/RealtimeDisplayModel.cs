@@ -66,8 +66,7 @@ namespace GiamSat.Models
         /// <summary>
         /// Chốt thời gian bắt đầu chạy profile để tính thời gian chạy, so sánh với thời gian cài đặt nếu không đạt nhiệt độ để cảnh báo.
         /// </summary>
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
-        public DateTime BeginTime { get; set; }
+        public string BeginTime { get; set; }
 
         #region Canh bao cua  bước
         /// <summary>
@@ -133,6 +132,7 @@ namespace GiamSat.Models
 
         public bool StatusFlag { get; set; } = false;
         public bool AlarmFlag { get; set; } = false;
+        public bool AlarmFlagLastStep { get; set; } = false;
         public bool IsLoaded { get; set; } = false;
 
         //dung cho việc xác định máy chạy hay dừng, dựa vào sự kiện tag value changed của tag second.
