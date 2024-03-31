@@ -8,7 +8,7 @@ using GiamSat.Models;
 
 namespace GiamSat.API
 {
-    public class SFT04:ISFT04
+    public class SFT04 : ISFT04
     {
         readonly ApplicationDbContext _context;
         readonly IHttpContextAccessor _contextAccessor;
@@ -41,6 +41,29 @@ namespace GiamSat.API
             catch (Exception ex)
             {
                 return await Result<FT04>.FailAsync(ex.Message);
+            }
+        }
+
+        public async Task<Result<List<FT04>>> GetFilter([Body] FilterModel model)
+        {
+            try
+            {
+                if (model.GetAll)
+                {
+                    var d = _context.FT04
+                        .Where<FT04>(x => x.CreatedDate >= model.FromDate && x.CreatedDate <= model.ToDate).OrderByDescending(x => x.CreatedDate).ToList();
+                    return await Result<List<FT04>>.SuccessAsync(d);
+                }
+                else
+                {
+                    var d = _context.FT04
+                       .Where<FT04>(x => x.OvenId == model.OvenId && x.CreatedDate >= model.FromDate && x.CreatedDate <= model.ToDate).OrderByDescending(x => x.CreatedDate).ToList();
+                    return await Result<List<FT04>>.SuccessAsync(d);
+                }
+            }
+            catch (Exception ex)
+            {
+                return await Result<List<FT04>>.FailAsync(ex.Message);
             }
         }
 

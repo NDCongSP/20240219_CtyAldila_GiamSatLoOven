@@ -61,6 +61,7 @@ namespace GiamSat.Models
         public static class FT04
         {
             public const string BasePath = "api/FT04";
+            public const string GetFilter = "GetFilter";
         }
         public static class FT05
         {

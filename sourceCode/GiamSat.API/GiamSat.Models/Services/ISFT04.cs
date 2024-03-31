@@ -10,5 +10,7 @@ namespace GiamSat.Models
     [BasePath(ApiRoutes.FT04.BasePath)]
     public interface ISFT04 : IRepository<Guid, FT04>
     {
+        [Post(ApiRoutes.FT04.GetFilter)]
+        Task<Result<List<FT04>>> GetFilter([Body] FilterModel model);
     }
 }

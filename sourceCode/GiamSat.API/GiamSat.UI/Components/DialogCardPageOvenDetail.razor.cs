@@ -115,6 +115,5 @@ namespace GiamSat.UI.Components
 
             return string.Empty;
         }
-
     }
 }

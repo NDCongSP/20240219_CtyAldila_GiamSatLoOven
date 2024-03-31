@@ -488,7 +488,7 @@ namespace GiamSat.Scada
                             }
                             else//so xánh cảu bước cũ, khi vừa kết thúc bước, chuyển qua bước khác.
                             {
-                                if (item.Temperature <= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
+                                if (item.Temperature < (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
                                    //|| item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp))
                                    && item.AlarmFlagLastStep == false
                                    )
@@ -502,7 +502,7 @@ namespace GiamSat.Scada
                                     item.AlarmFlagLastStep = true;
                                     Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                                 }
-                                else if (item.Temperature > (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
+                                else if (item.Temperature >= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
                                    // && item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
                                     && item.AlarmFlagLastStep == true
                                     )
@@ -525,7 +525,7 @@ namespace GiamSat.Scada
                             }
                             else//so xánh cảu bước cũ, khi vừa kết thúc bước, chuyển qua bước khác.
                             {
-                                if (item.Temperature <= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
+                                if (item.Temperature < (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
                                    //|| item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp))
                                    && item.AlarmFlagLastStep == false
                                    )
@@ -539,7 +539,7 @@ namespace GiamSat.Scada
                                     item.AlarmFlagLastStep = true;
                                     Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                                 }
-                                else if (item.Temperature > (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
+                                else if (item.Temperature >= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
                                     //&& item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
                                     && item.AlarmFlagLastStep == true
                                     )
@@ -564,7 +564,7 @@ namespace GiamSat.Scada
                             {
                                 if (item.StepName != EnumProfileStepType.End)
                                 {
-                                    if (item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
+                                    if (item.Temperature > (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
                                    //|| item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp))
                                    && item.AlarmFlagLastStep == false
                                    )
@@ -579,7 +579,7 @@ namespace GiamSat.Scada
                                         item.AlarmFlagLastStep = true;
                                         Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                                     }
-                                    else if (item.Temperature < (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
+                                    else if (item.Temperature <= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
                                         //&& item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
                                         && item.AlarmFlagLastStep == true
                                         )
@@ -593,7 +593,7 @@ namespace GiamSat.Scada
                                 }
                                 else
                                 {
-                                    if (item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
+                                    if (item.Temperature > (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
                                    //|| item.Temperature <= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp))
                                    && item.AlarmFlagLastStep == false
                                    )
@@ -608,7 +608,7 @@ namespace GiamSat.Scada
                                         item.AlarmFlagLastStep = true;
                                         Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                                     }
-                                    else if (item.Temperature < (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
+                                    else if (item.Temperature <= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
                                         //&& item.Temperature > (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
                                         && item.AlarmFlagLastStep == true
                                         )
@@ -818,7 +818,7 @@ namespace GiamSat.Scada
                 if (item.Path == path)
                 {
                     //Watlow tra tin hieu ve khi co tác động là 0, còn không tác động là 1.
-                    item.DoorStatus = e.NewValue == "1" ? 0 : 1;
+                    item.DoorStatus = e.NewValue == "1" ? 1 : 0;
                     return;
                 }
             }
@@ -913,14 +913,14 @@ namespace GiamSat.Scada
             {
                 if (item.Path == path)
                 {
+                    if (item.ProfileStepNumber_CurrentStatus == 0||item.ProfileStepNumber_CurrentStatus==5) item.SetPointLastStep = item.Temperature;
+                    else item.SetPointLastStep = item.SetPoint;
+                    //item.SetPointLastStep = item.SetPoint;
+
                     item.ProfileStepNumber_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.ProfileStepNumber_CurrentStatus;
 
-                    //if (item.ProfileStepNumber_CurrentStatus <= 1) item.SetPointLastStep = item.Temperature;
-                    //else item.SetPointLastStep = item.SetPoint;
-                    item.SetPointLastStep = item.SetPoint;
-
                     //cập nhật các thông số cảu step mới vào để chạy
-                    var step = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus)
+                    var step = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus)?
                         .Steps.FirstOrDefault(x => x.Id == item.ProfileStepNumber_CurrentStatus);
 
                     if (step != null)
@@ -929,10 +929,10 @@ namespace GiamSat.Scada
                         item.Hours = (int)(step?.Hours); item.Minutes = (int)(step?.Minutes); item.Seconds = (int)(step?.Seconds);
                         item.SetPoint = (double)(step?.SetPoint);
 
-                        if (item.CountSecondTagChange < 2 && item.ProfileStepNumber_CurrentStatus > 0)
-                        {
-                            item.SetPointLastStep = item.SetPoint;
-                        }
+                        //if (item.CountSecondTagChange < 2 && item.ProfileStepNumber_CurrentStatus > 0)
+                        //{
+                        //    item.SetPointLastStep = item.SetPoint;
+                        //}
 
                         item.TempRange = Math.Round(Math.Abs((item.SetPoint - item.SetPointLastStep)), 2);
                     }

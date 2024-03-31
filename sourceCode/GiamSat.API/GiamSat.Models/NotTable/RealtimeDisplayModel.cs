@@ -35,7 +35,7 @@ namespace GiamSat.Models
         public double Temperature { get; set; } = 0;
         /// <summary>
         /// Trạng thái cửa.
-        /// 0-đóng; 1- mở.
+        /// 0-Mo; 1- dong
         /// </summary>
         public int DoorStatus { get; set; }
         /// <summary>

@@ -23,5 +23,9 @@ namespace GiamSat.Models
         /// Set giá trị SV.
         /// </summary>
         public double SetPoint { get; set; }
+        /// <summary>
+        /// giá trị tăng/1min. khi chọn rampRate.
+        /// </summary>
+        public double RateValue { get; set; }
     }
 }

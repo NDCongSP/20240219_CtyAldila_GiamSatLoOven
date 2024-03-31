@@ -38,10 +38,10 @@
       <HintPath>..\packages\Dapper.2.0.151\lib\net461\Dapper.dll</HintPath>
     </Reference>
     <Reference Include="EasyScada.Core">
-      <HintPath>..\..\..\..\20211201EasyScada\20211201EasyScada\Toolkit\EasyScada.Core.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\PT Automation Solution\Easy Driver Server\Toolkit\EasyScada.Core.dll</HintPath>
     </Reference>
     <Reference Include="EasyScada.Winforms.Controls">
-      <HintPath>..\..\..\..\20211201EasyScada\20211201EasyScada\Toolkit\EasyScada.Winforms.Controls.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\PT Automation Solution\Easy Driver Server\Toolkit\EasyScada.Winforms.Controls.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Client">
       <HintPath>C:\Program Files (x86)\PT Automation Solution\Easy Driver Server\Toolkit\Microsoft.AspNet.SignalR.Client.dll</HintPath>

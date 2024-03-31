@@ -968,6 +968,55 @@
         }
       }
     },
+    "/api/FT03/GetFilter": {
+      "post": {
+        "tags": [
+          "FT03"
+        ],
+        "operationId": "FT03_GetFilter",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT03ListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT03ListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT03ListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/FT03": {
       "get": {
         "tags": [
@@ -1137,6 +1186,55 @@
         }
       }
     },
+    "/api/FT04/GetFilter": {
+      "post": {
+        "tags": [
+          "FT04"
+        ],
+        "operationId": "FT04_GetFilter",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT04ListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT04ListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT04ListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/FT04": {
       "get": {
         "tags": [
@@ -1299,6 +1397,55 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/FT04Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT05/GetFilter": {
+      "post": {
+        "tags": [
+          "FT05"
+        ],
+        "operationId": "FT05_GetFilter",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT05ListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT05ListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT05ListResult"
                 }
               }
             }
@@ -2106,6 +2253,42 @@
             "type": "string",
             "nullable": true
           },
+          "profileId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "profileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "stepId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stepName": {
+            "type": "string",
+            "nullable": true
+          },
+          "setpoint": {
+            "type": "number",
+            "format": "double"
+          },
+          "hours": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "seconds": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "zIndex": {
+            "type": "string",
+            "format": "uuid"
+          },
           "temperature": {
             "type": "number",
             "format": "double"
@@ -2127,9 +2310,13 @@
             "type": "string",
             "nullable": true
           },
-          "zIndex": {
+          "createdDate": {
             "type": "string",
-            "format": "uuid"
+            "format": "date-time"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -2190,6 +2377,42 @@
           "ovenName": {
             "type": "string",
             "nullable": true
+          },
+          "profileId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "profileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "stepId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stepName": {
+            "type": "string",
+            "nullable": true
+          },
+          "setpoint": {
+            "type": "number",
+            "format": "double"
+          },
+          "hours": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "seconds": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "temperature": {
+            "type": "number",
+            "format": "double"
           },
           "description": {
             "type": "string",
@@ -2254,6 +2477,43 @@
           },
           "data": {
             "$ref": "#/components/schemas/FT05"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FilterModel": {
+        "type": "object",
+        "properties": {
+          "getAll": {
+            "type": "boolean"
+          },
+          "ovenId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ovenName": {
+            "type": "string",
+            "nullable": true
+          },
+          "profileId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "profileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "stepId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fromDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "toDate": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false

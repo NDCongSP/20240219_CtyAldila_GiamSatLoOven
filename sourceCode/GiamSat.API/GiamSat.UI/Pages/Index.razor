@@ -43,7 +43,7 @@
                             </RadzenStack>
                         </RadzenCard>
                     }
-                    else if (item.ConnectionStatus == 1 && item.Alarm == 1)
+                    else if (item.ConnectionStatus == 1 && (item.Alarm == 1 || item.DoorStatus == 1))
                     {
                         <RadzenCard Varian="Varian.Filled" class="rz-background-color-warning-light rz-shadow-0 rz-border-radius-4 rz-m-0">
                             <RadzenStack Orientation="Orientation.Vertical" Gap="10px">

@@ -8,66 +8,177 @@
     }
     else
     {
-        <RadzenRow Gap="2rem" Class="rz-p-0 rz-p-lg-4">
-            <RadzenColumn SizeXS="12" SizeSM="12">
-                <RadzenStack>
-                    <RadzenFieldset Text="Lọc">
-                        <RadzenRow AlignItems="AlignItems.Center">
-                            <RadzenColumn SizeXS="12" SizeSM="8">
-                                <RadzenRow AlignItems="AlignItems.Center">
-                                    @* <RadzenColumn SizeXS=12 SizeSM="12">
-                                        <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Chọn lò</RadzenText>
-                                        <RadzenDropDown @bind-Value="@_filterModel.OvenName" TextProperty="Text" ValueProperty="Value"
-                                                        InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "buttons justify content" }})"
-                                                        Data="@(Enum.GetValues(typeof(int)).Cast<int>().Select(t => new { Text = $"{t}", Value = t }))"
-                                                        Size="ButtonSize.Small" Style="width:100%" />
-                                    </RadzenColumn> *@
-                                    <RadzenColumn SizeXS=12 SizeSM="6">
-                                        <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Thời gian bắt đầu</RadzenText>
-                                        <RadzenDatePicker @bind-Value=@_filterModel.FromDate Name="RadzenDatePickerBindValue" ShowCalendarWeek />
-                                    </RadzenColumn>
-                                    <RadzenColumn SizeXS=12 SizeSM="6">
-                                        <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Thời gian kết thúc</RadzenText>
-                                         <RadzenDatePicker @bind-Value=@_filterModel.ToDate Name="RadzenDatePickerBindValue" ShowCalendarWeek />
-                                    </RadzenColumn>
-                                </RadzenRow>
-                            </RadzenColumn>
-                            <RadzenColumn SizeXS="12" SizeSM="4">
-                                <RadzenRow AlignItems="AlignItems.Center">
-                                    <RadzenColumn SizeXS="12" SizeSM="6">
-                                        <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Text="Truy vấn" Icon="add_circle" ButtonStyle="ButtonStyle.Dark"
-                                                      Click=@(args => QueryData())>
+        <RadzenTabs Change=@OnChangeTab TabPosition="TabPosition.Top" RenderMode="TabRenderMode.Client">
+            <Tabs>
+                <RadzenTabsItem Text="Profile">
+                    <RadzenRow Gap="1rem" class="rz-mb-2">
+                        <RadzenColumn SizeXS="12" SizeSM="12">
+                            <RadzenStack>
+                                <RadzenFieldset Text="Lọc">
+                                    <RadzenRow AlignItems="AlignItems.Center">
+                                        <RadzenColumn SizeXS="12" SizeSM="8">
+                                            <RadzenRow AlignItems="AlignItems.Center">
+                                                <RadzenColumn SizeXS=12 SizeSM="4">
+                                                    <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Chọn lò</RadzenText>
+                                                    <RadzenDropDown @ref=@radzenDropDown FilterCaseSensitivity="FilterCaseSensitivity.Default"
+                                                                    FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
+                                                                    Data=@_dropDownData TextProperty="OvenName" ValueProperty="OvenId" AllowClear="true"
+                                                                    @bind-Value=_filterProfileLog.OvenId Style="width: 100%; max-width: 400px;"
+                                                                    Name="DropDownFiltering" />
+                                                </RadzenColumn>
+                                                <RadzenColumn SizeXS=12 SizeSM="4">
+                                                    <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Thời gian bắt đầu</RadzenText>
+                                                    <RadzenDatePicker @bind-Value=@_filterProfileLog.FromDate ShowTime="true" ShowSeconds="true"
+                                                                      HoursStep="1.5" MinutesStep="5" SecondsStep="10"
+                                                                      DateFormat="yyyy-MM-dd HH:mm:ss" Name="DatePickerWithTime" Style="width:100%" />
+                                                </RadzenColumn>
+                                                <RadzenColumn SizeXS=12 SizeSM="4">
+                                                    <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Thời gian kết thúc</RadzenText>
+                                                    <RadzenDatePicker @bind-Value=@_filterProfileLog.ToDate ShowTime="true" ShowSeconds="true"
+                                                                      HoursStep="1.5" MinutesStep="5" SecondsStep="10"
+                                                                      DateFormat="yyyy-MM-dd HH:mm:ss" Name="DatePickerWithTime" Style="width:100%" />
+                                                 </RadzenColumn>
+                                             </RadzenRow>
+                                         </RadzenColumn>
+                                         <RadzenColumn SizeXS="12" SizeSM="4">
+                                             <RadzenRow AlignItems="AlignItems.Center">
+                                                 <RadzenColumn SizeXS="12" SizeSM="6">
+                                                     <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Text="Truy vấn" Icon="add_circle" ButtonStyle="ButtonStyle.Dark"
+                                                                   Click=@(args => QueryDataProfile()) Style="width:100%">
 
-                                        </RadzenButton>
-                                    </RadzenColumn>
-                                    <RadzenColumn SizeXS="12" SizeSM="6">
-                                        <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Text="Tải về" Icon="add_circle" ButtonStyle="ButtonStyle.Dark"
-                                                      Click=@(args => QueryData())>
+                                                     </RadzenButton>
+                                                 </RadzenColumn>
+                                                 <RadzenColumn SizeXS="12" SizeSM="6">
+                                                     <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Text="Tải về" Icon="add_circle" ButtonStyle="ButtonStyle.Dark"
+                                                                  Click=@(args => ExportProfileAsync()) Style="width:100%">
 
-                                        </RadzenButton>
-                                    </RadzenColumn>
-                                </RadzenRow>
-                            </RadzenColumn>
-                        </RadzenRow>
-                    </RadzenFieldset>
-                </RadzenStack>
-            </RadzenColumn>
-        </RadzenRow>
-        <RadzenRow>
-            <RadzenColumn SizeXS="12" SizeSM="12">
-                <RadzenDataGrid @ref="_dataReportGrid" Data="_dataReport" TItem="FT03"
-                                AllowFiltering="true" FilterPopupRenderMode="PopupRenderMode.OnDemand"
-                                AllowPaging="true" PageSize="5" AllowSorting="true"
-                                ShowPagingSummary=@_showPagerSummary PagingSummaryFormat="@_pagingSummaryFormat" PageSizeOptions="@_pageSizeOptions">
-                    <Columns>
-                        <RadzenDataGridColumn TItem="FT03" Property="OvenId" Title="Oven Id" />
-                        <RadzenDataGridColumn TItem="FT03" Property="OvenName" Title="Tên lò" />
-                        <RadzenDataGridColumn TItem="FT03" Property="Temperature" Title="Nhiệt độ (oC)" />
-                        <RadzenDataGridColumn TItem="FT03" Property="CreatedDate" Title="Ngày" />
+                                                     </RadzenButton>
+                                                 </RadzenColumn>
+                                             </RadzenRow>
+                                         </RadzenColumn>
+                                     </RadzenRow>
+                                 </RadzenFieldset>
+                             </RadzenStack>
+                         </RadzenColumn>
+                     </RadzenRow>
+                     <RadzenRow>
+                         <RadzenColumn SizeXS="12" SizeSM="12">
+                             <RadzenChart @ref="RadzenChart" class="chart ">
+                                 <RadzenLineSeries Smooth="@GlobalVariable.ConfigSystem.Smooth" Data="@_chartDataSeriesTemp" CategoryProperty="Date" Title="NĐ đo" LineType="LineType.Dashed" ValueProperty="Temperature">
+                                     <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Diamond" />
+                                     <RadzenSeriesDataLabels Visible="false" />
+                                 </RadzenLineSeries>
+                                 <RadzenLineSeries Smooth="@GlobalVariable.ConfigSystem.Smooth" Data="@_chartDataSeriesSetpoint" CategoryProperty="Date" Title="NĐ đặt" LineType="LineType.Dashed" ValueProperty="Temperature">
+                                     <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Diamond" />
+                                     <RadzenSeriesDataLabels Visible="false" />
+                                 </RadzenLineSeries>
 
-                    </Columns>
-                </RadzenDataGrid>
-            </RadzenColumn>
-        </RadzenRow>
+                                 <RadzenCategoryAxis Padding="20" Formatter="@FormatAsX">
+                                     <RadzenGridLines Visible="true" />
+                                     <RadzenAxisTitle Text="Thời gian" />
+                                     <RadzenTicks>
+                                         <Template>
+                                             <text class="rz-tick-text" style="text-anchor: start; transform: translate(@(context.X)px, @(context.Y + 100)px) rotate(-45deg); font-size:small">@context.Value</text>
+                                        </Template>
+                                    </RadzenTicks>
+                                </RadzenCategoryAxis>
+                                <RadzenValueAxis Formatter="@FormatAsY">
+                                    <RadzenGridLines Visible="true" />
+                                    <RadzenAxisTitle Text="Nhiệt độ (oC)" />
+                                </RadzenValueAxis>
+                            </RadzenChart>
+                        </RadzenColumn>
+                    </RadzenRow>
+                    <RadzenRow class="rz-mt-12">
+                        <RadzenColumn SizeXS="12" SizeSM="12">
+                            <RadzenDataGrid @ref="_dataProfileGrid" Data="_dataProfile" TItem="FT04"
+                                            AllowFiltering="true" FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                                            AllowPaging="true" PageSize="5" AllowSorting="true" AllowColumnResize="true" AllowColumnReorder="true"
+                                            ShowPagingSummary=@_showPagerSummary PagingSummaryFormat="@_pagingSummaryFormat" PageSizeOptions="@_pageSizeOptions">
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="FT04" Property="OvenId" Title="Oven Id" />
+                                    <RadzenDataGridColumn TItem="FT04" Property="OvenName" Title="Tên lò" />
+                                    <RadzenDataGridColumn TItem="FT04" Property="Setpoint" Title="Nhiệt độ cài đặt (oC)" />
+                                    <RadzenDataGridColumn TItem="FT04" Property="Temperature" Title="Nhiệt độ (oC)" />
+                                    <RadzenDataGridColumn TItem="FT04" Property="CreatedDate" Title="TG log" />
+                                    <RadzenDataGridColumn TItem="FT04" Property="StartTime" Title="TG bắt đầu" />
+                                    <RadzenDataGridColumn TItem="FT04" Property="EndTime" Title="TG Kết thúc" />
+                                    <RadzenDataGridColumn TItem="FT04" Property="ProfileName" Title="Profile Name" />
+                                    <RadzenDataGridColumn TItem="FT04" Property="StepName" Title="Step Name" />
+
+                                </Columns>
+                            </RadzenDataGrid>
+                        </RadzenColumn>
+                    </RadzenRow>
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Data log">
+                    <RadzenRow Gap="1rem">
+                        <RadzenColumn SizeXS="12" SizeSM="12">
+                            <RadzenStack>
+                                <RadzenFieldset Text="Lọc">
+                                    <RadzenRow AlignItems="AlignItems.Center">
+                                        <RadzenColumn SizeXS="12" SizeSM="8">
+                                            <RadzenRow AlignItems="AlignItems.Center">
+                                                <RadzenColumn SizeXS=12 SizeSM="4">
+                                                    <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Chọn lò</RadzenText>
+                                                    <RadzenDropDown @ref=@radzenDropDown FilterCaseSensitivity="FilterCaseSensitivity.Default"
+                                                                    FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
+                                                                    Data=@_dropDownData TextProperty="OvenName" ValueProperty="OvenId" AllowClear="true"
+                                                                    @bind-Value=_filterModelDataLog.OvenId Style="width: 100%; max-width: 400px;" Name="DropDownFiltering" />
+                                                </RadzenColumn>
+                                                <RadzenColumn SizeXS=12 SizeSM="4">
+                                                    <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Thời gian bắt đầu</RadzenText>
+                                                    <RadzenDatePicker @bind-Value=@_filterModelDataLog.FromDate ShowTime="true" ShowSeconds="true"
+                                                                      HoursStep="1.5" MinutesStep="5" SecondsStep="10"
+                                                                      DateFormat="yyyy-MM-dd HH:mm:ss" Name="DatePickerWithTime" Style="width:100%" />
+                                                 </RadzenColumn>
+                                                 <RadzenColumn SizeXS=12 SizeSM="4">
+                                                     <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Thời gian kết thúc</RadzenText>
+                                                     <RadzenDatePicker @bind-Value=@_filterModelDataLog.ToDate ShowTime="true" ShowSeconds="true"
+                                                                       HoursStep="1.5" MinutesStep="5" SecondsStep="10"
+                                                                       DateFormat="yyyy-MM-dd HH:mm:ss" Name="DatePickerWithTime" Style="width:100%" />
+                                                 </RadzenColumn>
+                                             </RadzenRow>
+                                         </RadzenColumn>
+                                         <RadzenColumn SizeXS="12" SizeSM="4">
+                                             <RadzenRow AlignItems="AlignItems.Center">
+                                                 <RadzenColumn SizeXS="12" SizeSM="6">
+                                                     <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Text="Truy vấn" Icon="add_circle" ButtonStyle="ButtonStyle.Dark"
+                                                                   Click=@(args => QueryData()) Style="width:100%">
+
+                                                     </RadzenButton>
+                                                 </RadzenColumn>
+                                                 <RadzenColumn SizeXS="12" SizeSM="6">
+                                                     <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Text="Tải về" Icon="add_circle" ButtonStyle="ButtonStyle.Dark"
+                                                                   Click=@(args => QueryData()) Style="width:100%">
+
+                                                     </RadzenButton>
+                                                 </RadzenColumn>
+                                             </RadzenRow>
+                                         </RadzenColumn>
+                                     </RadzenRow>
+                                 </RadzenFieldset>
+                             </RadzenStack>
+                         </RadzenColumn>
+                     </RadzenRow>
+                     <RadzenRow class="rz-mt-2">
+                         <RadzenColumn SizeXS="12" SizeSM="12">
+                             <RadzenDataGrid @ref="_dataReportGrid" Data="_dataReport" TItem="FT03"
+                                             AllowFiltering="true" FilterPopupRenderMode="PopupRenderMode.OnDemand"
+                                             AllowPaging="true" PageSize="5" AllowSorting="true"
+                                             ShowPagingSummary=@_showPagerSummary PagingSummaryFormat="@_pagingSummaryFormat" PageSizeOptions="@_pageSizeOptions">
+                                 <Columns>
+                                     <RadzenDataGridColumn TItem="FT03" Property="OvenId" Title="Oven Id" />
+                                     <RadzenDataGridColumn TItem="FT03" Property="OvenName" Title="Tên lò" />
+                                     <RadzenDataGridColumn TItem="FT03" Property="Temperature" Title="Nhiệt độ (oC)" />
+                                     <RadzenDataGridColumn TItem="FT03" Property="CreatedDate" Title="Ngày" />
+
+                                 </Columns>
+                             </RadzenDataGrid>
+                         </RadzenColumn>
+                     </RadzenRow>
+                 </RadzenTabsItem>
+             </Tabs>
+         </RadzenTabs>
     }
 </div>

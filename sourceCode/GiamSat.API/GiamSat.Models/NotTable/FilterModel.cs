@@ -8,7 +8,7 @@ namespace GiamSat.Models
 {
     public class FilterModel
     {
-        public bool GetAll { get; set; } = true;
+        public bool GetAll { get; set; }
         public int OvenId { get; set; } = 1;
         public string OvenName { get; set; }
         public int ProfileId { get; set; } = 1;

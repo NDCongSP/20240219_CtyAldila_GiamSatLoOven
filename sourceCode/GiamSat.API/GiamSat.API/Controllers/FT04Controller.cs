@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RestEase;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GiamSat.API.Controllers
 {
@@ -16,6 +19,12 @@ namespace GiamSat.API.Controllers
         public FT04Controller(SCommon sCommon):base(sCommon.SFT04)
         {
             _sCommon = sCommon;
+        }
+
+        [HttpPost(ApiRoutes.FT04.GetFilter)]
+        public Task<Result<List<FT04>>> GetFilter([Body] FilterModel model)
+        {
+            return _sCommon.SFT04.GetFilter(model);
         }
     }
 }
