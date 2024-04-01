@@ -325,7 +325,7 @@ namespace GiamSat.Scada
                                     para.Add("profileId", item.ProfileNumber_CurrentStatus);
                                     para.Add("profileName", item.ProfileName);
                                     para.Add("stepId", item.ProfileStepNumber_CurrentStatus);
-                                    para.Add("stepName", item.ProfileStepType_CurrentStatus);
+                                    para.Add("stepName", item.StepName);
                                     para.Add("setPoint", item.SetPoint);
                                     para.Add("status", item.Status);
                                     para.Add("createdDate", DateTime.Now);
@@ -347,7 +347,7 @@ namespace GiamSat.Scada
                                     para.Add("profileId", item.ProfileNumber_CurrentStatus);
                                     para.Add("profileName", item.ProfileName);
                                     para.Add("stepId", item.ProfileStepNumber_CurrentStatus);
-                                    para.Add("stepName", item.ProfileStepType_CurrentStatus);
+                                    para.Add("stepName", item.StepName);
                                     para.Add("setPoint", item.SetPoint);
                                     para.Add("status", item.Status);
                                     para.Add("createdDate", DateTime.Now);

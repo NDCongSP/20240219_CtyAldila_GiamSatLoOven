@@ -115,8 +115,8 @@ namespace GiamSat.UI
                 // The apostrophe is to force ClosedXML to treat the date as a string
                 ws.Cell(row + 4, 1).Value = item.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss");
                 ws.Cell(row + 4, 2).Value = item.OvenName;
-                ws.Cell(row + 4, 3).Value = item.Temperature;
-                ws.Cell(row + 4, 4).Value = item.Setpoint;
+                ws.Cell(row + 4, 3).Value = item.Setpoint;
+                ws.Cell(row + 4, 4).Value = item.Temperature;
                 ws.Cell(row + 4, 5).Value = item.ProfileName;
                 ws.Cell(row + 4, 6).Value = item.StepName;
 
