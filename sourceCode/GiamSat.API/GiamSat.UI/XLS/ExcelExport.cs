@@ -115,7 +115,7 @@ namespace GiamSat.UI
 
             ws.Cell("A2").Value = $"Thời gian: {dateTime}";
 
-            ws.Range($"C4:E{data.Count + 3}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right)
+            ws.Range($"C4:D{data.Count + 3}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right)
                 .Alignment.SetVertical(XLAlignmentVerticalValues.Center)
                 .NumberFormat.Format = "#,##0.00";
 

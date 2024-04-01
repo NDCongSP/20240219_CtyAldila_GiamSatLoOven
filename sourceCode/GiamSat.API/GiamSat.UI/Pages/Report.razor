@@ -65,11 +65,11 @@
                          <RadzenColumn SizeXS="12" SizeSM="12">
                              <RadzenChart @ref="RadzenChart" class="chart ">
                                  <RadzenLineSeries Smooth="@GlobalVariable.ConfigSystem.Smooth" Data="@_chartDataSeriesTemp" CategoryProperty="Date" Title="NĐ đo" LineType="LineType.Dashed" ValueProperty="Temperature">
-                                     <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Diamond" />
+                                     <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Circle" />
                                      <RadzenSeriesDataLabels Visible="false" />
                                  </RadzenLineSeries>
                                  <RadzenLineSeries Smooth="@GlobalVariable.ConfigSystem.Smooth" Data="@_chartDataSeriesSetpoint" CategoryProperty="Date" Title="NĐ đặt" LineType="LineType.Dashed" ValueProperty="Temperature">
-                                     <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Diamond" />
+                                     <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Circle"/>
                                      <RadzenSeriesDataLabels Visible="false" />
                                  </RadzenLineSeries>
 

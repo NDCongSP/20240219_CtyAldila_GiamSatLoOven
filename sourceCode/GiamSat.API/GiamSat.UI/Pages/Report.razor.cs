@@ -1,14 +1,18 @@
-﻿using DocumentFormat.OpenXml.InkML;
+﻿//using DocumentFormat.OpenXml.InkML;
 using GiamSat.APIClient;
 using GiamSat.Models;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using Radzen;
 using Radzen.Blazor;
-using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Xml.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using ClosedXML.Excel;
+using static System.Net.WebRequestMethods;
+using System;
+using System.Net.Http;
 
 namespace GiamSat.UI.Pages
 {
@@ -223,6 +227,7 @@ namespace GiamSat.UI.Pages
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 _notificationService.Notify(new NotificationMessage()
                 {
                     Severity = Radzen.NotificationSeverity.Error,

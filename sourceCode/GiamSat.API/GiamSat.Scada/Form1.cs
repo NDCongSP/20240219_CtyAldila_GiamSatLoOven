@@ -110,8 +110,10 @@ namespace GiamSat.Scada
                         ChartRefreshInterval = 1000
                         ,
                         CountSecondStop = 5//5 giay
-                        ,ToleranceTemp = 2
-                        ,ToleranceTempOut = 1
+                        ,
+                        ToleranceTemp = 2
+                        ,
+                        ToleranceTempOut = 1
                         ,
                         ChartPointNum = 30
                         ,
@@ -480,7 +482,7 @@ namespace GiamSat.Scada
                     //if (item.EndStep == 0)
                     {
                         //rampTime tăng nhiệt
-                        if (item.SetPointLastStep < item.SetPoint )
+                        if (item.SetPointLastStep < item.SetPoint)
                         {
                             if (item.EndStep == 0)
                             {
@@ -503,8 +505,8 @@ namespace GiamSat.Scada
                                     Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                                 }
                                 else if (item.Temperature >= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
-                                   // && item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
-                                    && item.AlarmFlagLastStep == true
+                                    // && item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
+                                    //&& item.AlarmFlagLastStep == true
                                     )
                                 {
                                     item.Alarm = 0;
@@ -514,6 +516,13 @@ namespace GiamSat.Scada
 
                                     Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                                 }
+                                //else if (item.Temperature >= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp))
+                                //{
+                                //    item.Alarm = 0;
+                                //    item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
+                                //    item.AlarmFlagLastStep = false;
+                                //    Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
+                                //}
                             }
                         }
                         //soak-ngâm
@@ -541,7 +550,7 @@ namespace GiamSat.Scada
                                 }
                                 else if (item.Temperature >= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
                                     //&& item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
-                                    && item.AlarmFlagLastStep == true
+                                    //&& item.AlarmFlagLastStep == true
                                     )
                                 {
                                     item.Alarm = 0;
@@ -581,7 +590,7 @@ namespace GiamSat.Scada
                                     }
                                     else if (item.Temperature <= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
                                         //&& item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
-                                        && item.AlarmFlagLastStep == true
+                                        //&& item.AlarmFlagLastStep == true
                                         )
                                     {
                                         item.Alarm = 0;
@@ -610,7 +619,7 @@ namespace GiamSat.Scada
                                     }
                                     else if (item.Temperature <= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
                                         //&& item.Temperature > (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
-                                        && item.AlarmFlagLastStep == true
+                                        //&& item.AlarmFlagLastStep == true
                                         )
                                     {
                                         item.Alarm = 0;
@@ -913,7 +922,7 @@ namespace GiamSat.Scada
             {
                 if (item.Path == path)
                 {
-                    if (item.ProfileStepNumber_CurrentStatus == 0||item.ProfileStepNumber_CurrentStatus==5) item.SetPointLastStep = item.Temperature;
+                    if (item.ProfileStepNumber_CurrentStatus == 0) item.SetPointLastStep = item.Temperature;
                     else item.SetPointLastStep = item.SetPoint;
                     //item.SetPointLastStep = item.SetPoint;
 
