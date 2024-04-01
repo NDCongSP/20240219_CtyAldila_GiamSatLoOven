@@ -239,6 +239,32 @@ namespace GiamSat.UI.Pages
             }
         }
 
+        async Task ExportDataLogAsync()
+        {
+            try
+            {
+                var xls = new Excel();
+                //await xls.GenerateExcel(_js, Elements, "export.xlsx");
+
+                //Stream streamTemplate = await _client.CreateClient("local").GetStreamAsync("templateXLS/TemplateReport.xlsx");
+                //await xls.UseTemplate(_js, streamTemplate, Elements, "BaoCao.xlsx");
+
+                await xls.TemplateOnExistingFileAsync(_client, _js, _dataProfile, @"templateXLS\TemplateReport.xlsx", $"{_filterProfileLog.FromDate} đến {_filterProfileLog.ToDate}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                _notificationService.Notify(new NotificationMessage()
+                {
+                    Severity = Radzen.NotificationSeverity.Error,
+                    Summary = ex.Message,
+                    Detail = ex.StackTrace,
+                    Duration = 3000
+                });
+                return;
+            }
+        }
+
         /// <summary>
         /// Tab select event.
         /// </summary>

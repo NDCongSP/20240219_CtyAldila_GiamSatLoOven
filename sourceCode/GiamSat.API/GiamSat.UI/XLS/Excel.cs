@@ -12,7 +12,7 @@ namespace GiamSat.UI
         /// <param name="data"></param>
         /// <param name="filename"></param>
         /// <returns></returns>
-        public async Task GenerateExcel(IJSRuntime js, List<FT04> data, string filename = "export.xlsx")
+        public async Task GenerateExcel(IJSRuntime js, List<FT03> data, string filename = "export.xlsx")
         {
             var exportXls = new ExcelExport();
             var XLSStream = exportXls.GenerateExcelFile(data);

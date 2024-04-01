@@ -7,8 +7,21 @@ namespace GiamSat.UI
 {
     public class ExcelExport
     {
-        public byte[] GenerateExcelFile(List<FT04> data)
+        public byte[] GenerateExcelFile(List<FT03> data)
         {
+
+            List<ExcelModel> model = new List<ExcelModel>();
+            foreach (var item in data)
+            {
+                model.Add(new ExcelModel()
+                {
+                    OvenId=item.OvenId,
+                    Ovenname=item.OvenName,
+                    Temperature=item.Temperature,
+                    CreatedDate=item.CreatedDate
+                });
+            }
+
             using (var wb = new XLWorkbook())
             {
                 wb.Properties.Author = "the Author";
@@ -24,26 +37,24 @@ namespace GiamSat.UI
 
                 var ws = wb.Worksheets.Add("Weather Forecast");
 
-                ws.Cell(1, 1).Value = "Chuồng";
-                ws.Cell(1, 2).Value = "Nhiệt độ (oC)";
-                ws.Cell(1, 3).Value = "Độ ẩm (%)";
-                ws.Cell(1, 4).Value = "Tần số";
-                ws.Cell(1, 5).Value = "Thời gian";
+                ws.Cell(1, 1).Value = "Id";
+                ws.Cell(1, 2).Value = "Oven";
+                ws.Cell(1, 3).Value = "Nhiệt độ (oC)";
+                ws.Cell(1, 4).Value = "Thời gian";
 
                 // Fill a cell with a date
-                var wRange = ws.Range($"E1:E{data.Count}");
+                var wRange = ws.Range($"D1:D{data.Count}");
                 wRange.Style.DateFormat.Format = "yyyy-MMM-dd HH:mm:ss";
 
                 var row = 0;
-                foreach (var item in data)
+                foreach (var item in model)
                 {
                     // The apostrophe is to force ClosedXML to treat the date as a string
                     //thay chi tiet cac cot data vao bem duoi.
-                    //ws.Cell(row + 1, 1).Value = item.TenChuong;
-                    //ws.Cell(row + 1, 2).Value = item.NhietDo;
-                    //ws.Cell(row + 1, 3).Value = item.DoAm;
-                    //ws.Cell(row + 1, 4).Value = item.Frequency;
-                    //ws.Cell(row + 1, 5).Value = "'" + item.CreatedDate.ToShortDateString();
+                    ws.Cell(row + 1, 1).Value = item.OvenId;
+                    ws.Cell(row + 1, 2).Value = item.Ovenname;
+                    ws.Cell(row + 1, 3).Value = item.Temperature;
+                    ws.Cell(row + 1, 4).Value = item.CreatedDate;
 
                     row += 1;
                 }
@@ -134,11 +145,10 @@ namespace GiamSat.UI
     }
 
     class ExcelModel
-    {
+    { 
+        public int OvenId { get; set; }
+        public string Ovenname { get; set; }
+        public double? Temperature { get; set; }        
         public DateTime CreatedDate { get; set; }
-        public string TenChuong { get; set; }
-        public double NhietDo { get; set; }
-        public double DoAm { get; set; }
-        public double Frequency { get; set; }
     }
 }
