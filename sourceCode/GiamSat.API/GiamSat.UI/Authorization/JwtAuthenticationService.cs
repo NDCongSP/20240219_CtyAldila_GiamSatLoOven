@@ -51,10 +51,10 @@ namespace GiamSat.UI
             // Generate claimsIdentity from cached token
             var claimsIdentity = new ClaimsIdentity(GetClaimsFromJwt(cachedToken), "jwt");
 
-            foreach (var item in claimsIdentity.Claims.ToList())
-            {
-                Console.WriteLine(item.Type + "Value = " + item.Value);
-            }
+            //foreach (var item in claimsIdentity.Claims.ToList())
+            //{
+            //    Console.WriteLine(item.Type + "Value = " + item.Value);
+            //}
 
 
             // Add cached permissions as claims
@@ -64,16 +64,12 @@ namespace GiamSat.UI
             //}
 
             var claimPrincipal = new ClaimsPrincipal(claimsIdentity);
-            if (claimPrincipal.Identity.IsAuthenticated)
-            {
 
-            }
-
-            string text = "[\"Admin\", \"User\"]";
-            if (claimPrincipal.IsInRole(text))
-            {
-                Console.WriteLine("Co quyen admin");
-            }
+            //string text = "[\"Admin\", \"User\"]";
+            //if (claimPrincipal.IsInRole(text))
+            //{
+            //    Console.WriteLine("Co quyen admin");
+            //}
 
 
             return new AuthenticationState(claimPrincipal);
@@ -161,7 +157,7 @@ namespace GiamSat.UI
             var expTime = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(exp));
             var timeUTC = DateTime.UtcNow;
             var diff = expTime - timeUTC;
-            if (diff.TotalSeconds <= 5)
+            if (diff.TotalMinutes <= 5)
             {
                 // Cho nay de refresh token khi token sap het han
                 var res = await _tokenClient.RefreshTokenAsync(new APIClient.RefreshTokenModel() { OldToken = token });

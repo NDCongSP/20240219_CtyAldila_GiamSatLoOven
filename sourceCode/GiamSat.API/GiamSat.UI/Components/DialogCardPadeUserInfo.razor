@@ -1,0 +1,37 @@
+﻿@page "/dialogcardpageuserinfo/{UserId}"
+<div Class="rz-p-0 rz-p-md-12">
+    <RadzenText TextStyle="TextStyle.Subtitle2"></RadzenText>
+    <RadzenTemplateForm Data="@_userMode" Submit="@((UpdateModel args) => { Submit(args); })">
+        <RadzenRow Gap="2rem" Class="rz-p-0 rz-p-lg-4">
+            <RadzenColumn SizeXS="12" SizeMD="12">
+                <RadzenStack>
+                    <RadzenFieldset Text="Thông tin chung">
+                        <RadzenStack Gap="1rem">
+                            <RadzenRow AlignItems="AlignItems.Center">
+                                <RadzenColumn SizeXS=12 SizeSM="4">
+                                    <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Tên</RadzenText>
+                                    <RadzenTextBox TextStyle="TextStyle.Body1" Style="width: 100%;" @bind-Value=@_userMode.Username />
+                                </RadzenColumn>
+                                <RadzenColumn SizeXS="12" SizeMD="4">
+                                    <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Mật khẩu cũ</RadzenText>
+                                    <RadzenPassword @bind-Value=@_userMode.OldPassword Placeholder="Enter password..." aria-label="enter password" Style="width:100%"/>
+                                </RadzenColumn>
+                                <RadzenColumn SizeXS="12" SizeMD="4">
+                                    <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Mật khẩu mới</RadzenText>
+                                    <RadzenPassword @bind-Value=@_userMode.NewPassword Placeholder="Enter password..." aria-label="enter password" Style="width:100%"/>
+                                </RadzenColumn>
+                                <RadzenColumn SizeXS="12" SizeMD="4">
+                                    <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Nhập lại mật khẩu mới</RadzenText>
+                                    <RadzenPassword @bind-Value=@_userMode.ReNewPassword Placeholder="Enter password..." aria-label="enter password" Style="width:100%" />
+                                </RadzenColumn>
+                            </RadzenRow>
+                        </RadzenStack>
+                    </RadzenFieldset>
+                </RadzenStack>
+            </RadzenColumn>
+        </RadzenRow>
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
+            <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Lưu" />
+        </RadzenStack>
+    </RadzenTemplateForm>
+</div>

@@ -6,14 +6,14 @@ namespace GiamSat.UI
 {
     public class HttpInterceptorManager : IHttpInterceptorManager
     {
-        private readonly NotificationService _snackBar;
+        private readonly NotificationService _notify;
         private readonly NavigationManager _navigationManager;
         private readonly HttpClientInterceptor _httpInterceptor;
         private readonly JwtAuthenticationService _authService;
 
-        public HttpInterceptorManager(NotificationService snackBar, NavigationManager navigationManager, HttpClientInterceptor httpInterceptor, JwtAuthenticationService authService)
+        public HttpInterceptorManager(NotificationService notify, NavigationManager navigationManager, HttpClientInterceptor httpInterceptor, JwtAuthenticationService authService)
         {
-            _snackBar = snackBar;
+            _notify = notify;
             _navigationManager = navigationManager;
             _httpInterceptor = httpInterceptor;
             _authService = authService;
@@ -43,7 +43,13 @@ namespace GiamSat.UI
                 }
                 catch (Exception)
                 {
-                    //_snackBar.Add("Your session was expired", Severity.Error);
+                    _notify.Notify(new NotificationMessage()
+                    {
+                        Severity = NotificationSeverity.Error,
+                        Summary = "Error",
+                        Detail = "Your session was expired",
+                        Duration = 4000
+                    });
                     await _authService.LogoutAsync();
                 }
             }

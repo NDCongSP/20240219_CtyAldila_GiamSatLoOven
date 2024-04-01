@@ -32,7 +32,7 @@ builder.Services.AddAuthorizationCore(options =>
     options.AddPolicy(UserRoles.Admin, policy =>
     {
         policy.RequireRole(UserRoles.Admin);
-        policy.RequireRole(UserRoles.User);
+        //policy.RequireRole(UserRoles.User);
     });
 });
 

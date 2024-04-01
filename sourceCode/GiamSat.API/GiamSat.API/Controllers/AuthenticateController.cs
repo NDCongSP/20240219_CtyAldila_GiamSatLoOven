@@ -62,7 +62,8 @@ namespace GiamSat.API.Controllers
                 return Ok(new LoginResult()
                 {
                     Token = new JwtSecurityTokenHandler().WriteToken(token),
-                    Expiration = token.ValidTo
+                    Expiration = token.ValidTo,
+                    RefreshToken=Guid.NewGuid().ToString()
 
                     //Log lai thông tin token để phục vụ cho việc refresh token
                 });
@@ -75,6 +76,10 @@ namespace GiamSat.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResult))]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenModel model)
         {
+            #region Check lại thông tin củ refreshToken xem có đúng ko thì mới cho refresh
+
+            #endregion
+
             var claim = JwtHelper.GetClaimsPrincipalFromJwt(model.OldToken);
 
             var user = await _userManager.FindByNameAsync(claim.Identity.Name);
@@ -102,7 +107,8 @@ namespace GiamSat.API.Controllers
                 return Ok(new LoginResult()
                 {
                     Token = new JwtSecurityTokenHandler().WriteToken(token),
-                    Expiration = token.ValidTo
+                    Expiration = token.ValidTo,
+                    RefreshToken=Guid.NewGuid().ToString()
 
                     //update lai thông tin token để phục vụ cho việc refresh token
                 });
@@ -218,7 +224,7 @@ namespace GiamSat.API.Controllers
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:ValidIssuer"],
                 audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddSeconds(20),
+                expires: DateTime.Now.AddMinutes(60),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );

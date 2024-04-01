@@ -320,6 +320,7 @@ namespace GiamSat.API
             var roleManager = scope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
             var userManager = scope.ServiceProvider.GetService<UserManager<IdentityUser>>();
 
+            //add role
             var res = await roleManager.FindByNameAsync("Admin");
             if (res == null) await roleManager.CreateAsync(new IdentityRole() { Name = "Admin" });
 
@@ -329,6 +330,7 @@ namespace GiamSat.API
             res = await roleManager.FindByNameAsync("Operator");
             if (res == null) await roleManager.CreateAsync(new IdentityRole() { Name = "Operator" });
 
+            //add user
             var resUser = await userManager.FindByNameAsync("admin");
             if (resUser == null)
             {
