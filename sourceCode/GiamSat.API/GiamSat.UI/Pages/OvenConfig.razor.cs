@@ -118,7 +118,7 @@ namespace GiamSat.UI.Pages
                 #region cập nhật lại các thông số của oven được chọn để
                 var ovenUpdate = ovensInfo.FirstOrDefault(x => x.Id == _ovenId);
 
-                var maxIdProfile = ovenUpdate.Profiles.ToArray().Count();
+                var maxIdProfile = ovenUpdate.Profiles.Max(x => x.Id);
 
                 //var maxIdProfileCurrent = JsonConvert.DeserializeObject<ProfileModel>(ovenUpdate.Profiles).Max;
                 ovenUpdate.Profiles.Add(new ProfileModel()

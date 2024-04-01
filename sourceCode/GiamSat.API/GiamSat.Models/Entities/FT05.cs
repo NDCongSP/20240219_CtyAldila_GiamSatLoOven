@@ -36,5 +36,10 @@ namespace GiamSat.Models
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
         public DateTime? ACKDate { get; set; } = DateTime.Now;
         public int Actived { get; set; } = 1;
+
+        /// <summary>
+        /// RealtimeDisplayModel.
+        /// </summary>
+        public string Details { get; set; }
     }
 }

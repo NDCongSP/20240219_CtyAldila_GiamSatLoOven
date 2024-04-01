@@ -12,10 +12,10 @@ namespace GiamSat.UI
         /// <param name="data"></param>
         /// <param name="filename"></param>
         /// <returns></returns>
-        public async Task GenerateExcel(IJSRuntime js, List<FT03> data, string filename = "export.xlsx")
+        public async Task GenerateExcel(IJSRuntime js, List<FT03> data, string filename = "export.xlsx", string dateQuery = null)
         {
             var exportXls = new ExcelExport();
-            var XLSStream = exportXls.GenerateExcelFile(data);
+            var XLSStream = exportXls.GenerateExcelFile(data, dateQuery);
 
             await js.InvokeVoidAsync("BlazorDownloadFile", filename, XLSStream);
         }
@@ -36,12 +36,13 @@ namespace GiamSat.UI
                                                       IJSRuntime js,
                                                       List<FT04> data,
                                                       string template,
-                                                      string dateTime)
+                                                      string dateTime
+            , string filename)
         {
             var templateXLS = new ExcelExport();
             var XLSStream = await templateXLS.FillIn(client, data, template, dateTime);
 
-            await js.InvokeVoidAsync("BlazorDownloadFile", "export.xlsx", XLSStream);
+            await js.InvokeVoidAsync("BlazorDownloadFile", filename, XLSStream);
         }
     }
 }

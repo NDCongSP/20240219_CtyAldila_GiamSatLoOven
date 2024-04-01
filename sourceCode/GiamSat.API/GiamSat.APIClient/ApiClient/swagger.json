@@ -2192,6 +2192,10 @@
           "createdMachine": {
             "type": "string",
             "nullable": true
+          },
+          "details": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -2317,6 +2321,10 @@
           "status": {
             "type": "integer",
             "format": "int32"
+          },
+          "details": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -2435,6 +2443,10 @@
           "actived": {
             "type": "integer",
             "format": "int32"
+          },
+          "details": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

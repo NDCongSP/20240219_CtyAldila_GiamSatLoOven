@@ -60,5 +60,10 @@ namespace GiamSat.Models
         /// 1-CHẠY 0-DỪNG.
         /// </summary>
         public int Status { get; set; }
+
+        /// <summary>
+        /// RealtimeDisplayModel.
+        /// </summary>
+        public string Details { get; set; }
     }
 }

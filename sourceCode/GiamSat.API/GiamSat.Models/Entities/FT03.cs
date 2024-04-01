@@ -26,5 +26,9 @@ namespace GiamSat.Models
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public int Actived { get; set; } = 1;
         public string? CreatedMachine { get; set; }=Environment.MachineName;
+        /// <summary>
+        /// RealtimeDisplayModel.
+        /// </summary>
+        public string Details { get; set; }
     }
 }

@@ -83,6 +83,9 @@ namespace GiamSat.API.Migrations
                     b.Property<string>("CreatedMachine")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Details")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("OvenId")
                         .HasColumnType("int");
 
@@ -110,6 +113,9 @@ namespace GiamSat.API.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedMachine")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Details")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("EndTime")
@@ -181,6 +187,9 @@ namespace GiamSat.API.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Details")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Hours")

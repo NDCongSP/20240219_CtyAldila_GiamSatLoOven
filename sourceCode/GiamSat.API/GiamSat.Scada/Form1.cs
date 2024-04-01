@@ -325,10 +325,11 @@ namespace GiamSat.Scada
                                     para.Add("profileId", item.ProfileNumber_CurrentStatus);
                                     para.Add("profileName", item.ProfileName);
                                     para.Add("stepId", item.ProfileStepNumber_CurrentStatus);
-                                    para.Add("stepName", item.StepName);
+                                    para.Add("stepName", item.StepName.ToString());
                                     para.Add("setPoint", item.SetPoint);
                                     para.Add("status", item.Status);
                                     para.Add("createdDate", DateTime.Now);
+                                    para.Add("details", JsonConvert.SerializeObject(item));
 
                                     con.Execute("sp_FT04Insert", param: para, commandType: CommandType.StoredProcedure, transaction: tran);
                                 }
@@ -347,10 +348,11 @@ namespace GiamSat.Scada
                                     para.Add("profileId", item.ProfileNumber_CurrentStatus);
                                     para.Add("profileName", item.ProfileName);
                                     para.Add("stepId", item.ProfileStepNumber_CurrentStatus);
-                                    para.Add("stepName", item.StepName);
+                                    para.Add("stepName", item.StepName.ToString());
                                     para.Add("setPoint", item.SetPoint);
                                     para.Add("status", item.Status);
                                     para.Add("createdDate", DateTime.Now);
+                                    para.Add("details", JsonConvert.SerializeObject(item));
 
                                     con.Execute("sp_FT04Insert", param: para, commandType: CommandType.StoredProcedure, transaction: tran);
 
@@ -419,6 +421,7 @@ namespace GiamSat.Scada
                             para.Add("ovenId", item.OvenId);
                             para.Add("ovenName", item.OvenName);
                             para.Add("temperature", item.Temperature);
+                            para.Add("details", JsonConvert.SerializeObject(item));
 
                             con.Execute("sp_FT03Insert", param: para, commandType: CommandType.StoredProcedure);
                         }
@@ -505,25 +508,19 @@ namespace GiamSat.Scada
                                     item.AlarmFlagLastStep = true;
                                     Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                                 }
-                                else if (item.Temperature >= item.SetPointLastStep// - GlobalVariable.ConfigSystem.ToleranceTemp)
+                                else if (item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOut)
                                     // && item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
                                     //&& item.AlarmFlagLastStep == true
                                     )
                                 {
                                     item.Alarm = 0;
+                                    item.AlarmDescription = null;
                                     easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
                                     item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
                                     item.AlarmFlagLastStep = false;
 
                                     Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                                 }
-                                //else if (item.Temperature >= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp))
-                                //{
-                                //    item.Alarm = 0;
-                                //    item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
-                                //    item.AlarmFlagLastStep = false;
-                                //    Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                                //}
                             }
                         }
                         //soak-ngâm
@@ -550,12 +547,13 @@ namespace GiamSat.Scada
                                     item.AlarmFlagLastStep = true;
                                     Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                                 }
-                                else if (item.Temperature >= item.SetPointLastStep //- GlobalVariable.ConfigSystem.ToleranceTemp)
+                                else if (item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOut)
                                     //&& item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
                                     //&& item.AlarmFlagLastStep == true
                                     )
                                 {
                                     item.Alarm = 0;
+                                    item.AlarmDescription = null;
                                     easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
                                     item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
                                     item.AlarmFlagLastStep = false;
@@ -591,12 +589,13 @@ namespace GiamSat.Scada
                                         item.AlarmFlagLastStep = true;
                                         Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                                     }
-                                    else if (item.Temperature <= item.SetPointLastStep// - GlobalVariable.ConfigSystem.ToleranceTemp)
+                                    else if (item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOut)
                                         //&& item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
                                         //&& item.AlarmFlagLastStep == true
                                         )
                                     {
                                         item.Alarm = 0;
+                                        item.AlarmDescription = null;
                                         easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
                                         item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
                                         item.AlarmFlagLastStep = false;
@@ -617,16 +616,16 @@ namespace GiamSat.Scada
                                         //log DB alarm
                                         var p = new DynamicParameters();
 
-
                                         item.AlarmFlagLastStep = true;
                                         Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                                     }
-                                    else if (item.Temperature <= item.SetPointLastStep// - GlobalVariable.ConfigSystem.ToleranceTemp)
+                                    else if (item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOut)
                                         //&& item.Temperature > (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
                                         //&& item.AlarmFlagLastStep == true
                                         )
                                     {
                                         item.Alarm = 0;
+                                        item.AlarmDescription = null;
                                         easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
                                         item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
                                         item.AlarmFlagLastStep = false;
@@ -636,37 +635,7 @@ namespace GiamSat.Scada
                             }
                         }
                     }
-                    //Check cảnh báo khi kết thúc step
-                    //else
-                    //{
-                    //    if (item.Temperature <= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
-                    //        //&& item.Temperature >= (item.SetPoint + GlobalVariable.ConfigSystem.ToleranceTemp)
-                    //        && item.AlarmFlagLastStep == false
-                    //        )
-                    //    {
-                    //        item.Alarm = 1;
-                    //        easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
-
-                    //        //log DB alarm
-                    //        var p = new DynamicParameters();
-
-
-                    //        item.AlarmFlagLastStep = true;
-                    //    }
-                    //    else if (item.Temperature > (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
-                    //        //&& item.Temperature < (item.SetPoint + GlobalVariable.ConfigSystem.ToleranceTemp)
-                    //        && item.AlarmFlagLastStep == true
-                    //        )
-                    //    {
-                    //        item.Alarm = 0;
-                    //        easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
-                    //        item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
-                    //        item.AlarmFlagLastStep = false;
-                    //    }
-                    //}
                 }
-
-                //Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                 index += 1;
             }
             #endregion
@@ -802,7 +771,7 @@ namespace GiamSat.Scada
                 {
                     item.ConnectionStatus = e.NewQuality == Quality.Good ? 1 : 0;
 
-                    if (item.ConnectionStatus==0)
+                    if (item.ConnectionStatus == 0)
                     {
                         item.AlarmDescription = "Mất kết nối đến lò";
                     }
@@ -838,9 +807,13 @@ namespace GiamSat.Scada
                     //Watlow tra tin hieu ve khi co tác động là 0, còn không tác động là 1.
                     item.DoorStatus = e.NewValue == "1" ? 1 : 0;
 
-                    if (e.NewValue=="0")
+                    if (e.NewValue == "0")
                     {
                         item.AlarmDescription = "Cửa lò mở";
+                    }
+                    else
+                    {
+                        item.AlarmDescription = null;
                     }
                     return;
                 }
@@ -937,7 +910,7 @@ namespace GiamSat.Scada
                 if (item.Path == path)
                 {
                     if (item.ProfileStepNumber_CurrentStatus == 0) item.SetPointLastStep = item.Temperature;
-                    else  item.SetPointLastStep = item.SetPoint;
+                    else item.SetPointLastStep = item.SetPoint;
                     //item.SetPointLastStep = item.SetPoint;
 
                     item.ProfileStepNumber_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.ProfileStepNumber_CurrentStatus;

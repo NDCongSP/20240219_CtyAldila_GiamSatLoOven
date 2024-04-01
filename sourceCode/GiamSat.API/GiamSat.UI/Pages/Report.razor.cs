@@ -30,6 +30,7 @@ namespace GiamSat.UI.Pages
             GetAll = false,
             FromDate = DateTime.Now,
             ToDate = DateTime.Now,
+            OvenId = 0
         };
         OvensInfo _ovensInfo;
 
@@ -41,7 +42,8 @@ namespace GiamSat.UI.Pages
         {
             GetAll = false,
             FromDate = DateTime.Now,
-            ToDate = DateTime.Now
+            ToDate = DateTime.Now,
+            OvenId = 0
         };
 
         RadzenDataGrid<APIClient.FT04> _dataProfileGrid;
@@ -108,6 +110,18 @@ namespace GiamSat.UI.Pages
         {
             try
             {
+                if (_filterModelDataLog.OvenId == 0)
+                {
+                    _notificationService.Notify(new NotificationMessage()
+                    {
+                        Severity = NotificationSeverity.Warning,
+                        Summary = "Warning",
+                        Detail = "Bạn chưa chọn lò cần truy vấn.",
+                        Duration = 4000
+                    });
+                    return;
+                }
+
                 if (_filterModelDataLog.OvenId > _ovensInfo.Count)
                 {
                     _filterModelDataLog.GetAll = true;
@@ -154,6 +168,18 @@ namespace GiamSat.UI.Pages
         {
             try
             {
+                if (_filterProfileLog.OvenId == 0)
+                {
+                    _notificationService.Notify(new NotificationMessage()
+                    {
+                        Severity = NotificationSeverity.Warning,
+                        Summary = "Warning",
+                        Detail = "Bạn chưa chọn lò cần truy vấn.",
+                        Duration = 4000
+                    });
+                    return;
+                }
+
                 _dataProfile = null;
                 _dataProfile = new List<APIClient.FT04>();
                 _chartDataSeriesTemp = null;
@@ -223,7 +249,8 @@ namespace GiamSat.UI.Pages
                 //Stream streamTemplate = await _client.CreateClient("local").GetStreamAsync("templateXLS/TemplateReport.xlsx");
                 //await xls.UseTemplate(_js, streamTemplate, Elements, "BaoCao.xlsx");
 
-                await xls.TemplateOnExistingFileAsync(_client, _js, _dataProfile, @"templateXLS\TemplateReport.xlsx", $"{_filterProfileLog.FromDate} đến {_filterProfileLog.ToDate}");
+                await xls.TemplateOnExistingFileAsync(_client, _js, _dataProfile, @"templateXLS\TemplateReport.xlsx"
+                                    , $"{_filterProfileLog.FromDate} đến {_filterProfileLog.ToDate}", $"{DateTime.Now.ToString("yyyyMMdd_HHmmss")}_ReportRunProfile.xlsx");
             }
             catch (Exception ex)
             {
@@ -249,7 +276,8 @@ namespace GiamSat.UI.Pages
                 //Stream streamTemplate = await _client.CreateClient("local").GetStreamAsync("templateXLS/TemplateReport.xlsx");
                 //await xls.UseTemplate(_js, streamTemplate, Elements, "BaoCao.xlsx");
 
-                await xls.TemplateOnExistingFileAsync(_client, _js, _dataProfile, @"templateXLS\TemplateReport.xlsx", $"{_filterProfileLog.FromDate} đến {_filterProfileLog.ToDate}");
+                await xls.GenerateExcel(_js, _dataReport, $"{DateTime.Now.ToString("yyyyMMdd_HHmmss")}_ReportDataLog.xlsx"
+                    , $"{_filterModelDataLog.FromDate} đến {_filterModelDataLog.ToDate}");
             }
             catch (Exception ex)
             {
