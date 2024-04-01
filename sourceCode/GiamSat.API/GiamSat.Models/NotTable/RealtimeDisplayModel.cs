@@ -32,6 +32,10 @@ namespace GiamSat.Models
         /// Cảnh báo. 1 là cảnh báo, 0 là bình thường.
         /// </summary>
         public int Alarm { get; set; }
+        /// <summary>
+        /// dieennx giải alarm.
+        /// </summary>
+        public string AlarmDescription { get; set; }
         public double Temperature { get; set; } = 0;
         /// <summary>
         /// Trạng thái cửa.

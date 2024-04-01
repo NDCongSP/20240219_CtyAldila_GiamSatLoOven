@@ -63,6 +63,10 @@
                         <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-4 rz-mb-0">Nhiệt thay đổi/1 phút (oC)</RadzenText>
                         <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.TempRateMinute</b></RadzenText>
                     </RadzenColumn>
+                    <RadzenColumn SizeXS=12 SizeSM="2" Visible=@(_ovenDisplayInfo.Alarm==1||_ovenDisplayInfo.DoorStatus==0?true:false)>
+                        <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-4 rz-mb-0">Cảnh báo</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.AlarmDescription</b></RadzenText>
+                    </RadzenColumn>
                 </RadzenRow>
             </RadzenFieldset>
         </RadzenColumn>

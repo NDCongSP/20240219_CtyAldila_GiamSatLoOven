@@ -117,7 +117,8 @@ namespace GiamSat.UI
                 ws.Cell(row + 4, 2).Value = item.OvenName;
                 ws.Cell(row + 4, 3).Value = item.Temperature;
                 ws.Cell(row + 4, 4).Value = item.Setpoint;
-                ws.Cell(row + 4, 5).Value = item.StepName;
+                ws.Cell(row + 4, 5).Value = item.ProfileName;
+                ws.Cell(row + 4, 6).Value = item.StepName;
 
                 row += 1;
             }

@@ -12,30 +12,34 @@
             @foreach (var item in _displayRealtime)
             {
                 <RadzenColumn SizeXS=12 SizeSM="3">
-                    @if (item.ConnectionStatus == 1 && item.Alarm == 0)
+                    @if (item.ConnectionStatus == 1 && item.Alarm == 0 && item.DoorStatus == 1)
                     {
                         <RadzenCard Varian="Varian.Filled" class="rz-background-color-info-light rz-shadow-0 rz-border-radius-4 rz-m-0">
                             <RadzenStack Orientation="Orientation.Vertical" Gap="10px">
                                 <RadzenText TextStyle="TextStyle.H6" class=""><strong>@item.OvenName</strong></RadzenText>
                                 <RadzenRow RowGap="0">
                                     <RadzenColumn SizeXS=12 SizeSM="6">
-                                        <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Nhiệt độ (oC)</RadzenText>
+                                        <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Nhiệt độ (oC)</RadzenText>
                                         <RadzenText TextStyle="TextStyle.DisplayH5" class=""><b>@item.Temperature</b></RadzenText>
                                     </RadzenColumn>
                                     <RadzenColumn SizeXS=12 SizeSM="6">
                                         <RadzenRow RowGap="0">
-                                            <RadzenColumn SizeXS=12 SizeSM="6">
-                                                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Cửa lò</RadzenText>
+                                            <RadzenColumn SizeXS=12 SizeSM="4">
+                                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Cửa lò</RadzenText>
                                                 <RadzenText TextStyle="TextStyle.Body1" class=""><b>@(item.DoorStatus == 1 ? "Đóng" : "Mở")</b></RadzenText>
                                             </RadzenColumn>
-                                            <RadzenColumn SizeXS=12 SizeSM="6">
-                                                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Trạng thái</RadzenText>
+                                            <RadzenColumn SizeXS=12 SizeSM="4">
+                                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Trạng thái</RadzenText>
                                                 <RadzenText TextStyle="TextStyle.Body1" class=""><b>@(item.Status == 1 ? "Chạy" : "Dừng")</b></RadzenText>
                                             </RadzenColumn>
                                         </RadzenRow>
                                     </RadzenColumn>
                                 </RadzenRow>
-
+                                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start"
+                                             Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-mt-2" Visible=@(item.Alarm==1||item.DoorStatus==0?true:false)>
+                                    <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Cảnh báo</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@item.AlarmDescription</b></RadzenText>
+                                </RadzenStack>
                                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End" Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-mt-2">
                                     <RadzenButton Click=@(args => OnClick(item.OvenId,item.OvenName)) Variant="Variant.Flat" Shade="Shade.Dark"
                                                   Text="Chi tiết" Icon="info" ButtonStyle="ButtonStyle.Dark" />
@@ -43,29 +47,35 @@
                             </RadzenStack>
                         </RadzenCard>
                     }
-                    else if (item.ConnectionStatus == 1 && (item.Alarm == 1 || item.DoorStatus == 1))
+                    else if (item.ConnectionStatus == 1 && (item.Alarm == 1 || item.DoorStatus == 0))
                     {
                         <RadzenCard Varian="Varian.Filled" class="rz-background-color-warning-light rz-shadow-0 rz-border-radius-4 rz-m-0">
                             <RadzenStack Orientation="Orientation.Vertical" Gap="10px">
                                 <RadzenText TextStyle="TextStyle.H6" class=""><strong>@item.OvenName</strong></RadzenText>
                                 <RadzenRow RowGap="0">
                                     <RadzenColumn SizeXS=12 SizeSM="6">
-                                        <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Nhiệt độ (oC)</RadzenText>
+                                        <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Nhiệt độ (oC)</RadzenText>
                                         <RadzenText TextStyle="TextStyle.DisplayH5" class=""><b>@item.Temperature</b></RadzenText>
                                     </RadzenColumn>
                                     <RadzenColumn SizeXS=12 SizeSM="6">
                                         <RadzenRow RowGap="0">
                                             <RadzenColumn SizeXS=12 SizeSM="6">
-                                                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Cửa lò</RadzenText>
+                                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Cửa lò</RadzenText>
                                                 <RadzenText TextStyle="TextStyle.Body1" class=""><b>@(item.DoorStatus == 1 ? "Đóng" : "Mở")</b></RadzenText>
                                             </RadzenColumn>
                                             <RadzenColumn SizeXS=12 SizeSM="6">
-                                                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Trạng thái</RadzenText>
+                                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Trạng thái</RadzenText>
                                                 <RadzenText TextStyle="TextStyle.Body1" class=""><b>@(item.Status == 1 ? "Chạy" : "Dừng")</b></RadzenText>
                                             </RadzenColumn>
                                         </RadzenRow>
                                     </RadzenColumn>
                                 </RadzenRow>
+
+                                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start"
+                                             Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-mt-2" Visible=@(item.Alarm==1||item.DoorStatus==0?true:false)>
+                                    <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Cảnh báo</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@item.AlarmDescription</b></RadzenText>
+                                </RadzenStack>
 
                                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End" Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-mt-2">
                                     <RadzenButton Click=@(args => OnClick(item.OvenId,item.OvenName)) Variant="Variant.Flat" Shade="Shade.Dark"
@@ -81,22 +91,28 @@
                                 <RadzenText TextStyle="TextStyle.H6" class=""><strong>@item.OvenName</strong></RadzenText>
                                 <RadzenRow RowGap="0">
                                     <RadzenColumn SizeXS=12 SizeSM="6">
-                                        <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Nhiệt độ (oC)</RadzenText>
+                                        <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Nhiệt độ (oC)</RadzenText>
                                         <RadzenText TextStyle="TextStyle.DisplayH5" class=""><b>@item.Temperature</b></RadzenText>
                                     </RadzenColumn>
                                     <RadzenColumn SizeXS=12 SizeSM="6">
                                         <RadzenRow RowGap="0">
                                             <RadzenColumn SizeXS=12 SizeSM="6">
-                                                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Cửa lò</RadzenText>
+                                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Cửa lò</RadzenText>
                                                 <RadzenText TextStyle="TextStyle.Body1" class=""><b>@(item.DoorStatus == 1 ? "Đóng" : "Mở")</b></RadzenText>
                                             </RadzenColumn>
                                             <RadzenColumn SizeXS=12 SizeSM="6">
-                                                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Trạng thái</RadzenText>
+                                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Trạng thái</RadzenText>
                                                 <RadzenText TextStyle="TextStyle.Body1" class=""><b>@(item.Status == 1 ? "Chạy" : "Dừng")</b></RadzenText>
                                             </RadzenColumn>
                                         </RadzenRow>
                                     </RadzenColumn>
                                 </RadzenRow>
+
+                                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start"
+                                             Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-mt-2" Visible=@(item.Alarm==1||item.DoorStatus==0?true:false)>
+                                    <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Cảnh báo</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Body1" class=""><b>@item.AlarmDescription</b></RadzenText>
+                                </RadzenStack>
 
                                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End" Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-mt-2">
                                     <RadzenButton Click=@(args => OnClick(item.OvenId,item.OvenName)) Variant="Variant.Flat" Shade="Shade.Dark"
