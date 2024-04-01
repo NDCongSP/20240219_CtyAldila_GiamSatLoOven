@@ -39,7 +39,8 @@ namespace GiamSat.API
             // Add services to the container.
 
             // For Entity Framework
-            GlobalVariable.ConString = EncodeMD5.DecryptString(Configuration.GetConnectionString("ConnStr"), "PTAut0m@t!0n30!)@)20");
+            //GlobalVariable.ConString = EncodeMD5.DecryptString(Configuration.GetConnectionString("ConnStr"), "PTAut0m@t!0n30!)@)20");
+            GlobalVariable.ConString = Configuration.GetConnectionString("ConnStr");
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(GlobalVariable.ConString));
 
             #region khoi tao data
@@ -257,6 +258,8 @@ namespace GiamSat.API
             //scope.ServiceProvider.GetService<ApplicationDbContext>().Database.EnsureCreated();
             //create table
             scope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
+
+            SeedingData(scope).Wait();
             #endregion
 
             if (env.IsDevelopment() || env.IsProduction())
@@ -309,6 +312,58 @@ namespace GiamSat.API
 
             //services.AddTransient<ISDashboard, SDashboard>();
             return services;
+        }
+
+        private async Task SeedingData(IServiceScope scope)
+        {
+            //get role
+            var roleManager = scope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
+            var userManager = scope.ServiceProvider.GetService<UserManager<IdentityUser>>();
+
+            var res = await roleManager.FindByNameAsync("Admin");
+            if (res == null) await roleManager.CreateAsync(new IdentityRole() { Name = "Admin" });
+
+            res = await roleManager.FindByNameAsync("User");
+            if (res == null) await roleManager.CreateAsync(new IdentityRole() { Name = "User" });
+
+            res = await roleManager.FindByNameAsync("Operator");
+            if (res == null) await roleManager.CreateAsync(new IdentityRole() { Name = "Operator" });
+
+            var resUser = await userManager.FindByNameAsync("admin");
+            if (resUser == null)
+            {
+                resUser = new IdentityUser()
+                {
+                    UserName = "admin",
+                    Email = "admin@gmail.com",
+                };
+                await userManager.CreateAsync(resUser, "admin@12345");
+            }
+            if (!await userManager.IsInRoleAsync(resUser, "Admin")) await userManager.AddToRoleAsync(resUser, "Admin");
+
+            resUser = await userManager.FindByNameAsync("operator");
+            if (resUser == null)
+            {
+                resUser = new IdentityUser()
+                {
+                    UserName = "operator",
+                    Email = "operator@gmail.com",
+                };
+                await userManager.CreateAsync(resUser, "123@123");
+            }
+            if (!await userManager.IsInRoleAsync(resUser, "Operator")) await userManager.AddToRoleAsync(resUser, "Operator");
+
+            resUser = await userManager.FindByNameAsync("user");
+            if (resUser == null)
+            {
+                resUser = new IdentityUser()
+                {
+                    UserName = "user",
+                    Email = "user@gmail.com",
+                };
+                await userManager.CreateAsync(resUser, "123@123");
+            }
+            if (!await userManager.IsInRoleAsync(resUser, "User")) await userManager.AddToRoleAsync(resUser, "User");
         }
     }
 }

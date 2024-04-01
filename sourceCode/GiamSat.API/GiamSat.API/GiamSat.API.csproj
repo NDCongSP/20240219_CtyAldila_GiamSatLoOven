@@ -5,6 +5,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Controllers\AuthenticateController.cs~RF5a2c137.TMP" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Dapper" Version="2.1.24" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.14">
 		  <PrivateAssets>all</PrivateAssets>

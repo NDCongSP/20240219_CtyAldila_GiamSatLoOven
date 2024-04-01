@@ -1,6 +1,6 @@
 ﻿@page "/settings"
 @using GiamSat.Models
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Admin")]
 
 <div Class="rz-p-0 rz-p-md-12">
     @if (_configInfo == null)

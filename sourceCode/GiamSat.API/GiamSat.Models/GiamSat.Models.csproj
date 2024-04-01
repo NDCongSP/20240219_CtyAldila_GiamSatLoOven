@@ -8,6 +8,7 @@
 	<ItemGroup>
 		<PackageReference Include="RestEase.HttpClientFactory" Version="1.6.4" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+		<PackageReference Include="System.Text.Json" Version="7.0.4" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -94,7 +94,7 @@ namespace GiamSat.UI
 
             if (string.IsNullOrWhiteSpace(token))
             {
-                return null ;
+                return null;
             }
 
             await CacheAuthTokens(token, refreshToken, sessionId);
@@ -161,12 +161,14 @@ namespace GiamSat.UI
             var expTime = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(exp));
             var timeUTC = DateTime.UtcNow;
             var diff = expTime - timeUTC;
-            if (diff.TotalMinutes <= 5)
+            if (diff.TotalSeconds <= 5)
             {
                 // Cho nay de refresh token khi token sap het han
-                //return await RefreshToken();
+                var res = await _tokenClient.RefreshTokenAsync(new APIClient.RefreshTokenModel() { OldToken = token });
 
-                return null;
+                await CacheAuthTokens(res.Token, res.RefreshToken, "");
+
+                return res.Token;
             }
             return token;
         }
@@ -202,7 +204,7 @@ namespace GiamSat.UI
                 }
                 else if (diff.TotalMinutes < 0)
                 {
-                    return new AccessTokenResult(AccessTokenResultStatus.RequiresRedirect, new AccessToken() { Value = null  }, "/login");
+                    return new AccessTokenResult(AccessTokenResultStatus.RequiresRedirect, new AccessToken() { Value = null }, "/login");
                 }
 
                 return new AccessTokenResult(AccessTokenResultStatus.Success, new AccessToken() { Value = token }, string.Empty);
@@ -215,29 +217,6 @@ namespace GiamSat.UI
 
         public ValueTask<AccessTokenResult> RequestAccessToken(AccessTokenRequestOptions options) =>
             RequestAccessToken();
-
-        //private async Task<(bool Succeeded, TokenResponse Token)> TryRefreshTokenAsync(RefreshTokenRequest request)
-        //{
-        //    var authState = await GetAuthenticationStateAsync();
-        //    string tenantKey = authState.User.GetUserId();
-        //    if (string.IsNullOrWhiteSpace(tenantKey))
-        //    {
-        //        throw new InvalidOperationException("Can't refresh token when user is not logged in!");
-        //    }
-
-        //    try
-        //    {
-        //        //var tokenResponse = await _identityClient.GetRefreshTokenAsync(request);
-
-        //        //await CacheAuthTokens(tokenResponse.Data.Token, tokenResponse.Data.RefreshToken);
-
-        //        //return (true, tokenResponse.Data);
-        //    }
-        //    catch // (ApiException<ErrorResult>)
-        //    {
-        //    }
-        //    return (false, null);
-        //}
 
         private async ValueTask CacheAuthTokens(string token, string refreshToken, string sessionId)
         {

@@ -18,6 +18,10 @@ namespace GiamSat.API
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
+
+            var e=_httpContextAccessor.HttpContext.User.Identity.Name;
+
+            var r = _httpContextAccessor.HttpContext.User.FindFirst("testabc");
         }
 
         public async Task<Result<List<FT01>>> GetAll()

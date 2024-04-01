@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.Json;
 
 
-namespace GiamSat.UI
+namespace GiamSat.Models
 {
     public class JwtHelper
     {

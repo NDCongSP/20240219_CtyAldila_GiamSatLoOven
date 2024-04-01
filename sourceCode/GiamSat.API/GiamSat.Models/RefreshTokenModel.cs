@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace GiamSat.Models
 {
-    public class LoginResult
+    public class RefreshTokenModel
     {
-        public string Token { get; set; }
-        public DateTime Expiration { get; set; }
+        public string OldToken { get; set; }
         public string RefreshToken { get; set; }
     }
 }

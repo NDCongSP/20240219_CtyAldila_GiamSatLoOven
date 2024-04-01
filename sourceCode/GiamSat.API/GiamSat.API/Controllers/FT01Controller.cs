@@ -12,7 +12,7 @@ namespace GiamSat.API.Controllers
     public class FT01Controller : BaseController<Guid,FT01>,ISFT01
     {
         readonly SCommon _sCommon;
-
+        
         public FT01Controller(SCommon sCommon=null):base(sCommon.SFT01)
         {
             _sCommon = sCommon;

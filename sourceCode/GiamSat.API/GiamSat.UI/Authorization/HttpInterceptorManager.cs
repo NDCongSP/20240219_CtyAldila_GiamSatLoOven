@@ -26,8 +26,8 @@ namespace GiamSat.UI
 
         public async Task InterceptBeforeHttpAsync(object sender, Toolbelt.Blazor.HttpClientInterceptorEventArgs args)
         {
-            var absPath = args.Request.RequestUri.AbsolutePath;
-            if (!absPath.Contains("login"))
+            var absPath = args.Request.RequestUri.AbsolutePath.ToLower();
+            if (!absPath.Contains("login") && !absPath.Contains("refreshtoken"))
             {
                 try
                 {

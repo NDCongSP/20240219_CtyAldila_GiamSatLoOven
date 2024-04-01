@@ -54,19 +54,58 @@ namespace GiamSat.API.Controllers
 
                 }
 
+                //test add claim
+                authClaims.Add(new Claim("testabc", "10000_test"));
+
                 var token = GetToken(authClaims);
 
                 return Ok(new LoginResult()
                 {
                     Token = new JwtSecurityTokenHandler().WriteToken(token),
                     Expiration = token.ValidTo
-                });
 
-                //return Ok(new
-                //{
-                //    token = new JwtSecurityTokenHandler().WriteToken(token),
-                //    expiration = token.ValidTo
-                //});
+                    //Log lai thông tin token để phục vụ cho việc refresh token
+                });
+            }
+            return Unauthorized();
+        }
+
+        [HttpPost]
+        [Route("refreshtoken")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResult))]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenModel model)
+        {
+            var claim = JwtHelper.GetClaimsPrincipalFromJwt(model.OldToken);
+
+            var user = await _userManager.FindByNameAsync(claim.Identity.Name);
+            if (user != null)
+            {
+                var userRoles = await _userManager.GetRolesAsync(user);
+
+                var authClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                };
+
+                foreach (var userRole in userRoles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+
+                }
+
+                //test add claim
+                authClaims.Add(new Claim("testabc", "10000_test"));
+
+                var token = GetToken(authClaims);
+
+                return Ok(new LoginResult()
+                {
+                    Token = new JwtSecurityTokenHandler().WriteToken(token),
+                    Expiration = token.ValidTo
+
+                    //update lai thông tin token để phục vụ cho việc refresh token
+                });
             }
             return Unauthorized();
         }
@@ -179,7 +218,7 @@ namespace GiamSat.API.Controllers
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:ValidIssuer"],
                 audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddHours(3),
+                expires: DateTime.Now.AddSeconds(20),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );
