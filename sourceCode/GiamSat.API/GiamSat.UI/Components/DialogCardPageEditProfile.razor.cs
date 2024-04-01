@@ -91,6 +91,7 @@ namespace GiamSat.UI.Components
                 var ovenUpdate = ovensInfo.FirstOrDefault(x => x.Id == OvenId);
                 var profileInfo = ovenUpdate.Profiles.FirstOrDefault(x => x.Id == ProfileId);
                 profileInfo.Name = arg.Name;
+                profileInfo.Id = arg.Id;
                 profileInfo.Steps = arg.Steps;
 
                 _ft01.C001 = JsonConvert.SerializeObject(ovensInfo);
