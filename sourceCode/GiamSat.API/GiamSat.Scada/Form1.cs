@@ -683,21 +683,21 @@ namespace GiamSat.Scada
                 }
 
                 #region kiểm tra xem có tín hiệu tắt còi từ server thì tắt còi
-                //var c = _controlPlcModel.FirstOrDefault(x => x.OvenId == item.OvenId);
-                //if (c.OffSerien == 1)
-                //{
-                //    easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
-                //    c.OffSerien = 0;
+                var c = _controlPlcModel.FirstOrDefault(x => x.OvenId == item.OvenId);
+                if (c.OffSerien == 1)
+                {
+                    easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
+                    c.OffSerien = 0;
 
-                //    using (var con = GlobalVariable.GetDbConnection())
-                //    {
-                //        var p = new DynamicParameters();
-                //        p.Add("id", _ft06.FirstOrDefault().Id);
-                //        p.Add("c000", JsonConvert.SerializeObject(_controlPlcModel));
+                    using (var con = GlobalVariable.GetDbConnection())
+                    {
+                        var p = new DynamicParameters();
+                        p.Add("id", _ft06.FirstOrDefault().Id);
+                        p.Add("c000", JsonConvert.SerializeObject(_controlPlcModel));
 
-                //        con.Execute("sp_FT06Update", param: p, commandType: CommandType.StoredProcedure);
-                //    }
-                //}
+                        con.Execute("sp_FT06Update", param: p, commandType: CommandType.StoredProcedure);
+                    }
+                }
 
                 #endregion
 

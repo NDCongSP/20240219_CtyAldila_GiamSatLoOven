@@ -25,8 +25,8 @@
                             </RadzenColumn>
                         </RadzenRow>
                         <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
-                            <RadzenButton ButtonType="ButtonType.Button" Size="ButtonSize.Large" Icon="save" Text="Lưu" />
-                            @* <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Large" Icon="cancel" Text="Cancel" Click="@Cancel" /> *@
+                            <RadzenButton ButtonType="ButtonType.Button" Size="ButtonSize.Large" Icon="save" Text="Lưu"
+                                          Click=@(args=>OnClickSaveAsync()) Variant="Variant.Flat" />
                         </RadzenStack>
                     </RadzenStack>
                 </RadzenFieldset>

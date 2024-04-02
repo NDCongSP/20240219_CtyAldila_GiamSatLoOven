@@ -173,15 +173,15 @@ namespace GiamSat.UI.Pages
 
             try
             {
-                //_ovenId = int.TryParse(OvenId, out int value) ? value : 0;
+                _ovenId = int.TryParse(OvenId, out int value) ? value : 0;
 
-                //var res = await _ft01Client.GetAllAsync();
+                var res = await _ft01Client.GetAllAsync();
 
-                //if (res == null)
-                //    return;
-                //_ft01 = res.Data.ToList();
+                if (res == null)
+                    return;
+                _ft01 = res.Data.ToList();
 
-                //_ovenInfo = JsonConvert.DeserializeObject<OvensInfo>(_ft01.FirstOrDefault().C001).FirstOrDefault(x => x.Id == _ovenId);
+                _ovenInfo = JsonConvert.DeserializeObject<OvensInfo>(_ft01.FirstOrDefault().C001).FirstOrDefault(x => x.Id == _ovenId);
             }
             catch (Exception ex)
             {

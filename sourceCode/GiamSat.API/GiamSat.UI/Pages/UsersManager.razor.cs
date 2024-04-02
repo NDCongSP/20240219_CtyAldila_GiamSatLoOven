@@ -89,9 +89,12 @@ namespace GiamSat.UI.Pages
             }
         }
 
-        void OnClickSave()
+        async Task OnClickSaveAsync()
         {
+            var res = await _authSerivce.UpdateUser(new APIClient.UpdateModel()
+            {
 
+            });
         }
 
         async void RefreshData()

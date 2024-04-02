@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Office2016.Excel;
 using GiamSat.Models;
+using GiamSat.Models.NotTable;
 using GiamSat.UI.Components;
 using Newtonsoft.Json;
 using Radzen;
@@ -11,9 +12,11 @@ using System.Timers;
 
 namespace GiamSat.UI.Pages
 {
-    public partial class Index:IDisposable
+    public partial class Index : IDisposable
     {
         private RealtimeDisplays? _displayRealtime;
+        private APIClient.FT06 _ft06 = new APIClient.FT06();
+        private List<ControlPlcModel> _controlPlcModel = new List<ControlPlcModel>();
 
         private System.Timers.Timer _timer;
 
@@ -64,14 +67,71 @@ namespace GiamSat.UI.Pages
                     }
                 }
 
+                #region get thông tin điều khiển PLC
+                var r = await _ft06Client.GetAllAsync();
+                if (r.Succeeded)
+                {
+                    _ft06 = r.Data.ToList().FirstOrDefault();
+
+                    _controlPlcModel = JsonConvert.DeserializeObject<List<ControlPlcModel>>(_ft06.C000);
+                }
+                #endregion
+
                 #region Timer refresh data
                 _timer = new System.Timers.Timer(GlobalVariable.ConfigSystem.RefreshInterval);
-                
+
                 _timer.Elapsed += RefreshData;
                 _timer.Enabled = true;
                 #endregion
             }
             catch { }
+        }
+
+        async void OnClickOffSerien(int ovenId, string ovenName)
+        {
+            try
+            {
+                var c = _controlPlcModel.FirstOrDefault(x => x.OvenId == ovenId);
+
+                c.OffSerien = 1;
+
+                _ft06.C000 = JsonConvert.SerializeObject(_controlPlcModel);
+
+                var res = await _ft06Client.UpdateAsync(_ft06);
+
+                if (res.Succeeded)
+                {
+                    _notificationService.Notify(new NotificationMessage()
+                    {
+                        Severity = NotificationSeverity.Success,
+                        Summary = "Success",
+                        Detail = "Truyền lệnh tắt còi thành công",
+                        Duration = 4000
+                    });
+                }
+                else
+                {
+                    _notificationService.Notify(new NotificationMessage()
+                    {
+                        Severity = NotificationSeverity.Error,
+                        Summary = "Error",
+                        Detail = "Truyền lệnh tắt còi thất bại.",
+                        Duration = 4000
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                _notificationService.Notify(new NotificationMessage()
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = ex.Message,
+                    Duration = 4000
+                });
+
+                return;
+            }
         }
 
         private async void RefreshData(object? sender, ElapsedEventArgs e)
@@ -102,7 +162,7 @@ namespace GiamSat.UI.Pages
         {
             await _dialogService.OpenAsync<DialogCardPageOvenDetail>($"{ovenName} details",
               new Dictionary<string, object>() { { "OvenId", ovenId } },
-              new DialogOptions() { Width = "1500px", Height = "800px", Resizable = true, Draggable = true ,CloseDialogOnOverlayClick=true}
+              new DialogOptions() { Width = "1500px", Height = "800px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true }
               );
         }
 
