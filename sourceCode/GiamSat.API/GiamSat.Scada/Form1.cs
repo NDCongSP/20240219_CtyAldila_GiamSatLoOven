@@ -636,6 +636,16 @@ namespace GiamSat.Scada
                         }
                     }
                 }
+                else if (item.Status == 0 && item.CountSecondTagChange >= 2
+                       && item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOut) && item.AlarmFlagLastStep == true)
+                {
+                    item.Alarm = 0;
+                    item.AlarmDescription = null;
+                    easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
+                    item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
+                    item.AlarmFlagLastStep = false;
+                    Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
+                }
                 index += 1;
             }
             #endregion
@@ -909,9 +919,9 @@ namespace GiamSat.Scada
             {
                 if (item.Path == path)
                 {
-                    if (item.ProfileStepNumber_CurrentStatus == 0) item.SetPointLastStep = item.Temperature;
-                    else item.SetPointLastStep = item.SetPoint;
-                    //item.SetPointLastStep = item.SetPoint;
+                    //if (item.ProfileStepNumber_CurrentStatus == 0) item.SetPointLastStep = item.Temperature;
+                    //else item.SetPointLastStep = item.SetPoint;
+                    item.SetPointLastStep = item.SetPoint;
 
                     item.ProfileStepNumber_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.ProfileStepNumber_CurrentStatus;
 
@@ -925,10 +935,10 @@ namespace GiamSat.Scada
                         item.Hours = (int)(step?.Hours); item.Minutes = (int)(step?.Minutes); item.Seconds = (int)(step?.Seconds);
                         item.SetPoint = (double)(step?.SetPoint);
 
-                        //if (item.CountSecondTagChange < 2 && item.ProfileStepNumber_CurrentStatus > 0)
-                        //{
-                        //    item.SetPointLastStep = item.SetPoint;
-                        //}
+                        if (item.SetPointLastStep == 0)
+                        {
+                            item.SetPointLastStep = item.SetPoint;
+                        }
 
                         item.TempRange = Math.Round(Math.Abs((item.SetPoint - item.SetPointLastStep)), 2);
                     }

@@ -15,7 +15,12 @@ namespace GiamSat.UI
             List<ExcelModel> model = new List<ExcelModel>();
             foreach (var item in data)
             {
-                var detail = JsonConvert.DeserializeObject<Models.RealtimeDisplayModel>(item.Details);
+                Models.RealtimeDisplayModel detail = new Models.RealtimeDisplayModel();
+                if (!string.IsNullOrEmpty(item.Details))
+                {
+                    detail = JsonConvert.DeserializeObject<Models.RealtimeDisplayModel>(item.Details);
+                }
+
                 model.Add(new ExcelModel()
                 {
                     OvenId = item.OvenId,
@@ -24,7 +29,7 @@ namespace GiamSat.UI
                     CreatedDate = item.CreatedDate,
                     ProfileName = detail.ProfileName,
                     StepName = detail.StepName.ToString(),
-                    AlarmDescription=detail.AlarmDescription,
+                    AlarmDescription = detail?.AlarmDescription,
                 });
             }
 
@@ -44,7 +49,9 @@ namespace GiamSat.UI
                 var ws = wb.Worksheets.Add("DataLog");
 
                 ws.Range(1, 1, 1, 8).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center)
-                .Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                .Alignment.SetVertical(XLAlignmentVerticalValues.Center)
+                .Font.SetFontSize(15).Font.SetBold(true);
+
                 ws.Range(2, 1, 2, 8).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center)
                .Alignment.SetVertical(XLAlignmentVerticalValues.Center);
 
@@ -60,9 +67,10 @@ namespace GiamSat.UI
                 ws.Cell(3, 7).Value = "Step";
                 ws.Cell(3, 8).Value = "Cảnh báo";
 
+                ws.Range(3, 1, 3, 8).SetAutoFilter(true);
 
                 // Fill a cell with a date
-                var wRange = ws.Range($"A3:A{data.Count +3}");
+                var wRange = ws.Range($"A3:A{data.Count + 3}");
                 wRange.Style.DateFormat.Format = "yyyy-MMM-dd HH:mm:ss";
                 ws.Range($"A3:H{data.Count + 3}").Style.Border.SetInsideBorder(XLBorderStyleValues.Thin)
                                        .Border.SetOutsideBorder(XLBorderStyleValues.Thin);
@@ -79,7 +87,7 @@ namespace GiamSat.UI
                     ws.Cell(row + 4, 5).Value = item.Temperature;
                     ws.Cell(row + 4, 6).Value = item.ProfileName;
                     ws.Cell(row + 4, 7).Value = item.StepName;
-                    ws.Cell(row + 4, 8).Value = item.AlarmDescription ;
+                    ws.Cell(row + 4, 8).Value = item.AlarmDescription;
 
                     row += 1;
                 }
@@ -137,7 +145,11 @@ namespace GiamSat.UI
             var row = 0;
             foreach (var item in data)
             {
-                var detail = JsonConvert.DeserializeObject<Models.RealtimeDisplayModel>(item.Details);
+                Models.RealtimeDisplayModel detail = new Models.RealtimeDisplayModel();
+                if (!string.IsNullOrEmpty(item.Details))
+                {
+                    detail = JsonConvert.DeserializeObject<Models.RealtimeDisplayModel>(item.Details);
+                }
                 // The apostrophe is to force ClosedXML to treat the date as a string
                 ws.Cell(row + 4, 1).Value = item.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss");
                 ws.Cell(row + 4, 2).Value = item.OvenName;
@@ -145,7 +157,9 @@ namespace GiamSat.UI
                 ws.Cell(row + 4, 4).Value = item.Temperature;
                 ws.Cell(row + 4, 5).Value = item.ProfileName;
                 ws.Cell(row + 4, 6).Value = item.StepName;
-                ws.Cell(row + 4, 7).Value = detail.AlarmDescription;
+                ws.Cell(row + 4, 7).Value = detail?.AlarmDescription;
+                ws.Cell(row + 4, 8).Value = item.StartTime;
+                ws.Cell(row + 4, 9).Value = item.EndTime;
 
                 row += 1;
             }
@@ -153,6 +167,8 @@ namespace GiamSat.UI
             var rowCount = data.Count;
 
             ws.Cell("A2").Value = $"Thời gian: {dateTime}";
+
+            ws.Range($"A3:I3").SetAutoFilter(true);
 
             ws.Range($"C4:D{data.Count + 4}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right)
                 .Alignment.SetVertical(XLAlignmentVerticalValues.Center)
@@ -167,7 +183,11 @@ namespace GiamSat.UI
                .Alignment.SetVertical(XLAlignmentVerticalValues.Center)
                .DateFormat.Format = "yyyy-MM-dd HH:mm:ss";
 
-            ws.Range($"A3:G{data.Count + 3}").Style.Border.SetInsideBorder(XLBorderStyleValues.Thin)
+            ws.Range($"H4:I{data.Count + 4}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left)
+             .Alignment.SetVertical(XLAlignmentVerticalValues.Center)
+             .DateFormat.Format = "yyyy-MM-dd HH:mm:ss";
+
+            ws.Range($"A3:I{data.Count + 3}").Style.Border.SetInsideBorder(XLBorderStyleValues.Thin)
                                        .Border.SetOutsideBorder(XLBorderStyleValues.Thin);
 
             MemoryStream XLSStream = new();

@@ -9,7 +9,7 @@ using System.Timers;
 
 namespace GiamSat.UI.Components
 {
-    public partial class DialogCardPageOvenDetail
+    public partial class DialogCardPageOvenDetail:IDisposable
     {
         [Parameter] public int OvenId { get; set; }
 
@@ -114,6 +114,11 @@ namespace GiamSat.UI.Components
             }
 
             return string.Empty;
+        }
+
+        public void Dispose()
+        {
+            _timer.Dispose();
         }
     }
 }

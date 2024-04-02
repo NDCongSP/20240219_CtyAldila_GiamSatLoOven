@@ -1,0 +1,48 @@
+﻿@page "/dialogcardpageuserinfo"
+<div Class="rz-p-0 rz-p-md-12">
+    <RadzenText TextStyle="TextStyle.Subtitle2"></RadzenText>
+    <RadzenTemplateForm Data="@_userModel" Submit="@((UpdateModel args) => { Submit(args); })">
+        <RadzenRow Gap="2rem" Class="rz-p-0 rz-p-lg-4">
+            <RadzenColumn SizeXS="12" SizeMD="12">
+                <RadzenStack>
+                    <RadzenFieldset Text="Thông tin chung">
+                        <RadzenStack Gap="1rem">
+                            <RadzenRow AlignItems="AlignItems.Center">
+                                <RadzenColumn SizeXS=12 SizeSM="4">
+                                    <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Tên</RadzenText>
+                                    <RadzenTextBox TextStyle="TextStyle.Body1" Style="width: 100%;" @bind-Value=@_userModel.Username Disabled="true"/>
+                                </RadzenColumn>
+                                <RadzenColumn SizeXS=12 SizeSM="4">
+                                    <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Email</RadzenText>
+                                    <RadzenTextBox Name="Email" TextStyle="TextStyle.Body1" Style="display: block; width: 100%" @bind-Value=@_userModel.Email />
+                                    <RadzenRequiredValidator Component="Email" Text="Nhập email" Popup="false" Style="position: absolute" />
+                                </RadzenColumn>
+                                <RadzenColumn SizeXS="12" SizeMD="4">
+                                    <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Mật khẩu cũ</RadzenText>
+                                    <RadzenPassword Name="OldPass" @bind-Value=@_userModel.OldPassword Placeholder="Enter old password..."
+                                                    aria-label="enter password" Style="display: block;width:100%" />
+                                    <RadzenRequiredValidator Component="OldPass" Text="Nhập mk" Popup=false Style="position: absolute" />
+                                </RadzenColumn>
+                                <RadzenColumn SizeXS="12" SizeMD="4">
+                                    <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Mật khẩu mới</RadzenText>
+                                    <RadzenPassword Name="NewPassword" @bind-Value=@_userModel.NewPassword Placeholder="Enter new password..." aria-label="enter password" Style="display: block;width:100%" />
+                                    <RadzenRequiredValidator Component="NewPassword" Text="Nhập mk mới" Popup="false" Style="position: absolute" />
+                                </RadzenColumn>
+                                <RadzenColumn SizeXS="12" SizeMD="4">
+                                    <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Nhập lại mật khẩu mới</RadzenText>
+                                    <RadzenPassword Name="RepeatPassword" @bind-Value=@_userModel.ReNewPassword Placeholder="Re enter new password..." aria-label="enter password" Style="display: block;width:100%" />
+                                    <RadzenRequiredValidator Component="RepeatPassword" Text="Nhập lại mk mới" Popup="false" Style="position: absolute" />
+                                    <RadzenCompareValidator Visible=@(!string.IsNullOrEmpty(_userModel.ReNewPassword)) Value=@_userModel.NewPassword
+                                                            Component="RepeatPassword" Text="MK mới không khớp" Popup="false" Style="position: absolute" />
+                                </RadzenColumn>
+                            </RadzenRow>
+                        </RadzenStack>
+                    </RadzenFieldset>
+                </RadzenStack>
+            </RadzenColumn>
+        </RadzenRow>
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
+            <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Lưu" />
+        </RadzenStack>
+    </RadzenTemplateForm>
+</div>

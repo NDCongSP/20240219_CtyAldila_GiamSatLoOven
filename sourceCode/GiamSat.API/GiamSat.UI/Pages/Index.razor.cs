@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Drawing;
+﻿using Blazorise.Utilities;
+using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Office2016.Excel;
 using GiamSat.Models;
@@ -10,7 +11,7 @@ using System.Timers;
 
 namespace GiamSat.UI.Pages
 {
-    public partial class Index
+    public partial class Index:IDisposable
     {
         private RealtimeDisplays? _displayRealtime;
 
@@ -65,6 +66,7 @@ namespace GiamSat.UI.Pages
 
                 #region Timer refresh data
                 _timer = new System.Timers.Timer(GlobalVariable.ConfigSystem.RefreshInterval);
+                
                 _timer.Elapsed += RefreshData;
                 _timer.Enabled = true;
                 #endregion
@@ -102,6 +104,11 @@ namespace GiamSat.UI.Pages
               new Dictionary<string, object>() { { "OvenId", ovenId } },
               new DialogOptions() { Width = "1500px", Height = "800px", Resizable = true, Draggable = true ,CloseDialogOnOverlayClick=true}
               );
+        }
+
+        public void Dispose()
+        {
+            _timer.Dispose();
         }
     }
 }

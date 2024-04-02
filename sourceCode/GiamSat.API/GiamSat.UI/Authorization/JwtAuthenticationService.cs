@@ -1,11 +1,13 @@
 ﻿
 using Blazored.LocalStorage;
+using DocumentFormat.OpenXml.EMMA;
 using GiamSat.APIClient;
 using GiamSat.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Options;
+using Radzen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -123,28 +125,6 @@ namespace GiamSat.UI
             _navigation.NavigateTo(returnUrl);
         }
 
-        //public async Task<string> RefreshToken()
-        //{
-        //    var token = await _localStorage.GetItemAsync<string>(StorageConts.AuthToken);
-        //    var refreshToken = await _localStorage.GetItemAsync<string>(StorageConts.RefreshToken);
-
-        //    var response = await _httpClient.PostAsJsonAsync(ApiRoutes.Token.Refresh, new RefreshTokenRequest { Token = token, RefreshToken = refreshToken });
-
-        //    var result = await response.ToResult<TokenResponse>();
-
-        //    if (!result.Succeeded)
-        //    {
-        //        throw new ApplicationException("Something went wrong during the refresh token action");
-        //    }
-
-        //    token = result.Data.Token;
-        //    refreshToken = result.Data.RefreshToken;
-        //    await _localStorage.SetItemAsync(StorageConstants.Local.AuthToken, token);
-        //    await _localStorage.SetItemAsync(StorageConstants.Local.RefreshToken, refreshToken);
-        //    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        //    return token;
-        //}
-
         public async Task<string> TryRefreshToken()
         {
             var token = await _localStorage.GetItemAsync<string>(StorageConts.AuthToken);
@@ -167,6 +147,64 @@ namespace GiamSat.UI
                 return res.Token;
             }
             return token;
+        }
+
+        public async Task<APIClient.Response> UpdateUser(APIClient.UpdateModel model)
+        {
+            try
+            {
+                var res = await _tokenClient.UpdatePassAsync(model);
+
+                return res;
+            }
+            catch (Exception ex)
+            {
+                return new APIClient.Response() { Status = "Error Exception", Message = $"{ex.Message}" };
+            }
+        }
+
+        public async Task<APIClient.Response> CheckUser(APIClient.LoginModel model)
+        {
+            try
+            {
+                var res = await _tokenClient.CheckUserAsync(model);
+
+                return res;
+            }
+            catch (Exception ex)
+            {
+                return new APIClient.Response() { Status = "Error Exception", Message = $"{ex.Message}" };
+            }
+        }
+
+        public async Task<List<APIClient.UserModel>> GetAllUsers()
+        {
+            try
+            {
+                var res = await _tokenClient.GetAllUsersAsync();
+
+                var a = new List<APIClient.UserModel>();
+                a.AddRange(res);
+                return a;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<APIClient.Response> DeleteUser(APIClient.UserModel model)
+        {
+            try
+            {
+                var res = await _tokenClient.DeleteUserAsync(model);
+
+                return res;
+            }
+            catch (Exception ex)
+            {
+                return new APIClient.Response() { Status = "Error Exception", Message = $"{ex.Message}" };
+            }
         }
 
         public async ValueTask<AccessTokenResult> RequestAccessToken()

@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,6 +46,7 @@ namespace GiamSat.API.Controllers
                 var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Email,user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
@@ -56,6 +58,7 @@ namespace GiamSat.API.Controllers
 
                 //test add claim
                 authClaims.Add(new Claim("testabc", "10000_test"));
+                authClaims.Add(new Claim("emailTest", user.Email));
 
                 var token = GetToken(authClaims);
 
@@ -136,10 +139,17 @@ namespace GiamSat.API.Controllers
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
-            if (await _roleManager.RoleExistsAsync(UserRoles.User))
+            foreach (var item in model.Roles)
             {
-                await _userManager.AddToRoleAsync(user, UserRoles.User);
+                if (await _roleManager.RoleExistsAsync(item))
+                {
+                    await _userManager.AddToRoleAsync(user, item);
+                }
             }
+            //if (await _roleManager.RoleExistsAsync(UserRoles.User))
+            //{
+            //    await _userManager.AddToRoleAsync(user, UserRoles.User);
+            //}
 
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
@@ -189,20 +199,24 @@ namespace GiamSat.API.Controllers
         public async Task<IActionResult> UpdatePass([FromBody] UpdateModel model)
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
+            var checkPass = await _userManager.CheckPasswordAsync(userExists, model.OldPassword);
 
             if (userExists == null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User not found!" });
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "User not found!" });
+
+            if (checkPass == false)
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "Wrong old pass!" });
 
             if (model.NewPassword != model.ReNewPassword)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "New password does not match." });
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "New password does not match." });
             }
 
             var result = await _userManager.ChangePasswordAsync(userExists, model.OldPassword, model.NewPassword);
 
             if (!result.Succeeded)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = $"Update pass failed! Please check user details and try again." });
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = $"{result.Errors}." });
             }
 
             //update kieu ko can nhap pass cu
@@ -215,7 +229,62 @@ namespace GiamSat.API.Controllers
             return Ok(new Response { Status = "Success", Message = "User update successfully!" });
         }
 
+        [HttpPost]
+        [Route("checkuser")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Response))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(Response))]
+        public async Task<IActionResult> CheckUser([FromBody] LoginModel model)
+        {
+            var userExists = await _userManager.FindByNameAsync(model.Username);
+            var checkPass = await _userManager.CheckPasswordAsync(userExists, model.Password);
 
+            if (userExists == null)
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "User not found!" });
+
+            if (!checkPass)
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "Wrong pass!" });
+
+            return Ok(new Response { Status = "Success", Message = "User OK!" });
+        }
+
+        [HttpGet]
+        [Route("GetAllUsers")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UserModel>))]//quy dinh kieu du lieu trả về
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(List<UserModel>))]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            List<UserModel> userModels = new List<UserModel>();
+
+            var u = _userManager.Users.ToList();
+
+            foreach (var item in u)
+            {
+                userModels.Add(new UserModel()
+                {
+                   Id=item.Id,
+                   UserName=item.UserName,  
+                   Email=item.Email,
+                });
+            }
+
+            return Ok(userModels);
+        }
+
+        [HttpPost]
+        [Route("DeleteUser")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Response))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(Response))]
+        public async Task<IActionResult> DeleteUser([FromBody] UserModel model)
+        {
+            var user=await _userManager.FindByIdAsync(model.Id);
+
+            if (user != null)
+            {
+               var res= _userManager.DeleteAsync(user);
+            }
+             
+            return Ok(new Response() { Status="Success",Message="Xóa user thành công."});
+        }
 
         private JwtSecurityToken GetToken(List<Claim> authClaims)
         {

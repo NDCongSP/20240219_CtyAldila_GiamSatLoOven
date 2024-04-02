@@ -34,7 +34,7 @@
           "System.Memory.Data": "1.0.2",
           "System.Numerics.Vectors": "4.5.0",
           "System.Text.Encodings.Web": "7.0.0",
-          "System.Text.Json": "7.0.2",
+          "System.Text.Json": "7.0.4",
           "System.Threading.Tasks.Extensions": "4.5.4"
         },
         "runtime": {
@@ -51,7 +51,7 @@
           "Microsoft.Identity.Client.Extensions.Msal": "2.19.3",
           "System.Memory": "4.5.5",
           "System.Security.Cryptography.ProtectedData": "6.0.0",
-          "System.Text.Json": "7.0.2",
+          "System.Text.Json": "7.0.4",
           "System.Threading.Tasks.Extensions": "4.5.4"
         },
         "runtime": {
@@ -723,7 +723,7 @@
           "System.Reflection.MetadataLoadContext": "6.0.0",
           "System.Security.Principal.Windows": "5.0.0",
           "System.Text.Encoding.CodePages": "6.0.0",
-          "System.Text.Json": "7.0.2",
+          "System.Text.Json": "7.0.4",
           "System.Threading.Tasks.Dataflow": "6.0.0"
         },
         "runtime": {
@@ -995,7 +995,7 @@
           "Microsoft.CodeAnalysis.Scripting.Common": "4.4.0",
           "Microsoft.CodeAnalysis.Workspaces.Common": "4.4.0",
           "Microsoft.DiaSymReader": "1.4.0",
-          "System.Text.Json": "7.0.2",
+          "System.Text.Json": "7.0.4",
           "System.Threading.Tasks.Extensions": "4.5.4"
         },
         "runtime": {
@@ -1379,7 +1379,7 @@
           "Microsoft.Extensions.Configuration.Abstractions": "7.0.0",
           "Microsoft.Extensions.Configuration.FileExtensions": "7.0.0",
           "Microsoft.Extensions.FileProviders.Abstractions": "7.0.0",
-          "System.Text.Json": "7.0.2"
+          "System.Text.Json": "7.0.4"
         }
       },
       "Microsoft.Extensions.Configuration.UserSecrets/7.0.0": {
@@ -1399,7 +1399,7 @@
       "Microsoft.Extensions.DependencyModel/7.0.0": {
         "dependencies": {
           "System.Text.Encodings.Web": "7.0.0",
-          "System.Text.Json": "7.0.2"
+          "System.Text.Json": "7.0.4"
         }
       },
       "Microsoft.Extensions.FileProviders.Abstractions/7.0.0": {
@@ -1515,7 +1515,7 @@
           "Microsoft.Extensions.Logging.Abstractions": "7.0.0",
           "Microsoft.Extensions.Logging.Configuration": "7.0.0",
           "Microsoft.Extensions.Options": "7.0.1",
-          "System.Text.Json": "7.0.2"
+          "System.Text.Json": "7.0.4"
         }
       },
       "Microsoft.Extensions.Logging.Debug/7.0.0": {
@@ -1541,7 +1541,7 @@
           "Microsoft.Extensions.Logging.Abstractions": "7.0.0",
           "Microsoft.Extensions.Options": "7.0.1",
           "Microsoft.Extensions.Primitives": "7.0.0",
-          "System.Text.Json": "7.0.2"
+          "System.Text.Json": "7.0.4"
         }
       },
       "Microsoft.Extensions.Options/7.0.1": {
@@ -1607,7 +1607,7 @@
         "dependencies": {
           "Microsoft.IdentityModel.Tokens": "6.24.0",
           "System.Text.Encoding": "4.3.0",
-          "System.Text.Json": "7.0.2"
+          "System.Text.Json": "7.0.4"
         },
         "runtime": {
           "lib/net6.0/Microsoft.IdentityModel.JsonWebTokens.dll": {
@@ -2100,7 +2100,7 @@
           "Stl": "5.2.87",
           "Stl.CommandR": "5.2.87",
           "Stl.Interception": "5.2.87",
-          "System.Text.Json": "7.0.2"
+          "System.Text.Json": "7.0.4"
         },
         "runtime": {
           "lib/net7.0/Stl.Fusion.dll": {
@@ -2505,7 +2505,7 @@
       "System.Memory.Data/1.0.2": {
         "dependencies": {
           "System.Text.Encodings.Web": "7.0.0",
-          "System.Text.Json": "7.0.2"
+          "System.Text.Json": "7.0.4"
         },
         "runtime": {
           "lib/netstandard2.0/System.Memory.Data.dll": {
@@ -2907,7 +2907,7 @@
         }
       },
       "System.Text.Encodings.Web/7.0.0": {},
-      "System.Text.Json/7.0.2": {
+      "System.Text.Json/7.0.4": {
         "dependencies": {
           "System.Text.Encodings.Web": "7.0.0"
         }
@@ -3008,7 +3008,8 @@
       "GiamSat.Models/1.0.0": {
         "dependencies": {
           "RestEase.HttpClientFactory": "1.6.4",
-          "System.ComponentModel.Annotations": "5.0.0"
+          "System.ComponentModel.Annotations": "5.0.0",
+          "System.Text.Json": "7.0.4"
         },
         "runtime": {
           "GiamSat.Models.dll": {}
@@ -4877,12 +4878,12 @@
       "path": "system.text.encodings.web/7.0.0",
       "hashPath": "system.text.encodings.web.7.0.0.nupkg.sha512"
     },
-    "System.Text.Json/7.0.2": {
+    "System.Text.Json/7.0.4": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-/LZf/JrGyilojqwpaywb+sSz8Tew7ij4K/Sk+UW8AKfAK7KRhR6mKpKtTm06cYA7bCpGTWfYksIW+mVsdxPegQ==",
-      "path": "system.text.json/7.0.2",
-      "hashPath": "system.text.json.7.0.2.nupkg.sha512"
+      "sha512": "sha512-30Qbrv661XW3zWfSgwgk54KPEBbM9eXYs3fRDjWfAxPp3oogHTUvsVFiUK20lyUDmJskho9SEZvUfsmcU8x16g==",
+      "path": "system.text.json/7.0.4",
+      "hashPath": "system.text.json.7.0.4.nupkg.sha512"
     },
     "System.Text.RegularExpressions/4.3.0": {
       "type": "package",

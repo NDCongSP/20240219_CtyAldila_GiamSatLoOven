@@ -10,7 +10,7 @@ ORDER BY CreatedDate DESC
 
 SELECT *
   FROM [Oven].[dbo].[FT04]
-where OvenId=6
+where OvenId=11-- and ZIndex='CA0C35FB-EDBC-4B1E-9F37-BA9A5ABD15AB'
 order by CreatedDate desc
 
 SELECT *
