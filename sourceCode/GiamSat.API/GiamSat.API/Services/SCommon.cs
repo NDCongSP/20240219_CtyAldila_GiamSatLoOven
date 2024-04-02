@@ -13,14 +13,16 @@ namespace GiamSat.API
         public ISFT03 SFT03 { get; private set; }
         public ISFT04 SFT04 { get; private set; }
         public ISFT05 SFT05 { get; private set; }
+        public ISFT06 SFT06 { get; private set; }
 
-        public SCommon(ISFT01 sFT01 = null, ISFT02 sFT02 = null, ISFT03 sFT03 = null, ISFT04 sFT04 = null, ISFT05 sFT05 = null)
+        public SCommon(ISFT01 sFT01 = null, ISFT02 sFT02 = null, ISFT03 sFT03 = null, ISFT04 sFT04 = null, ISFT05 sFT05 = null, ISFT06 sFT06 = null)
         {
             SFT01 = sFT01;
             SFT02 = sFT02;
             SFT03 = sFT03;
             SFT04 = sFT04;
             SFT05 = sFT05;
+            SFT06 = sFT06;
         }
     }
 }

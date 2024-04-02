@@ -15,6 +15,7 @@ using GiamSat.Models;
 using EasyScada.Winforms.Controls;
 using System.Diagnostics;
 using System.Linq.Expressions;
+using GiamSat.Models.NotTable;
 
 
 namespace GiamSat.Scada
@@ -24,11 +25,11 @@ namespace GiamSat.Scada
         private List<FT03> _dataLog = new List<FT03>();
         private List<FT04> _dataLogProfile = new List<FT04>();
         private List<FT05> _alarm = new List<FT05>();
-
-        private bool[] _alarmFlag;
+        private List<FT06> _ft06 = new List<FT06>();
 
         private OvensInfo _ovensInfo = new OvensInfo();//cau hinh cac lo oven
         private RealtimeDisplays _displayRealtime = new RealtimeDisplays();
+        private List<ControlPlcModel> _controlPlcModel = new List<ControlPlcModel>();//đọc các tín hiệu điều khiển tắt đèn cảnh báo từ web.
 
         private Timer _timer = new Timer();
         private List<int> _OvenId = new List<int>();
@@ -243,12 +244,35 @@ namespace GiamSat.Scada
                 GlobalVariable.ConfigSystem = JsonConvert.DeserializeObject<ConfigModel>(ft01.FirstOrDefault().C000);
                 _ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(ft01.FirstOrDefault().C001);
 
-                _alarmFlag = new bool[_ovensInfo.Count];
+            Loop1:
+                _ft06 = con.Query<FT06>("sp_FT06GetAll", commandType: CommandType.StoredProcedure).ToList();
+
+                if (_ft06.Count <= 0)
+                {
+                    foreach (var item in _ovensInfo)
+                    {
+                        _controlPlcModel.Add(new ControlPlcModel()
+                        {
+                            OvenId = item.Id,
+                            OvenName = item.Name,
+                            OffSerien = 0,
+                            IsDoFlag = false
+                        });
+                    }
+
+                    var p = new DynamicParameters();
+                    p.Add("c000", JsonConvert.SerializeObject(_controlPlcModel));
+                    con.Execute("sp_FT06Insert", param: p, commandType: CommandType.StoredProcedure);
+
+                    goto Loop1;
+                }
+
+                _controlPlcModel = JsonConvert.DeserializeObject<List<ControlPlcModel>>(_ft06.FirstOrDefault().C000);
+
                 var index = 0;
 
                 foreach (var item in _ovensInfo)
                 {
-                    _alarmFlag[index] = false;
                     index += 1;
 
                     _OvenId.Add(item.Id);
@@ -451,6 +475,17 @@ namespace GiamSat.Scada
                 }
                 #endregion
 
+                #region Đọc DB để lấy tín hiệu tắt còi từ web
+                using (var con = GlobalVariable.GetDbConnection())
+                {
+                    _ft06 = con.Query<FT06>("sp_FT06GetAll", commandType: CommandType.StoredProcedure).ToList();
+                    if (_ft06 != null)
+                    {
+                        _controlPlcModel = JsonConvert.DeserializeObject<List<ControlPlcModel>>(_ft06.FirstOrDefault().C000);
+                    }
+                }
+                #endregion
+
                 System.Threading.Thread.Sleep(100);
             }
         }
@@ -646,6 +681,26 @@ namespace GiamSat.Scada
                     item.AlarmFlagLastStep = false;
                     Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                 }
+
+                #region kiểm tra xem có tín hiệu tắt còi từ server thì tắt còi
+                //var c = _controlPlcModel.FirstOrDefault(x => x.OvenId == item.OvenId);
+                //if (c.OffSerien == 1)
+                //{
+                //    easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
+                //    c.OffSerien = 0;
+
+                //    using (var con = GlobalVariable.GetDbConnection())
+                //    {
+                //        var p = new DynamicParameters();
+                //        p.Add("id", _ft06.FirstOrDefault().Id);
+                //        p.Add("c000", JsonConvert.SerializeObject(_controlPlcModel));
+
+                //        con.Execute("sp_FT06Update", param: p, commandType: CommandType.StoredProcedure);
+                //    }
+                //}
+
+                #endregion
+
                 index += 1;
             }
             #endregion
@@ -922,6 +977,7 @@ namespace GiamSat.Scada
                     //if (item.ProfileStepNumber_CurrentStatus == 0) item.SetPointLastStep = item.Temperature;
                     //else item.SetPointLastStep = item.SetPoint;
                     item.SetPointLastStep = item.SetPoint;
+                    item.LastStepType = item.StepName;
 
                     item.ProfileStepNumber_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.ProfileStepNumber_CurrentStatus;
 
@@ -946,7 +1002,7 @@ namespace GiamSat.Scada
                     var profile = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus);
                     item.ProfileName = profile?.Name;
 
-                    if (item.CountSecondTagChange >= 2 && item.ProfileStepNumber_CurrentStatus > 0)
+                    if (item.CountSecondTagChange >= 2 && item.ProfileStepNumber_CurrentStatus > 0 && item.LastStepType != EnumProfileStepType.End)
                     {
                         item.EndStep = 1;
                     }

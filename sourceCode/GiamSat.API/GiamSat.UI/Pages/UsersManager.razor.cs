@@ -1,5 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
-using GiamSat.APIClient;
+using GiamSat.Models;
 using Radzen;
 using Radzen.Blazor;
 
@@ -7,12 +7,13 @@ namespace GiamSat.UI.Pages
 {
     public partial class UsersManager
     {
-        List<Models.UserModel> _users = new List<Models.UserModel>();
-        Models.UserModel _userModel = new Models.UserModel();
+        List<UserModel> _users = new List<UserModel>();
+        UserModel _userModel = new UserModel();
 
-        RegisterModel _registerModel = new RegisterModel();
+        //APIClient.RegisterModel _registerModel = new APIClient.RegisterModel();
+        string _roleSelect;
 
-        RadzenDataGrid<Models.UserModel> _profileGrid;
+        RadzenDataGrid<UserModel> _profileGrid;
         IEnumerable<int> _pageSizeOptions = new int[] { 5, 10, 20, 30,100,200 };
         bool _showPagerSummary = true;
         string _pagingSummaryFormat = "Displaying page {0} of {1} <b>(total {2} records)</b>";
@@ -21,14 +22,28 @@ namespace GiamSat.UI.Pages
         {
             await base.OnInitializedAsync();
 
-            RefreshData();
+            var res = await _authSerivce.GetAllUsers();
+
+            foreach (var item in res)
+            {
+                _users.Add(new UserModel()
+                {
+                    Id = item.Id,
+                    UserName = item.UserName,
+                    Email = item.Email,
+                });
+            }
         }
 
-        async Task DeleteItem(string userName)
+        async Task DeleteItem(string id,string userName)
         {
             try
             {
-              
+                var res = await _authSerivce.DeleteUser(new APIClient.UserModel()
+                {
+                    UserName= userName,
+                    Id=id,
+                });
                 
                 RefreshData();
             }
@@ -94,6 +109,8 @@ namespace GiamSat.UI.Pages
                         Email=item.Email,
                     });
                 }
+
+                StateHasChanged();
             }
             catch (Exception ex)
             {
@@ -106,8 +123,6 @@ namespace GiamSat.UI.Pages
                 });
                 return;
             }
-
-            StateHasChanged();
         }
     }
 }

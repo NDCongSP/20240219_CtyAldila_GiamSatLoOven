@@ -52,6 +52,7 @@ namespace GiamSat.Models
         /// Bước đang chạy.
         /// </summary>
         public int ProfileStepNumber_CurrentStatus { get; set; }
+        public EnumProfileStepType LastStepType { get; set; }
         /// <summary>
         /// Kiểu bước chạy.
         /// RampTime,RampRate,Soak,Kump,End

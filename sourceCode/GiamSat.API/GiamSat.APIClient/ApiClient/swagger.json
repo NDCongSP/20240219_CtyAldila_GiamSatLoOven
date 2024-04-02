@@ -1877,6 +1877,175 @@
         }
       }
     },
+    "/api/FT06": {
+      "get": {
+        "tags": [
+          "FT06"
+        ],
+        "operationId": "FT06_GetAll",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT06ListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT06ListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT06ListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT06/{id}": {
+      "get": {
+        "tags": [
+          "FT06"
+        ],
+        "operationId": "FT06_GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT06Result"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT06Result"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT06Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT06/insert": {
+      "post": {
+        "tags": [
+          "FT06"
+        ],
+        "operationId": "FT06_Insert",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT06"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT06"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT06"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT06Result"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT06Result"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT06Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT06/update": {
+      "post": {
+        "tags": [
+          "FT06"
+        ],
+        "operationId": "FT06_Update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT06"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT06"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT06"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT06Result"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT06Result"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT06Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/fusion/kvs/Set": {
       "post": {
         "tags": [
@@ -2744,6 +2913,62 @@
           },
           "data": {
             "$ref": "#/components/schemas/FT05"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT06": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "c000": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT06ListResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FT06"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT06Result": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/FT06"
           }
         },
         "additionalProperties": false

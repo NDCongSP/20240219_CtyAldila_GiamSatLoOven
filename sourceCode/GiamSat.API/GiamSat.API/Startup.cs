@@ -211,6 +211,7 @@ namespace GiamSat.API
             services.AddTransient<ISFT03, SFT03>();
             services.AddTransient<ISFT04, SFT04>();
             services.AddTransient<ISFT05, SFT05>();
+            services.AddTransient<ISFT06, SFT06>();
             services.AddScoped<SCommon>();
 
             services.AddSwaggerGen(c =>
@@ -316,6 +317,7 @@ namespace GiamSat.API
 
         private async Task SeedingData(IServiceScope scope)
         {
+            #region User
             //get role
             var roleManager = scope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
             var userManager = scope.ServiceProvider.GetService<UserManager<IdentityUser>>();
@@ -366,6 +368,11 @@ namespace GiamSat.API
                 await userManager.CreateAsync(resUser, "123@123");
             }
             if (!await userManager.IsInRoleAsync(resUser, "User")) await userManager.AddToRoleAsync(resUser, "User");
+            #endregion
+
+            #region Control PLC
+           
+            #endregion
         }
     }
 }

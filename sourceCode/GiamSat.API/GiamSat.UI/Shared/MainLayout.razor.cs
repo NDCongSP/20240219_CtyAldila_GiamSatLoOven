@@ -14,7 +14,6 @@ namespace GiamSat.UI.Shared
         [Inject] IHttpInterceptorManager _httpInterceptorManager { get; set; }
 
         bool _sidebarExpanded = false;
-        List<string> _role;
         bool _usersManager = false;
 
         protected override async Task OnInitializedAsync()
@@ -26,18 +25,17 @@ namespace GiamSat.UI.Shared
                 var authState = await _authSerivce.GetAuthenticationStateAsync();
                 GlobalVariable.UserName = authState.User.Identity.Name;
 
-                var t = authState.User.FindFirst("testabc").Value;
-                var email = authState.User.FindFirst("emailTest").Value;
+                //var t = authState.User.FindFirst("testabc").Value;
+                //var email = authState.User.FindFirst("emailTest").Value;
 
                 var claimRole = authState.User.FindAll(ClaimTypes.Role)?.ToList();
 
                 foreach (var item in claimRole)
                 {
-                    _role.Add(item.Value);
-
                     if (item.Value == "Admin")
                     {
                         _usersManager = true;
+                        return;
                     }
                 }
             }

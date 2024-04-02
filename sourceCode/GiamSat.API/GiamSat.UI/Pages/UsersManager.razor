@@ -13,10 +13,15 @@
                                 <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Tên</RadzenText>
                                 <RadzenTextBox TextStyle="TextStyle.Body1" Style="width: 100%;" @bind-Value=@_userModel.UserName />
                             </RadzenColumn>
-                            <RadzenColumn SizeXS="12" SizeMD="8">
+                            <RadzenColumn SizeXS="12" SizeMD="4">
                                 <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Email</RadzenText>
                                 <RadzenTextBox TextStyle="TextStyle.Body1" Style="width: 100%;" Name="Path" Placeholder="Nhập email..."
                                                @bind-Value=@_userModel.Email />
+                            </RadzenColumn>
+                            <RadzenColumn SizeXS="12" SizeMD="4">
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Phân quyền</RadzenText>
+                                <RadzenTextBox TextStyle="TextStyle.Body1" Style="width: 100%;" Name="Path" Placeholder="Nhập email..."
+                                               @bind-Value=@_roleSelect />
                             </RadzenColumn>
                         </RadzenRow>
                         <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
@@ -29,7 +34,7 @@
         </RadzenColumn>
         <RadzenColumn SizeXS="12" SizeMD="12">
             <RadzenStack>
-                <RadzenFieldset Text="Danh sách users">
+                <RadzenFieldset Text="Profile">
                     <RadzenStack Orientation=Orientation.Vertical Gap="1rem">
                         <RadzenDataGrid @ref="_profileGrid" AllowFiltering="true" FilterPopupRenderMode="PopupRenderMode.OnDemand" AllowPaging="true" PageSize="5" AllowSorting="true"
                                         Data="@_users" TItem="Models.UserModel"
@@ -40,11 +45,8 @@
                                 <RadzenDataGridColumn TItem="Models.UserModel" Property="Email" Title="Email" />
                                 <RadzenDataGridColumn TItem="Models.UserModel" Filterable="false" Sortable="true" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
                                     <Template Context="data">
-                                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
-                                                      Click="@(args => EditItem(data.Id,data.UserName))" @onclick:stopPropagation="true">
-                                        </RadzenButton>
                                         <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter"
-                                                      Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteItem(data.UserName))" @onclick:stopPropagation="true">
+                                                      Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteItem(data.Id,data.UserName))" @onclick:stopPropagation="true">
                                         </RadzenButton>
                                         @* <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click=@(() => OpenProfile(data.Id)) Text="@data.Id.ToString()">@data.Steps.Count</RadzenButton> *@
                                     </Template>

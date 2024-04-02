@@ -6,6 +6,7 @@ SELECT *
 
 SELECT *
 FROM [Oven].[dbo].[FT03]
+where OvenId=11
 ORDER BY CreatedDate DESC
 
 SELECT *
@@ -15,6 +16,9 @@ order by CreatedDate desc
 
 SELECT *
   FROM [Oven].[dbo].[FT05]
+
+  SELECT *
+  FROM [Oven].[dbo].[FT06]
 
   --truncate table ft04
 
