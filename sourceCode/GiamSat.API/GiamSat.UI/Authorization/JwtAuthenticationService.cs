@@ -1,6 +1,7 @@
 ﻿
 using Blazored.LocalStorage;
 using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Wordprocessing;
 using GiamSat.APIClient;
 using GiamSat.Models;
 using Microsoft.AspNetCore.Components;
@@ -149,6 +150,18 @@ namespace GiamSat.UI
             return token;
         }
 
+        public async Task<APIClient.Response> RegisterUser(APIClient.RegisterModel model)
+        {
+            try
+            {
+                var res=await _tokenClient.RegisterAsync(model);
+                return res;
+            }
+            catch (Exception ex)
+            {
+                return new APIClient.Response() { Status="Error",Message=ex.Message};
+            }
+        }
         public async Task<APIClient.Response> UpdateUser(APIClient.UpdateModel model)
         {
             try

@@ -10,18 +10,21 @@
                     <RadzenStack Gap="1rem">
                         <RadzenRow AlignItems="AlignItems.Center">
                             <RadzenColumn SizeXS=12 SizeSM="4">
-                                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Tên</RadzenText>
-                                <RadzenTextBox TextStyle="TextStyle.Body1" Style="width: 100%;" @bind-Value=@_userModel.UserName />
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Tên</RadzenText>
+                                <RadzenTextBox Name="_txtName" TextStyle="TextStyle.Body1" Style="display: block;width: 100%;" @bind-Value=@_userModel.UserName />
+                                <RadzenRequiredValidator Component="_txtName" Text="Nhập tên" Popup="false" Style="position: absolute" />
                             </RadzenColumn>
                             <RadzenColumn SizeXS="12" SizeMD="4">
-                                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Email</RadzenText>
-                                <RadzenTextBox TextStyle="TextStyle.Body1" Style="width: 100%;" Name="Path" Placeholder="Nhập email..."
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Email</RadzenText>
+                                <RadzenTextBox Name="_txtEmail" TextStyle="TextStyle.Body1" Style="display: block;width: 100%;" Placeholder="Nhập email..."
                                                @bind-Value=@_userModel.Email />
+                                <RadzenRequiredValidator Component="_txtEmail" Text="Nhập email" Popup="false" Style="position: absolute" />
                             </RadzenColumn>
                             <RadzenColumn SizeXS="12" SizeMD="4">
-                                <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Phân quyền</RadzenText>
-                                <RadzenTextBox TextStyle="TextStyle.Body1" Style="width: 100%;" Name="Path" Placeholder="Nhập email..."
-                                               @bind-Value=@_roleSelect />
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Phân quyền</RadzenText>
+                                <RadzenDropDown Name="_dropDownRoles" @bind-Value=@_registerModel.Roles Data=@_role Multiple=true AllowClear=true Placeholder="Select roles"
+                                                Style="display: block;width:100%"></RadzenDropDown>
+                                <RadzenRequiredValidator Component="_dropDownRoles" Text="Chọn quyền" Popup="false" Style="position: absolute" />
                             </RadzenColumn>
                         </RadzenRow>
                         <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
@@ -36,11 +39,12 @@
             <RadzenStack>
                 <RadzenFieldset Text="Profile">
                     <RadzenStack Orientation=Orientation.Vertical Gap="1rem">
-                        <RadzenDataGrid @ref="_profileGrid" AllowFiltering="true" FilterPopupRenderMode="PopupRenderMode.OnDemand" AllowPaging="true" PageSize="5" AllowSorting="true"
+                        <RadzenDataGrid @ref="_profileGrid" AllowFiltering="true" 
+                                        FilterPopupRenderMode="PopupRenderMode.OnDemand" AllowPaging="true" PageSize="5" AllowSorting="true"
                                         Data="@_users" TItem="Models.UserModel"
                                         ShowPagingSummary=@_showPagerSummary PagingSummaryFormat="@_pagingSummaryFormat" PageSizeOptions="@_pageSizeOptions">
                             <Columns>
-                                <RadzenDataGridColumn TItem="Models.UserModel" Property="Id" Title="Id" />
+                                @* <RadzenDataGridColumn TItem="Models.UserModel" Property="Id" Title="Id" /> *@
                                 <RadzenDataGridColumn TItem="Models.UserModel" Property="UserName" Title="Tên" />
                                 <RadzenDataGridColumn TItem="Models.UserModel" Property="Email" Title="Email" />
                                 <RadzenDataGridColumn TItem="Models.UserModel" Filterable="false" Sortable="true" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">

@@ -840,6 +840,7 @@ namespace GiamSat.Scada
                     {
                         item.AlarmDescription = "Mất kết nối đến lò";
                     }
+                    else item.AlarmDescription = null;
                     return;
                 }
             }

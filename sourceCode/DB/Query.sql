@@ -28,3 +28,5 @@ SELECT *
 
 
   --delete FT03 where id='3FA85F64-5717-4562-B3FC-2C963F66AFA6'
+
+  --update ft06 set c000=N'[{"OvenId":1,"OvenName":"Oven 1","OffSerien":0},{"OvenId":2,"OvenName":"Oven 2","OffSerien":0},{"OvenId":3,"OvenName":"Oven 3","OffSerien":0},{"OvenId":4,"OvenName":"Oven 4","OffSerien":0},{"OvenId":5,"OvenName":"Oven 5","OffSerien":0},{"OvenId":6,"OvenName":"Oven 6","OffSerien":0},{"OvenId":7,"OvenName":"Oven 7","OffSerien":0},{"OvenId":8,"OvenName":"Oven 8","OffSerien":0},{"OvenId":9,"OvenName":"Oven 9","OffSerien":0},{"OvenId":10,"OvenName":"Oven 10","OffSerien":0},{"OvenId":11,"OvenName":"Oven 11","OffSerien":1},{"OvenId":12,"OvenName":"Oven 12","OffSerien":0},{"OvenId":13,"OvenName":"Oven 13","OffSerien":0}]'

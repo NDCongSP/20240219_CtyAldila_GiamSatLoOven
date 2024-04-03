@@ -127,7 +127,7 @@ namespace GiamSat.API.Controllers
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "User already exists!" });
 
             IdentityUser user = new()
             {
@@ -137,7 +137,7 @@ namespace GiamSat.API.Controllers
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
             foreach (var item in model.Roles)
             {
@@ -278,12 +278,14 @@ namespace GiamSat.API.Controllers
         {
             var user=await _userManager.FindByIdAsync(model.Id);
 
-            if (user != null)
+            if (user == null)
             {
-               var res= _userManager.DeleteAsync(user);
+                return StatusCode(StatusCodes.Status200OK, new Response() { Status = "Error", Message = "User not found!" });
             }
-             
-            return Ok(new Response() { Status="Success",Message="Xóa user thành công."});
+
+            var res = _userManager.DeleteAsync(user);
+
+            return Ok(new Response() { Status="Success",Message="Delete user success."});
         }
 
         private JwtSecurityToken GetToken(List<Claim> authClaims)
