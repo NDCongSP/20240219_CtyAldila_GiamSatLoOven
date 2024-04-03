@@ -259,11 +259,24 @@ namespace GiamSat.API.Controllers
 
             foreach (var item in u)
             {
+                var user = await _userManager.FindByNameAsync(item.UserName);
+                var roles = await _userManager.GetRolesAsync(user);
+
+                //var uu = new UserModel();
+                //uu.Id = item.Id;
+                //uu.UserName = item.UserName;
+                //uu.Email = item.Email;
+                //foreach (var item1 in roles)
+                //{
+                //    uu.Roles.Add(item1);
+                //}
+
                 userModels.Add(new UserModel()
                 {
-                   Id=item.Id,
-                   UserName=item.UserName,  
-                   Email=item.Email,
+                    Id = item.Id,
+                    UserName= item.UserName,
+                    Email= item.Email,
+                    Roles=roles.ToList(),
                 });
             }
 
@@ -289,7 +302,7 @@ namespace GiamSat.API.Controllers
                 return StatusCode(StatusCodes.Status200OK, new Response() { Status = "Error", Message = "User not found!" });
             }
 
-            var res = _userManager.DeleteAsync(user);
+            var res = await _userManager.DeleteAsync(user);
 
             return Ok(new Response() { Status="Success",Message="Delete user success."});
         }

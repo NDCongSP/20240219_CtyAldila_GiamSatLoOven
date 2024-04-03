@@ -20,7 +20,15 @@
                             <Columns>
                                 @* <RadzenDataGridColumn TItem="Models.UserModel" Property="Id" Title="Id" /> *@
                                 <RadzenDataGridColumn TItem="Models.UserModel" Property="UserName" Title="Tên" />
-                                @* <RadzenDataGridColumn TItem="Models.UserModel" Property="Email" Title="Email" /> *@
+                                @* <RadzenDataGridColumn TItem="Models.UserModel" Property="Roles" Title="Email" /> *@
+                                <RadzenDataGridColumn TItem="Models.UserModel" Title="Phân quyền" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                                    <Template Context="data">
+                                        @foreach (var item in data.Roles)
+                                        {
+                                            @(""+item+",")
+                                        }
+                                    </Template>
+                                </RadzenDataGridColumn>
                                 <RadzenDataGridColumn TItem="Models.UserModel" Filterable="false" Sortable="true" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
                                     <Template Context="data">
                                         <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter"

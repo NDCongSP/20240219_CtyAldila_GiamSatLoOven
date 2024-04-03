@@ -7429,6 +7429,11 @@ namespace GiamSat.APIClient
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
         public string? Email { get; set; } = default!;
 
+        [System.Text.Json.Serialization.JsonPropertyName("roles")]
+
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public System.Collections.Generic.ICollection<string>? Roles { get; set; } = default!;
+
     }
 
 

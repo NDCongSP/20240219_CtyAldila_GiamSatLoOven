@@ -128,12 +128,13 @@ namespace GiamSat.UI.Pages
                 _users = new List<UserModel>();
 
                 foreach (var item in res)
-                {
+                {                     
                     _users.Add(new Models.UserModel()
                     {
                         Id = item.Id,
                         UserName = item.UserName,
                         Email = item.Email,
+                        Roles=item.Roles.ToList()
                     });
                 }
 
