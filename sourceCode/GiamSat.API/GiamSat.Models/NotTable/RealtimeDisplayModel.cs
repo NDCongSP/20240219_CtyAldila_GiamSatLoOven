@@ -147,5 +147,10 @@ namespace GiamSat.Models
         /// =2 thi moi cho lưu data profile.
         /// </summary>
         public int CountSecondTagChange { get; set; } = 0;
+
+        /// <summary>
+        /// Báo còi đang bật hay tắt.
+        /// </summary>
+        public int OffSerien { get; set; }
     }
 }

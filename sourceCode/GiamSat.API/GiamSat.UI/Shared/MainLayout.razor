@@ -23,7 +23,7 @@
                                 <RadzenIcon Icon="account_circle" />
                             </Template>
                             <ChildContent>
-                                <RadzenProfileMenuItem Text="User info" Path="/dialogcardpageuserinfo" Icon="manage_accounts"></RadzenProfileMenuItem>
+                                <RadzenProfileMenuItem Visible="@_usersManager" Text="User info" Path="/dialogcardpageuserinfo" Icon="manage_accounts"></RadzenProfileMenuItem>
                                 <RadzenProfileMenuItem Visible="@_usersManager" Text="Users manager" Path="/usersmanager" Icon="people_alt"></RadzenProfileMenuItem>
                                 <RadzenProfileMenuItem Text="Logout" Path="/login" Icon="logout"></RadzenProfileMenuItem>
                             </ChildContent>

@@ -53,7 +53,7 @@ namespace GiamSat.UI.Pages
 
                     if (_dataFromDB == null && _dataFromDB.Count <= 0)
                     {
-                        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Warning", Detail = "Data empty", Duration = 4000 });
+                        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Warning", Detail = "Data empty", Duration = 2000 });
                         return;
                     }
 
@@ -63,7 +63,7 @@ namespace GiamSat.UI.Pages
                 {
                     foreach (var item in res.Messages)
                     {
-                        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Error", Detail = item, Duration = 4000 });
+                        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Error", Detail = item, Duration = 2000 });
                     }
                 }
 
@@ -106,7 +106,7 @@ namespace GiamSat.UI.Pages
                         Severity = NotificationSeverity.Success,
                         Summary = "Success",
                         Detail = "Truyền lệnh tắt còi thành công",
-                        Duration = 4000
+                        Duration = 2000
                     });
                 }
                 else
@@ -116,7 +116,7 @@ namespace GiamSat.UI.Pages
                         Severity = NotificationSeverity.Error,
                         Summary = "Error",
                         Detail = "Truyền lệnh tắt còi thất bại.",
-                        Duration = 4000
+                        Duration = 2000
                     });
                 }
             }
@@ -127,7 +127,7 @@ namespace GiamSat.UI.Pages
                     Severity = NotificationSeverity.Error,
                     Summary = "Error",
                     Detail = ex.Message,
-                    Duration = 4000
+                    Duration = 2000
                 });
 
                 return;
@@ -146,7 +146,7 @@ namespace GiamSat.UI.Pages
 
                     if (_dataFromDB == null && _dataFromDB.Count <= 0)
                     {
-                        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Warning", Detail = "Data empty", Duration = 4000 });
+                        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Warning", Detail = "Data empty", Duration = 2000 });
                         return;
                     }
 

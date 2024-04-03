@@ -534,6 +534,7 @@ namespace GiamSat.Scada
                                    )
                                 {
                                     item.Alarm = 1;
+                                    item.OffSerien = 1;
                                     item.AlarmDescription = $"Nhiệt độ chưa đạt";
                                     easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
 
@@ -549,6 +550,7 @@ namespace GiamSat.Scada
                                     )
                                 {
                                     item.Alarm = 0;
+                                    item.OffSerien = 0;
                                     item.AlarmDescription = null;
                                     easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
                                     item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
@@ -573,6 +575,7 @@ namespace GiamSat.Scada
                                    )
                                 {
                                     item.Alarm = 1;
+                                    item.OffSerien = 1;
                                     item.AlarmDescription = $"Nhiệt độ chưa đạt";
                                     easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
 
@@ -588,6 +591,7 @@ namespace GiamSat.Scada
                                     )
                                 {
                                     item.Alarm = 0;
+                                    item.OffSerien = 0;
                                     item.AlarmDescription = null;
                                     easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
                                     item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
@@ -614,6 +618,7 @@ namespace GiamSat.Scada
                                    )
                                     {
                                         item.Alarm = 1;
+                                        item.OffSerien = 1;
                                         item.AlarmDescription = $"Nhiệt độ cao";
                                         easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
 
@@ -630,6 +635,7 @@ namespace GiamSat.Scada
                                         )
                                     {
                                         item.Alarm = 0;
+                                        item.OffSerien = 0;
                                         item.AlarmDescription = null;
                                         easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
                                         item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
@@ -645,6 +651,7 @@ namespace GiamSat.Scada
                                    )
                                     {
                                         item.Alarm = 1;
+                                        item.OffSerien = 1;
                                         item.AlarmDescription = $"Nhiệt độ cao";
                                         easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
 
@@ -660,6 +667,7 @@ namespace GiamSat.Scada
                                         )
                                     {
                                         item.Alarm = 0;
+                                        item.OffSerien = 0;
                                         item.AlarmDescription = null;
                                         easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
                                         item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
@@ -675,6 +683,7 @@ namespace GiamSat.Scada
                        && item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOut) && item.AlarmFlagLastStep == true)
                 {
                     item.Alarm = 0;
+                    item.OffSerien = 0;
                     item.AlarmDescription = null;
                     easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
                     item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
@@ -688,6 +697,7 @@ namespace GiamSat.Scada
                 {
                     easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
                     c.OffSerien = 0;
+                    item.OffSerien = 0;//gui tin hieu bao bat tat coi
 
                     using (var con = GlobalVariable.GetDbConnection())
                     {
@@ -826,6 +836,7 @@ namespace GiamSat.Scada
         }
 
         #region Event tag value change
+
         private void Temperature_QualityChanged(object sender, TagQualityChangedEventArgs e)
         {
             var path = e.Tag.Parent.Path;

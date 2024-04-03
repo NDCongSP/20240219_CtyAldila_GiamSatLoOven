@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Drawing.Diagrams;
 using DocumentFormat.OpenXml.Spreadsheet;
 using GiamSat.Models;
+using GiamSat.UI.Components;
 using Radzen;
 using Radzen.Blazor;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -72,7 +73,7 @@ namespace GiamSat.UI.Pages
                         Severity = NotificationSeverity.Success,
                         Summary = "Success",
                         Detail = res.Message,
-                        Duration = 4000
+                        Duration = 2000
                     });
 
                     _registerModel = null;
@@ -87,7 +88,7 @@ namespace GiamSat.UI.Pages
                         Severity = NotificationSeverity.Error,
                         Summary = "Error",
                         Detail = res.Message,
-                        Duration = 4000
+                        Duration = 2000
                     });
                 }
             }
@@ -98,82 +99,22 @@ namespace GiamSat.UI.Pages
                     Severity = NotificationSeverity.Error,
                     Summary = "Error",
                     Detail = ex.Message,
-                    Duration = 4000
+                    Duration = 2000
                 });
 
                 return;
             }
         }
 
-        async Task EditItem(string id, string userName)
+        async void AddNewItem()
         {
-            try
+            var res = await _dialogService.OpenAsync<DialogCardPageAddNewUser>($"Tạo tài khoản",
+                    new Dictionary<string, object>() { },
+                    new DialogOptions() { Width = "500px", Height = "550px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true });
+
+            if (res == "Success")
             {
-                var confirm = await _dialogService.Confirm("Bạn chắc chắn muốn thêm profile?", "Tạo mới profile", new ConfirmOptions()
-                {
-                    OkButtonText = "Yes",
-                    CancelButtonText = "No",
-                    AutoFocusFirstElement = true,
-                });
-
-                if (confirm == null || confirm == false) return;
-
-
-            }
-            catch (Exception ex)
-            {
-                _notificationService.Notify(new NotificationMessage()
-                {
-                    Severity = NotificationSeverity.Error,
-                    Summary = "Error",
-                    Detail = ex.Message,
-                    Duration = 4000
-                });
-                return;
-            }
-        }
-
-        async Task OnClickSaveAsync()
-        {
-            var confirm = await _dialogService.Confirm($"Bạn chắc chắn muốn tạo user: {_userModel.UserName}", "Tạo user", new ConfirmOptions()
-            {
-                OkButtonText = "Yes",
-                CancelButtonText = "No",
-                AutoFocusFirstElement = true,
-            });
-
-            if (confirm == null || confirm == false) return;
-
-            _registerModel.Username = _userModel.UserName;
-            _registerModel.Password = "123@123";
-            _registerModel.Email = _userModel.Email;
-
-            var res = await _authSerivce.RegisterUser(_registerModel);
-
-            if (res.Status == "Success")
-            {
-                _notificationService.Notify(new NotificationMessage()
-                {
-                    Severity = NotificationSeverity.Success,
-                    Summary = "Success",
-                    Detail = res.Message,
-                    Duration = 4000
-                });
-
-                _registerModel = null;
-                _registerModel = new APIClient.RegisterModel();
-
                 RefreshData();
-            }
-            else
-            {
-                _notificationService.Notify(new NotificationMessage()
-                {
-                    Severity = NotificationSeverity.Error,
-                    Summary = "Error",
-                    Detail = res.Message,
-                    Duration = 4000
-                });
             }
         }
 
@@ -206,7 +147,7 @@ namespace GiamSat.UI.Pages
                     Severity = NotificationSeverity.Error,
                     Summary = "Error",
                     Detail = ex.Message,
-                    Duration = 4000
+                    Duration = 2000
                 });
                 return;
             }

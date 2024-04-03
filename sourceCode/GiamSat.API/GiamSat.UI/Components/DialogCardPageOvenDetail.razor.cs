@@ -34,7 +34,7 @@ namespace GiamSat.UI.Components
 
                     if (_dataFromDB == null && _dataFromDB.Count <= 0)
                     {
-                        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Warning", Detail = "Data empty", Duration = 4000 });
+                        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Warning", Detail = "Data empty", Duration = 2000 });
                         return;
                     }
 
@@ -45,7 +45,7 @@ namespace GiamSat.UI.Components
                 {
                     foreach (var item in res.Messages)
                     {
-                        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Error", Detail = item, Duration = 4000 });
+                        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Error", Detail = item, Duration = 2000 });
                     }
                 }
 
@@ -57,7 +57,7 @@ namespace GiamSat.UI.Components
             }
             catch (Exception ex)
             {
-                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Error", Detail = ex.Message, Duration = 4000 });
+                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Error", Detail = ex.Message, Duration = 2000 });
                 return;
             }
         }
@@ -74,7 +74,7 @@ namespace GiamSat.UI.Components
 
                     if (_dataFromDB == null && _dataFromDB.Count <= 0)
                     {
-                        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Warning", Detail = "Data empty", Duration = 4000 });
+                        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Warning", Detail = "Data empty", Duration = 2000 });
                         return;
                     }
 

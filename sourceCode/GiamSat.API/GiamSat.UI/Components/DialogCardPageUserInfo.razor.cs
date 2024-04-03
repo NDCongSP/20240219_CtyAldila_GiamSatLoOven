@@ -37,7 +37,7 @@ namespace GiamSat.UI.Components
                         Severity = NotificationSeverity.Success,
                         Summary = res.Status,
                         Detail = res.Message,
-                        Duration = 4000
+                        Duration = 2000
                     });
 
                     _dialogService.Close("Success");
@@ -49,7 +49,7 @@ namespace GiamSat.UI.Components
                         Severity = NotificationSeverity.Error,
                         Summary = res.Status,
                         Detail = res.Message,
-                        Duration = 4000
+                        Duration = 2000
                     });
                 }
             }
@@ -60,7 +60,7 @@ namespace GiamSat.UI.Components
                     Severity = NotificationSeverity.Error,
                     Summary = "Error",
                     Detail = $"Login fail: {ex.Message}",
-                    Duration = 4000
+                    Duration = 2000
                 });
 
                 return;

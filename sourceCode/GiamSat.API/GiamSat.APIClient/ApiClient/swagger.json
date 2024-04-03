@@ -3100,11 +3100,12 @@
         "required": [
           "email",
           "password",
-          "username"
+          "repeatPassword",
+          "userName"
         ],
         "type": "object",
         "properties": {
-          "username": {
+          "userName": {
             "minLength": 1,
             "type": "string"
           },
@@ -3114,6 +3115,10 @@
             "format": "email"
           },
           "password": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "repeatPassword": {
             "minLength": 1,
             "type": "string"
           },

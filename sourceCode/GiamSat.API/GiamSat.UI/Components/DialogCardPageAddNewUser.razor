@@ -1,0 +1,45 @@
+﻿@page "/createduser"
+
+<RadzenTemplateForm Data="@_model" Submit="@((RegisterModel args) => { Submit(args); })">
+    <RadzenRow Gap="2rem" Class="rz-p-0 rz-p-lg-4">
+        <RadzenColumn SizeXS="12" SizeMD="12">
+            <RadzenStack>
+                <RadzenFieldset Text="Thông tin user">
+                    <RadzenStack Gap="1rem">
+                        <RadzenRow AlignItems="AlignItems.Center">
+                            <RadzenColumn SizeXS=12 SizeSM="12">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Tên user</RadzenText>
+                                <RadzenTextBox Name="_txtUserName" TextStyle="TextStyle.Body1" Style="display: block;width: 100%;" @bind-Value=@_model.UserName />
+                                <RadzenRequiredValidator Component="_txtUserName" Text="Nhập tên user" Popup="false" Style="position: absolute" />
+                            </RadzenColumn>
+                            <RadzenColumn SizeXS="12" SizeMD="12">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Mật khẩu</RadzenText>
+                                <RadzenPassword Name="Password" @bind-Value=@_model.Password Placeholder="Tối thiểu 6 ký tự" aria-label="enter password"
+                                                Style="display: block;width:100%" />
+                                <RadzenRequiredValidator Component="Password" Text="Mật khẩu" Popup="false" Style="position: absolute" />
+                            </RadzenColumn>
+                            <RadzenColumn SizeXS="12" SizeMD="12">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Nhập lại mật khẩu</RadzenText>
+                                <RadzenPassword Name="RepeatPassword" @bind-Value=@_model.RepeatPassword Placeholder="Re enter password..." aria-label="enter password"
+                                                Style="display: block;width:100%" />
+                                <RadzenRequiredValidator Component="RepeatPassword" Text="Nhập lại mật khẩu" Popup="false" Style="position: absolute" />
+                                <RadzenCompareValidator Visible=@(!string.IsNullOrEmpty(_model.RepeatPassword)) Value=@_model.Password
+                                                        Component="RepeatPassword" Text="Mật khẩu không khớp" Popup="false" Style="position: absolute" />
+                            </RadzenColumn>
+                             <RadzenColumn SizeXS=12 SizeSM="12">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Phân quyền</RadzenText>
+                                <RadzenDropDown Name="_dropDownRoles" @bind-Value=@_model.Roles Data=@_role Multiple=true AllowClear=true Placeholder="Select roles"
+                                                Style="display: block;width:100%"></RadzenDropDown>
+                                <RadzenRequiredValidator Component="_dropDownRoles" Text="Chọn quyền" Popup="false" Style="position: absolute" />
+                            </RadzenColumn>
+                        </RadzenRow>
+                    </RadzenStack>
+                </RadzenFieldset>
+            </RadzenStack>
+        </RadzenColumn>
+    </RadzenRow>
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
+        <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Lưu" />
+        @* <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Large" Icon="cancel" Text="Cancel" Click="@Cancel" /> *@
+    </RadzenStack>
+</RadzenTemplateForm>

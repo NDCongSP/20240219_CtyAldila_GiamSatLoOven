@@ -69,7 +69,7 @@ namespace GiamSat.UI.Pages
                         Severity = Radzen.NotificationSeverity.Error,
                         Summary = "Error",
                         Detail = "Truy cập API lỗi.",
-                        Duration = 4000
+                        Duration = 2000
                     });
                     return;
                 }
@@ -100,7 +100,7 @@ namespace GiamSat.UI.Pages
                     Severity = Radzen.NotificationSeverity.Error,
                     Summary = ex.Message,
                     Detail = ex.StackTrace,
-                    Duration = 4000
+                    Duration = 2000
                 });
                 return;
             }
@@ -117,7 +117,7 @@ namespace GiamSat.UI.Pages
                         Severity = NotificationSeverity.Warning,
                         Summary = "Warning",
                         Detail = "Bạn chưa chọn lò cần truy vấn.",
-                        Duration = 4000
+                        Duration = 2000
                     });
                     return;
                 }
@@ -140,7 +140,7 @@ namespace GiamSat.UI.Pages
                         Severity = Radzen.NotificationSeverity.Error,
                         Summary = "Error",
                         Detail = "Truy cập API lỗi.",
-                        Duration = 4000
+                        Duration = 2000
                     });
                     return;
                 }
@@ -157,7 +157,7 @@ namespace GiamSat.UI.Pages
                     Severity = Radzen.NotificationSeverity.Error,
                     Summary = ex.Message,
                     Detail = ex.StackTrace,
-                    Duration = 4000
+                    Duration = 2000
                 });
                 return;
             }
@@ -175,7 +175,7 @@ namespace GiamSat.UI.Pages
                         Severity = NotificationSeverity.Warning,
                         Summary = "Warning",
                         Detail = "Bạn chưa chọn lò cần truy vấn.",
-                        Duration = 4000
+                        Duration = 2000
                     });
                     return;
                 }
@@ -212,7 +212,7 @@ namespace GiamSat.UI.Pages
                         Severity = Radzen.NotificationSeverity.Error,
                         Summary = "Error",
                         Detail = "Truy cập API lỗi.",
-                        Duration = 4000
+                        Duration = 2000
                     });
                     return;
                 }
@@ -232,7 +232,7 @@ namespace GiamSat.UI.Pages
                     Severity = Radzen.NotificationSeverity.Error,
                     Summary = ex.Message,
                     Detail = ex.StackTrace,
-                    Duration = 4000
+                    Duration = 2000
                 });
                 return;
             }

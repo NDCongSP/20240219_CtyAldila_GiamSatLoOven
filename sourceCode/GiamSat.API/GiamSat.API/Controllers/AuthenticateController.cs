@@ -125,7 +125,7 @@ namespace GiamSat.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(Response))]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var userExists = await _userManager.FindByNameAsync(model.Username);
+            var userExists = await _userManager.FindByNameAsync(model.UserName);
             if (userExists != null)
                 return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "User already exists!" });
 
@@ -133,7 +133,7 @@ namespace GiamSat.API.Controllers
             {
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
+                UserName = model.UserName
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
@@ -160,7 +160,7 @@ namespace GiamSat.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(Response))]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
         {
-            var userExists = await _userManager.FindByNameAsync(model.Username);
+            var userExists = await _userManager.FindByNameAsync(model.UserName);
             if (userExists != null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
 
@@ -168,7 +168,7 @@ namespace GiamSat.API.Controllers
             {
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
+                UserName = model.UserName
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
@@ -276,8 +276,14 @@ namespace GiamSat.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(Response))]
         public async Task<IActionResult> DeleteUser([FromBody] UserModel model)
         {
-            var user=await _userManager.FindByIdAsync(model.Id);
+            var user = await _userManager.FindByNameAsync(model.UserName);
 
+            var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+
+            if (isAdmin)
+            {
+                return StatusCode(StatusCodes.Status200OK, new Response() { Status = "Error", Message = "Not allowed to delete the admin account" });
+            }
             if (user == null)
             {
                 return StatusCode(StatusCodes.Status200OK, new Response() { Status = "Error", Message = "User not found!" });

@@ -6,39 +6,13 @@
     <RadzenRow Gap="2rem" Class="rz-p-0 rz-p-lg-4">
         <RadzenColumn SizeXS="12" SizeMD="12">
             <RadzenStack>
-                <RadzenFieldset Text="Thông tin chung">
-                    <RadzenStack Gap="1rem">
-                        <RadzenRow AlignItems="AlignItems.Center">
-                            <RadzenColumn SizeXS=12 SizeSM="4">
-                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Tên</RadzenText>
-                                <RadzenTextBox Name="_txtName" TextStyle="TextStyle.Body1" Style="display: block;width: 100%;" @bind-Value=@_userModel.UserName />
-                                <RadzenRequiredValidator Component="_txtName" Text="Nhập tên" Popup="false" Style="position: absolute" />
-                            </RadzenColumn>
-                            <RadzenColumn SizeXS="12" SizeMD="4">
-                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Email</RadzenText>
-                                <RadzenTextBox Name="_txtEmail" TextStyle="TextStyle.Body1" Style="display: block;width: 100%;" Placeholder="Nhập email..."
-                                               @bind-Value=@_userModel.Email />
-                                <RadzenRequiredValidator Component="_txtEmail" Text="Nhập email" Popup="false" Style="position: absolute" />
-                            </RadzenColumn>
-                            <RadzenColumn SizeXS="12" SizeMD="4">
-                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Phân quyền</RadzenText>
-                                <RadzenDropDown Name="_dropDownRoles" @bind-Value=@_registerModel.Roles Data=@_role Multiple=true AllowClear=true Placeholder="Select roles"
-                                                Style="display: block;width:100%"></RadzenDropDown>
-                                <RadzenRequiredValidator Component="_dropDownRoles" Text="Chọn quyền" Popup="false" Style="position: absolute" />
-                            </RadzenColumn>
-                        </RadzenRow>
-                        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
-                            <RadzenButton ButtonType="ButtonType.Button" Size="ButtonSize.Large" Icon="save" Text="Lưu"
-                                          Click=@(args=>OnClickSaveAsync()) Variant="Variant.Flat" />
-                        </RadzenStack>
-                    </RadzenStack>
-                </RadzenFieldset>
-            </RadzenStack>
-        </RadzenColumn>
-        <RadzenColumn SizeXS="12" SizeMD="12">
-            <RadzenStack>
-                <RadzenFieldset Text="Profile">
+                <RadzenFieldset Text="Danh sách users">
                     <RadzenStack Orientation=Orientation.Vertical Gap="1rem">
+                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center"
+                                     Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-mt-2">
+                            <RadzenButton Click=@(args => AddNewItem()) Variant="Variant.Flat" Shade="Shade.Dark"
+                                          Text="Thêm user" Icon="add_circle" ButtonStyle="ButtonStyle.Dark" />
+                        </RadzenStack>
                         <RadzenDataGrid @ref="_profileGrid" AllowFiltering="true" 
                                         FilterPopupRenderMode="PopupRenderMode.OnDemand" AllowPaging="true" PageSize="5" AllowSorting="true"
                                         Data="@_users" TItem="Models.UserModel"
@@ -46,7 +20,7 @@
                             <Columns>
                                 @* <RadzenDataGridColumn TItem="Models.UserModel" Property="Id" Title="Id" /> *@
                                 <RadzenDataGridColumn TItem="Models.UserModel" Property="UserName" Title="Tên" />
-                                <RadzenDataGridColumn TItem="Models.UserModel" Property="Email" Title="Email" />
+                                @* <RadzenDataGridColumn TItem="Models.UserModel" Property="Email" Title="Email" /> *@
                                 <RadzenDataGridColumn TItem="Models.UserModel" Filterable="false" Sortable="true" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
                                     <Template Context="data">
                                         <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter"

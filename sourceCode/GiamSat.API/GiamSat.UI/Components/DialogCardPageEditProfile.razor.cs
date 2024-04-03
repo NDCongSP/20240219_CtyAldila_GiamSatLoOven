@@ -46,7 +46,7 @@ namespace GiamSat.UI.Components
                         Severity = NotificationSeverity.Error,
                         Summary = "Error",
                         Detail = "Không có dữu liệu",
-                        Duration = 4000
+                        Duration = 2000
                     });
                     return;
                 }
@@ -64,7 +64,7 @@ namespace GiamSat.UI.Components
                     Severity = NotificationSeverity.Error,
                     Summary = ex.Message,
                     Detail = ex.StackTrace,
-                    Duration = 40000
+                    Duration = 20000
                 });
                 return;
             }
@@ -105,7 +105,7 @@ namespace GiamSat.UI.Components
                         Severity = NotificationSeverity.Error,
                         Summary = "Error",
                         Detail = "Cập nhật thất bại.",
-                        Duration = 4000
+                        Duration = 2000
                     });
 
                     return;
@@ -116,7 +116,7 @@ namespace GiamSat.UI.Components
                     Severity = NotificationSeverity.Success,
                     Summary = "Success",
                     Detail = "Cập nhật thành công.",
-                    Duration = 4000
+                    Duration = 2000
                 });
 
                 _dialogService.Close("Success");
@@ -129,7 +129,7 @@ namespace GiamSat.UI.Components
                     Severity = NotificationSeverity.Error,
                     Summary = "Error",
                     Detail = ex.Message,
-                    Duration = 4000
+                    Duration = 2000
                 });
                 return;
             }
@@ -188,7 +188,7 @@ namespace GiamSat.UI.Components
                         Severity = NotificationSeverity.Error,
                         Summary = "Error",
                         Detail = "Cập nhật thất bại.",
-                        Duration = 4000
+                        Duration = 2000
                     });
                     return;
                 }
@@ -198,7 +198,7 @@ namespace GiamSat.UI.Components
                     Severity = NotificationSeverity.Success,
                     Summary = "Success",
                     Detail = "Cập nhật thành công.",
-                    Duration = 4000
+                    Duration = 2000
                 });
 
                 RefreshData();
@@ -210,7 +210,7 @@ namespace GiamSat.UI.Components
                     Severity = NotificationSeverity.Error,
                     Summary = "Error",
                     Detail = ex.Message,
-                    Duration = 4000
+                    Duration = 2000
                 });
 
                 return;

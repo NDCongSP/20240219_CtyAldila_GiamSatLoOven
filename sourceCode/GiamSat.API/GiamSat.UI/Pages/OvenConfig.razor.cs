@@ -68,7 +68,7 @@ namespace GiamSat.UI.Pages
                         Severity = NotificationSeverity.Error,
                         Summary = "Error",
                         Detail = "Cập nhật thất bại.",
-                        Duration = 4000
+                        Duration = 2000
                     });
                     return;
                 }
@@ -78,7 +78,7 @@ namespace GiamSat.UI.Pages
                     Severity = NotificationSeverity.Success,
                     Summary = "Success",
                     Detail = "Cập nhật thành công.",
-                    Duration = 4000
+                    Duration = 2000
                 });
 
                 RefreshData();
@@ -90,7 +90,7 @@ namespace GiamSat.UI.Pages
                     Severity = NotificationSeverity.Error,
                     Summary = "Error",
                     Detail = ex.Message,
-                    Duration = 4000
+                    Duration = 2000
                 });
 
                 return;
@@ -139,7 +139,7 @@ namespace GiamSat.UI.Pages
                         Severity = NotificationSeverity.Error,
                         Summary = "Error",
                         Detail = "Cập nhật thất bại.",
-                        Duration = 4000
+                        Duration = 2000
                     });
                     return;
                 }
@@ -149,7 +149,7 @@ namespace GiamSat.UI.Pages
                     Severity = NotificationSeverity.Success,
                     Summary = "Tạo profile",
                     Detail = "Cập nhật thành công.",
-                    Duration = 4000
+                    Duration = 2000
                 });
 
                 RefreshData();
@@ -161,7 +161,7 @@ namespace GiamSat.UI.Pages
                     Severity = NotificationSeverity.Error,
                     Summary = "Error",
                     Detail = ex.Message,
-                    Duration = 4000
+                    Duration = 2000
                 });
                 return;
             }
@@ -190,7 +190,7 @@ namespace GiamSat.UI.Pages
                     Severity = NotificationSeverity.Error,
                     Summary = "Error",
                     Detail = ex.Message,
-                    Duration = 4000
+                    Duration = 2000
                 });
                 return;
             }
@@ -217,7 +217,7 @@ namespace GiamSat.UI.Pages
                     Severity = NotificationSeverity.Error,
                     Summary = "Error",
                     Detail = ex.Message,
-                    Duration = 4000
+                    Duration = 2000
                 });
                 return;
             }
@@ -259,7 +259,7 @@ namespace GiamSat.UI.Pages
                         Severity = NotificationSeverity.Error,
                         Summary = "Error",
                         Detail = "Cập nhật thất bại.",
-                        Duration = 4000
+                        Duration = 2000
                     });
 
                     return;
@@ -270,7 +270,7 @@ namespace GiamSat.UI.Pages
                     Severity = NotificationSeverity.Success,
                     Summary = "Success",
                     Detail = "Cập nhật thành công.",
-                    Duration = 4000
+                    Duration = 2000
                 });
 
                 RefreshData();
@@ -282,7 +282,7 @@ namespace GiamSat.UI.Pages
                     Severity = NotificationSeverity.Error,
                     Summary = "Error",
                     Detail = ex.Message,
-                    Duration = 4000
+                    Duration = 2000
                 });
                 return;
             }
@@ -309,7 +309,7 @@ namespace GiamSat.UI.Pages
                     Severity = NotificationSeverity.Error,
                     Summary = "Error",
                     Detail = ex.Message,
-                    Duration = 4000
+                    Duration = 2000
                 });
                 return;
             }

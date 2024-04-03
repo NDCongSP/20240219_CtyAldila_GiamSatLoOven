@@ -32,7 +32,7 @@ namespace GiamSat.UI.Pages
                         Severity = NotificationSeverity.Success,
                         Summary = "Successfull",
                         Detail = "Login OK",
-                        Duration = 4000
+                        Duration = 2000
                     });
                     //await InvokeAsync(StateHasChanged);
                     //StateHasChanged();
@@ -46,7 +46,7 @@ namespace GiamSat.UI.Pages
                         Severity = NotificationSeverity.Error,
                         Summary = "Error",
                         Detail = "Login fail",
-                        Duration = 4000
+                        Duration = 2000
                     });
                 }
             }
@@ -57,7 +57,7 @@ namespace GiamSat.UI.Pages
                     Severity = NotificationSeverity.Error,
                     Summary = "Error",
                     Detail = $"Login fail: {ex.Message}",
-                    Duration = 4000
+                    Duration = 2000
                 });
             }
         }

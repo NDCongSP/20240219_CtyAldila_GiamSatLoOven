@@ -43,7 +43,8 @@
                                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End"
                                              Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-mt-2">
                                     <RadzenButton Click=@(args => OnClickOffSerien(item.OvenId,item.OvenName)) Variant="Variant.Flat" Shade="Shade.Dark"
-                                                  Text="Tắt còi" Icon="volume_off" ButtonStyle="ButtonStyle.Dark" Visible=@(item.Alarm==1||item.DoorStatus==0?true:false) />
+                                                  Text="Tắt còi" Icon="volume_off" ButtonStyle="ButtonStyle.Dark"
+                                                  Visible=@((item.Alarm==1||item.DoorStatus==0)&&item.OffSerien==1?true:false) />
                                     <RadzenButton Click=@(args => OnClick(item.OvenId,item.OvenName)) Variant="Variant.Flat" Shade="Shade.Dark"
                                                   Text="Chi tiết" Icon="info" ButtonStyle="ButtonStyle.Dark" />
                                 </RadzenStack>
@@ -81,7 +82,8 @@
                                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End"
                                              Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-mt-2">
                                     <RadzenButton Click=@(args => OnClickOffSerien(item.OvenId,item.OvenName)) Variant="Variant.Flat" Shade="Shade.Dark"
-                                                  Text="Tắt còi" Icon="volume_off" ButtonStyle="ButtonStyle.Dark" Visible=@(item.Alarm==1||item.DoorStatus==0?true:false) />
+                                                  Text="Tắt còi" Icon="volume_off" ButtonStyle="ButtonStyle.Dark"
+                                                  Visible=@((item.Alarm==1||item.DoorStatus==0)&&item.OffSerien==1?true:false) />
                                     <RadzenButton Click=@(args => OnClick(item.OvenId,item.OvenName)) Variant="Variant.Flat" Shade="Shade.Dark"
                                                   Text="Chi tiết" Icon="info" ButtonStyle="ButtonStyle.Dark" />
                                 </RadzenStack>
@@ -121,7 +123,8 @@
                                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End"
                                              Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-mt-2">
                                     <RadzenButton Click=@(args => OnClickOffSerien(item.OvenId,item.OvenName)) Variant="Variant.Flat" Shade="Shade.Dark"
-                                                  Text="Tắt còi" Icon="volume_off" ButtonStyle="ButtonStyle.Dark" Visible=@(item.Alarm==1||item.DoorStatus==0?true:false) />
+                                                  Text="Tắt còi" Icon="volume_off" ButtonStyle="ButtonStyle.Dark" 
+                                                  Visible=@((item.Alarm==1||item.DoorStatus==0)&&item.OffSerien==1?true:false) />
                                     <RadzenButton Click=@(args => OnClick(item.OvenId,item.OvenName)) Variant="Variant.Flat" Shade="Shade.Dark"
                                                   Text="Chi tiết" Icon="info" ButtonStyle="ButtonStyle.Dark" />
                                 </RadzenStack>
@@ -161,7 +164,8 @@
                                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End"
                                              Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-mt-2">
                                     <RadzenButton Click=@(args => OnClickOffSerien(item.OvenId,item.OvenName)) Variant="Variant.Flat" Shade="Shade.Dark"
-                                                  Text="Tắt còi" Icon="volume_off" ButtonStyle="ButtonStyle.Dark" Visible=@(item.Alarm==1||item.DoorStatus==0?true:false) />
+                                                  Text="Tắt còi" Icon="volume_off" ButtonStyle="ButtonStyle.Dark"
+                                                  Visible=@((item.Alarm==1||item.DoorStatus==0)&&item.OffSerien==1?true:false) />
                                     <RadzenButton Click=@(args => OnClick(item.OvenId,item.OvenName)) Variant="Variant.Flat" Shade="Shade.Dark"
                                                   Text="Chi tiết" Icon="info" ButtonStyle="ButtonStyle.Dark" />
                                 </RadzenStack>

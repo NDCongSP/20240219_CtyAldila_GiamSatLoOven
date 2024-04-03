@@ -23,7 +23,7 @@ namespace GiamSat.UI.Shared
 
                 if (!res.Succeeded)
                 {
-                    _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Warning", Detail = "Data empty", Duration = 4000 });
+                    _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Warning", Detail = "Data empty", Duration = 2000 });
                     return;
                     
                 }
@@ -36,7 +36,7 @@ namespace GiamSat.UI.Shared
             }
             catch (Exception ex)
             {
-                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "error", Detail = ex.Message, Duration = 4000 });
+                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "error", Detail = ex.Message, Duration = 2000 });
                 return;
             }
         }

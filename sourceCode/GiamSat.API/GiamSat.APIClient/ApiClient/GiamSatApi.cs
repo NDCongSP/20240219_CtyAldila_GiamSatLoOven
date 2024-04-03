@@ -7002,9 +7002,9 @@ namespace GiamSat.APIClient
     public partial class RegisterModel
     {
 
-        [System.Text.Json.Serialization.JsonPropertyName("username")]
+        [System.Text.Json.Serialization.JsonPropertyName("userName")]
         [System.ComponentModel.DataAnnotations.Required]
-        public string Username { get; set; } = default!;
+        public string UserName { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("email")]
         [System.ComponentModel.DataAnnotations.Required]
@@ -7013,6 +7013,10 @@ namespace GiamSat.APIClient
         [System.Text.Json.Serialization.JsonPropertyName("password")]
         [System.ComponentModel.DataAnnotations.Required]
         public string Password { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("repeatPassword")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string RepeatPassword { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("roles")]
 

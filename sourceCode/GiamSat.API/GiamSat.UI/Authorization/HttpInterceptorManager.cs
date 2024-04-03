@@ -48,7 +48,7 @@ namespace GiamSat.UI
                         Severity = NotificationSeverity.Error,
                         Summary = "Error",
                         Detail = "Your session was expired",
-                        Duration = 4000
+                        Duration = 2000
                     });
                     await _authService.LogoutAsync();
                 }
