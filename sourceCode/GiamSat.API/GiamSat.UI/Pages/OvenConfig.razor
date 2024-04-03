@@ -18,13 +18,14 @@
                             <RadzenStack Gap="1rem">
                                 <RadzenRow AlignItems="AlignItems.Center">
                                     <RadzenColumn SizeXS=12 SizeSM="4">
-                                        <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Tên</RadzenText>
+                                        <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Tên</RadzenText>
                                         <RadzenTextBox TextStyle="TextStyle.Body1" Style="width: 100%;" @bind-Value=@_ovenInfo.Name />
                                     </RadzenColumn>
                                     <RadzenColumn SizeXS="12" SizeMD="8">
-                                        <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-0 rz-mb-0">Tag Path</RadzenText>
+                                        <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Tag Path</RadzenText>
                                         <RadzenTextBox TextStyle="TextStyle.Body1" Style="width: 100%;" Name="Path" Placeholder="Local Station /Channel/Device"
-                                                       MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Position = TooltipPosition.Top }))" @bind-Value=@_ovenInfo.Path />
+                                                       MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Position = TooltipPosition.Top }))"
+                                                       @bind-Value=@_ovenInfo.Path Disabled="true"/>
                                     </RadzenColumn>
                                 </RadzenRow>
                             </RadzenStack>

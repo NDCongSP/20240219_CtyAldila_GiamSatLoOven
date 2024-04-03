@@ -17,7 +17,8 @@ namespace GiamSat.UI.Components
         private System.Timers.Timer _timer;
 
         Radzen.Blazor.RadzenChart RadzenChart = new Radzen.Blazor.RadzenChart();
-        List<DataItem> _ovenData = new List<DataItem>();
+        List<DataItem> _chartDataSeriesTemp = new List<DataItem>();        
+        List<DataItem> _chartDataSeriesSetpoint = new List<DataItem>();
 
         protected override async Task OnInitializedAsync()
         {
@@ -81,17 +82,24 @@ namespace GiamSat.UI.Components
                     _ovenDisplayInfo = displayRealtime.FirstOrDefault(x => x.OvenId == OvenId);
                 }
 
-                if (_ovenData.Count >= GlobalVariable.ConfigSystem.ChartPointNum)
+                if (_chartDataSeriesTemp.Count >= GlobalVariable.ConfigSystem.ChartPointNum)
                 {
-                    _ovenData.RemoveAt(0);
+                    _chartDataSeriesTemp.RemoveAt(0);
+                    _chartDataSeriesSetpoint.RemoveAt(0);
                 }
 
                 string date = DateTime.Now.AddSeconds(10).ToString("yyyy-MM-dd HH:mm:ss");
 
-                _ovenData.Add(new DataItem()
+                //add data vao 2 series
+                _chartDataSeriesTemp.Add(new DataItem()
                 {
                     Date = date,
                     Temperature = _ovenDisplayInfo.Temperature
+                });
+                _chartDataSeriesSetpoint.Add(new DataItem()
+                {
+                    Date = date,
+                    Temperature = _ovenDisplayInfo.SetPoint
                 });
 
                 await RadzenChart.Reload();
