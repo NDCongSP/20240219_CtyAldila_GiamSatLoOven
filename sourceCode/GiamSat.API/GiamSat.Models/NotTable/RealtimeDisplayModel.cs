@@ -151,6 +151,6 @@ namespace GiamSat.Models
         /// <summary>
         /// Báo còi đang bật hay tắt.
         /// </summary>
-        public int OffSerien { get; set; }
+        public int SerienStatus { get; set; }
     }
 }

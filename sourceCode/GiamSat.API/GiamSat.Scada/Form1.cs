@@ -57,7 +57,9 @@ namespace GiamSat.Scada
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            MessageBox.Show("Không tắt app này!","Cảnh báo",MessageBoxButtons.OK,MessageBoxIcon.Information);
 
+            e.Cancel = true;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -534,7 +536,7 @@ namespace GiamSat.Scada
                                    )
                                 {
                                     item.Alarm = 1;
-                                    item.OffSerien = 1;
+                                    item.SerienStatus = 1;
                                     item.AlarmDescription = $"Nhiệt độ chưa đạt";
                                     easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
 
@@ -550,7 +552,7 @@ namespace GiamSat.Scada
                                     )
                                 {
                                     item.Alarm = 0;
-                                    item.OffSerien = 0;
+                                    item.SerienStatus = 0;
                                     item.AlarmDescription = null;
                                     easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
                                     item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
@@ -575,7 +577,7 @@ namespace GiamSat.Scada
                                    )
                                 {
                                     item.Alarm = 1;
-                                    item.OffSerien = 1;
+                                    item.SerienStatus = 1;
                                     item.AlarmDescription = $"Nhiệt độ chưa đạt";
                                     easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
 
@@ -591,7 +593,7 @@ namespace GiamSat.Scada
                                     )
                                 {
                                     item.Alarm = 0;
-                                    item.OffSerien = 0;
+                                    item.SerienStatus = 0;
                                     item.AlarmDescription = null;
                                     easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
                                     item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
@@ -618,7 +620,7 @@ namespace GiamSat.Scada
                                    )
                                     {
                                         item.Alarm = 1;
-                                        item.OffSerien = 1;
+                                        item.SerienStatus = 1;
                                         item.AlarmDescription = $"Nhiệt độ cao";
                                         easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
 
@@ -635,7 +637,7 @@ namespace GiamSat.Scada
                                         )
                                     {
                                         item.Alarm = 0;
-                                        item.OffSerien = 0;
+                                        item.SerienStatus = 0;
                                         item.AlarmDescription = null;
                                         easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
                                         item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
@@ -651,7 +653,7 @@ namespace GiamSat.Scada
                                    )
                                     {
                                         item.Alarm = 1;
-                                        item.OffSerien = 1;
+                                        item.SerienStatus = 1;
                                         item.AlarmDescription = $"Nhiệt độ cao";
                                         easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
 
@@ -667,7 +669,7 @@ namespace GiamSat.Scada
                                         )
                                     {
                                         item.Alarm = 0;
-                                        item.OffSerien = 0;
+                                        item.SerienStatus = 0;
                                         item.AlarmDescription = null;
                                         easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
                                         item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
@@ -683,7 +685,7 @@ namespace GiamSat.Scada
                        && item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOut) && item.AlarmFlagLastStep == true)
                 {
                     item.Alarm = 0;
-                    item.OffSerien = 0;
+                    item.SerienStatus = 0;
                     item.AlarmDescription = null;
                     easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
                     item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
@@ -697,7 +699,7 @@ namespace GiamSat.Scada
                 {
                     easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
                     c.OffSerien = 0;
-                    item.OffSerien = 0;//gui tin hieu bao bat tat coi
+                    item.SerienStatus = 0;//gui tin hieu bao bat tat coi
 
                     using (var con = GlobalVariable.GetDbConnection())
                     {
@@ -1003,18 +1005,19 @@ namespace GiamSat.Scada
                         item.Hours = (int)(step?.Hours); item.Minutes = (int)(step?.Minutes); item.Seconds = (int)(step?.Seconds);
                         item.SetPoint = (double)(step?.SetPoint);
 
-                        if (item.SetPointLastStep == 0)
-                        {
-                            item.SetPointLastStep = item.SetPoint;
-                        }
-
                         item.TempRange = Math.Round(Math.Abs((item.SetPoint - item.SetPointLastStep)), 2);
                     }
 
                     var profile = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus);
                     item.ProfileName = profile?.Name;
 
-                    if (item.CountSecondTagChange >= 2 && item.ProfileStepNumber_CurrentStatus > 0 && item.LastStepType != EnumProfileStepType.End)
+                    if (item.SetPointLastStep == 0 || (item.ProfileStepNumber_CurrentStatus == 1 && item.LastStepType != EnumProfileStepType.End))
+                    {
+                        item.SetPointLastStep = item.SetPoint;
+                    }
+
+                    if (item.CountSecondTagChange >= 2 && ((item.ProfileStepNumber_CurrentStatus > 1)))// && item.LastStepType != EnumProfileStepType.End)
+                       //|| (item.ProfileStepNumber_CurrentStatus == 1 && item.LastStepType == EnumProfileStepType.End)))
                     {
                         item.EndStep = 1;
                     }
