@@ -152,5 +152,14 @@ namespace GiamSat.Models
         /// Báo còi đang bật hay tắt.
         /// </summary>
         public int SerienStatus { get; set; }
+
+        /// <summary>
+        /// Biến dùng để check alarm trong suốt thời gian chạy profile.
+        /// </summary>
+        public DateTime BeginTimeAlarm { get; set; }
+        /// <summary>
+        /// Biến dùng để check alarm trong suốt thời gian chạy profile.
+        /// </summary>
+        public DateTime EndTimeAlarm { get; set; }
     }
 }

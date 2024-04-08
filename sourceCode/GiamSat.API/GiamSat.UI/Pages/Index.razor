@@ -11,7 +11,7 @@
         <RadzenRow Gap="1rem" JustifyContent="JustifyContent.Start">
             @foreach (var item in _displayRealtime)
             {
-                <RadzenColumn SizeXS=12 SizeSM="3">
+                <RadzenColumn SizeXS=12 SizeMD="3">
                     @if (item.ConnectionStatus == 1 && item.Alarm == 0 && item.DoorStatus == 1 && item.Status == 1)
                     {
                         <RadzenCard Varian="Varian.Filled" class="rz-background-color-info-light rz-shadow-0 rz-border-radius-4 rz-m-0">

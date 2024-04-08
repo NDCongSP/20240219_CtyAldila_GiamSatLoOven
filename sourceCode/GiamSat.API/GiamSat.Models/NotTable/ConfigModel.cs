@@ -32,17 +32,17 @@ namespace GiamSat.Models
 
         /// <summary>
         /// Thời gian để đếm nhận biết lò chạy hay dùng. Nếu giá trị Second trả về ko thay đổi sau khoảng thời gian này thì sẽ cảnh báo lò dừng.
-        /// Đơn vị (s).
+        /// Đơn vị (ms).
         /// </summary>
-        public int CountSecondStop { get; set; } = 5;//(s)
+        public int CountSecondStop { get; set; } = 5000;//(ms)
         /// <summary>
         /// Nhiệt độ sai số cọng vào thêm để alarm.
         /// </summary>
-        public int ToleranceTemp { get; set; } = 2;
+        public double ToleranceTemp { get; set; } = 2;
         /// <summary>
         /// Nhiệt độ sai số trừ vào để tắt alarm.
         /// </summary>
-        public int ToleranceTempOut { get; set; } = 1;
+        public double ToleranceTempOut { get; set; } = 1;
 
         #region cấu hình cho UI
         /// <summary>
@@ -60,6 +60,8 @@ namespace GiamSat.Models
         public bool Smooth = false;
         public bool ShowDataLabels = false;
         public bool ShowMarkers = true;
+
+        public bool ChangePassUser { get; set; } = false;
         #endregion
     }
 }

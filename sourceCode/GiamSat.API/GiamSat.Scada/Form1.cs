@@ -22,8 +22,6 @@ namespace GiamSat.Scada
 {
     public partial class Form1 : Form
     {
-        private List<FT03> _dataLog = new List<FT03>();
-        private List<FT04> _dataLogProfile = new List<FT04>();
         private List<FT05> _alarm = new List<FT05>();
         private List<FT06> _ft06 = new List<FT06>();
 
@@ -32,7 +30,6 @@ namespace GiamSat.Scada
         private List<ControlPlcModel> _controlPlcModel = new List<ControlPlcModel>();//đọc các tín hiệu điều khiển tắt đèn cảnh báo từ web.
 
         private Timer _timer = new Timer();
-        private List<int> _OvenId = new List<int>();
 
         private DateTime _startTime, _endTime, _startTimeDisplay, _endTimeDisplay;
         private double _totalTime = 0, _totalTimeDisplay = 0;
@@ -57,7 +54,7 @@ namespace GiamSat.Scada
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            MessageBox.Show("Không tắt app này!","Cảnh báo",MessageBoxButtons.OK,MessageBoxIcon.Information);
+            MessageBox.Show("Không tắt app này!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             e.Cancel = true;
         }
@@ -271,26 +268,8 @@ namespace GiamSat.Scada
 
                 _controlPlcModel = JsonConvert.DeserializeObject<List<ControlPlcModel>>(_ft06.FirstOrDefault().C000);
 
-                var index = 0;
-
                 foreach (var item in _ovensInfo)
                 {
-                    index += 1;
-
-                    _OvenId.Add(item.Id);
-
-                    _dataLog.Add(new FT03()
-                    {
-                        OvenId = item.Id,
-                        OvenName = item.Name,
-                    });
-
-                    _dataLogProfile.Add(new FT04()
-                    {
-                        OvenId = item.Id,
-                        OvenName = item.Name,
-                    });
-
                     var dt = DateTime.Now;
                     _displayRealtime.Add(new RealtimeDisplayModel()
                     {
@@ -319,6 +298,32 @@ namespace GiamSat.Scada
                 para.Add("createdDate", DateTime.Now);
                 con.Execute("sp_FT02Insert", param: para, commandType: CommandType.StoredProcedure);
                 #endregion
+            }
+        }
+
+        private void RefreshConfig()
+        {
+            using (var con = GlobalVariable.GetDbConnection())
+            {
+                var para = new DynamicParameters();
+
+                var ft01 = con.Query<FT01>("sp_FT01GetAll", commandType: CommandType.StoredProcedure).ToList();
+
+                GlobalVariable.ConfigSystem = JsonConvert.DeserializeObject<ConfigModel>(ft01.FirstOrDefault().C000);
+                _ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(ft01.FirstOrDefault().C001);
+
+                Debug.WriteLine($"Time counr second: {GlobalVariable.ConfigSystem.CountSecondStop}");
+
+                _ft06 = con.Query<FT06>("sp_FT06GetAll", commandType: CommandType.StoredProcedure).ToList();              
+
+                _controlPlcModel = JsonConvert.DeserializeObject<List<ControlPlcModel>>(_ft06.FirstOrDefault().C000);
+
+                foreach (var item in _ovensInfo)
+                {
+                    var d=_displayRealtime.FirstOrDefault(x=>x.OvenId==item.Id);
+                    d.OvenName = item.Name;
+                    d.OvenInfo = item;
+                }
             }
         }
 
@@ -459,14 +464,16 @@ namespace GiamSat.Scada
                 foreach (var item in _displayRealtime)
                 {
                     item.StatusTimeEnd = DateTime.Now;
-                    if ((item.StatusTimeEnd - item.StatusTimeBegin).TotalSeconds <= GlobalVariable.ConfigSystem.CountSecondStop && item.StatusFlag == false)
+                    if ((item.StatusTimeEnd - item.StatusTimeBegin).TotalMilliseconds <= GlobalVariable.ConfigSystem.CountSecondStop && item.StatusFlag == false)
                     {
                         item.Status = 1;//báo lò đang chạy.
                         item.ZIndex = Guid.NewGuid();
                         item.BeginTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                         item.StatusFlag = true;
+
+                        item.BeginTimeAlarm = DateTime.Now;
                     }
-                    if ((item.StatusTimeEnd - item.StatusTimeBegin).TotalSeconds > GlobalVariable.ConfigSystem.CountSecondStop && item.StatusFlag == true)
+                    if ((item.StatusTimeEnd - item.StatusTimeBegin).TotalMilliseconds > GlobalVariable.ConfigSystem.CountSecondStop && item.StatusFlag == true)
                     {
                         item.Status = 0;
                         //item.ZIndex = Guid.Empty;//được xóa khi đã log profile trạng thái dừng thành công LogProfile
@@ -487,6 +494,9 @@ namespace GiamSat.Scada
                     }
                 }
                 #endregion
+
+                //lấy các thông số config
+                RefreshConfig();
 
                 System.Threading.Thread.Sleep(100);
             }
@@ -519,75 +529,125 @@ namespace GiamSat.Scada
                 if (item.Status == 1 && item.CountSecondTagChange >= 2)
                 {
                     //Cảnh báo toàn thời gian
-                    //if (item.EndStep == 0)
+
+
+                    //rampTime tăng nhiệt
+                    if (item.SetPointLastStep < item.SetPoint)
                     {
-                        //rampTime tăng nhiệt
-                        if (item.SetPointLastStep < item.SetPoint)
+                        if (item.EndStep == 0)
                         {
-                            if (item.EndStep == 0)
+                            item.EndTimeAlarm = DateTime.Now;
+                            var tAlarm = (item.EndTimeAlarm - item.BeginTimeAlarm).TotalMinutes;
+
+                            if (tAlarm > GlobalVariable.ConfigSystem.TimeTempChange)
                             {
 
-                            }
-                            else//so xánh cảu bước cũ, khi vừa kết thúc bước, chuyển qua bước khác.
-                            {
-                                if (item.Temperature < (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
-                                   //|| item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp))
-                                   && item.AlarmFlagLastStep == false
-                                   )
-                                {
-                                    item.Alarm = 1;
-                                    item.SerienStatus = 1;
-                                    item.AlarmDescription = $"Nhiệt độ chưa đạt";
-                                    easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
-
-                                    //log DB alarm
-                                    var p = new DynamicParameters();
-
-                                    item.AlarmFlagLastStep = true;
-                                    Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                                }
-                                else if (item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOut)
-                                    // && item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
-                                    //&& item.AlarmFlagLastStep == true
-                                    )
-                                {
-                                    item.Alarm = 0;
-                                    item.SerienStatus = 0;
-                                    item.AlarmDescription = null;
-                                    easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
-                                    item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
-                                    item.AlarmFlagLastStep = false;
-
-                                    Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                                }
                             }
                         }
-                        //soak-ngâm
-                        else if (item.SetPointLastStep == item.SetPoint)
+                        else//so xánh cảu bước cũ, khi vừa kết thúc bước, chuyển qua bước khác.
                         {
-                            if (item.EndStep == 0)
+                            if (item.Temperature < (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
+                               //|| item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp))
+                               && item.AlarmFlagLastStep == false
+                               )
                             {
+                                item.Alarm = 1;
+                                item.SerienStatus = 1;
+                                item.AlarmDescription = $"Nhiệt độ chưa đạt";
+                                easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
 
+                                //log DB alarm
+                                var p = new DynamicParameters();
+
+                                item.AlarmFlagLastStep = true;
+                                Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                             }
-                            else//so xánh cảu bước cũ, khi vừa kết thúc bước, chuyển qua bước khác.
+                            else if (item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOut)
+                                // && item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
+                                //&& item.AlarmFlagLastStep == true
+                                )
                             {
-                                if (item.Temperature < (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
-                                   //|| item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp))
-                                   && item.AlarmFlagLastStep == false
-                                   )
+                                item.Alarm = 0;
+                                item.SerienStatus = 0;
+                                item.AlarmDescription = null;
+                                easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
+                                item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
+                                item.AlarmFlagLastStep = false;
+
+                                Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
+                            }
+                        }
+                    }
+                    //soak-ngâm
+                    else if (item.SetPointLastStep == item.SetPoint)
+                    {
+                        if (item.EndStep == 0)
+                        {
+
+                        }
+                        else//so xánh cảu bước cũ, khi vừa kết thúc bước, chuyển qua bước khác.
+                        {
+                            if (item.Temperature < (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
+                               //|| item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp))
+                               && item.AlarmFlagLastStep == false
+                               )
+                            {
+                                item.Alarm = 1;
+                                item.SerienStatus = 1;
+                                item.AlarmDescription = $"Nhiệt độ chưa đạt";
+                                easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
+
+                                //log DB alarm
+                                var p = new DynamicParameters();
+
+                                item.AlarmFlagLastStep = true;
+                                Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
+                            }
+                            else if (item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOut)
+                                //&& item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
+                                //&& item.AlarmFlagLastStep == true
+                                )
+                            {
+                                item.Alarm = 0;
+                                item.SerienStatus = 0;
+                                item.AlarmDescription = null;
+                                easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
+                                item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
+                                item.AlarmFlagLastStep = false;
+
+                                Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
+                            }
+                        }
+                    }
+                    //rampTime giảm nhiệt
+                    else if (item.SetPointLastStep > item.SetPoint)
+                    {
+                        if (item.EndStep == 0)
+                        {
+
+                        }
+                        else
+                        {
+                            if (item.StepName != EnumProfileStepType.End)
+                            {
+                                if (item.Temperature > (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
+                               //|| item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp))
+                               && item.AlarmFlagLastStep == false
+                               )
                                 {
                                     item.Alarm = 1;
                                     item.SerienStatus = 1;
-                                    item.AlarmDescription = $"Nhiệt độ chưa đạt";
+                                    item.AlarmDescription = $"Nhiệt độ cao";
                                     easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
 
                                     //log DB alarm
                                     var p = new DynamicParameters();
 
+
                                     item.AlarmFlagLastStep = true;
                                     Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                                 }
-                                else if (item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOut)
+                                else if (item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOut)
                                     //&& item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
                                     //&& item.AlarmFlagLastStep == true
                                     )
@@ -598,84 +658,39 @@ namespace GiamSat.Scada
                                     easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
                                     item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
                                     item.AlarmFlagLastStep = false;
-
                                     Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                                 }
                             }
-                        }
-                        //rampTime giảm nhiệt
-                        else if (item.SetPointLastStep > item.SetPoint)
-                        {
-                            if (item.EndStep == 0)
-                            {
-
-                            }
                             else
                             {
-                                if (item.StepName != EnumProfileStepType.End)
+                                if (item.Temperature > (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
+                               //|| item.Temperature <= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp))
+                               && item.AlarmFlagLastStep == false
+                               )
                                 {
-                                    if (item.Temperature > (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
-                                   //|| item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp))
-                                   && item.AlarmFlagLastStep == false
-                                   )
-                                    {
-                                        item.Alarm = 1;
-                                        item.SerienStatus = 1;
-                                        item.AlarmDescription = $"Nhiệt độ cao";
-                                        easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
+                                    item.Alarm = 1;
+                                    item.SerienStatus = 1;
+                                    item.AlarmDescription = $"Nhiệt độ cao";
+                                    easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
 
-                                        //log DB alarm
-                                        var p = new DynamicParameters();
+                                    //log DB alarm
+                                    var p = new DynamicParameters();
 
-
-                                        item.AlarmFlagLastStep = true;
-                                        Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                                    }
-                                    else if (item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOut)
-                                        //&& item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
-                                        //&& item.AlarmFlagLastStep == true
-                                        )
-                                    {
-                                        item.Alarm = 0;
-                                        item.SerienStatus = 0;
-                                        item.AlarmDescription = null;
-                                        easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
-                                        item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
-                                        item.AlarmFlagLastStep = false;
-                                        Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                                    }
+                                    item.AlarmFlagLastStep = true;
+                                    Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                                 }
-                                else
+                                else if (item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOut)
+                                    //&& item.Temperature > (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
+                                    //&& item.AlarmFlagLastStep == true
+                                    )
                                 {
-                                    if (item.Temperature > (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
-                                   //|| item.Temperature <= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp))
-                                   && item.AlarmFlagLastStep == false
-                                   )
-                                    {
-                                        item.Alarm = 1;
-                                        item.SerienStatus = 1;
-                                        item.AlarmDescription = $"Nhiệt độ cao";
-                                        easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
-
-                                        //log DB alarm
-                                        var p = new DynamicParameters();
-
-                                        item.AlarmFlagLastStep = true;
-                                        Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                                    }
-                                    else if (item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOut)
-                                        //&& item.Temperature > (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
-                                        //&& item.AlarmFlagLastStep == true
-                                        )
-                                    {
-                                        item.Alarm = 0;
-                                        item.SerienStatus = 0;
-                                        item.AlarmDescription = null;
-                                        easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
-                                        item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
-                                        item.AlarmFlagLastStep = false;
-                                        Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                                    }
+                                    item.Alarm = 0;
+                                    item.SerienStatus = 0;
+                                    item.AlarmDescription = null;
+                                    easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
+                                    item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
+                                    item.AlarmFlagLastStep = false;
+                                    Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                                 }
                             }
                         }
@@ -852,8 +867,12 @@ namespace GiamSat.Scada
                     if (item.ConnectionStatus == 0)
                     {
                         item.AlarmDescription = "Mất kết nối đến lò";
+                        //easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL", "1", WritePiority.High);
                     }
-                    else item.AlarmDescription = null;
+                    else
+                    { item.AlarmDescription = null;
+                        //easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL", "1", WritePiority.High);
+                    }
                     return;
                 }
             }
@@ -1017,7 +1036,7 @@ namespace GiamSat.Scada
                     }
 
                     if (item.CountSecondTagChange >= 2 && ((item.ProfileStepNumber_CurrentStatus > 1)))// && item.LastStepType != EnumProfileStepType.End)
-                       //|| (item.ProfileStepNumber_CurrentStatus == 1 && item.LastStepType == EnumProfileStepType.End)))
+                                                                                                       //|| (item.ProfileStepNumber_CurrentStatus == 1 && item.LastStepType == EnumProfileStepType.End)))
                     {
                         item.EndStep = 1;
                     }
