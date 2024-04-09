@@ -16,7 +16,14 @@
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <NotAuthorized>
-                    <p role="alert">Sorry, You do not have authorized.</p>
+                    @if (context.User.Identity == null || !context.User.Identity.IsAuthenticated)
+                    {
+                        <GiamSat.UI.Components.RedirectToLogin />
+                    }
+                    else
+                    {
+                        <p role="alert">Sorry, You do not have authorized.</p>
+                    }
                 </NotAuthorized>
             </AuthorizeRouteView>
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />

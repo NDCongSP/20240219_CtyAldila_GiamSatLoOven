@@ -27,6 +27,7 @@ var config = builder.Configuration;
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AutoRegisterInterfaces<IApiService>();
 
+
 builder.Services.AddAuthorizationCore(options =>
 {
     options.AddPolicy(UserRoles.Admin, policy =>

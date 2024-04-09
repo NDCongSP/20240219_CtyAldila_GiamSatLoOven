@@ -37,6 +37,12 @@ namespace GiamSat.UI.Pages
         {
             try
             {
+                //var authState = await _authSerivce.GetAuthenticationStateAsync();
+                //if (authState.User.Identity == null || !authState.User.Identity.IsAuthenticated)
+                //{
+                //    return;
+                //}
+
                 #region Get configsystem
                 var resC = await _ft01Client.GetAllAsync();
                 if (resC != null)
@@ -138,22 +144,26 @@ namespace GiamSat.UI.Pages
         {
             try
             {
-                var res = await _ft02Client.GetAllAsync();
-
-                if (res.Succeeded)
+                //var authState = await _authSerivce.GetAuthenticationStateAsync();
+                //if (authState.User.Identity != null && authState.User.Identity.IsAuthenticated)
                 {
-                    var _dataFromDB = res.Data.ToList();
+                    var res = await _ft02Client.GetAllAsync();
 
-                    if (_dataFromDB == null && _dataFromDB.Count <= 0)
+                    if (res.Succeeded)
                     {
-                        _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Warning", Detail = "Data empty", Duration = 2000 });
-                        return;
+                        var _dataFromDB = res.Data.ToList();
+
+                        if (_dataFromDB == null && _dataFromDB.Count <= 0)
+                        {
+                            _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Warning", Detail = "Data empty", Duration = 2000 });
+                            return;
+                        }
+
+                        _displayRealtime = JsonConvert.DeserializeObject<RealtimeDisplays>(_dataFromDB.FirstOrDefault().C000);
                     }
 
-                    _displayRealtime = JsonConvert.DeserializeObject<RealtimeDisplays>(_dataFromDB.FirstOrDefault().C000);
+                    StateHasChanged(); // NOTE: MUST CALL StateHasChanged() BECAUSE THIS IS TRIGGERED BY A TIMER INSTEAD OF A USER EVENT
                 }
-
-                StateHasChanged(); // NOTE: MUST CALL StateHasChanged() BECAUSE THIS IS TRIGGERED BY A TIMER INSTEAD OF A USER EVENT
             }
             catch { }
         }

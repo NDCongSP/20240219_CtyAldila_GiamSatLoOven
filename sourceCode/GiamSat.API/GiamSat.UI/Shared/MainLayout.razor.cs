@@ -23,6 +23,12 @@ namespace GiamSat.UI.Shared
         {
             try
             {
+                var authState = await _authSerivce.GetAuthenticationStateAsync();
+                if (authState.User.Identity == null || !authState.User.Identity.IsAuthenticated)
+                {
+                    return;
+                }
+
                 _httpInterceptorManager.RegisterEvent();
 
                 #region đọc thông số để có cho phép user đổi pass hay ko
@@ -44,7 +50,7 @@ namespace GiamSat.UI.Shared
                 _changePass = c.ChangePassUser;
                 #endregion
 
-                var authState = await _authSerivce.GetAuthenticationStateAsync();
+                
                 GlobalVariable.UserName = authState.User.Identity.Name;
 
                 //var t = authState.User.FindFirst("testabc").Value;
