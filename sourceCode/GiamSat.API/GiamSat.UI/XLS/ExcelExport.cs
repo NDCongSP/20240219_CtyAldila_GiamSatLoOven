@@ -4,6 +4,7 @@ using GiamSat.APIClient;
 using GiamSat.Models;
 using MoreLinq;
 using Newtonsoft.Json;
+using System.Drawing;
 
 namespace GiamSat.UI
 {
@@ -30,6 +31,7 @@ namespace GiamSat.UI
                     ProfileName = detail.ProfileName,
                     StepName = detail.StepName.ToString(),
                     AlarmDescription = detail?.AlarmDescription,
+                    SetPoint = detail?.SetPoint,
                 });
             }
 
@@ -50,12 +52,14 @@ namespace GiamSat.UI
 
                 ws.Range(1, 1, 1, 8).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center)
                 .Alignment.SetVertical(XLAlignmentVerticalValues.Center)
-                .Font.SetFontSize(15).Font.SetBold(true);
+                .Font.SetFontSize(15).Font.SetBold(true)
+                ;
 
                 ws.Range(2, 1, 2, 8).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center)
                .Alignment.SetVertical(XLAlignmentVerticalValues.Center);
 
                 ws.Cell(1, 1).Value = "REPORT";
+                ws.Cell(1, 1).Style.Fill.BackgroundColor = XLColor.Orange;
                 ws.Cell(2, 1).Value = $"Thời gian: {dateQuery}";
 
                 ws.Cell(3, 1).Value = "Thời gian";
@@ -68,10 +72,13 @@ namespace GiamSat.UI
                 ws.Cell(3, 8).Value = "Cảnh báo";
 
                 ws.Range(3, 1, 3, 8).SetAutoFilter(true);
+                ws.Range(3, 1, 3, 8).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
                 // Fill a cell with a date
-                var wRange = ws.Range($"A3:A{data.Count + 3}");
-                wRange.Style.DateFormat.Format = "yyyy-MMM-dd HH:mm:ss";
+                ws.Range($"A3:A{data.Count + 3}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left)
+                                                   .Alignment.SetVertical(XLAlignmentVerticalValues.Center)
+                                                   .DateFormat.Format = "yyyy-MM-dd HH:mm:ss";
+
                 ws.Range($"A3:H{data.Count + 3}").Style.Border.SetInsideBorder(XLBorderStyleValues.Thin)
                                        .Border.SetOutsideBorder(XLBorderStyleValues.Thin);
 
@@ -91,6 +98,8 @@ namespace GiamSat.UI
 
                     row += 1;
                 }
+
+                ws.Columns().AdjustToContents();//Adjust Row Height and Column Width to Contents
 
                 var bytes = new byte[0];
                 using (var ms = new MemoryStream())
@@ -151,7 +160,7 @@ namespace GiamSat.UI
                     detail = JsonConvert.DeserializeObject<Models.RealtimeDisplayModel>(item.Details);
                 }
                 // The apostrophe is to force ClosedXML to treat the date as a string
-                ws.Cell(row + 4, 1).Value = item.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss");
+                ws.Cell(row + 4, 1).Value = item.CreatedDate;
                 ws.Cell(row + 4, 2).Value = item.OvenName;
                 ws.Cell(row + 4, 3).Value = item.Setpoint;
                 ws.Cell(row + 4, 4).Value = item.Temperature;

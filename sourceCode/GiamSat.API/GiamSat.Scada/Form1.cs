@@ -857,6 +857,8 @@ namespace GiamSat.Scada
         private void Temperature_QualityChanged(object sender, TagQualityChangedEventArgs e)
         {
             var path = e.Tag.Parent.Path;
+            var deviceName = e.Tag.Parent.Name;
+            var al = deviceName.Substring(4);
 
             foreach (var item in _displayRealtime)
             {
@@ -867,11 +869,11 @@ namespace GiamSat.Scada
                     if (item.ConnectionStatus == 0)
                     {
                         item.AlarmDescription = "Mất kết nối đến lò";
-                        //easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL", "1", WritePiority.High);
+                        easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{al}", "1", WritePiority.High);
                     }
                     else
                     { item.AlarmDescription = null;
-                        //easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL", "1", WritePiority.High);
+                        easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{al}", "0", WritePiority.High);
                     }
                     return;
                 }

@@ -42,6 +42,7 @@ namespace GiamSat.API
             //GlobalVariable.ConString = EncodeMD5.DecryptString(Configuration.GetConnectionString("ConnStr"), "PTAut0m@t!0n30!)@)20");
             GlobalVariable.ConString = Configuration.GetConnectionString("ConnStr");
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(GlobalVariable.ConString));
+            //_context.Database.SetCommandTimeout(TimeSpan.FromSeconds(300));
 
             #region khoi tao data
             //var c = new ConfigModel()
@@ -236,6 +237,25 @@ namespace GiamSat.API
                     Type = SecuritySchemeType.Http,
                     Scheme = "Bearer",
                 });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                  {
+                    {
+                      new OpenApiSecurityScheme
+                      {
+                        Reference = new OpenApiReference
+                          {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                          },
+                          Scheme = "Bearer",
+                          Name = "Bearer",
+                          In = ParameterLocation.Header,
+
+                        },
+                        new List<string>()
+                      }
+                    });
             });
 
             // Allow arbitrary client browser apps to access the API.
@@ -371,7 +391,7 @@ namespace GiamSat.API
             #endregion
 
             #region Control PLC
-           
+
             #endregion
         }
     }

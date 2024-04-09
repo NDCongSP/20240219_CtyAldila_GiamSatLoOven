@@ -55,6 +55,8 @@ namespace GiamSat.UI.Pages
         [Inject]
         public IHttpClientFactory _client { get; set; }
 
+        bool _showProgressBar=false;
+
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
@@ -131,6 +133,8 @@ namespace GiamSat.UI.Pages
                     _filterModelDataLog.GetAll = false;
                 }
 
+                _showProgressBar = true;
+
                 var res = await _ft03Client.GetFilterAsync(_filterModelDataLog);
 
                 if (!res.Succeeded)
@@ -142,13 +146,16 @@ namespace GiamSat.UI.Pages
                         Detail = "Truy cập API lỗi.",
                         Duration = 2000
                     });
+
+                    _showProgressBar = false;
+                    InvokeAsync(StateHasChanged);
                     return;
                 }
 
                 _dataReport = res.Data.ToList();
 
+                _showProgressBar = false;
                 InvokeAsync(StateHasChanged);
-
             }
             catch (Exception ex)
             {
@@ -159,9 +166,11 @@ namespace GiamSat.UI.Pages
                     Detail = ex.StackTrace,
                     Duration = 2000
                 });
+
+                _showProgressBar = false;
+                InvokeAsync(StateHasChanged);
                 return;
             }
-
         }
 
         async void QueryDataProfile()
@@ -203,6 +212,8 @@ namespace GiamSat.UI.Pages
                     _filterProfileLog.GetAll = false;
                 }
 
+                _showProgressBar = true;
+
                 var res = await _ft04Client.GetFilterAsync(_filterProfileLog);
 
                 if (!res.Succeeded)
@@ -214,6 +225,8 @@ namespace GiamSat.UI.Pages
                         Detail = "Truy cập API lỗi.",
                         Duration = 2000
                     });
+                    _showProgressBar = false;
+                    InvokeAsync(StateHasChanged);
                     return;
                 }
 
@@ -222,6 +235,8 @@ namespace GiamSat.UI.Pages
                 UpdateDataSeriesChart(_dataProfile.OrderBy(x => x.CreatedDate).ToList());
 
                 await RadzenChart.Reload();
+                
+                _showProgressBar= false;
 
                 InvokeAsync(StateHasChanged);
             }
@@ -234,15 +249,18 @@ namespace GiamSat.UI.Pages
                     Detail = ex.StackTrace,
                     Duration = 2000
                 });
+                _showProgressBar = false;
+
+                InvokeAsync(StateHasChanged);
                 return;
             }
-
         }
 
         async Task ExportProfileAsync()
         {
             try
             {
+                _showProgressBar = true;
                 var xls = new Excel();
                 //await xls.GenerateExcel(_js, Elements, "export.xlsx");
 
@@ -251,6 +269,9 @@ namespace GiamSat.UI.Pages
 
                 await xls.TemplateOnExistingFileAsync(_client, _js, _dataProfile, @"templateXLS\TemplateReport.xlsx"
                                     , $"{_filterProfileLog.FromDate} đến {_filterProfileLog.ToDate}", $"{DateTime.Now.ToString("yyyyMMdd_HHmmss")}_ReportRunProfile.xlsx");
+
+                _showProgressBar = false;
+                InvokeAsync(StateHasChanged);
             }
             catch (Exception ex)
             {
@@ -262,6 +283,8 @@ namespace GiamSat.UI.Pages
                     Detail = ex.StackTrace,
                     Duration = 3000
                 });
+                _showProgressBar = false;
+                InvokeAsync(StateHasChanged);
                 return;
             }
         }
@@ -270,6 +293,7 @@ namespace GiamSat.UI.Pages
         {
             try
             {
+                _showProgressBar= true;
                 var xls = new Excel();
                 //await xls.GenerateExcel(_js, Elements, "export.xlsx");
 
@@ -278,6 +302,9 @@ namespace GiamSat.UI.Pages
 
                 await xls.GenerateExcel(_js, _dataReport, $"{DateTime.Now.ToString("yyyyMMdd_HHmmss")}_ReportDataLog.xlsx"
                     , $"{_filterModelDataLog.FromDate} đến {_filterModelDataLog.ToDate}");
+
+                _showProgressBar = false;
+                InvokeAsync(StateHasChanged);
             }
             catch (Exception ex)
             {
@@ -289,6 +316,9 @@ namespace GiamSat.UI.Pages
                     Detail = ex.StackTrace,
                     Duration = 3000
                 });
+
+                _showProgressBar = false;
+                InvokeAsync(StateHasChanged);
                 return;
             }
         }
