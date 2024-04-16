@@ -20,7 +20,7 @@ namespace GiamSat.Models
 
         public int OvenId { get; set; }
         public string? OvenName { get; set; }
-        public double? Temperature { get; set; } = 0;
+        public double Temperature { get; set; } = 0;
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
         public DateTime CreatedDate { get; set; } = DateTime.Now;

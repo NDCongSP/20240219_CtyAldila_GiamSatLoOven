@@ -2602,8 +2602,7 @@
           },
           "temperature": {
             "type": "number",
-            "format": "double",
-            "nullable": true
+            "format": "double"
           },
           "createdDate": {
             "type": "string",
@@ -3509,5 +3508,10 @@
         "scheme": "Bearer"
       }
     }
-  }
+  },
+  "security": [
+    {
+      "Bearer": []
+    }
+  ]
 }

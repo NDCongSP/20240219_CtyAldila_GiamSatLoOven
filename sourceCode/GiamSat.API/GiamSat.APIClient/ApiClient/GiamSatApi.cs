@@ -6453,7 +6453,7 @@ namespace GiamSat.APIClient
         [System.Text.Json.Serialization.JsonPropertyName("temperature")]
 
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
-        public double? Temperature { get; set; } = default!;
+        public double Temperature { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("createdDate")]
 

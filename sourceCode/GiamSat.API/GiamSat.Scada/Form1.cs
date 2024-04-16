@@ -530,7 +530,6 @@ namespace GiamSat.Scada
                 {
                     //Cảnh báo toàn thời gian
 
-
                     //rampTime tăng nhiệt
                     if (item.SetPointLastStep < item.SetPoint)
                     {

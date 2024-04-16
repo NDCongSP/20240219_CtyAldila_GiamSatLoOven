@@ -64,13 +64,15 @@
                     </RadzenRow>
                     <RadzenRow>
                         <RadzenColumn SizeXS="12" SizeSM="12">
-                            <RadzenChart @ref="RadzenChart" class="chart ">
-                                <RadzenLineSeries Smooth="@GlobalVariable.ConfigSystem.Smooth" Data="@_chartDataSeriesTemp" CategoryProperty="Date" Title="NĐ đo" LineType="LineType.Dashed" ValueProperty="Temperature">
-                                    <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Circle" />
+                            <RadzenChart @ref="RadzenChartProfifle" class="chart ">
+                                <RadzenLineSeries Smooth="@GlobalVariable.ConfigSystem.Smooth" Data="@_chartDataSeriesTempProfile" CategoryProperty="Date" Title="NĐ đo"
+                                                  LineType="LineType.Dashed" ValueProperty="Temperature" StrokeWidth="1">
+                                    <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Circle" Size="3" />
                                     <RadzenSeriesDataLabels Visible="false" />
                                 </RadzenLineSeries>
-                                <RadzenLineSeries Smooth="@GlobalVariable.ConfigSystem.Smooth" Data="@_chartDataSeriesSetpoint" CategoryProperty="Date" Title="NĐ đặt" LineType="LineType.Dashed" ValueProperty="Temperature">
-                                    <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Circle" />
+                                <RadzenLineSeries Smooth="@GlobalVariable.ConfigSystem.Smooth" Data="@_chartDataSeriesSetpointProfile" CategoryProperty="Date" Title="NĐ đặt"
+                                                  LineType="LineType.Dashed" ValueProperty="Temperature" StrokeWidth="1">
+                                    <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Circle" Size="3" />
                                     <RadzenSeriesDataLabels Visible="false" />
                                 </RadzenLineSeries>
 
@@ -163,7 +165,37 @@
                             </RadzenStack>
                         </RadzenColumn>
                     </RadzenRow>
-                    <RadzenRow class="rz-mt-2">
+                    <RadzenRow>
+                        <RadzenColumn SizeXS="12" SizeSM="12">
+                            <RadzenChart @ref="RadzenChartDataLog" class="chart">
+                                <RadzenLineSeries Smooth="@GlobalVariable.ConfigSystem.Smooth" Data="@_chartDataSeriesTempDataLog" CategoryProperty="Date" Title="NĐ đo"
+                                                  LineType="LineType.Dashed" ValueProperty="Temperature" StrokeWidth="1">
+                                    <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Circle" Size="3" />
+                                    <RadzenSeriesDataLabels Visible="false" />
+                                </RadzenLineSeries>
+                                <RadzenLineSeries Smooth="@GlobalVariable.ConfigSystem.Smooth" Data="@_chartDataSeriesSetpointDataLog" CategoryProperty="Date" Title="NĐ đặt"
+                                                  LineType="LineType.Dashed" ValueProperty="Temperature" StrokeWidth="1">
+                                    <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Circle" Size="3" />
+                                    <RadzenSeriesDataLabels Visible="false" />
+                                </RadzenLineSeries>
+
+                                <RadzenCategoryAxis Padding="20" Formatter="@FormatAsX">
+                                    <RadzenGridLines Visible="true" />
+                                    <RadzenAxisTitle Text="Thời gian" />
+                                    <RadzenTicks>
+                                        <Template>
+                                            <text class="rz-tick-text" style="text-anchor: start; transform: translate(@(context.X)px, @(context.Y + 100)px) rotate(-45deg); font-size:small">@context.Value</text>
+                                        </Template>
+                                    </RadzenTicks>
+                                </RadzenCategoryAxis>
+                                <RadzenValueAxis Formatter="@FormatAsY">
+                                    <RadzenGridLines Visible="true" />
+                                    <RadzenAxisTitle Text="Nhiệt độ (oC)" />
+                                </RadzenValueAxis>
+                            </RadzenChart>
+                        </RadzenColumn>
+                    </RadzenRow>
+                    <RadzenRow class="rz-mt-12">
                         <RadzenColumn SizeXS="12" SizeSM="12">
                             <RadzenDataGrid @ref="_dataReportGrid" Data="_dataReport" TItem="FT03"
                                             AllowFiltering="true" FilterPopupRenderMode="PopupRenderMode.OnDemand"

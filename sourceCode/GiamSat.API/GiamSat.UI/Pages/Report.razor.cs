@@ -32,12 +32,17 @@ namespace GiamSat.UI.Pages
             ToDate = DateTime.Now,
             OvenId = 0
         };
+
+        Radzen.Blazor.RadzenChart RadzenChartDataLog = new Radzen.Blazor.RadzenChart();
+        List<DataItem> _chartDataSeriesTempDataLog = new List<DataItem>();
+        List<DataItem> _chartDataSeriesSetpointDataLog = new List<DataItem>();
+
         OvensInfo _ovensInfo;
 
         List<APIClient.FT04> _dataProfile = new List<APIClient.FT04>();
-        Radzen.Blazor.RadzenChart RadzenChart = new Radzen.Blazor.RadzenChart();
-        List<DataItem> _chartDataSeriesTemp = new List<DataItem>();
-        List<DataItem> _chartDataSeriesSetpoint = new List<DataItem>();
+        Radzen.Blazor.RadzenChart RadzenChartProfifle = new Radzen.Blazor.RadzenChart();
+        List<DataItem> _chartDataSeriesTempProfile = new List<DataItem>();
+        List<DataItem> _chartDataSeriesSetpointProfile = new List<DataItem>();
         APIClient.FilterModel _filterProfileLog = new APIClient.FilterModel()
         {
             GetAll = false,
@@ -55,7 +60,7 @@ namespace GiamSat.UI.Pages
         [Inject]
         public IHttpClientFactory _client { get; set; }
 
-        bool _showProgressBar=false;
+        bool _showProgressBar = false;
 
         protected override async Task OnInitializedAsync()
         {
@@ -151,8 +156,18 @@ namespace GiamSat.UI.Pages
                     InvokeAsync(StateHasChanged);
                     return;
                 }
+                _dataReport = null;
+                _dataReport = new List<APIClient.FT03>();
+                _chartDataSeriesTempDataLog = null;
+                _chartDataSeriesTempDataLog = new List<DataItem>();
+                _chartDataSeriesSetpointDataLog = null;
+                _chartDataSeriesSetpointDataLog = new List<DataItem>();
 
                 _dataReport = res.Data.ToList();
+
+                UpdateDataSeriesChartDataLog(_dataReport.OrderBy(x => x.CreatedDate).ToList(), _filterModelDataLog.GetAll);
+
+                await RadzenChartDataLog.Reload();
 
                 _showProgressBar = false;
                 InvokeAsync(StateHasChanged);
@@ -191,10 +206,10 @@ namespace GiamSat.UI.Pages
 
                 _dataProfile = null;
                 _dataProfile = new List<APIClient.FT04>();
-                _chartDataSeriesTemp = null;
-                _chartDataSeriesTemp = new List<DataItem>();
-                _chartDataSeriesSetpoint = null;
-                _chartDataSeriesSetpoint = new List<DataItem>();
+                _chartDataSeriesTempProfile = null;
+                _chartDataSeriesTempProfile = new List<DataItem>();
+                _chartDataSeriesSetpointProfile = null;
+                _chartDataSeriesSetpointProfile = new List<DataItem>();
 
                 if (_filterProfileLog.OvenId > _ovensInfo.Count)
                 {
@@ -232,11 +247,11 @@ namespace GiamSat.UI.Pages
 
                 _dataProfile = res.Data.ToList();
 
-                UpdateDataSeriesChart(_dataProfile.OrderBy(x => x.CreatedDate).ToList());
+                UpdateDataSeriesChartProfile(_dataProfile.OrderBy(x => x.CreatedDate).ToList());
 
-                await RadzenChart.Reload();
-                
-                _showProgressBar= false;
+                await RadzenChartProfifle.Reload();
+
+                _showProgressBar = false;
 
                 InvokeAsync(StateHasChanged);
             }
@@ -267,7 +282,7 @@ namespace GiamSat.UI.Pages
                 //Stream streamTemplate = await _client.CreateClient("local").GetStreamAsync("templateXLS/TemplateReport.xlsx");
                 //await xls.UseTemplate(_js, streamTemplate, Elements, "BaoCao.xlsx");
 
-                await xls.TemplateOnExistingFileAsync(_client, _js, _dataProfile, @"templateXLS\TemplateReport.xlsx"
+                await xls.TemplateOnExistingFileAsync(_client, _js, _dataProfile.OrderBy(x => x.CreatedDate).ToList(), @"templateXLS\TemplateReport.xlsx"
                                     , $"{_filterProfileLog.FromDate} đến {_filterProfileLog.ToDate}", $"{DateTime.Now.ToString("yyyyMMdd_HHmmss")}_ReportRunProfile.xlsx");
 
                 _showProgressBar = false;
@@ -293,14 +308,14 @@ namespace GiamSat.UI.Pages
         {
             try
             {
-                _showProgressBar= true;
+                _showProgressBar = true;
                 var xls = new Excel();
                 //await xls.GenerateExcel(_js, Elements, "export.xlsx");
 
                 //Stream streamTemplate = await _client.CreateClient("local").GetStreamAsync("templateXLS/TemplateReport.xlsx");
                 //await xls.UseTemplate(_js, streamTemplate, Elements, "BaoCao.xlsx");
 
-                await xls.GenerateExcel(_js, _dataReport, $"{DateTime.Now.ToString("yyyyMMdd_HHmmss")}_ReportDataLog.xlsx"
+                await xls.GenerateExcel(_js, _dataReport.OrderBy(x => x.CreatedDate).ToList(), $"{DateTime.Now.ToString("yyyyMMdd_HHmmss")}_ReportDataLog.xlsx"
                     , $"{_filterModelDataLog.FromDate} đến {_filterModelDataLog.ToDate}");
 
                 _showProgressBar = false;
@@ -347,19 +362,48 @@ namespace GiamSat.UI.Pages
             return string.Empty;
         }
 
-        void UpdateDataSeriesChart(List<APIClient.FT04> data)
+        void UpdateDataSeriesChartProfile(List<APIClient.FT04> data)
         {
             foreach (var item in data)
             {
-                _chartDataSeriesTemp.Add(new DataItem()
+                _chartDataSeriesTempProfile.Add(new DataItem()
                 {
                     Temperature = item.Temperature,
                     Date = item.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss")
                 });
 
-                _chartDataSeriesSetpoint.Add(new DataItem
+                _chartDataSeriesSetpointProfile.Add(new DataItem
                 {
                     Temperature = item.Setpoint,
+                    Date = item.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss")
+                });
+            }
+        }
+
+        /// <summary>
+        /// Tao series cho chart.
+        /// </summary>
+        /// <param name="data">data log.</param>
+        /// <param name="filterMode">filter mode. false-1 lo; true-All.</param>
+        void UpdateDataSeriesChartDataLog(List<APIClient.FT03> data, bool filterMode)
+        {
+            foreach (var item in data)
+            {
+                Models.RealtimeDisplayModel detail = new Models.RealtimeDisplayModel();
+                if (!string.IsNullOrEmpty(item.Details))
+                {
+                    detail = JsonConvert.DeserializeObject<Models.RealtimeDisplayModel>(item.Details);
+                }
+
+                _chartDataSeriesTempDataLog.Add(new DataItem()
+                {
+                    Temperature = item.Temperature,
+                    Date = item.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss")
+                });
+
+                _chartDataSeriesSetpointDataLog.Add(new DataItem
+                {
+                    Temperature = detail != null ? detail.SetPoint : 0,
                     Date = item.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss")
                 });
             }
