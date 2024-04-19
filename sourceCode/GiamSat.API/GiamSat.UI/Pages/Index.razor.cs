@@ -20,6 +20,8 @@ namespace GiamSat.UI.Pages
 
         private System.Timers.Timer _timer;
 
+        string _styleCard = "rz-background-color-info-light rz-shadow-0 rz-border-radius-4 rz-m-0";
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             //if (firstRender)

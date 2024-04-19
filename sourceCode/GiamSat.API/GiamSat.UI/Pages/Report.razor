@@ -66,13 +66,13 @@
                         <RadzenColumn SizeXS="12" SizeSM="12">
                             <RadzenChart @ref="RadzenChartProfifle" class="chart ">
                                 <RadzenLineSeries Smooth="@GlobalVariable.ConfigSystem.Smooth" Data="@_chartDataSeriesTempProfile" CategoryProperty="Date" Title="NĐ đo"
-                                                  LineType="LineType.Dashed" ValueProperty="Temperature" StrokeWidth="1">
-                                    <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Circle" Size="3" />
+                                                  LineType="LineType.Dashed" ValueProperty="Temperature">
+                                    <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Circle"/>
                                     <RadzenSeriesDataLabels Visible="false" />
                                 </RadzenLineSeries>
                                 <RadzenLineSeries Smooth="@GlobalVariable.ConfigSystem.Smooth" Data="@_chartDataSeriesSetpointProfile" CategoryProperty="Date" Title="NĐ đặt"
-                                                  LineType="LineType.Dashed" ValueProperty="Temperature" StrokeWidth="1">
-                                    <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Circle" Size="3" />
+                                                  LineType="LineType.Dashed" ValueProperty="Temperature">
+                                    <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Circle"/>
                                     <RadzenSeriesDataLabels Visible="false" />
                                 </RadzenLineSeries>
 
@@ -169,13 +169,13 @@
                         <RadzenColumn SizeXS="12" SizeSM="12">
                             <RadzenChart @ref="RadzenChartDataLog" class="chart">
                                 <RadzenLineSeries Smooth="@GlobalVariable.ConfigSystem.Smooth" Data="@_chartDataSeriesTempDataLog" CategoryProperty="Date" Title="NĐ đo"
-                                                  LineType="LineType.Dashed" ValueProperty="Temperature" StrokeWidth="1">
-                                    <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Circle" Size="3" />
+                                                  LineType="LineType.Dashed" ValueProperty="Temperature">
+                                    <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Circle"/>
                                     <RadzenSeriesDataLabels Visible="false" />
                                 </RadzenLineSeries>
                                 <RadzenLineSeries Smooth="@GlobalVariable.ConfigSystem.Smooth" Data="@_chartDataSeriesSetpointDataLog" CategoryProperty="Date" Title="NĐ đặt"
-                                                  LineType="LineType.Dashed" ValueProperty="Temperature" StrokeWidth="1">
-                                    <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Circle" Size="3" />
+                                                  LineType="LineType.Dashed" ValueProperty="Temperature">
+                                    <RadzenMarkers Visible="@GlobalVariable.ConfigSystem.ShowMarkers" MarkerType="MarkerType.Circle"/>
                                     <RadzenSeriesDataLabels Visible="false" />
                                 </RadzenLineSeries>
 
