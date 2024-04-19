@@ -42,7 +42,7 @@ namespace GiamSat.UI.Pages
             }
         }
 
-        async void Submit(ConfigModel arg)
+        async Task Submit(ConfigModel arg)
         {
             try
             {

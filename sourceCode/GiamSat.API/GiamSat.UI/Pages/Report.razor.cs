@@ -113,7 +113,7 @@ namespace GiamSat.UI.Pages
             }
         }
 
-        async void QueryData()
+        async Task QueryData()
         {
             try
             {
@@ -156,11 +156,9 @@ namespace GiamSat.UI.Pages
                     InvokeAsync(StateHasChanged);
                     return;
                 }
-                _dataReport = null;
+
                 _dataReport = new List<APIClient.FT03>();
-                _chartDataSeriesTempDataLog = null;
-                _chartDataSeriesTempDataLog = new List<DataItem>();
-                _chartDataSeriesSetpointDataLog = null;
+                _chartDataSeriesTempDataLog = new List<DataItem>();                
                 _chartDataSeriesSetpointDataLog = new List<DataItem>();
 
                 _dataReport = res.Data.ToList();
@@ -188,7 +186,7 @@ namespace GiamSat.UI.Pages
             }
         }
 
-        async void QueryDataProfile()
+        async Task QueryDataProfile()
         {
             try
             {
@@ -204,12 +202,10 @@ namespace GiamSat.UI.Pages
                     return;
                 }
 
-                _dataProfile = null;
-                _dataProfile = new List<APIClient.FT04>();
-                _chartDataSeriesTempProfile = null;
-                _chartDataSeriesTempProfile = new List<DataItem>();
-                _chartDataSeriesSetpointProfile = null;
+                _dataProfile = new List<APIClient.FT04>();                
+                _chartDataSeriesTempProfile = new List<DataItem>();                
                 _chartDataSeriesSetpointProfile = new List<DataItem>();
+                StateHasChanged();
 
                 if (_filterProfileLog.OvenId > _ovensInfo.Count)
                 {
@@ -241,7 +237,6 @@ namespace GiamSat.UI.Pages
                         Duration = 2000
                     });
                     _showProgressBar = false;
-                    InvokeAsync(StateHasChanged);
                     return;
                 }
 
@@ -252,8 +247,7 @@ namespace GiamSat.UI.Pages
                 await RadzenChartProfifle.Reload();
 
                 _showProgressBar = false;
-
-                InvokeAsync(StateHasChanged);
+                StateHasChanged();
             }
             catch (Exception ex)
             {

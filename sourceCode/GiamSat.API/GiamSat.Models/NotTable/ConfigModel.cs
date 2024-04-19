@@ -36,13 +36,21 @@ namespace GiamSat.Models
         /// </summary>
         public int CountSecondStop { get; set; } = 5000;//(ms)
         /// <summary>
-        /// Nhiệt độ sai số cọng vào thêm để alarm.
+        /// Nhiệt độ sai số cọng vào thêm để alarm dùng cho rampTime giảm nhiệt.
         /// </summary>
-        public double ToleranceTemp { get; set; } = 2;
+        public double ToleranceTempForRampDown { get; set; } = 2;
         /// <summary>
-        /// Nhiệt độ sai số trừ vào để tắt alarm.
+        /// Nhiệt độ sai số trừ vào để tắt alarm dùng cho rampTime giảm nhiệt.
         /// </summary>
-        public double ToleranceTempOut { get; set; } = 1;
+        public double ToleranceTempOutForRampDown { get; set; } = 1;
+        /// <summary>
+        /// Nhiệt độ sai số cọng vào thêm để alarm dùng cho rampTime tăng nhiệt và soak.
+        /// </summary>
+        public double ToleranceTempForRampUp { get; set; } = 2;
+        /// <summary>
+        /// Nhiệt độ sai số trừ vào để tắt alarm dùng cho rampTime tăng nhiệt và soak.
+        /// </summary>
+        public double ToleranceTempOutForRampUp { get; set; } = 1;
 
         #region cấu hình cho UI
         /// <summary>

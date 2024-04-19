@@ -7,7 +7,7 @@
                 <RadzenFieldset Text="Thông tin user">
                     <RadzenStack Gap="1rem">
                         <RadzenRow AlignItems="AlignItems.Center">
-                            <RadzenColumn SizeXS=12 SizeSM="12">
+                            <RadzenColumn SizeXS="12" SizeSM="12">
                                 <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Tên user</RadzenText>
                                 <RadzenTextBox Name="_txtUserName" TextStyle="TextStyle.Body1" Style="display: block;width: 100%;" @bind-Value=@_model.UserName />
                                 <RadzenRequiredValidator Component="_txtUserName" Text="Nhập tên user" Popup="false" Style="position: absolute" />
@@ -26,7 +26,7 @@
                                 <RadzenCompareValidator Visible=@(!string.IsNullOrEmpty(_model.RepeatPassword)) Value=@_model.Password
                                                         Component="RepeatPassword" Text="Mật khẩu không khớp" Popup="false" Style="position: absolute" />
                             </RadzenColumn>
-                             <RadzenColumn SizeXS=12 SizeSM="12">
+                             <RadzenColumn SizeXS="12" SizeSM="12">
                                 <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Phân quyền</RadzenText>
                                 <RadzenDropDown Name="_dropDownRoles" @bind-Value=@_model.Roles Data=@_role Multiple=true AllowClear=true Placeholder="Select roles"
                                                 Style="display: block;width:100%"></RadzenDropDown>

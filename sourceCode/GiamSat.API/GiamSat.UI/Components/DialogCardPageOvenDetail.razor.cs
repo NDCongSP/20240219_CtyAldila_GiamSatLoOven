@@ -50,7 +50,7 @@ namespace GiamSat.UI.Components
                 }
 
                 #region Timer refresh data
-                _timer = new System.Timers.Timer(GlobalVariable.ConfigSystem.RefreshInterval);
+                _timer = new System.Timers.Timer(GlobalVariable.ConfigSystem.ChartRefreshInterval);
                 _timer.Elapsed += RefreshData;
                 _timer.Enabled = true;
                 #endregion

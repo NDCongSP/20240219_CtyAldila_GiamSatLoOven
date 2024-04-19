@@ -8,11 +8,11 @@
                     <RadzenFieldset Text="Đổi mật khẩu">
                         <RadzenStack Gap="1rem">
                             <RadzenRow AlignItems="AlignItems.Center">
-                                <RadzenColumn SizeXS=12 SizeSM="4">
+                                <RadzenColumn SizeXS="12" SizeSM="4">
                                     <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Tên</RadzenText>
                                     <RadzenTextBox TextStyle="TextStyle.Body1" Style="width: 100%;" @bind-Value=@_userModel.Username Disabled="true"/>
                                 </RadzenColumn>
-                                <RadzenColumn SizeXS=12 SizeSM="4">
+                                <RadzenColumn SizeXS="12" SizeSM="4">
                                     <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Email</RadzenText>
                                     <RadzenTextBox Name="Email" TextStyle="TextStyle.Body1" Style="display: block; width: 100%" @bind-Value=@_userModel.Email />
                                     <RadzenRequiredValidator Component="Email" Text="Nhập email" Popup="false" Style="position: absolute" />

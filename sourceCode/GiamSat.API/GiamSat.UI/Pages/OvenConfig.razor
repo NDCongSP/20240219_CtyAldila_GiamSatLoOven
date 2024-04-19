@@ -3,7 +3,7 @@
 @attribute [Authorize(Roles = "Admin,User")]
 
 <div Class="rz-p-0 rz-p-md-12">
-    @if (@_ovenInfo == null)
+    @if (_ovenInfo == null)
     {
         <p><em>Loading...</em></p>
     }
@@ -17,7 +17,7 @@
                         <RadzenFieldset Text="Thông tin chung">
                             <RadzenStack Gap="1rem">
                                 <RadzenRow AlignItems="AlignItems.Center">
-                                    <RadzenColumn SizeXS=12 SizeSM="4">
+                                    <RadzenColumn SizeXS="12" SizeSM="4">
                                         <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Tên</RadzenText>
                                         <RadzenTextBox TextStyle="TextStyle.Body1" Style="width: 100%;" @bind-Value=@_ovenInfo.Name />
                                     </RadzenColumn>

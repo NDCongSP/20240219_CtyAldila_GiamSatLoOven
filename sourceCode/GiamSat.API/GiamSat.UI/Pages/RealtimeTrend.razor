@@ -2,28 +2,34 @@
 @attribute [Authorize]
 
 <div Class="rz-p-0 rz-p-md-12">
-   
-    <RadzenChart @ref="RadzenChart" class="chart" Style="height:300px">
-        @foreach(var item in _displayRealtime)
-        {
-            <RadzenLineSeries Smooth="@smooth" Data="@oven1" CategoryProperty="Date" Title=@item.OvenName LineType="LineType.Dashed" ValueProperty="Temp">
-                <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Diamond" />
-                <RadzenSeriesDataLabels Visible="@showDataLabels" />
-            </RadzenLineSeries>
-        }
+    @if (_displayRealtime == null)
+    {
+        <div class="spinner center-div"></div>
+    }
+    else
+    {
+        <RadzenChart @ref="RadzenChart" class="chart" Style="height:300px">
+            @foreach (var item in _displayRealtime)
+            {
+                <RadzenLineSeries Smooth="@smooth" Data="@oven1" CategoryProperty="Date" Title=@item.OvenName LineType="LineType.Dashed" ValueProperty="Temp">
+                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Diamond" />
+                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                </RadzenLineSeries>
+            }
 
-        <RadzenCategoryAxis Padding="20" Formatter="@FormatAsMonth">
-            <RadzenGridLines Visible="true" />
-            <RadzenAxisTitle Text="Thời gian" />
-            <RadzenTicks>
-                <Template>
-                    <text class="rz-tick-text" style="text-anchor: start; transform: translate(@(context.X)px, @(context.Y + 100)px) rotate(-45deg); font-size:small">@context.Value</text>
-                </Template>
-            </RadzenTicks>
-        </RadzenCategoryAxis>
-        <RadzenValueAxis Formatter="@FormatAsUSD">
-            <RadzenGridLines Visible="true" />
-            <RadzenAxisTitle Text="Nhiệt độ (oC)" />
-        </RadzenValueAxis>
-    </RadzenChart>
+            <RadzenCategoryAxis Padding="20" Formatter="@FormatAsMonth">
+                <RadzenGridLines Visible="true" />
+                <RadzenAxisTitle Text="Thời gian" />
+                <RadzenTicks>
+                    <Template>
+                        <text class="rz-tick-text" style="text-anchor: start; transform: translate(@(context.X)px, @(context.Y + 100)px) rotate(-45deg); font-size:small">@context.Value</text>
+                    </Template>
+                </RadzenTicks>
+            </RadzenCategoryAxis>
+            <RadzenValueAxis Formatter="@FormatAsUSD">
+                <RadzenGridLines Visible="true" />
+                <RadzenAxisTitle Text="Nhiệt độ (oC)" />
+            </RadzenValueAxis>
+        </RadzenChart>
+    }
 </div>
