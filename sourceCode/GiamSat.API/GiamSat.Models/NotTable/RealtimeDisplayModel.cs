@@ -161,5 +161,7 @@ namespace GiamSat.Models
         /// Biến dùng để check alarm trong suốt thời gian chạy profile.
         /// </summary>
         public DateTime EndTimeAlarm { get; set; }
+        public double LevelUp { get; set; } = 0;
+        public double LevelDown { get; set; } = 0;
     }
 }

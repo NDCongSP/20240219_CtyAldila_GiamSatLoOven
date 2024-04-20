@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System;
 using GiamSat.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GiamSat.API
 {
@@ -17,6 +18,8 @@ namespace GiamSat.API
         {
             _context = context;
             _contextAccessor = contextAccessor;
+
+            _context.Database.SetCommandTimeout(TimeSpan.FromMinutes(30));
         }
 
         public async Task<Result<List<FT05>>> GetAll()

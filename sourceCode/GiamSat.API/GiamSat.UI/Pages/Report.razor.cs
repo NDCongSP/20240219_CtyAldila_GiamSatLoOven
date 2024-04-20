@@ -43,6 +43,8 @@ namespace GiamSat.UI.Pages
         Radzen.Blazor.RadzenChart RadzenChartProfifle = new Radzen.Blazor.RadzenChart();
         List<DataItem> _chartDataSeriesTempProfile = new List<DataItem>();
         List<DataItem> _chartDataSeriesSetpointProfile = new List<DataItem>();
+        List<DataItem> _chartDataSeriesLevelUpProfile = new List<DataItem>();
+        List<DataItem> _chartDataSeriesLevelDownProfile = new List<DataItem>();
         APIClient.FilterModel _filterProfileLog = new APIClient.FilterModel()
         {
             GetAll = false,
@@ -98,6 +100,8 @@ namespace GiamSat.UI.Pages
                     OvenId = _ovensInfo.Count + 1,
                     OvenName = "All"
                 });
+
+                InvokeAsync(StateHasChanged);
             }
             catch (Exception ex)
             {
@@ -158,7 +162,7 @@ namespace GiamSat.UI.Pages
                 }
 
                 _dataReport = new List<APIClient.FT03>();
-                _chartDataSeriesTempDataLog = new List<DataItem>();                
+                _chartDataSeriesTempDataLog = new List<DataItem>();
                 _chartDataSeriesSetpointDataLog = new List<DataItem>();
 
                 _dataReport = res.Data.ToList();
@@ -202,10 +206,11 @@ namespace GiamSat.UI.Pages
                     return;
                 }
 
-                _dataProfile = new List<APIClient.FT04>();                
-                _chartDataSeriesTempProfile = new List<DataItem>();                
+                _dataProfile = new List<APIClient.FT04>();
+                _chartDataSeriesTempProfile = new List<DataItem>();
                 _chartDataSeriesSetpointProfile = new List<DataItem>();
-                StateHasChanged();
+                _chartDataSeriesLevelUpProfile = new List<DataItem>();
+                _chartDataSeriesLevelDownProfile = new List<DataItem>();
 
                 if (_filterProfileLog.OvenId > _ovensInfo.Count)
                 {
@@ -240,9 +245,9 @@ namespace GiamSat.UI.Pages
                     return;
                 }
 
-                _dataProfile = res.Data.ToList();
+                _dataProfile = res.Data.OrderBy(x => x.CreatedDate).ToList();
 
-                UpdateDataSeriesChartProfile(_dataProfile.OrderBy(x => x.CreatedDate).ToList());
+                UpdateDataSeriesChartProfile(_dataProfile);
 
                 await RadzenChartProfifle.Reload();
 
@@ -276,7 +281,7 @@ namespace GiamSat.UI.Pages
                 //Stream streamTemplate = await _client.CreateClient("local").GetStreamAsync("templateXLS/TemplateReport.xlsx");
                 //await xls.UseTemplate(_js, streamTemplate, Elements, "BaoCao.xlsx");
 
-                await xls.TemplateOnExistingFileAsync(_client, _js, _dataProfile.OrderBy(x => x.CreatedDate).ToList(), @"templateXLS\TemplateReport.xlsx"
+                await xls.TemplateOnExistingFileAsync(_client, _js, _dataProfile, @"templateXLS\TemplateReport.xlsx"
                                     , $"{_filterProfileLog.FromDate} đến {_filterProfileLog.ToDate}", $"{DateTime.Now.ToString("yyyyMMdd_HHmmss")}_ReportRunProfile.xlsx");
 
                 _showProgressBar = false;
@@ -350,7 +355,7 @@ namespace GiamSat.UI.Pages
         {
             if (value != null)
             {
-                return Convert.ToDateTime(value).ToString("HH:mm:ss");
+                return Convert.ToDateTime(value).ToString("yyyy-MM-dd HH:mm:ss");
             }
 
             return string.Empty;
@@ -360,6 +365,7 @@ namespace GiamSat.UI.Pages
         {
             foreach (var item in data)
             {
+                var detail = JsonConvert.DeserializeObject<RealtimeDisplayModel>(item.Details);
                 _chartDataSeriesTempProfile.Add(new DataItem()
                 {
                     Temperature = item.Temperature,
@@ -369,6 +375,18 @@ namespace GiamSat.UI.Pages
                 _chartDataSeriesSetpointProfile.Add(new DataItem
                 {
                     Temperature = item.Setpoint,
+                    Date = item.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss")
+                });
+
+                _chartDataSeriesLevelUpProfile.Add(new DataItem
+                {
+                    Temperature = detail.LevelUp,
+                    Date = item.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss")
+                });
+
+                _chartDataSeriesLevelDownProfile.Add(new DataItem
+                {
+                    Temperature = detail.LevelDown,
                     Date = item.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss")
                 });
             }

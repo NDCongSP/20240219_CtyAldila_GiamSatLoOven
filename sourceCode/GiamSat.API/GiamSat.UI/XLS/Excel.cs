@@ -15,7 +15,7 @@ namespace GiamSat.UI
         public async Task GenerateExcel(IJSRuntime js, List<FT03> data, string filename = "export.xlsx", string dateQuery = null)
         {
             var exportXls = new ExcelExport();
-            var XLSStream = exportXls.GenerateExcelFile(data, dateQuery);
+            var XLSStream =await exportXls.GenerateExcelFileAsync(data, dateQuery);
 
             await js.InvokeVoidAsync("BlazorDownloadFile", filename, XLSStream);
         }
@@ -40,7 +40,7 @@ namespace GiamSat.UI
             , string filename)
         {
             var templateXLS = new ExcelExport();
-            var XLSStream = await templateXLS.FillIn(client, data, template, dateTime);
+            var XLSStream = await templateXLS.FillInAsync(client, data, template, dateTime);
 
             await js.InvokeVoidAsync("BlazorDownloadFile", filename, XLSStream);
         }

@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using ClosedXML.Report;
+using DocumentFormat.OpenXml.Office2021.PowerPoint.Designer;
 using GiamSat.APIClient;
 using GiamSat.Models;
 using MoreLinq;
@@ -10,7 +11,7 @@ namespace GiamSat.UI
 {
     public class ExcelExport
     {
-        public byte[] GenerateExcelFile(List<APIClient.FT03> data, string dateQuery)
+        public async Task<byte[]> GenerateExcelFileAsync(List<APIClient.FT03> data, string dateQuery)
         {
 
             List<ExcelModel> model = new List<ExcelModel>();
@@ -141,7 +142,7 @@ namespace GiamSat.UI
         }
 
 
-        public async Task<byte[]> FillIn(IHttpClientFactory client, List<APIClient.FT04> data, string template, string dateTime)
+        public async Task<byte[]> FillInAsync(IHttpClientFactory client, List<APIClient.FT04> data, string template, string dateTime)
         {
             // Open existing XLS
             var mdFile = await client.CreateClient("local").GetByteArrayAsync(template);
@@ -169,6 +170,8 @@ namespace GiamSat.UI
                 ws.Cell(row + 4, 7).Value = detail?.AlarmDescription;
                 ws.Cell(row + 4, 8).Value = item.StartTime;
                 ws.Cell(row + 4, 9).Value = item.EndTime;
+                ws.Cell(row + 4, 10).Value = detail?.LevelUp;
+                ws.Cell(row + 4, 11).Value = detail?.LevelDown;
 
                 row += 1;
             }
@@ -182,6 +185,9 @@ namespace GiamSat.UI
             ws.Range($"C4:D{data.Count + 4}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right)
                 .Alignment.SetVertical(XLAlignmentVerticalValues.Center)
                 .NumberFormat.Format = "#,##0.00";
+            ws.Range($"J4:K{data.Count + 4}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right)
+              .Alignment.SetVertical(XLAlignmentVerticalValues.Center)
+              .NumberFormat.Format = "#,##0.00";
 
             ws.Range($"B4:B{data.Count + 4}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left)
                .Alignment.SetVertical(XLAlignmentVerticalValues.Center);
@@ -196,7 +202,7 @@ namespace GiamSat.UI
              .Alignment.SetVertical(XLAlignmentVerticalValues.Center)
              .DateFormat.Format = "yyyy-MM-dd HH:mm:ss";
 
-            ws.Range($"A3:I{data.Count + 3}").Style.Border.SetInsideBorder(XLBorderStyleValues.Thin)
+            ws.Range($"A3:K{data.Count + 3}").Style.Border.SetInsideBorder(XLBorderStyleValues.Thin)
                                        .Border.SetOutsideBorder(XLBorderStyleValues.Thin);
 
             ws.Columns().AdjustToContents();

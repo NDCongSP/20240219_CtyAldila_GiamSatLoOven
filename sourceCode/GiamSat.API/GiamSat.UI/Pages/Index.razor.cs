@@ -14,7 +14,7 @@ namespace GiamSat.UI.Pages
 {
     public partial class Index : IDisposable
     {
-        private RealtimeDisplays? _displayRealtime;
+        private RealtimeDisplays _displayRealtime = new RealtimeDisplays();
         private APIClient.FT06 _ft06 = new APIClient.FT06();
         private List<ControlPlcModel> _controlPlcModel = new List<ControlPlcModel>();
 

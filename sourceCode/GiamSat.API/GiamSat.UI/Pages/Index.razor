@@ -2,7 +2,7 @@
 @attribute [Authorize]
 
 <div Class="rz-p-0 rz-p-md-6">
-    @if (_displayRealtime == null)
+    @if (_displayRealtime == null || _displayRealtime.Count <= 0)
     {
         <div class="spinner center-div"></div>
     }
@@ -16,17 +16,28 @@
                     {
                         <RadzenCard Varian="Varian.Filled" class="rz-background-color-info-light rz-shadow-0 rz-border-radius-4 rz-m-0">
                             <RadzenStack Orientation="Orientation.Vertical" Gap="10px">
-                                <RadzenText TextStyle="TextStyle.H6" class=""><strong>@item.OvenName</strong></RadzenText>
+                                <RadzenRow RowGap="0">
+                                    <RadzenColumn>
+                                        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Start" AlignItems="AlignItems.Center">
+                                            <RadzenText TextStyle="TextStyle.H6" class=""><strong>@item.OvenName</strong></RadzenText>
+                                        </RadzenStack>
+                                    </RadzenColumn>
+                                    <RadzenColumn>
+                                        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" AlignItems="AlignItems.Center">
+                                            <RadzenText TextStyle="TextStyle.H6" class=""><strong> @(Convert.ToDateTime(item.BeginTime).ToString("HH:mm"))</strong></RadzenText>
+                                        </RadzenStack>
+                                    </RadzenColumn>
+                                </RadzenRow>
                                 <RadzenRow RowGap="0">
                                     <RadzenColumn SizeXS="12" SizeSM="4">
                                         <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Nhiệt độ (oC)</RadzenText>
                                         <RadzenText TextStyle="TextStyle.DisplayH5" class=""><b>@item.Temperature</b></RadzenText>
                                     </RadzenColumn>
-                                    <RadzenColumn SizeXS="12" SizeMD="2">
-                                        <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Bước:</RadzenText>
+                                    <RadzenColumn SizeXS="12" SizeMD="4">
+                                        <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Bước</RadzenText>
                                         <RadzenText TextStyle="TextStyle.DisplayH5" class=""><strong>@item.ProfileStepNumber_CurrentStatus</strong></RadzenText>
                                     </RadzenColumn>
-                                    <RadzenColumn SizeXS="12" SizeSM="6">
+                                    <RadzenColumn SizeXS="12" SizeSM="4">
                                         <RadzenRow RowGap="0">
                                             <RadzenColumn SizeXS="12" SizeSM="6">
                                                 <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Cửa lò</RadzenText>
@@ -98,17 +109,28 @@
                     {
                         <RadzenCard Varian="Varian.Filled" class="rz-background-color-warning-light rz-shadow-0 rz-border-radius-4 rz-m-0">
                             <RadzenStack Orientation="Orientation.Vertical" Gap="10px">
-                                <RadzenText TextStyle="TextStyle.H6" class=""><strong>@item.OvenName</strong></RadzenText>
+                                <RadzenRow RowGap="0">
+                                    <RadzenColumn>
+                                        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Start" AlignItems="AlignItems.Center">
+                                            <RadzenText TextStyle="TextStyle.H6" class=""><strong>@item.OvenName</strong></RadzenText>
+                                        </RadzenStack>
+                                    </RadzenColumn>
+                                    <RadzenColumn>
+                                        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" AlignItems="AlignItems.Center">
+                                            <RadzenText TextStyle="TextStyle.H6" class=""><strong> @(Convert.ToDateTime(item.BeginTime).ToString("HH:mm"))</strong></RadzenText>
+                                        </RadzenStack>
+                                    </RadzenColumn>
+                                </RadzenRow>
                                 <RadzenRow RowGap="0">
                                     <RadzenColumn SizeXS="12" SizeSM="4">
                                         <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Nhiệt độ (oC)</RadzenText>
                                         <RadzenText TextStyle="TextStyle.DisplayH5" class=""><b>@item.Temperature</b></RadzenText>
                                     </RadzenColumn>
-                                    <RadzenColumn SizeXS="12" SizeMD="2">
-                                        <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Bước:</RadzenText>
+                                    <RadzenColumn SizeXS="12" SizeMD="4">
+                                        <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Bước</RadzenText>
                                         <RadzenText TextStyle="TextStyle.DisplayH5" class=""><strong>@item.ProfileStepNumber_CurrentStatus</strong></RadzenText>
                                     </RadzenColumn>
-                                    <RadzenColumn SizeXS="12" SizeSM="6">
+                                    <RadzenColumn SizeXS="12" SizeSM="4">
                                         <RadzenRow RowGap="0">
                                             <RadzenColumn SizeXS="12" SizeSM="6">
                                                 <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Cửa lò</RadzenText>

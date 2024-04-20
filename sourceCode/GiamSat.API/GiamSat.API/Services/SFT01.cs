@@ -19,6 +19,8 @@ namespace GiamSat.API
             _context = context;
             _httpContextAccessor = httpContextAccessor;
 
+            _context.Database.SetCommandTimeout(TimeSpan.FromMinutes(30));
+
             ////Get thông tin claim của user login
             //var e=_httpContextAccessor.HttpContext.User.Identity.Name;
 

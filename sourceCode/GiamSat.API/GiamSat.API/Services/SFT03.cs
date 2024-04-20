@@ -19,7 +19,7 @@ namespace GiamSat.API
             _context = context;
             _contextAccessor = contextAccessor;
 
-            _context.Database.SetCommandTimeout(TimeSpan.FromSeconds(300));   
+            _context.Database.SetCommandTimeout(TimeSpan.FromMinutes(30));   
         }
 
         public async Task<Result<List<FT03>>> GetAll()
@@ -54,13 +54,13 @@ namespace GiamSat.API
                 if (model.GetAll)
                 {
                     var d = _context.FT03
-                        .Where<FT03>(x => x.CreatedDate >= model.FromDate && x.CreatedDate <= model.ToDate).OrderByDescending(x => x.CreatedDate).ToList();
+                        .Where<FT03>(x => x.CreatedDate >= model.FromDate && x.CreatedDate <= model.ToDate).ToList();
                     return await Result<List<FT03>>.SuccessAsync(d);
                 }
                 else
                 {
                     var d = _context.FT03
-                       .Where<FT03>(x => x.OvenId == model.OvenId && x.CreatedDate >= model.FromDate && x.CreatedDate <= model.ToDate).OrderByDescending(x => x.CreatedDate).ToList();
+                       .Where<FT03>(x => x.OvenId == model.OvenId && x.CreatedDate >= model.FromDate && x.CreatedDate <= model.ToDate).ToList();
                     return await Result<List<FT03>>.SuccessAsync(d);
                 }
             }

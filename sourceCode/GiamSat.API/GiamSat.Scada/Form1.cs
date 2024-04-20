@@ -114,7 +114,8 @@ namespace GiamSat.Scada
                         ToleranceTempForRampDown = 2
                         ,
                         ToleranceTempOutForRampDown = 1
-                        ,ToleranceTempForRampUp = 3
+                        ,
+                        ToleranceTempForRampUp = 3
                         ,
                         ToleranceTempOutForRampUp = 0
                         ,
@@ -314,14 +315,14 @@ namespace GiamSat.Scada
             {
                 var para = new DynamicParameters();
 
-                var ft01 = con.Query<FT01>("sp_FT01GetAll", commandType: CommandType.StoredProcedure).ToList();
+                var ft01 = con.Query<FT01>("sp_FT01GetAll", commandType: CommandType.StoredProcedure, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds).ToList();
 
                 GlobalVariable.ConfigSystem = JsonConvert.DeserializeObject<ConfigModel>(ft01.FirstOrDefault().C000);
                 _ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(ft01.FirstOrDefault().C001);
 
                 //Debug.WriteLine($"Time counr second: {GlobalVariable.ConfigSystem.CountSecondStop}");
 
-                _ft06 = con.Query<FT06>("sp_FT06GetAll", commandType: CommandType.StoredProcedure).ToList();
+                _ft06 = con.Query<FT06>("sp_FT06GetAll", commandType: CommandType.StoredProcedure, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds).ToList();
 
                 _controlPlcModel = JsonConvert.DeserializeObject<List<ControlPlcModel>>(_ft06.FirstOrDefault().C000);
 
@@ -369,7 +370,7 @@ namespace GiamSat.Scada
                                     para.Add("createdDate", DateTime.Now);
                                     para.Add("details", JsonConvert.SerializeObject(item));
 
-                                    con.Execute("sp_FT04Insert", param: para, commandType: CommandType.StoredProcedure, transaction: tran);
+                                    con.Execute("sp_FT04Insert", param: para, commandType: CommandType.StoredProcedure, transaction: tran, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
                                 }
                                 else if (item.Status == 0 && item.ZIndex != Guid.Empty && item.Temperature > 0 && item.CountSecondTagChange >= 2)
                                 {
@@ -392,7 +393,7 @@ namespace GiamSat.Scada
                                     para.Add("createdDate", DateTime.Now);
                                     para.Add("details", JsonConvert.SerializeObject(item));
 
-                                    con.Execute("sp_FT04Insert", param: para, commandType: CommandType.StoredProcedure, transaction: tran);
+                                    con.Execute("sp_FT04Insert", param: para, commandType: CommandType.StoredProcedure, transaction: tran, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
 
                                     item.ZIndex = Guid.Empty;
                                     //item.ProfileName = null;
@@ -441,7 +442,7 @@ namespace GiamSat.Scada
                         para = new DynamicParameters();
                         para.Add("C000", displayData);
                         para.Add("createdDate", DateTime.Now);
-                        con.Execute("sp_FT02Insert", param: para, commandType: CommandType.StoredProcedure);
+                        con.Execute("sp_FT02Insert", param: para, commandType: CommandType.StoredProcedure, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
                     }
                 }
                 #endregion
@@ -461,7 +462,7 @@ namespace GiamSat.Scada
                             para.Add("temperature", item.Temperature);
                             para.Add("details", JsonConvert.SerializeObject(item));
 
-                            con.Execute("sp_FT03Insert", param: para, commandType: CommandType.StoredProcedure);
+                            con.Execute("sp_FT03Insert", param: para, commandType: CommandType.StoredProcedure, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
                         }
                     }
                 }
@@ -714,7 +715,7 @@ namespace GiamSat.Scada
                         p.Add("id", _ft06.FirstOrDefault().Id);
                         p.Add("c000", JsonConvert.SerializeObject(_controlPlcModel));
 
-                        con.Execute("sp_FT06Update", param: p, commandType: CommandType.StoredProcedure);
+                        con.Execute("sp_FT06Update", param: p, commandType: CommandType.StoredProcedure, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
                     }
                 }
 
@@ -727,7 +728,7 @@ namespace GiamSat.Scada
             #region Đọc DB để lấy tín hiệu tắt còi từ web
             using (var con = GlobalVariable.GetDbConnection())
             {
-                _ft06 = con.Query<FT06>("sp_FT06GetAll", commandType: CommandType.StoredProcedure).ToList();
+                _ft06 = con.Query<FT06>("sp_FT06GetAll", commandType: CommandType.StoredProcedure, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds).ToList();
                 if (_ft06 != null)
                 {
                     _controlPlcModel = JsonConvert.DeserializeObject<List<ControlPlcModel>>(_ft06.FirstOrDefault().C000);
@@ -1072,6 +1073,8 @@ namespace GiamSat.Scada
 
                     var profile = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus);
                     item.ProfileName = profile?.Name;
+                    item.LevelUp = (double)(profile?.LevelUp);
+                    item.LevelDown = (double)(profile?.LevelDown);
                     return;
                 }
             }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System;
 using GiamSat.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GiamSat.API
 {
@@ -17,6 +18,8 @@ namespace GiamSat.API
         {
             _context = context;
             _contextAccessor = contextAccessor;
+
+            _context.Database.SetCommandTimeout(TimeSpan.FromMinutes(30));
         }
 
         public async Task<Result<List<FT04>>> GetAll()
@@ -51,13 +54,13 @@ namespace GiamSat.API
                 if (model.GetAll)
                 {
                     var d = _context.FT04
-                        .Where<FT04>(x => x.CreatedDate >= model.FromDate && x.CreatedDate <= model.ToDate).OrderByDescending(x => x.CreatedDate).ToList();
+                        .Where<FT04>(x => x.CreatedDate >= model.FromDate && x.CreatedDate <= model.ToDate).ToList();
                     return await Result<List<FT04>>.SuccessAsync(d);
                 }
                 else
                 {
                     var d = _context.FT04
-                       .Where<FT04>(x => x.OvenId == model.OvenId && x.CreatedDate >= model.FromDate && x.CreatedDate <= model.ToDate).OrderByDescending(x => x.CreatedDate).ToList();
+                       .Where<FT04>(x => x.OvenId == model.OvenId && x.CreatedDate >= model.FromDate && x.CreatedDate <= model.ToDate).ToList();
                     return await Result<List<FT04>>.SuccessAsync(d);
                 }
             }
