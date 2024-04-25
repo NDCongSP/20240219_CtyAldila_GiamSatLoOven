@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System;
 using GiamSat.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Net.WebSockets;
 
 namespace GiamSat.API
 {
@@ -59,9 +60,15 @@ namespace GiamSat.API
                 }
                 else
                 {
-                    var d = _context.FT04
+                    using (ApplicationDbContext db =new ApplicationDbContext(GlobalVariable.ConString))
+                    {
+                        var d = db.FT04
                        .Where<FT04>(x => x.OvenId == model.OvenId && x.CreatedDate >= model.FromDate && x.CreatedDate <= model.ToDate).ToList();
-                    return await Result<List<FT04>>.SuccessAsync(d);
+                        return await Result<List<FT04>>.SuccessAsync(d);
+                    }
+                    //var d = _context.FT04
+                    //  .Where<FT04>(x => x.OvenId == model.OvenId && x.CreatedDate >= model.FromDate && x.CreatedDate <= model.ToDate).ToList();
+                    //return await Result<List<FT04>>.SuccessAsync(d);
                 }
             }
             catch (Exception ex)

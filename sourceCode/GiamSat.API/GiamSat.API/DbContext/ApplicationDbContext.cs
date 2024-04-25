@@ -10,7 +10,9 @@ namespace GiamSat.API
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {            
         }
-
+        public ApplicationDbContext(string con ) : base(GetOptions(con))
+        {
+        }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -28,6 +30,8 @@ namespace GiamSat.API
         {
             
             base.OnConfiguring(optionsBuilder);
+
+            optionsBuilder.EnableSensitiveDataLogging();
         }
 
         public DbSet<GiamSat.Models.FT01> FT01 { get; set; }
@@ -36,5 +40,22 @@ namespace GiamSat.API
         public DbSet<GiamSat.Models.FT04> FT04 { get; set; }
         public DbSet<GiamSat.Models.FT05> FT05 { get; set; }
         public DbSet<GiamSat.Models.FT06> FT06 { get; set; }
+
+        private static DbContextOptions<ApplicationDbContext> GetOptions(string connection)
+        {
+            //if (string.IsNullOrEmpty(connection))
+            //{
+            //    connection = connectionString;
+            //}
+            //else if (connection.Length <= 4)
+            //{
+            //    connection = connectionString.Replace("Bat", connection);
+            //}
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            optionsBuilder.UseSqlServer(connection);
+           // optionsBuilder.UseLazyLoadingProxies(_LazyLoadingProxies);
+
+            return optionsBuilder.Options;
+        }
     }
 }
