@@ -7,12 +7,17 @@ using System;
 using GiamSat.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Net.WebSockets;
+using Dapper;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using Stl.Async;
 
 namespace GiamSat.API
 {
     public class SFT04 : ISFT04
     {
         readonly ApplicationDbContext _context;
+
         readonly IHttpContextAccessor _contextAccessor;
 
         public SFT04(ApplicationDbContext context, IHttpContextAccessor contextAccessor)
@@ -20,7 +25,7 @@ namespace GiamSat.API
             _context = context;
             _contextAccessor = contextAccessor;
 
-            _context.Database.SetCommandTimeout(TimeSpan.FromMinutes(30));
+            _context.Database.SetCommandTimeout((int)TimeSpan.FromMinutes(60).TotalMilliseconds);
         }
 
         public async Task<Result<List<FT04>>> GetAll()
@@ -60,15 +65,20 @@ namespace GiamSat.API
                 }
                 else
                 {
-                    using (ApplicationDbContext db =new ApplicationDbContext(GlobalVariable.ConString))
-                    {
-                        var d = db.FT04
-                       .Where<FT04>(x => x.OvenId == model.OvenId && x.CreatedDate >= model.FromDate && x.CreatedDate <= model.ToDate).ToList();
-                        return await Result<List<FT04>>.SuccessAsync(d);
-                    }
-                    //var d = _context.FT04
-                    //  .Where<FT04>(x => x.OvenId == model.OvenId && x.CreatedDate >= model.FromDate && x.CreatedDate <= model.ToDate).ToList();
-                    //return await Result<List<FT04>>.SuccessAsync(d);
+                    //using (var con=GlobalVariable.GetDbProvider())
+                    //{
+                    //    var p = new DynamicParameters();
+                    //    p.Add("ovenId",model.OvenId);
+                    //    p.Add("fromDate",model.FromDate);
+                    //    p.Add("toDate",model.ToDate);
+
+                    //    var d= con.Query<FT04>("[sp_FT04GetAllByDate]", param: p, commandType: CommandType.StoredProcedure).ToList();
+                    //    return await Result<List<FT04>>.SuccessAsync(d);
+                    //}
+
+                    var d = _context.FT04
+                      .Where<FT04>(x => x.OvenId == model.OvenId && x.CreatedDate >= model.FromDate && x.CreatedDate <= model.ToDate).ToList();
+                    return await Result<List<FT04>>.SuccessAsync(d);
                 }
             }
             catch (Exception ex)

@@ -16,6 +16,7 @@ using EasyScada.Winforms.Controls;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using GiamSat.Models.NotTable;
+using Microsoft.Win32;
 
 
 namespace GiamSat.Scada
@@ -43,6 +44,8 @@ namespace GiamSat.Scada
         private Email _email = new Email();
         AlarmSetting _alarmSetting = new AlarmSetting();
         #endregion
+
+        private bool[] _alarmEnable, _alarmEnableFlag;
 
         public Form1()
         {
@@ -86,337 +89,359 @@ namespace GiamSat.Scada
         /// </summary>
         private void GetOvensInfo()
         {
-            using (var con = GlobalVariable.GetDbConnection())
+            try
             {
-                var para = new DynamicParameters();
-
-            Loop:
-                var ft01 = con.Query<FT01>("sp_FT01GetAll", commandType: CommandType.StoredProcedure).ToList();
-
-                if (ft01.Count <= 0)
+                using (var con = GlobalVariable.GetDbConnection())
                 {
-                    #region khoi tao data
-                    var c = new ConfigModel()
+                    var para = new DynamicParameters();
+
+                Loop:
+                    var ft01 = con.Query<FT01>("sp_FT01GetAll", commandType: CommandType.StoredProcedure).ToList();
+
+                    if (ft01.Count <= 0)
                     {
-                        TimeTempChange = 5000,//5s
-                        Gain = 1,
-                        DataLogInterval = 5000,//5s
-                        DataLogWhenRunProfileInterval = 5000//1s
-                        ,
-                        DisplayRealtimeInterval = 1000
-                        ,
-                        RefreshInterval = 1000
-                        ,
-                        ChartRefreshInterval = 1000
-                        ,
-                        CountSecondStop = 5//5 giay
-                        ,
-                        ToleranceTempForRampDown = 2
-                        ,
-                        ToleranceTempOutForRampDown = 1
-                        ,
-                        ToleranceTempForRampUp = 3
-                        ,
-                        ToleranceTempOutForRampUp = 0
-                        ,
-                        ChartPointNum = 30
-                        ,
-                        Smooth = true
-                        ,
-                        ShowDataLabels = true
-                        ,
-                        ShowMarkers = true
-                    };
+                        #region khoi tao data
+                        var c = new ConfigModel()
+                        {
+                            TimeTempChange = 5000,//5s
+                            Gain = 1,
+                            DataLogInterval = 5000,//5s
+                            DataLogWhenRunProfileInterval = 5000//1s
+                            ,
+                            DisplayRealtimeInterval = 1000
+                            ,
+                            RefreshInterval = 1000
+                            ,
+                            ChartRefreshInterval = 1000
+                            ,
+                            CountSecondStop = 5//5 giay
+                            ,
+                            ToleranceTempForRampDown = 2
+                            ,
+                            ToleranceTempOutForRampDown = 1
+                            ,
+                            ToleranceTempForRampUp = 3
+                            ,
+                            ToleranceTempOutForRampUp = 0
+                            ,
+                            ChartPointNum = 30
+                            ,
+                            Smooth = true
+                            ,
+                            ShowDataLabels = true
+                            ,
+                            ShowMarkers = true
+                        };
 
-                    OvensInfo ov = new OvensInfo();
+                        OvensInfo ov = new OvensInfo();
 
-                    for (int i = 1; i <= 13; i++)
-                    {
-                        var steps = new List<StepModel>();
-                        steps.Add(new StepModel()
+                        for (int i = 1; i <= 13; i++)
                         {
-                            Id = 1,
-                            StepType = EnumProfileStepType.RampTime,
-                            Hours = 1,
-                            Minutes = 30,
-                            Seconds = 1,
-                            SetPoint = 150
-                        });
-                        steps.Add(new StepModel()
-                        {
-                            Id = 2,
-                            StepType = EnumProfileStepType.Soak,
-                            Hours = 0,
-                            Minutes = 50,
-                            Seconds = 10,
-                            SetPoint = 150
-                        });
-                        steps.Add(new StepModel()
-                        {
-                            Id = 3,
-                            StepType = EnumProfileStepType.RampTime,
-                            Hours = 1,
-                            Minutes = 30,
-                            Seconds = 1,
-                            SetPoint = 250
-                        });
-                        steps.Add(new StepModel()
-                        {
-                            Id = 4,
-                            StepType = EnumProfileStepType.Soak,
-                            Hours = 0,
-                            Minutes = 50,
-                            Seconds = 10,
-                            SetPoint = 250
-                        });
-                        steps.Add(new StepModel()
-                        {
-                            Id = 5,
-                            StepType = EnumProfileStepType.RampTime,
-                            Hours = 1,
-                            Minutes = 30,
-                            Seconds = 1,
-                            SetPoint = 80
-                        });
-                        steps.Add(new StepModel()
-                        {
-                            Id = 6,
-                            StepType = EnumProfileStepType.End,
-                            Hours = 0,
-                            Minutes = 0,
-                            Seconds = 0,
-                            SetPoint = 0
-                        });
+                            var steps = new List<StepModel>();
+                            steps.Add(new StepModel()
+                            {
+                                Id = 1,
+                                StepType = EnumProfileStepType.RampTime,
+                                Hours = 1,
+                                Minutes = 30,
+                                Seconds = 1,
+                                SetPoint = 150
+                            });
+                            steps.Add(new StepModel()
+                            {
+                                Id = 2,
+                                StepType = EnumProfileStepType.Soak,
+                                Hours = 0,
+                                Minutes = 50,
+                                Seconds = 10,
+                                SetPoint = 150
+                            });
+                            steps.Add(new StepModel()
+                            {
+                                Id = 3,
+                                StepType = EnumProfileStepType.RampTime,
+                                Hours = 1,
+                                Minutes = 30,
+                                Seconds = 1,
+                                SetPoint = 250
+                            });
+                            steps.Add(new StepModel()
+                            {
+                                Id = 4,
+                                StepType = EnumProfileStepType.Soak,
+                                Hours = 0,
+                                Minutes = 50,
+                                Seconds = 10,
+                                SetPoint = 250
+                            });
+                            steps.Add(new StepModel()
+                            {
+                                Id = 5,
+                                StepType = EnumProfileStepType.RampTime,
+                                Hours = 1,
+                                Minutes = 30,
+                                Seconds = 1,
+                                SetPoint = 80
+                            });
+                            steps.Add(new StepModel()
+                            {
+                                Id = 6,
+                                StepType = EnumProfileStepType.End,
+                                Hours = 0,
+                                Minutes = 0,
+                                Seconds = 0,
+                                SetPoint = 0
+                            });
 
-                        var profiles = new List<ProfileModel>();
-                        profiles.Add(new ProfileModel()
-                        {
-                            Id = 1,
-                            Name = $"Profile 1",
-                            LevelUp = 140,
-                            LevelDown = 50,
-                            Steps = steps
-                        });
-                        profiles.Add(new ProfileModel()
-                        {
-                            Id = 2,
-                            Name = $"Profile 2",
-                            LevelUp = 140,
-                            LevelDown = 50,
-                            Steps = steps
-                        });
+                            var profiles = new List<ProfileModel>();
+                            profiles.Add(new ProfileModel()
+                            {
+                                Id = 1,
+                                Name = $"Profile 1",
+                                LevelUp = 140,
+                                LevelDown = 50,
+                                Steps = steps
+                            });
+                            profiles.Add(new ProfileModel()
+                            {
+                                Id = 2,
+                                Name = $"Profile 2",
+                                LevelUp = 140,
+                                LevelDown = 50,
+                                Steps = steps
+                            });
 
-                        var chanel = i <= 5 ? 1 : i > 5 && i <= 10 ? 2 : 3;
-                        ov.Add(new OvenInfoModel()
-                        {
-                            Id = i,
-                            Name = $"Oven {i}",
-                            Profiles = profiles,
-                            Path = $"Local Station/Channel{chanel}/Oven{i}"
-                        });
+                            var chanel = i <= 5 ? 1 : i > 5 && i <= 10 ? 2 : 3;
+                            ov.Add(new OvenInfoModel()
+                            {
+                                Id = i,
+                                Name = $"Oven {i}",
+                                Profiles = profiles,
+                                Path = $"Local Station/Channel{chanel}/Oven{i}"
+                            });
 
+                        }
+
+                        var ft01Insert = new FT01()
+                        {
+                            Id = Guid.NewGuid(),
+                            C000 = JsonConvert.SerializeObject(c),
+                            C001 = JsonConvert.SerializeObject(ov)
+                        };
+
+                        var p = new DynamicParameters();
+                        p.Add("c000", ft01Insert.C000);
+                        p.Add("c001", ft01Insert.C001);
+
+                        var r = con.Execute("sp_FT01Insert", param: p, commandType: CommandType.StoredProcedure);
+
+                        if (r > 0) goto Loop;
+
+                        #endregion
                     }
 
-                    var ft01Insert = new FT01()
+                    if (this.InvokeRequired)
                     {
-                        Id = Guid.NewGuid(),
-                        C000 = JsonConvert.SerializeObject(c),
-                        C001 = JsonConvert.SerializeObject(ov)
-                    };
-
-                    var p = new DynamicParameters();
-                    p.Add("c000", ft01Insert.C000);
-                    p.Add("c001", ft01Insert.C001);
-
-                    var r = con.Execute("sp_FT01Insert", param: p, commandType: CommandType.StoredProcedure);
-
-                    if (r > 0) goto Loop;
-
-                    #endregion
-                    return;
-                }
-
-                if (this.InvokeRequired)
-                {
-                    this?.Invoke(new Action(() =>
+                        this?.Invoke(new Action(() =>
+                        {
+                            _labDBServer.Text = "DB Connected";
+                        }));
+                    }
+                    else
                     {
                         _labDBServer.Text = "DB Connected";
-                    }));
-                }
-                else
-                {
-                    _labDBServer.Text = "DB Connected";
-                }
+                    }
 
-                GlobalVariable.ConfigSystem = JsonConvert.DeserializeObject<ConfigModel>(ft01.FirstOrDefault().C000);
-                _ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(ft01.FirstOrDefault().C001);
+                    GlobalVariable.ConfigSystem = JsonConvert.DeserializeObject<ConfigModel>(ft01.FirstOrDefault().C000);
+                    _ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(ft01.FirstOrDefault().C001);
 
-            Loop1:
-                _ft06 = con.Query<FT06>("sp_FT06GetAll", commandType: CommandType.StoredProcedure).ToList();
+                    #region Khởi tạo các biến bật tắt cảnh báo
+                    _alarmEnable = new bool[_ovensInfo.Count];
+                    _alarmEnableFlag = new bool[_ovensInfo.Count];
 
-                if (_ft06.Count <= 0)
-                {
+                    for (int i = 0; i < _ovensInfo.Count; i++)
+                    {
+                        _alarmEnable[i + 1] = false;
+                        _alarmEnableFlag[i + 1] = false;
+                    }
+                #endregion
+
+                Loop1:
+                    _ft06 = con.Query<FT06>("sp_FT06GetAll", commandType: CommandType.StoredProcedure).ToList();
+
+                    if (_ft06.Count <= 0)
+                    {
+                        foreach (var item in _ovensInfo)
+                        {
+                            _controlPlcModel.Add(new ControlPlcModel()
+                            {
+                                OvenId = item.Id,
+                                OvenName = item.Name,
+                                OffSerien = 0,
+                                IsDoFlag = false
+                            });
+                        }
+
+                        var p = new DynamicParameters();
+                        p.Add("c000", JsonConvert.SerializeObject(_controlPlcModel));
+                        con.Execute("sp_FT06Insert", param: p, commandType: CommandType.StoredProcedure);
+
+                        goto Loop1;
+                    }
+
+                    _controlPlcModel = JsonConvert.DeserializeObject<List<ControlPlcModel>>(_ft06.FirstOrDefault().C000);
+
                     foreach (var item in _ovensInfo)
                     {
-                        _controlPlcModel.Add(new ControlPlcModel()
+                        var dt = DateTime.Now;
+                        _displayRealtime.Add(new RealtimeDisplayModel()
                         {
                             OvenId = item.Id,
                             OvenName = item.Name,
-                            OffSerien = 0,
-                            IsDoFlag = false
+                            Path = item.Path,
+                            OvenInfo = item,
+                            StatusFlag = false,
+                            AlarmFlag = false,
+                            AlarmFlagLastStep = false,
+                            Status = 0,
+                            Alarm = 0,
+                            ConnectionStatus = 0,
+                            ZIndex = Guid.Empty,
+                            IsLoaded = false,
+                            CountSecondTagChange = 0,
                         });
                     }
 
-                    var p = new DynamicParameters();
-                    p.Add("c000", JsonConvert.SerializeObject(_controlPlcModel));
-                    con.Execute("sp_FT06Insert", param: p, commandType: CommandType.StoredProcedure);
-
-                    goto Loop1;
+                    #region initial display table                
+                    con.Execute("Truncate table FT02");
+                    var displayData = JsonConvert.SerializeObject(_displayRealtime);
+                    para = null;
+                    para = new DynamicParameters();
+                    para.Add("C000", displayData);
+                    para.Add("createdDate", DateTime.Now);
+                    con.Execute("sp_FT02Insert", param: para, commandType: CommandType.StoredProcedure);
+                    #endregion
                 }
-
-                _controlPlcModel = JsonConvert.DeserializeObject<List<ControlPlcModel>>(_ft06.FirstOrDefault().C000);
-
-                foreach (var item in _ovensInfo)
-                {
-                    var dt = DateTime.Now;
-                    _displayRealtime.Add(new RealtimeDisplayModel()
-                    {
-                        OvenId = item.Id,
-                        OvenName = item.Name,
-                        Path = item.Path,
-                        OvenInfo = item,
-                        StatusFlag = false,
-                        AlarmFlag = false,
-                        AlarmFlagLastStep = false,
-                        Status = 0,
-                        Alarm = 0,
-                        ConnectionStatus = 0,
-                        ZIndex = Guid.Empty,
-                        IsLoaded = false,
-                        CountSecondTagChange = 0,
-                    });
-                }
-
-                #region initial display table                
-                con.Execute("Truncate table FT02");
-                var displayData = JsonConvert.SerializeObject(_displayRealtime);
-                para = null;
-                para = new DynamicParameters();
-                para.Add("C000", displayData);
-                para.Add("createdDate", DateTime.Now);
-                con.Execute("sp_FT02Insert", param: para, commandType: CommandType.StoredProcedure);
-                #endregion
             }
+            catch (Exception ex) { }
         }
 
         private void RefreshConfig()
         {
-            using (var con = GlobalVariable.GetDbConnection())
+            try
             {
-                var para = new DynamicParameters();
-
-                var ft01 = con.Query<FT01>("sp_FT01GetAll", commandType: CommandType.StoredProcedure, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds).ToList();
-
-                GlobalVariable.ConfigSystem = JsonConvert.DeserializeObject<ConfigModel>(ft01.FirstOrDefault().C000);
-                _ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(ft01.FirstOrDefault().C001);
-
-                //Debug.WriteLine($"Time counr second: {GlobalVariable.ConfigSystem.CountSecondStop}");
-
-                _ft06 = con.Query<FT06>("sp_FT06GetAll", commandType: CommandType.StoredProcedure, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds).ToList();
-
-                _controlPlcModel = JsonConvert.DeserializeObject<List<ControlPlcModel>>(_ft06.FirstOrDefault().C000);
-
-                foreach (var item in _ovensInfo)
+                using (var con = GlobalVariable.GetDbConnection())
                 {
-                    var d = _displayRealtime.FirstOrDefault(x => x.OvenId == item.Id);
-                    d.OvenName = item.Name;
-                    d.OvenInfo = item;
+                    var para = new DynamicParameters();
+
+                    var ft01 = con.Query<FT01>("sp_FT01GetAll", commandType: CommandType.StoredProcedure, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds).ToList();
+
+                    GlobalVariable.ConfigSystem = JsonConvert.DeserializeObject<ConfigModel>(ft01.FirstOrDefault().C000);
+                    _ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(ft01.FirstOrDefault().C001);
+
+                    //Debug.WriteLine($"Time counr second: {GlobalVariable.ConfigSystem.CountSecondStop}");
+
+                    _ft06 = con.Query<FT06>("sp_FT06GetAll", commandType: CommandType.StoredProcedure, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds).ToList();
+
+                    _controlPlcModel = JsonConvert.DeserializeObject<List<ControlPlcModel>>(_ft06.FirstOrDefault().C000);
+
+                    foreach (var item in _ovensInfo)
+                    {
+                        var d = _displayRealtime.FirstOrDefault(x => x.OvenId == item.Id);
+                        d.OvenName = item.Name;
+                        d.OvenInfo = item;
+                    }
                 }
             }
+            catch (Exception ex) { }
         }
 
         private void LogDataProfile()
         {
             while (true)
             {
-                //log data
-                using (var con = GlobalVariable.GetDbConnection())
+                try
                 {
-                    con.Open();
-                    using (var tran = con.BeginTransaction())
+                    //log data
+                    using (var con = GlobalVariable.GetDbConnection())
                     {
-                        try
+                        con.Open();
+                        using (var tran = con.BeginTransaction())
                         {
-                            foreach (var item in _displayRealtime)
+                            try
                             {
-                                if (item.Status == 1 && item.ZIndex != Guid.Empty && item.Temperature > 0 && item.CountSecondTagChange >= 2)
+                                foreach (var item in _displayRealtime)
                                 {
-                                    var para = new DynamicParameters();
-                                    para.Add("ovenId", item.OvenId);
-                                    para.Add("ovenName", item.OvenName);
-                                    para.Add("temperature  ", item.Temperature);
-                                    para.Add("startTime", item.BeginTime);
-                                    //para.Add("endTime", null);
-                                    para.Add("zIndex", item.ZIndex);
-                                    para.Add("hours", item.Hours);
-                                    para.Add("minutes", item.Minutes);
-                                    para.Add("seconds", item.Seconds);
-                                    para.Add("profileId", item.ProfileNumber_CurrentStatus);
-                                    para.Add("profileName", item.ProfileName);
-                                    para.Add("stepId", item.ProfileStepNumber_CurrentStatus);
-                                    para.Add("stepName", item.StepName.ToString());
-                                    para.Add("setPoint", item.SetPoint);
-                                    para.Add("status", item.Status);
-                                    para.Add("createdDate", DateTime.Now);
-                                    para.Add("details", JsonConvert.SerializeObject(item));
+                                    if (item.Status == 1 && item.ZIndex != Guid.Empty && item.Temperature > 0 && item.CountSecondTagChange >= 2)
+                                    {
+                                        var para = new DynamicParameters();
+                                        para.Add("ovenId", item.OvenId);
+                                        para.Add("ovenName", item.OvenName);
+                                        para.Add("temperature  ", item.Temperature);
+                                        para.Add("startTime", item.BeginTime);
+                                        //para.Add("endTime", null);
+                                        para.Add("zIndex", item.ZIndex);
+                                        para.Add("hours", item.Hours);
+                                        para.Add("minutes", item.Minutes);
+                                        para.Add("seconds", item.Seconds);
+                                        para.Add("profileId", item.ProfileNumber_CurrentStatus);
+                                        para.Add("profileName", item.ProfileName);
+                                        para.Add("stepId", item.ProfileStepNumber_CurrentStatus);
+                                        para.Add("stepName", item.StepName.ToString());
+                                        para.Add("setPoint", item.SetPoint);
+                                        para.Add("status", item.Status);
+                                        para.Add("createdDate", DateTime.Now);
+                                        para.Add("details", JsonConvert.SerializeObject(item));
 
-                                    con.Execute("sp_FT04Insert", param: para, commandType: CommandType.StoredProcedure, transaction: tran, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
+                                        con.Execute("sp_FT04Insert", param: para, commandType: CommandType.StoredProcedure, transaction: tran, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
+                                    }
+                                    else if (item.Status == 0 && item.ZIndex != Guid.Empty && item.Temperature > 0 && item.CountSecondTagChange >= 2)
+                                    {
+                                        var para = new DynamicParameters();
+                                        para.Add("ovenId", item.OvenId);
+                                        para.Add("ovenName", item.OvenName);
+                                        para.Add("temperature  ", item.Temperature);
+                                        para.Add("startTime", item.BeginTime);
+                                        para.Add("endTime", DateTime.Now);
+                                        para.Add("zIndex", item.ZIndex);
+                                        para.Add("hours", item.Hours);
+                                        para.Add("minutes", item.Minutes);
+                                        para.Add("seconds", item.Seconds);
+                                        para.Add("profileId", item.ProfileNumber_CurrentStatus);
+                                        para.Add("profileName", item.ProfileName);
+                                        para.Add("stepId", item.ProfileStepNumber_CurrentStatus);
+                                        para.Add("stepName", item.StepName.ToString());
+                                        para.Add("setPoint", item.SetPoint);
+                                        para.Add("status", item.Status);
+                                        para.Add("createdDate", DateTime.Now);
+                                        para.Add("details", JsonConvert.SerializeObject(item));
+
+                                        con.Execute("sp_FT04Insert", param: para, commandType: CommandType.StoredProcedure, transaction: tran, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
+
+                                        item.ZIndex = Guid.Empty;
+                                        //item.ProfileName = null;
+                                        //item.BeginTime = null;
+                                        //item.TotalTimeRunMinute = 0;
+                                        //item.SetPointLastStep = 0;
+                                        //item.TempRange = 0;
+                                        //item.TotalTimeRunMinute = 0;
+                                        //item.SetPoint = 0;
+                                        //item.ProfileStepNumber_CurrentStatus = 0;
+                                    }
                                 }
-                                else if (item.Status == 0 && item.ZIndex != Guid.Empty && item.Temperature > 0 && item.CountSecondTagChange >= 2)
-                                {
-                                    var para = new DynamicParameters();
-                                    para.Add("ovenId", item.OvenId);
-                                    para.Add("ovenName", item.OvenName);
-                                    para.Add("temperature  ", item.Temperature);
-                                    para.Add("startTime", item.BeginTime);
-                                    para.Add("endTime", DateTime.Now);
-                                    para.Add("zIndex", item.ZIndex);
-                                    para.Add("hours", item.Hours);
-                                    para.Add("minutes", item.Minutes);
-                                    para.Add("seconds", item.Seconds);
-                                    para.Add("profileId", item.ProfileNumber_CurrentStatus);
-                                    para.Add("profileName", item.ProfileName);
-                                    para.Add("stepId", item.ProfileStepNumber_CurrentStatus);
-                                    para.Add("stepName", item.StepName.ToString());
-                                    para.Add("setPoint", item.SetPoint);
-                                    para.Add("status", item.Status);
-                                    para.Add("createdDate", DateTime.Now);
-                                    para.Add("details", JsonConvert.SerializeObject(item));
-
-                                    con.Execute("sp_FT04Insert", param: para, commandType: CommandType.StoredProcedure, transaction: tran, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
-
-                                    item.ZIndex = Guid.Empty;
-                                    //item.ProfileName = null;
-                                    //item.BeginTime = null;
-                                    //item.TotalTimeRunMinute = 0;
-                                    //item.SetPointLastStep = 0;
-                                    //item.TempRange = 0;
-                                    //item.TotalTimeRunMinute = 0;
-                                    //item.SetPoint = 0;
-                                    //item.ProfileStepNumber_CurrentStatus = 0;
-                                }
+                                tran.Commit();
                             }
-                            tran.Commit();
-                        }
-                        catch
-                        {
-                            tran.Rollback();
-                            return;
+                            catch
+                            {
+                                tran.Rollback();
+                                return;
+                            }
                         }
                     }
-                }
 
-                System.Threading.Thread.Sleep(GlobalVariable.ConfigSystem.DataLogWhenRunProfileInterval);
+                    System.Threading.Thread.Sleep(GlobalVariable.ConfigSystem.DataLogWhenRunProfileInterval);
+                }
+                catch (Exception ex) { }
             }
         }
 
@@ -424,75 +449,96 @@ namespace GiamSat.Scada
         {
             while (true)
             {
-                _endTime = _endTimeDisplay = DateTime.Now;
-                _totalTime = (_endTime - _startTime).TotalMilliseconds;
-                _totalTimeDisplay = (_endTimeDisplay - _startTimeDisplay).TotalMilliseconds;
-
-                #region realtime display
-                if (_totalTimeDisplay >= GlobalVariable.ConfigSystem.DisplayRealtimeInterval)
+                try
                 {
-                    _startTimeDisplay = DateTime.Now;
-                    //log data
-                    using (var con = GlobalVariable.GetDbConnection())
-                    {
-                        var para = new DynamicParameters();
-                        con.Execute("Truncate table FT02");
-                        var displayData = JsonConvert.SerializeObject(_displayRealtime);
-                        para = null;
-                        para = new DynamicParameters();
-                        para.Add("C000", displayData);
-                        para.Add("createdDate", DateTime.Now);
-                        con.Execute("sp_FT02Insert", param: para, commandType: CommandType.StoredProcedure, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
-                    }
-                }
-                #endregion
+                    _endTime = _endTimeDisplay = DateTime.Now;
+                    _totalTime = (_endTime - _startTime).TotalMilliseconds;
+                    _totalTimeDisplay = (_endTimeDisplay - _startTimeDisplay).TotalMilliseconds;
 
-                #region data log
-                if (_totalTime >= GlobalVariable.ConfigSystem.DataLogInterval)
-                {
-                    _startTime = DateTime.Now;
-                    //log data
-                    using (var con = GlobalVariable.GetDbConnection())
+                    #region realtime display
+                    if (_totalTimeDisplay >= GlobalVariable.ConfigSystem.DisplayRealtimeInterval)
                     {
-                        foreach (var item in _displayRealtime)
+                        _startTimeDisplay = DateTime.Now;
+                        //log data
+                        using (var con = GlobalVariable.GetDbConnection())
                         {
                             var para = new DynamicParameters();
-                            para.Add("ovenId", item.OvenId);
-                            para.Add("ovenName", item.OvenName);
-                            para.Add("temperature", item.Temperature);
-                            para.Add("details", JsonConvert.SerializeObject(item));
-
-                            con.Execute("sp_FT03Insert", param: para, commandType: CommandType.StoredProcedure, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
+                            con.Execute("Truncate table FT02");
+                            var displayData = JsonConvert.SerializeObject(_displayRealtime);
+                            para = null;
+                            para = new DynamicParameters();
+                            para.Add("C000", displayData);
+                            para.Add("createdDate", DateTime.Now);
+                            con.Execute("sp_FT02Insert", param: para, commandType: CommandType.StoredProcedure, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
                         }
                     }
-                }
-                #endregion
+                    #endregion
 
-                #region Kiểm tra xem lò chạy hay dùng để log data và cảnh báo
-                foreach (var item in _displayRealtime)
+                    #region data log
+                    if (_totalTime >= GlobalVariable.ConfigSystem.DataLogInterval)
+                    {
+                        _startTime = DateTime.Now;
+                        //log data
+                        using (var con = GlobalVariable.GetDbConnection())
+                        {
+                            foreach (var item in _displayRealtime)
+                            {
+                                var para = new DynamicParameters();
+                                para.Add("ovenId", item.OvenId);
+                                para.Add("ovenName", item.OvenName);
+                                para.Add("temperature", item.Temperature);
+                                para.Add("details", JsonConvert.SerializeObject(item));
+
+                                con.Execute("sp_FT03Insert", param: para, commandType: CommandType.StoredProcedure, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
+                            }
+                        }
+                    }
+                    #endregion
+
+                    #region Kiểm tra xem lò chạy hay dùng để log data và cảnh báo
+                    foreach (var item in _displayRealtime)
+                    {
+                        item.StatusTimeEnd = DateTime.Now;
+                        if ((item.StatusTimeEnd - item.StatusTimeBegin).TotalMilliseconds <= GlobalVariable.ConfigSystem.CountSecondStop && item.StatusFlag == false)
+                        {
+                            item.Status = 1;//báo lò đang chạy.
+                            item.ZIndex = Guid.NewGuid();
+                            item.BeginTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                            item.StatusFlag = true;
+
+                            item.BeginTimeAlarm = DateTime.Now;
+                        }
+                        if ((item.StatusTimeEnd - item.StatusTimeBegin).TotalMilliseconds > GlobalVariable.ConfigSystem.CountSecondStop && item.StatusFlag == true)
+                        {
+                            item.Status = 0;
+                            //item.ZIndex = Guid.Empty;//được xóa khi đã log profile trạng thái dừng thành công LogProfile
+                            item.StatusFlag = false;
+                        }
+
+                        //Debug.WriteLine($"{item.OvenName} status: {item.Status}");
+                    }
+                    #endregion
+
+                    System.Threading.Thread.Sleep(100);
+                }
+                catch (Exception ex) { }
+            }
+        }
+
+        private async void OnOffSerien()
+        {
+            for (int i = 1; i <= _alarmEnable.Length; i++)
+            {
+                if (_alarmEnable[i] && _alarmEnableFlag[i] == false)
                 {
-                    item.StatusTimeEnd = DateTime.Now;
-                    if ((item.StatusTimeEnd - item.StatusTimeBegin).TotalMilliseconds <= GlobalVariable.ConfigSystem.CountSecondStop && item.StatusFlag == false)
-                    {
-                        item.Status = 1;//báo lò đang chạy.
-                        item.ZIndex = Guid.NewGuid();
-                        item.BeginTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                        item.StatusFlag = true;
-
-                        item.BeginTimeAlarm = DateTime.Now;
-                    }
-                    if ((item.StatusTimeEnd - item.StatusTimeBegin).TotalMilliseconds > GlobalVariable.ConfigSystem.CountSecondStop && item.StatusFlag == true)
-                    {
-                        item.Status = 0;
-                        //item.ZIndex = Guid.Empty;//được xóa khi đã log profile trạng thái dừng thành công LogProfile
-                        item.StatusFlag = false;
-                    }
-
-                    //Debug.WriteLine($"{item.OvenName} status: {item.Status}");
+                    await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{i}", "1", WritePiority.High);
+                    _alarmEnableFlag[i] = true;
                 }
-                #endregion
-
-                System.Threading.Thread.Sleep(100);
+                else if (!_alarmEnable[i] && _alarmEnableFlag[i] == true)
+                {
+                    await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{i}", "1", WritePiority.High);
+                    _alarmEnableFlag[i] = false;
+                }
             }
         }
 
@@ -502,145 +548,103 @@ namespace GiamSat.Scada
         private async void _timer_Tick(object sender, EventArgs e)
         {
             Timer t = (Timer)sender;
-            t.Enabled = false;
-
-            if (this.InvokeRequired)
+            try
             {
-                this?.Invoke(new Action(() =>
+                t.Enabled = false;
+
+                if (this.InvokeRequired)
+                {
+                    this?.Invoke(new Action(() =>
+                    {
+                        _labTime.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                    }));
+                }
+                else
                 {
                     _labTime.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-                }));
-            }
-            else
-            {
-                _labTime.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-            }
+                }
 
-            #region check alarm
-            int index = 1;
-            foreach (var item in _displayRealtime)
-            {
-                if (item.Status == 1 && item.CountSecondTagChange >= 2)
+                #region check alarm
+                int index = 1;
+                foreach (var item in _displayRealtime)
                 {
-                    //Cảnh báo toàn thời gian
-
-                    //rampTime tăng nhiệt
-                    if (item.SetPointLastStep < item.SetPoint)
+                    if (item.Status == 1 && item.CountSecondTagChange >= 2)
                     {
-                        if (item.EndStep == 0)
+                        //Cảnh báo toàn thời gian
+
+                        //rampTime tăng nhiệt
+                        if (item.SetPointLastStep < item.SetPoint)
                         {
-                            item.EndTimeAlarm = DateTime.Now;
-                            var tAlarm = (item.EndTimeAlarm - item.BeginTimeAlarm).TotalMinutes;
-
-                            if (tAlarm > GlobalVariable.ConfigSystem.TimeTempChange)
+                            if (item.EndStep == 0)
                             {
+                                item.EndTimeAlarm = DateTime.Now;
+                                var tAlarm = (item.EndTimeAlarm - item.BeginTimeAlarm).TotalMinutes;
 
+                                if (tAlarm > GlobalVariable.ConfigSystem.TimeTempChange)
+                                {
+
+                                }
                             }
-                        }
-                        else//so xánh cảu bước cũ, khi vừa kết thúc bước, chuyển qua bước khác.
-                        {
-                            if (item.Temperature < (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTempForRampDown)
-                               //|| item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp))
-                               && item.AlarmFlagLastStep == false
-                               )
+                            else//so xánh cảu bước cũ, khi vừa kết thúc bước, chuyển qua bước khác.
                             {
-                                item.Alarm = 1;
-                                item.SerienStatus = 1;
-                                item.AlarmDescription = $"Nhiệt độ chưa đạt";
-                                await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
-
-                                //log DB alarm
-                                var p = new DynamicParameters();
-
-                                item.AlarmFlagLastStep = true;
-                                Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                            }
-                            else if (item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOutForRampDown)
-                                // && item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
-                                //&& item.AlarmFlagLastStep == true
-                                )
-                            {
-                                item.Alarm = 0;
-                                item.SerienStatus = 0;
-                                item.AlarmDescription = null;
-                                await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
-                                item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
-                                item.AlarmFlagLastStep = false;
-
-                                Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                            }
-                        }
-                    }
-                    //soak-ngâm
-                    else if (item.SetPointLastStep == item.SetPoint)
-                    {
-                        if (item.EndStep == 0)
-                        {
-
-                        }
-                        else//so xánh cảu bước cũ, khi vừa kết thúc bước, chuyển qua bước khác.
-                        {
-                            if (item.Temperature < (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTempForRampDown)
-                               //|| item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp))
-                               && item.AlarmFlagLastStep == false
-                               )
-                            {
-                                item.Alarm = 1;
-                                item.SerienStatus = 1;
-                                item.AlarmDescription = $"Nhiệt độ chưa đạt";
-                                await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
-
-                                //log DB alarm
-                                var p = new DynamicParameters();
-
-                                item.AlarmFlagLastStep = true;
-                                Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                            }
-                            else if (item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOutForRampDown)
-                                //&& item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
-                                //&& item.AlarmFlagLastStep == true
-                                )
-                            {
-                                item.Alarm = 0;
-                                item.SerienStatus = 0;
-                                item.AlarmDescription = null;
-                                await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
-                                item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
-                                item.AlarmFlagLastStep = false;
-
-                                Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                            }
-                        }
-                    }
-                    //rampTime giảm nhiệt
-                    else if (item.SetPointLastStep > item.SetPoint)
-                    {
-                        if (item.EndStep == 0)
-                        {
-
-                        }
-                        else
-                        {
-                            if (item.StepName != EnumProfileStepType.End)
-                            {
-                                if (item.Temperature > (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempForRampDown)
-                               //|| item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp))
-                               && item.AlarmFlagLastStep == false
-                               )
+                                if (item.Temperature < (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTempForRampDown)
+                                   //|| item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp))
+                                   && item.AlarmFlagLastStep == false
+                                   )
                                 {
                                     item.Alarm = 1;
                                     item.SerienStatus = 1;
-                                    item.AlarmDescription = $"Nhiệt độ cao";
+                                    item.AlarmDescription = $"Nhiệt độ chưa đạt";
                                     await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
 
                                     //log DB alarm
                                     var p = new DynamicParameters();
 
+                                    item.AlarmFlagLastStep = true;
+                                    Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
+                                }
+                                else if (item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOutForRampDown)
+                                    // && item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
+                                    //&& item.AlarmFlagLastStep == true
+                                    )
+                                {
+                                    item.Alarm = 0;
+                                    item.SerienStatus = 0;
+                                    item.AlarmDescription = null;
+                                    await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
+                                    item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
+                                    item.AlarmFlagLastStep = false;
+
+                                    Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
+                                }
+                            }
+                        }
+                        //soak-ngâm
+                        else if (item.SetPointLastStep == item.SetPoint)
+                        {
+                            if (item.EndStep == 0)
+                            {
+
+                            }
+                            else//so xánh cảu bước cũ, khi vừa kết thúc bước, chuyển qua bước khác.
+                            {
+                                if (item.Temperature < (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTempForRampDown)
+                                   //|| item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp))
+                                   && item.AlarmFlagLastStep == false
+                                   )
+                                {
+                                    item.Alarm = 1;
+                                    item.SerienStatus = 1;
+                                    item.AlarmDescription = $"Nhiệt độ chưa đạt";
+                                    await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
+
+                                    //log DB alarm
+                                    var p = new DynamicParameters();
 
                                     item.AlarmFlagLastStep = true;
                                     Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                                 }
-                                else if (item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOutForRampDown)
+                                else if (item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOutForRampDown)
                                     //&& item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
                                     //&& item.AlarmFlagLastStep == true
                                     )
@@ -651,95 +655,145 @@ namespace GiamSat.Scada
                                     await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
                                     item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
                                     item.AlarmFlagLastStep = false;
-                                    Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                                }
-                            }
-                            else
-                            {
-                                if (item.Temperature > (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempForRampDown)
-                               //|| item.Temperature <= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp))
-                               && item.AlarmFlagLastStep == false
-                               )
-                                {
-                                    item.Alarm = 1;
-                                    item.SerienStatus = 1;
-                                    item.AlarmDescription = $"Nhiệt độ cao";
-                                    await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
 
-                                    //log DB alarm
-                                    var p = new DynamicParameters();
-
-                                    item.AlarmFlagLastStep = true;
-                                    Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                                }
-                                else if (item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOutForRampDown)
-                                    //&& item.Temperature > (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
-                                    //&& item.AlarmFlagLastStep == true
-                                    )
-                                {
-                                    item.Alarm = 0;
-                                    item.SerienStatus = 0;
-                                    item.AlarmDescription = null;
-                                    await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
-                                    item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
-                                    item.AlarmFlagLastStep = false;
                                     Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                                 }
                             }
                         }
+                        //rampTime giảm nhiệt
+                        else if (item.SetPointLastStep > item.SetPoint)
+                        {
+                            if (item.EndStep == 0)
+                            {
+
+                            }
+                            else
+                            {
+                                if (item.StepName != EnumProfileStepType.End)
+                                {
+                                    if (item.Temperature > (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempForRampDown)
+                                   //|| item.Temperature >= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp))
+                                   && item.AlarmFlagLastStep == false
+                                   )
+                                    {
+                                        item.Alarm = 1;
+                                        item.SerienStatus = 1;
+                                        item.AlarmDescription = $"Nhiệt độ cao";
+                                        await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
+
+                                        //log DB alarm
+                                        var p = new DynamicParameters();
+
+
+                                        item.AlarmFlagLastStep = true;
+                                        Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
+                                    }
+                                    else if (item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOutForRampDown)
+                                        //&& item.Temperature < (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTemp)
+                                        //&& item.AlarmFlagLastStep == true
+                                        )
+                                    {
+                                        item.Alarm = 0;
+                                        item.SerienStatus = 0;
+                                        item.AlarmDescription = null;
+                                        await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
+                                        item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
+                                        item.AlarmFlagLastStep = false;
+                                        Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
+                                    }
+                                }
+                                else
+                                {
+                                    if (item.Temperature > (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempForRampDown)
+                                   //|| item.Temperature <= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp))
+                                   && item.AlarmFlagLastStep == false
+                                   )
+                                    {
+                                        item.Alarm = 1;
+                                        item.SerienStatus = 1;
+                                        item.AlarmDescription = $"Nhiệt độ cao";
+                                        await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
+
+                                        //log DB alarm
+                                        var p = new DynamicParameters();
+
+                                        item.AlarmFlagLastStep = true;
+                                        Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
+                                    }
+                                    else if (item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOutForRampDown)
+                                        //&& item.Temperature > (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTemp)
+                                        //&& item.AlarmFlagLastStep == true
+                                        )
+                                    {
+                                        item.Alarm = 0;
+                                        item.SerienStatus = 0;
+                                        item.AlarmDescription = null;
+                                        await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
+                                        item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
+                                        item.AlarmFlagLastStep = false;
+                                        Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
+                                    }
+                                }
+                            }
+                        }
                     }
-                }
-                else if (item.Status == 0 && item.CountSecondTagChange >= 2
-                       && item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOutForRampDown) && item.AlarmFlagLastStep == true)
-                {
-                    item.Alarm = 0;
-                    item.SerienStatus = 0;
-                    item.AlarmDescription = null;
-                    await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
-                    item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
-                    item.AlarmFlagLastStep = false;
-                    Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                }
-
-                #region kiểm tra xem có tín hiệu tắt còi từ server thì tắt còi
-                var c = _controlPlcModel.FirstOrDefault(x => x.OvenId == item.OvenId);
-                if (c.OffSerien == 1)
-                {
-                    await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
-                    c.OffSerien = 0;
-                    item.SerienStatus = 0;//gui tin hieu bao bat tat coi
-
-                    using (var con = GlobalVariable.GetDbConnection())
+                    else if (item.Status == 0 && item.CountSecondTagChange >= 2
+                           && item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOutForRampDown) && item.AlarmFlagLastStep == true)
                     {
-                        var p = new DynamicParameters();
-                        p.Add("id", _ft06.FirstOrDefault().Id);
-                        p.Add("c000", JsonConvert.SerializeObject(_controlPlcModel));
-
-                        con.Execute("sp_FT06Update", param: p, commandType: CommandType.StoredProcedure, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
+                        item.Alarm = 0;
+                        item.SerienStatus = 0;
+                        item.AlarmDescription = null;
+                        await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
+                        item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
+                        item.AlarmFlagLastStep = false;
+                        Debug.WriteLine($"{item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
                     }
-                }
 
+                    #region kiểm tra xem có tín hiệu tắt còi từ server thì tắt còi
+                    var c = _controlPlcModel.FirstOrDefault(x => x.OvenId == item.OvenId);
+                    if (c.OffSerien == 1)
+                    {
+                        await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
+                        c.OffSerien = 0;
+                        item.SerienStatus = 0;//gui tin hieu bao bat tat coi
+
+                        using (var con = GlobalVariable.GetDbConnection())
+                        {
+                            var p = new DynamicParameters();
+                            p.Add("id", _ft06.FirstOrDefault().Id);
+                            p.Add("c000", JsonConvert.SerializeObject(_controlPlcModel));
+
+                            con.Execute("sp_FT06Update", param: p, commandType: CommandType.StoredProcedure, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds);
+                        }
+                    }
+
+                    #endregion
+
+                    index += 1;
+                }
                 #endregion
 
-                index += 1;
-            }
-            #endregion
-
-            #region Đọc DB để lấy tín hiệu tắt còi từ web
-            using (var con = GlobalVariable.GetDbConnection())
-            {
-                _ft06 = con.Query<FT06>("sp_FT06GetAll", commandType: CommandType.StoredProcedure, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds).ToList();
-                if (_ft06 != null)
+                #region Đọc DB để lấy tín hiệu tắt còi từ web
+                using (var con = GlobalVariable.GetDbConnection())
                 {
-                    _controlPlcModel = JsonConvert.DeserializeObject<List<ControlPlcModel>>(_ft06.FirstOrDefault().C000);
+                    _ft06 = con.Query<FT06>("sp_FT06GetAll", commandType: CommandType.StoredProcedure, commandTimeout: (int)TimeSpan.FromMinutes(30).TotalMilliseconds).ToList();
+                    if (_ft06 != null)
+                    {
+                        _controlPlcModel = JsonConvert.DeserializeObject<List<ControlPlcModel>>(_ft06.FirstOrDefault().C000);
+                    }
                 }
+                #endregion
+
+                //OnOffSerien();//gọi method kiểm tra bật tắt còi
+
+                //lấy các thông số config
+                RefreshConfig();
             }
-            #endregion
-
-            //lấy các thông số config
-            RefreshConfig();
-
-            t.Enabled = true;
+            catch (Exception ex) { }
+            finally
+            {
+                t.Enabled = true;
+            }
         }
 
         private void EasyDriverConnector1_Started(object sender, EventArgs e)
@@ -863,238 +917,293 @@ namespace GiamSat.Scada
 
         private async void Temperature_QualityChanged(object sender, TagQualityChangedEventArgs e)
         {
-            var path = e.Tag.Parent.Path;
-            var deviceName = e.Tag.Parent.Name;
-            var al = deviceName.Substring(4);
-
-            foreach (var item in _displayRealtime)
+            try
             {
-                if (item.Path == path)
+                var path = e.Tag.Parent.Path;
+                var deviceName = e.Tag.Parent.Name;
+                var al = deviceName.Substring(4);
+
+                foreach (var item in _displayRealtime)
                 {
-                    item.ConnectionStatus = e.NewQuality == Quality.Good ? 1 : 0;
-
-                    if (item.ConnectionStatus == 0)
+                    if (item.Path == path)
                     {
-                        item.AlarmDescription = "Mất kết nối đến lò";
-                        await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{al}", "1", WritePiority.High);
-                        item.SerienStatus = 1;
-                    }
-                    else
-                    {
-                        item.AlarmDescription = null;
-                        await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{al}", "0", WritePiority.High);
-                        item.SerienStatus = 0;
-                    }
+                        item.ConnectionStatus = e.NewQuality == Quality.Good ? 1 : 0;
 
-                    Debug.WriteLine($"Alarm description {item.OvenId}:{item.AlarmDescription}");
-                    return;
+                        if (item.ConnectionStatus == 0)
+                        {
+                            item.AlarmDescription = "Mất kết nối đến lò";
+                            await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{al}", "1", WritePiority.High);
+                            item.SerienStatus = 1;
+                        }
+                        else
+                        {
+                            item.AlarmDescription = null;
+                            await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{al}", "0", WritePiority.High);
+                            item.SerienStatus = 0;
+                        }
+
+                        Debug.WriteLine($"Alarm description {item.OvenId}:{item.AlarmDescription}");
+                        return;
+                    }
                 }
             }
+            catch { }
         }
 
         private void Temperature_ValueChanged(object sender, TagValueChangedEventArgs e)
         {
-            var path = e.Tag.Parent.Path;
-
-            foreach (var item in _displayRealtime)
+            try
             {
-                if (item.Path == path)
-                {
-                    //Debug.WriteLine($"{path}/Tempperature: {e.NewValue}");
-                    item.Temperature = double.TryParse(e.NewValue, out double value) ? Math.Round(value * GlobalVariable.ConfigSystem.Gain, 1) : item.Temperature;
+                var path = e.Tag.Parent.Path;
 
-                    return;
+                foreach (var item in _displayRealtime)
+                {
+                    if (item.Path == path)
+                    {
+                        //Debug.WriteLine($"{path}/Tempperature: {e.NewValue}");
+                        item.Temperature = double.TryParse(e.NewValue, out double value) ? Math.Round(value * GlobalVariable.ConfigSystem.Gain, 1) : item.Temperature;
+
+                        return;
+                    }
                 }
             }
+            catch (Exception ex) { }
         }
 
-        private void DigitalInput1Status_ValueChanged(object sender, TagValueChangedEventArgs e)
+        private async void DigitalInput1Status_ValueChanged(object sender, TagValueChangedEventArgs e)
         {
-            var path = e.Tag.Parent.Path;
-
-            foreach (var item in _displayRealtime)
+            try
             {
-                if (item.Path == path)
-                {
-                    //Watlow tra tin hieu ve khi co tác động là 0, còn không tác động là 1.
-                    item.DoorStatus = e.NewValue == "1" ? 1 : 0;
+                var path = e.Tag.Parent.Path;
+                var deviceName = e.Tag.Parent.Name;
+                var al = deviceName.Substring(4);
 
-                    if (e.NewValue == "0")
+                foreach (var item in _displayRealtime)
+                {
+                    if (item.Path == path)
                     {
-                        item.AlarmDescription = "Cửa lò mở";
+                        //Watlow tra tin hieu ve khi co tác động là 0, còn không tác động là 1.
+                        item.DoorStatus = e.NewValue == "1" ? 1 : 0;
+
+                        if (e.NewValue == "0")
+                        {
+                            item.AlarmDescription = "Cửa lò mở";
+
+                            if (item.Status == 1)
+                            {
+                                await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{al}", "1", WritePiority.High);
+                            }
+                        }
+                        else
+                        {
+                            item.AlarmDescription = null;
+
+                            if (item.Status == 1)
+                            {
+                                await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{al}", "0", WritePiority.High);
+                            }
+                        }
+                        return;
                     }
-                    else
-                    {
-                        item.AlarmDescription = null;
-                    }
-                    return;
                 }
             }
+            catch (Exception ex) { }
         }
 
         private void EndSetPointCh1_CurrentStatus_ValueChanged(object sender, TagValueChangedEventArgs e)
         {
-            var path = e.Tag.Parent.Path;
-
-            foreach (var item in _displayRealtime)
+            try
             {
-                if (item.Path == path)
+                var path = e.Tag.Parent.Path;
+
+                foreach (var item in _displayRealtime)
                 {
-                    //item.SetPoint = double.TryParse(e.NewValue, out double value) ? value : item.SetPoint;
-                    return;
+                    if (item.Path == path)
+                    {
+                        //item.SetPoint = double.TryParse(e.NewValue, out double value) ? value : item.SetPoint;
+                        return;
+                    }
                 }
             }
+            catch (Exception ex) { }
         }
 
         private void SecondsRemaining_CurrentStatus_ValueChanged(object sender, TagValueChangedEventArgs e)
         {
-            var path = e.Tag.Parent.Path;
-
-            foreach (var item in _displayRealtime)
+            try
             {
-                if (item.Path == path)
+                var path = e.Tag.Parent.Path;
+
+                foreach (var item in _displayRealtime)
                 {
-                    item.StatusTimeBegin = DateTime.Now;
+                    if (item.Path == path)
+                    {
+                        item.StatusTimeBegin = DateTime.Now;
 
-                    item.SecondsRemaining_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.SecondsRemaining_CurrentStatus;
+                        item.SecondsRemaining_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.SecondsRemaining_CurrentStatus;
 
-                    if (item.CountSecondTagChange > 1000) item.CountSecondTagChange = 1;
+                        if (item.CountSecondTagChange > 1000) item.CountSecondTagChange = 1;
 
-                    item.CountSecondTagChange += 1;
+                        item.CountSecondTagChange += 1;
 
-                    return;
+                        return;
+                    }
                 }
             }
+            catch (Exception ex) { }
         }
 
         private void MinutesRemaining_CurrentStatus_ValueChanged(object sender, TagValueChangedEventArgs e)
         {
-            var path = e.Tag.Parent.Path;
-
-            foreach (var item in _displayRealtime)
+            try
             {
-                if (item.Path == path)
+                var path = e.Tag.Parent.Path;
+
+                foreach (var item in _displayRealtime)
                 {
-                    item.MinutesRemaining_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.MinutesRemaining_CurrentStatus;
-                    return;
+                    if (item.Path == path)
+                    {
+                        item.MinutesRemaining_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.MinutesRemaining_CurrentStatus;
+                        return;
+                    }
                 }
             }
+            catch (Exception ex) { }
         }
 
         private void HoursRemaining_CurrentStatus_ValueChanged(object sender, TagValueChangedEventArgs e)
         {
-            var path = e.Tag.Parent.Path;
-
-            foreach (var item in _displayRealtime)
+            try
             {
-                if (item.Path == path)
+                var path = e.Tag.Parent.Path;
+
+                foreach (var item in _displayRealtime)
                 {
-                    item.HoursRemaining_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.HoursRemaining_CurrentStatus;
-                    return;
+                    if (item.Path == path)
+                    {
+                        item.HoursRemaining_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.HoursRemaining_CurrentStatus;
+                        return;
+                    }
                 }
             }
+            catch (Exception ex) { }
         }
 
         private void ProfileStepType_CurrentStatus_ValueChanged(object sender, TagValueChangedEventArgs e)
         {
-            var path = e.Tag.Parent.Path;
-
-            foreach (var item in _displayRealtime)
+            try
             {
-                if (item.Path == path)
+                var path = e.Tag.Parent.Path;
+
+                foreach (var item in _displayRealtime)
                 {
-                    item.ProfileStepType_CurrentStatus = e.NewValue == "1" ? EnumProfileStepType.RampTime
-                                                        : e.NewValue == "2" ? EnumProfileStepType.RampRate
-                                                        : e.NewValue == "3" ? EnumProfileStepType.Soak
-                                                        : e.NewValue == "4" ? EnumProfileStepType.Jump
-                                                        : EnumProfileStepType.End;
-                    return;
+                    if (item.Path == path)
+                    {
+                        item.ProfileStepType_CurrentStatus = e.NewValue == "1" ? EnumProfileStepType.RampTime
+                                                            : e.NewValue == "2" ? EnumProfileStepType.RampRate
+                                                            : e.NewValue == "3" ? EnumProfileStepType.Soak
+                                                            : e.NewValue == "4" ? EnumProfileStepType.Jump
+                                                            : EnumProfileStepType.End;
+                        return;
+                    }
                 }
             }
+            catch (Exception ex) { }
         }
 
         private void ProfileStepNumber_CurrentStatus_ValueChanged(object sender, TagValueChangedEventArgs e)
         {
-            var path = e.Tag.Parent.Path;
-
-            foreach (var item in _displayRealtime)
+            try
             {
-                if (item.Path == path)
+                var path = e.Tag.Parent.Path;
+
+                foreach (var item in _displayRealtime)
                 {
-                    //if (item.ProfileStepNumber_CurrentStatus == 0) item.SetPointLastStep = item.Temperature;
-                    //else item.SetPointLastStep = item.SetPoint;
-                    item.SetPointLastStep = item.SetPoint;
-                    item.LastStepType = item.StepName;
-
-                    item.ProfileStepNumber_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.ProfileStepNumber_CurrentStatus;
-
-                    //cập nhật các thông số cảu step mới vào để chạy
-                    var step = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus)?
-                        .Steps.FirstOrDefault(x => x.Id == item.ProfileStepNumber_CurrentStatus);
-
-                    if (step != null)
+                    if (item.Path == path)
                     {
-                        item.StepName = step.StepType;
-                        item.Hours = (int)(step?.Hours); item.Minutes = (int)(step?.Minutes); item.Seconds = (int)(step?.Seconds);
-                        item.SetPoint = (double)(step?.SetPoint);
-
-                        item.TempRange = Math.Round(Math.Abs((item.SetPoint - item.SetPointLastStep)), 2);
-                    }
-
-                    var profile = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus);
-                    item.ProfileName = profile?.Name;
-
-                    if (item.SetPointLastStep == 0 || (item.ProfileStepNumber_CurrentStatus == 1 && item.LastStepType != EnumProfileStepType.End))
-                    {
+                        //if (item.ProfileStepNumber_CurrentStatus == 0) item.SetPointLastStep = item.Temperature;
+                        //else item.SetPointLastStep = item.SetPoint;
                         item.SetPointLastStep = item.SetPoint;
-                    }
+                        item.LastStepType = item.StepName;
 
-                    if (item.CountSecondTagChange >= 2 && ((item.ProfileStepNumber_CurrentStatus > 1)))// && item.LastStepType != EnumProfileStepType.End)
-                                                                                                       //|| (item.ProfileStepNumber_CurrentStatus == 1 && item.LastStepType == EnumProfileStepType.End)))
-                    {
-                        item.EndStep = 1;
-                    }
+                        item.ProfileStepNumber_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.ProfileStepNumber_CurrentStatus;
 
-                    Debug.WriteLine($"{item.OvenName} - {item.StepName} - EndStep: {item.EndStep} - Last set point: {item.SetPointLastStep} - set point: {item.SetPoint}");
-                    return;
+                        //cập nhật các thông số cảu step mới vào để chạy
+                        var step = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus)?
+                            .Steps.FirstOrDefault(x => x.Id == item.ProfileStepNumber_CurrentStatus);
+
+                        if (step != null)
+                        {
+                            item.StepName = step.StepType;
+                            item.Hours = (int)(step?.Hours); item.Minutes = (int)(step?.Minutes); item.Seconds = (int)(step?.Seconds);
+                            item.SetPoint = (double)(step?.SetPoint);
+
+                            item.TempRange = Math.Round(Math.Abs((item.SetPoint - item.SetPointLastStep)), 2);
+                        }
+
+                        var profile = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus);
+                        item.ProfileName = profile?.Name;
+
+                        if (item.SetPointLastStep == 0 || (item.ProfileStepNumber_CurrentStatus == 1 && item.LastStepType != EnumProfileStepType.End))
+                        {
+                            item.SetPointLastStep = item.SetPoint;
+                        }
+
+                        if (item.CountSecondTagChange >= 2 && ((item.ProfileStepNumber_CurrentStatus > 1)))// && item.LastStepType != EnumProfileStepType.End)
+                                                                                                           //|| (item.ProfileStepNumber_CurrentStatus == 1 && item.LastStepType == EnumProfileStepType.End)))
+                        {
+                            item.EndStep = 1;
+                        }
+
+                        Debug.WriteLine($"{item.OvenName} - {item.StepName} - EndStep: {item.EndStep} - Last set point: {item.SetPointLastStep} - set point: {item.SetPoint}");
+                        return;
+                    }
                 }
             }
+            catch (Exception ex) { }
         }
 
         private void ProfileNumber_CurrentStatus_ValueChanged(object sender, TagValueChangedEventArgs e)
         {
-            var path = e.Tag.Parent.Path;
-
-            foreach (var item in _displayRealtime)
+            try
             {
-                if (item.Path == path)
-                {
-                    item.ProfileNumber_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.ProfileNumber_CurrentStatus;
+                var path = e.Tag.Parent.Path;
 
-                    var profile = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus);
-                    item.ProfileName = profile?.Name;
-                    item.LevelUp = (double)(profile?.LevelUp);
-                    item.LevelDown = (double)(profile?.LevelDown);
-                    return;
+                foreach (var item in _displayRealtime)
+                {
+                    if (item.Path == path)
+                    {
+                        item.ProfileNumber_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.ProfileNumber_CurrentStatus;
+
+                        var profile = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus);
+                        item.ProfileName = profile?.Name;
+                        item.LevelUp = (double)(profile?.LevelUp);
+                        item.LevelDown = (double)(profile?.LevelDown);
+                        return;
+                    }
                 }
             }
+            catch (Exception ex) { }
         }
 
         private void Profile1Name_C1_ValueChanged(object sender, TagValueChangedEventArgs e)
         {
-            var path = e.Tag.Parent.Path;
-
-            foreach (var item in _displayRealtime)
+            try
             {
-                if (item.Path == path)
-                {
-                    var c = (char)(int.TryParse(e.NewValue, out int value) ? value : 32);
+                var path = e.Tag.Parent.Path;
 
-                    Debug.WriteLine($"{e.Tag.Path}:{c}");
-                    return;
+                foreach (var item in _displayRealtime)
+                {
+                    if (item.Path == path)
+                    {
+                        var c = (char)(int.TryParse(e.NewValue, out int value) ? value : 32);
+
+                        Debug.WriteLine($"{e.Tag.Path}:{c}");
+                        return;
+                    }
                 }
             }
-
+            catch (Exception ex) { }
         }
         #endregion
         #endregion

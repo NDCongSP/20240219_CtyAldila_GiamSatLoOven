@@ -11,7 +11,7 @@ namespace GiamSat.API
     {
         public static string ConString { get; set; }
 
-        public static IDbConnection GetDbProvider()
+        public static SqlConnection GetDbProvider()
         {
             return new SqlConnection(ConString);
         }

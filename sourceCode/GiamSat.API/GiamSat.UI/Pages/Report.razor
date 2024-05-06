@@ -77,12 +77,12 @@
                                         </RadzenLineSeries>
 
                                         <RadzenLineSeries Smooth="@GlobalVariable.ConfigSystem.Smooth" Data="@_chartDataSeriesLevelUpProfile" CategoryProperty="Date" Title="Ngưỡng trên"
-                                                          LineType="LineType.Dashed" ValueProperty="Temperature" Stroke="Red">
+                                                          LineType="LineType.Dashed" ValueProperty="Temperature" Stroke="Red" Hidden="false">
                                             <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
                                             <RadzenSeriesDataLabels Visible="false" />
                                         </RadzenLineSeries>
                                         <RadzenLineSeries Smooth="@GlobalVariable.ConfigSystem.Smooth" Data="@_chartDataSeriesLevelDownProfile" CategoryProperty="Date" Title="Ngưỡng dưới"
-                                                          LineType="LineType.Dashed" ValueProperty="Temperature" Stroke="Orange">
+                                                          LineType="LineType.Dashed" ValueProperty="Temperature" Stroke="Orange" Hidden="false">
                                             <RadzenMarkers Visible="false" MarkerType="MarkerType.Circle" />
                                             <RadzenSeriesDataLabels Visible="false" />
                                         </RadzenLineSeries>

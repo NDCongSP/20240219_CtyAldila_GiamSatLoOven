@@ -19,7 +19,7 @@ namespace GiamSat.API
             _context = context;
             _contextAccessor = contextAccessor;
 
-            _context.Database.SetCommandTimeout(TimeSpan.FromMinutes(30));
+            _context.Database.SetCommandTimeout((int)TimeSpan.FromMinutes(60).TotalMilliseconds);
         }
 
         public async Task<Result<List<FT02>>> GetAll()
