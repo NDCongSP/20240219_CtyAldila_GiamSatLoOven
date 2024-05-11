@@ -163,5 +163,28 @@ namespace GiamSat.Models
         public DateTime EndTimeAlarm { get; set; }
         public double LevelUp { get; set; } = 0;
         public double LevelDown { get; set; } = 0;
+
+        /// <summary>
+        /// Biến dùng để lưu thời gian bắt đầu của bước.
+        /// Phục vụ cho việc xét alarm thời gian thực trong qua trình chạy profile.
+        /// </summary>
+        public DateTime BeginTimeOfStep { get; set; }
+
+        /// <summary>
+        /// Nhiệt độ cần đặt được tới thời điểm hiện tại.
+        /// DÙng cho cảnh báo toàn thời gian khi chạy profile.
+        /// </summary>
+        public double TempRequired { get; set; } = 0;
+
+        /// <summary>
+        /// Nhiệt độ ban đầu khi bắt đầu step.
+        /// Dùng cho cảnh báo toàn thời gian khi chạy profile.
+        /// </summary>
+        public double TempBeginStep { get; set; } = 0;
+
+        /// <summary>
+        /// Dùng để bật cho phép so sánh nhiệt độ để bật cảnh báo khi chạy profile.
+        /// </summary>
+        public bool IsCheckAlarm { get; set; } = false;
     }
 }

@@ -19,22 +19,10 @@ namespace GiamSat.UI.Pages
         private List<ControlPlcModel> _controlPlcModel = new List<ControlPlcModel>();
 
         private System.Timers.Timer _timer;
+        private bool _isLoad = false;
 
         string _styleCard = "rz-background-color-info-light rz-shadow-0 rz-border-radius-4 rz-m-0";
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            //if (firstRender)
-            //{
-            //    //await RadzenChart.Resize(width:100, height: 200);
-            //    _timer.Interval = 1000;
-            //    _timer.Elapsed += RefreshData;
-
-            //    _timer.Enabled = true;
-            //}
-
-            //await base.OnAfterRenderAsync(firstRender);
-        }
         protected override async Task OnInitializedAsync()
         {
             try
@@ -91,6 +79,8 @@ namespace GiamSat.UI.Pages
                 _timer.Elapsed += RefreshData;
                 _timer.Enabled = true;
                 #endregion
+
+                _isLoad = true;
             }
             catch { }
         }
@@ -180,7 +170,7 @@ namespace GiamSat.UI.Pages
 
         public void Dispose()
         {
-            _timer.Dispose();
+            if (_isLoad) _timer.Dispose();
         }
     }
 }

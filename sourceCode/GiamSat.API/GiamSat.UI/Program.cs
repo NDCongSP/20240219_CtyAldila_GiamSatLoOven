@@ -82,7 +82,7 @@ var supportedCultures = new List<CultureInfo>()
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     // Set the default culture 
-    var culture = new CultureInfo("de-DE");
+    var culture = new CultureInfo("en-US");
     //culture.NumberFormat.NumberDecimalSeparator = ".";
     options.DefaultRequestCulture = new RequestCulture(culture);
 

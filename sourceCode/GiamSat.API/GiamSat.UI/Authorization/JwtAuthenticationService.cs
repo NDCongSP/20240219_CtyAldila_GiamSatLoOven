@@ -138,6 +138,7 @@ namespace GiamSat.UI
             var expTime = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(exp));
             var timeUTC = DateTime.UtcNow;
             var diff = expTime - timeUTC;
+
             if (diff.TotalMinutes <= 5)
             {
                 // Cho nay de refresh token khi token sap het han

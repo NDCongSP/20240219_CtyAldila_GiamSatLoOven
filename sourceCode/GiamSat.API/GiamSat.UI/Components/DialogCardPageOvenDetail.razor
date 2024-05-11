@@ -55,7 +55,7 @@ else
                         </RadzenColumn>
                         <RadzenColumn SizeXS="12" SizeSM="2">
                             <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-4 rz-mb-0">Nhiệt độ bắt đầu (oC)</RadzenText>
-                            <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.Temperature</b></RadzenText>
+                            <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.TempBeginStep</b></RadzenText>
                         </RadzenColumn>
                         <RadzenColumn SizeXS="12" SizeSM="2">
                             <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-4 rz-mb-0">Khoảng nhiệt (oC)</RadzenText>
@@ -73,6 +73,10 @@ else
                             <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-4 rz-mb-0">Cảnh báo</RadzenText>
                             <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.AlarmDescription</b></RadzenText>
                         </RadzenColumn>
+                       @*  <RadzenColumn SizeXS="12" SizeSM="2">
+                            <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-4 rz-mb-0">Nhiệt cần đạt tới hiện tại (oC)</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_ovenDisplayInfo.TempRequired</b></RadzenText>
+                        </RadzenColumn> *@
                     </RadzenRow>
                 </RadzenFieldset>
             </RadzenColumn>
@@ -97,7 +101,7 @@ else
                         <RadzenAxisTitle Text="Thời gian" />
                         <RadzenTicks>
                             <Template>
-                                <text class="rz-tick-text" style="text-anchor: start; transform: translate(@(context.X)px, @(context.Y + 10)px) rotate(45deg); font-size:small">@context.Value</text>
+                                <text class="rz-tick-text" style="text-anchor: start; transform: translate(@(context.X.ToString().Replace(",","."))px, @((context.Y + 10).ToString().Replace(",","."))px) rotate(45deg); font-size:small">@context.Value</text>
                             </Template>
                         </RadzenTicks>
                     </RadzenCategoryAxis>

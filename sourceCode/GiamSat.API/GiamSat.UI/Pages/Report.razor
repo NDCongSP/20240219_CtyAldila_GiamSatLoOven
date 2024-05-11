@@ -92,7 +92,7 @@
                                             <RadzenAxisTitle Text="Thời gian" />
                                             <RadzenTicks>
                                                 <Template>
-                                                    <text class="rz-tick-text" style="text-anchor: start; transform: translate(@(context.X)px, @(context.Y + 10)px) rotate(45deg); font-size:small">@context.Value</text>
+                                                    <text class="rz-tick-text" style="text-anchor: start; transform: translate(@(context.X.ToString().Replace(",","."))px, @((context.Y + 10).ToString().Replace(",","."))px) rotate(45deg); font-size:small">@context.Value</text>
                                                 </Template>
                                             </RadzenTicks>
                                         </RadzenCategoryAxis>
@@ -204,7 +204,8 @@
                                             <RadzenAxisTitle Text="Thời gian" />
                                             <RadzenTicks>
                                                 <Template>
-                                                    <text class="rz-tick-text" style="text-anchor: start; transform: translate(@(context.X)px, @(context.Y + 10)px) rotate(45deg); font-size:small">@context.Value</text>
+                                                    <text class="rz-tick-text" style="text-anchor: start; transform: translate(@(context.X.ToString().Replace(",","."))px, @((context.Y + 10).ToString().Replace(",","."))px) rotate(45deg); font-size:small">@context.Value</text>
+                                                    <text class="rz-tick-text" style="text-anchor: start; transform: translate(@(context.X.ToString().Replace(",","."))px, @((context.Y + 10).ToString().Replace(",","."))px) rotate(45deg); font-size:small">@context.Value</text>
                                                 </Template>
                                             </RadzenTicks>
                                         </RadzenCategoryAxis>

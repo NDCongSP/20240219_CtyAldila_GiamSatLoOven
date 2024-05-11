@@ -578,13 +578,49 @@ namespace GiamSat.Scada
                         {
                             if (item.EndStep == 0)//khi không có kết thúc bước thì vào kiểm tra nhiệt độ theo khoảng thời gian
                             {
-                                item.EndTimeAlarm = DateTime.Now;
-                                var tAlarm = (item.EndTimeAlarm - item.BeginTimeAlarm).TotalSeconds;
+                                //item.EndTimeAlarm = DateTime.Now;
+                                //var tAlarm = (item.EndTimeAlarm - item.BeginTimeAlarm).TotalMilliseconds;
 
-                                if (tAlarm > GlobalVariable.ConfigSystem.TimeTempChange)
-                                {
-                                    Debug.WriteLine($"Check nhiet do thoi gian thuc");
-                                }
+                                ////tính ra khoảng nhiệt cần tăng đến thời điểm hiện tại
+                                //var timeRun = (item.EndTimeAlarm - item.BeginTimeOfStep).TotalMinutes;
+                                //item.TempRequired = item.TempBeginStep + Math.Round(timeRun * item.TempRateMinute, 2);
+
+                                //if (tAlarm > GlobalVariable.ConfigSystem.TimeTempChange)
+                                //{
+                                //    item.IsCheckAlarm = true;
+                                //}
+
+                                //if (item.IsCheckAlarm && !item.AlarmFlag
+                                //   && (item.Temperature < item.TempRequired - GlobalVariable.ConfigSystem.ToleranceTempForRampUp
+                                //       || item.Temperature > item.TempRequired + GlobalVariable.ConfigSystem.ToleranceTempForRampUp
+                                //       )
+                                //  )
+                                //{
+                                //    item.Alarm = 1;
+                                //    item.SerienStatus = 1;
+                                //    item.AlarmDescription = $"Nhiệt độ chưa đạt";
+                                //    _alarmEnable[item.OvenId - 1] = true;
+                                //    item.AlarmFlag = true;
+                                //    Debug.WriteLine($"Check nhiet do thoi gian thuc|OvenId={item.OvenId} - T={item.Temperature}|tRequiered={item.TempRequired}|isCheckAlarm={item.IsCheckAlarm}|AlarmFlag={item.AlarmFlag}");
+
+                                //}
+                                //else if (item.IsCheckAlarm && item.AlarmFlag
+                                //    && (item.Temperature >= item.TempRequired - GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp
+                                //        && item.Temperature <= item.TempRequired + GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp
+                                //        )
+                                //   )
+                                //{
+                                //    item.Alarm = 0;
+                                //    item.SerienStatus = 0;
+                                //    item.AlarmDescription = null;
+
+                                //    _alarmEnable[item.OvenId - 1] = false;
+                                //    item.AlarmFlag = false;
+
+                                //    item.IsCheckAlarm = false;
+
+                                //    Debug.WriteLine($"Check nhiet do thoi gian thuc|OvenId={item.OvenId} - T={item.Temperature}|tRequiered={item.TempRequired}|isCheckAlarm={item.IsCheckAlarm}|AlarmFlag={item.AlarmFlag}");
+                                //}
                             }
                             else//so sánh của bước cũ, khi vừa kết thúc bước, chuyển qua bước khác.
                             {
@@ -639,7 +675,48 @@ namespace GiamSat.Scada
                         {
                             if (item.EndStep == 0)
                             {
+                                item.EndTimeAlarm = DateTime.Now;
+                                var tAlarm = (item.EndTimeAlarm - item.BeginTimeAlarm).TotalMilliseconds;
 
+                                //tính ra khoảng nhiệt cần tăng đến thời điểm hiện tại
+                                item.TempRequired = item.SetPoint;
+
+                                if (tAlarm > GlobalVariable.ConfigSystem.TimeTempChange)
+                                {
+                                    item.IsCheckAlarm = true;
+                                }
+
+                                if (item.IsCheckAlarm && !item.AlarmFlag
+                                    && (item.Temperature < item.TempRequired - GlobalVariable.ConfigSystem.ToleranceTempForRampUp
+                                        || item.Temperature > item.TempRequired + GlobalVariable.ConfigSystem.ToleranceTempForRampUp
+                                        )
+                                   )
+                                {
+                                    item.Alarm = 1;
+                                    item.SerienStatus = 1;
+                                    item.AlarmDescription = $"Nhiệt độ chưa đạt";
+                                    _alarmEnable[item.OvenId - 1] = true;
+                                    item.AlarmFlag = true;
+                                    Debug.WriteLine($"Check nhiet do thoi gian thuc|OvenId={item.OvenId} - T={item.Temperature}|tRequiered={item.TempRequired}|isCheckAlarm={item.IsCheckAlarm}|AlarmFlag={item.AlarmFlag}");
+
+                                }
+                                else if (item.IsCheckAlarm && item.AlarmFlag
+                                    && (item.Temperature >= item.TempRequired - GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp
+                                        && item.Temperature <= item.TempRequired + GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp
+                                        )
+                                   )
+                                {
+                                    item.Alarm = 0;
+                                    item.SerienStatus = 0;
+                                    item.AlarmDescription = null;
+
+                                    _alarmEnable[item.OvenId - 1] = false;
+                                    item.AlarmFlag = false;
+
+                                    item.IsCheckAlarm = false;
+
+                                    Debug.WriteLine($"Check nhiet do thoi gian thuc|OvenId={item.OvenId} - T={item.Temperature}|tRequiered={item.TempRequired}|isCheckAlarm={item.IsCheckAlarm}|AlarmFlag={item.AlarmFlag}");
+                                }
                             }
                             else//so xánh cảu bước cũ, khi vừa kết thúc bước, chuyển qua bước khác.
                             {
@@ -691,7 +768,47 @@ namespace GiamSat.Scada
                         {
                             if (item.EndStep == 0)
                             {
+                                //item.EndTimeAlarm = DateTime.Now;
+                                //var tAlarm = (item.EndTimeAlarm - item.BeginTimeAlarm).TotalMilliseconds;
 
+                                ////tính ra khoảng nhiệt cần tăng đến thời điểm hiện tại
+                                //var timeRun = (item.EndTimeAlarm - item.BeginTimeOfStep).TotalMinutes;
+                                //item.TempRequired = item.TempBeginStep - Math.Round(timeRun * item.TempRateMinute, 2);
+
+                                //if (tAlarm > GlobalVariable.ConfigSystem.TimeTempChange)
+                                //{
+                                //    //Debug.WriteLine($"{item.OvenId} - {item.Temperature}|{item.SetPointLastStep}|{item.SetPoint} Check nhiet do thoi gian thuc");
+
+                                //    item.IsCheckAlarm = true;
+                                //}
+
+                                //if (item.IsCheckAlarm && !item.AlarmFlag
+                                //   && item.Temperature > item.TempRequired - GlobalVariable.ConfigSystem.ToleranceTempForRampDown
+                                //  )
+                                //{
+                                //    item.Alarm = 1;
+                                //    item.SerienStatus = 1;
+                                //    item.AlarmDescription = $"Nhiệt độ chưa đạt";
+                                //    _alarmEnable[item.OvenId - 1] = true;
+                                //    item.AlarmFlag = true;
+                                //    Debug.WriteLine($"Check nhiet do thoi gian thuc|OvenId={item.OvenId} - T={item.Temperature}|tRequiered={item.TempRequired}|isCheckAlarm={item.IsCheckAlarm}|AlarmFlag={item.AlarmFlag}");
+
+                                //}
+                                //else if (item.IsCheckAlarm && item.AlarmFlag
+                                //        && item.Temperature <= item.TempRequired + GlobalVariable.ConfigSystem.ToleranceTempOutForRampDown
+                                //   )
+                                //{
+                                //    item.Alarm = 0;
+                                //    item.SerienStatus = 0;
+                                //    item.AlarmDescription = null;
+
+                                //    _alarmEnable[item.OvenId - 1] = false;
+                                //    item.AlarmFlag = false;
+
+                                //    item.IsCheckAlarm = false;
+
+                                //    Debug.WriteLine($"Check nhiet do thoi gian thuc|OvenId={item.OvenId} - T={item.Temperature}|tRequiered={item.TempRequired}|isCheckAlarm={item.IsCheckAlarm}|AlarmFlag={item.AlarmFlag}");
+                                //}
                             }
                             else
                             {
@@ -1138,6 +1255,11 @@ namespace GiamSat.Scada
                         item.LastStepType = item.StepName;
 
                         item.ProfileStepNumber_CurrentStatus = int.TryParse(e.NewValue, out int value) ? value : item.ProfileStepNumber_CurrentStatus;
+                        item.BeginTimeAlarm = DateTime.Now;
+                        item.BeginTimeOfStep = DateTime.Now;
+                        item.TempBeginStep = item.Temperature;
+                        item.IsCheckAlarm = false;
+                        item.AlarmFlag = false;
 
                         //cập nhật các thông số cảu step mới vào để chạy
                         var step = item.OvenInfo.Profiles.FirstOrDefault(x => x.Id == item.ProfileNumber_CurrentStatus)?
