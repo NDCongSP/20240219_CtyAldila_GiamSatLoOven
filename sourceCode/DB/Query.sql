@@ -9,7 +9,7 @@ FROM [Oven].[dbo].[FT03]
 where OvenId=11
 ORDER BY CreatedDate DESC
 
-SELECT top 1000 *
+SELECT *
   FROM [Oven].[dbo].[FT04]
 where OvenId=11-- and ZIndex='CA0C35FB-EDBC-4B1E-9F37-BA9A5ABD15AB'
 order by CreatedDate desc
