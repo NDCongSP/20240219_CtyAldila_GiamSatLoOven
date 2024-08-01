@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="ConnectionString" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Server=DESKTOP-FEIGKEV\SQLEXPRESS01;Database=oven;User Id=dev;Password=Dev@12345;TrustServerCertificate=True;</Value>
+      <Value Profile="(Default)">Server=DESKTOP-FEIGKEV\SQLEXPRESS_V14;Database=oven;User Id=dev;Password=Dev@12345;TrustServerCertificate=True;</Value>
     </Setting>
     <Setting Name="LogInterval" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">300</Value>

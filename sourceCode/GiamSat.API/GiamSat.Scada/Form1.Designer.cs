@@ -37,6 +37,8 @@ namespace GiamSat.Scada
             this._labDBServer = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this._labSriverStatus = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.easyDriverConnector1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -100,11 +102,33 @@ namespace GiamSat.Scada
             this.label2.TabIndex = 4;
             this.label2.Text = "nên không tắt app này!";
             // 
+            // _labSriverStatus
+            // 
+            this._labSriverStatus.AutoSize = true;
+            this._labSriverStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._labSriverStatus.Location = new System.Drawing.Point(132, 161);
+            this._labSriverStatus.Name = "_labSriverStatus";
+            this._labSriverStatus.Size = new System.Drawing.Size(98, 20);
+            this._labSriverStatus.TabIndex = 5;
+            this._labSriverStatus.Text = "Driver status";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(8, 161);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(127, 20);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "TT kết nối Driver:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(337, 263);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this._labSriverStatus);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this._labDBServer);
@@ -127,6 +151,8 @@ namespace GiamSat.Scada
         private System.Windows.Forms.Label _labDBServer;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label _labSriverStatus;
+        private System.Windows.Forms.Label label4;
     }
 }
 
