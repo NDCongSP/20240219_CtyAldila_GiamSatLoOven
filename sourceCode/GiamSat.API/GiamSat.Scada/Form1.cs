@@ -18,6 +18,7 @@ using System.Linq.Expressions;
 using GiamSat.Models.NotTable;
 using Microsoft.Win32;
 using System.Configuration;
+using Serilog;
 
 
 namespace GiamSat.Scada
@@ -59,13 +60,23 @@ namespace GiamSat.Scada
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            MessageBox.Show("Không tắt app này!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Không tắt app này!", "Cảnh báo", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
 
-            e.Cancel = true;
+            //e.Cancel = true;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            #region Serilog initial
+            Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.Console()
+            .WriteTo.File("logs/myapp.txt", rollingInterval: RollingInterval.Day)
+            .CreateLogger();
+
+            Log.Information("Hello, world!");
+            #endregion
+
             #region Get thong tin chuong
             GetOvensInfo();
             #endregion

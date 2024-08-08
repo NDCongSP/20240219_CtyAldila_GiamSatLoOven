@@ -25,7 +25,7 @@ namespace GiamSat.Scada.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Server=DESKTOP-FEIGKEV\\SQLEXPRESS_V14;Database=oven;User Id=dev;Password=Dev@1234" +
+        [global::System.Configuration.DefaultSettingValueAttribute("Server=DESKTOP-FEIGKEV\\SQLEXPRESS_V16;Database=oven;User Id=dev;Password=Dev@1234" +
             "5;TrustServerCertificate=True;")]
         public string ConnectionString {
             get {

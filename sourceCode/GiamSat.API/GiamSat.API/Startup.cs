@@ -41,7 +41,16 @@ namespace GiamSat.API
             // For Entity Framework
             //GlobalVariable.ConString = EncodeMD5.DecryptString(Configuration.GetConnectionString("ConnStr"), "PTAut0m@t!0n30!)@)20");
             GlobalVariable.ConString = Configuration.GetConnectionString("ConnStr");
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(GlobalVariable.ConString));
+            //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(GlobalVariable.ConString));
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+           options.UseSqlServer(
+               Configuration.GetConnectionString("ConnStr"),
+               sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
+                   maxRetryCount: 5, // Maximum number of retry attempts
+                   maxRetryDelay: TimeSpan.FromSeconds(10), // Maximum delay between retries
+                   errorNumbersToAdd: null // List of additional SQL error numbers to consider transient
+               )));
             //_context.Database.SetCommandTimeout(TimeSpan.FromSeconds(300));
 
             #region khoi tao data
@@ -207,12 +216,12 @@ namespace GiamSat.API
 
             //AddRepoServices(services);//add transient tu dong
 
-            services.AddTransient<ISFT01, SFT01>();
-            services.AddTransient<ISFT02, SFT02>();
-            services.AddTransient<ISFT03, SFT03>();
-            services.AddTransient<ISFT04, SFT04>();
-            services.AddTransient<ISFT05, SFT05>();
-            services.AddTransient<ISFT06, SFT06>();
+            services.AddScoped<ISFT01, SFT01>();
+            services.AddScoped<ISFT02, SFT02>();
+            services.AddScoped<ISFT03, SFT03>();
+            services.AddScoped<ISFT04, SFT04>();
+            services.AddScoped<ISFT05, SFT05>();
+            services.AddScoped<ISFT06, SFT06>();
             services.AddScoped<SCommon>();
 
             services.AddSwaggerGen(c =>
@@ -275,9 +284,11 @@ namespace GiamSat.API
         {
             #region Migration DB
             using var scope = app.ApplicationServices.CreateScope();
-            //create DB
+
+            //nếu chạy mới thì bỏ comment chỗ này để nó tạo bảng
+            ////create DB
             //scope.ServiceProvider.GetService<ApplicationDbContext>().Database.EnsureCreated();
-            //create table
+            ////create table
             scope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
 
             SeedingData(scope).Wait();
