@@ -24,3 +24,10 @@ Cai moi truong de publish IIS:
 
 Web API port 8082
 web UI port 8083
+
+
+ item.ProfileStepType_CurrentStatus = e.NewValue == "1" ? EnumProfileStepType.RampTime
+                                     : e.NewValue == "2" ? EnumProfileStepType.RampRate
+                                     : e.NewValue == "3" ? EnumProfileStepType.Soak
+                                     : e.NewValue == "4" ? EnumProfileStepType.Jump
+                                     : EnumProfileStepType.End;
