@@ -137,6 +137,12 @@ namespace GiamSat.Models
 
         public bool StatusFlag { get; set; } = false;
         public bool AlarmFlag { get; set; } = false;
+        /// <summary>
+        /// dùng để reset biến AlarmFlag ở bước Soak khi mới khởi động chương trình, mà nhiệt độ ko vượt ngưỡng.
+        /// thì vào reset lai biến AlarmFlag để nó reset alame.
+        /// False-cho vao reset; True-ko cho vao reset.
+        /// </summary>
+        public bool ResetAlarmFlag { get; set; } = false;
         public bool AlarmFlagLastStep { get; set; } = false;
         public bool IsLoaded { get; set; } = false;
 

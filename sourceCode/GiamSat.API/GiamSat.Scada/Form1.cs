@@ -19,6 +19,7 @@ using GiamSat.Models.NotTable;
 using Microsoft.Win32;
 using System.Configuration;
 using Serilog;
+using System.Runtime.CompilerServices;
 
 
 namespace GiamSat.Scada
@@ -322,6 +323,7 @@ namespace GiamSat.Scada
                                 OvenInfo = item,
                                 StatusFlag = false,
                                 AlarmFlag = false,
+                                ResetAlarmFlag = false,
                                 AlarmFlagLastStep = false,
                                 Status = 0,
                                 Alarm = 0,
@@ -350,6 +352,10 @@ namespace GiamSat.Scada
                         foreach (var item in _displayRealtime)
                         {
                             item.SetPoint = 0;
+                            item.ResetAlarmFlag = false;
+                            item.AlarmFlag = false;
+                            item.StatusFlag = false;
+                            item.AlarmFlagLastStep = false;
                         }
                     }
                 }
@@ -405,7 +411,7 @@ namespace GiamSat.Scada
                                 {
                                     foreach (var item in _displayRealtime)
                                     {
-                                        if (item.Status == 1 && item.ZIndex != Guid.Empty && item.Temperature > 0 && item.CountSecondTagChange >= 2)
+                                        if (item.Status == 1 && item.ProfileStepType_CurrentStatus != EnumProfileStepType.End && item.ZIndex != Guid.Empty && item.Temperature > 0 && item.CountSecondTagChange >= 2)
                                         {
                                             var para = new DynamicParameters();
                                             para.Add("ovenId", item.OvenId);
@@ -538,14 +544,14 @@ namespace GiamSat.Scada
                         #region Kiểm tra xem lò chạy hay dùng để log data và cảnh báo
                         foreach (var item in _displayRealtime)
                         {
-                            item.StatusTimeEnd = DateTime.Now;
-                            if ((item.StatusTimeEnd - item.StatusTimeBegin).TotalMilliseconds <= GlobalVariable.ConfigSystem.CountSecondStop && item.StatusFlag == false)
+                            if (item.OvenId == 13)
                             {
-                                if (item.OvenId == 9)
-                                {
-                                    var a = 10;
-                                }
-
+                                var a = 12;
+                            }
+                            item.StatusTimeEnd = DateTime.Now;
+                            if ((item.StatusTimeEnd - item.StatusTimeBegin).TotalMilliseconds <= GlobalVariable.ConfigSystem.CountSecondStop
+                                && item.StatusFlag == false)
+                            {
                                 item.Status = 1;//báo lò đang chạy.
                                 item.ZIndex = !_isReOpenApp ? Guid.NewGuid() : item.ZIndex;
                                 item.BeginTime = !_isReOpenApp ? DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") : item.BeginTime;
@@ -553,14 +559,14 @@ namespace GiamSat.Scada
 
                                 item.BeginTimeAlarm = DateTime.Now;
                             }
-                            if ((item.StatusTimeEnd - item.StatusTimeBegin).TotalMilliseconds > GlobalVariable.ConfigSystem.CountSecondStop && item.StatusFlag == true)
+                            if ((item.StatusTimeEnd - item.StatusTimeBegin).TotalMilliseconds > GlobalVariable.ConfigSystem.CountSecondStop
+                                && item.StatusFlag == true)
                             {
                                 item.Status = 0;
-                                //item.ZIndex = Guid.Empty;//được xóa khi đã log profile trạng thái dừng thành công LogProfile
                                 item.StatusFlag = false;
                             }
 
-                            //Debug.WriteLine($"{item.OvenName} status: {item.Status}");
+                            //Debug.WriteLine($"{item.OvenId} status: {item.Status}");
                         }
                         #endregion
                     }
@@ -649,11 +655,16 @@ namespace GiamSat.Scada
                                 if (item.EndStep == 0)//khi không có kết thúc bước thì vào kiểm tra nhiệt độ theo khoảng thời gian
                                 {
                                     if (
-                                        (item.Temperature >= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp)
-                                      && item.Temperature <= (item.SetPoint + GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp))
+                                        item.Temperature <= (item.SetPoint + GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp)
+                                        //&& item.Temperature >= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp))
                                       && item.AlarmFlag == false
                                        )
                                     {
+                                        //if (item.OvenId == 13)
+                                        //{
+                                        //    var a = 10;
+                                        //}
+
                                         item.AlarmFlag = true;
                                         item.Alarm = 0;
                                         item.SerienStatus = 0;
@@ -664,9 +675,20 @@ namespace GiamSat.Scada
 
                                         //item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
                                         item.AlarmFlagLastStep = false;
+                                        item.ResetAlarmFlag = true;
 
-                                        Debug.WriteLine($"< T={item.Temperature} - LSet={item.SetPointLastStep} - NSet={item.SetPoint} - {item.OvenName}-  " +
-                                            $"EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
+                                        //Debug.WriteLine($"Off Alarm {item.StepName.ToString()} up|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
+                                        //    $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
+                                    }
+                                    else if (item.AlarmFlag && !item.ResetAlarmFlag)
+                                    {
+                                        if (item.OvenId == 13)
+                                        {
+                                            var a = 10;
+                                        }
+
+                                        item.AlarmFlag = false;
+                                        item.ResetAlarmFlag = true;
                                     }
                                 }
                                 else//so sánh của bước cũ, khi vừa kết thúc bước, chuyển qua bước khác.
@@ -677,6 +699,11 @@ namespace GiamSat.Scada
                                        && item.AlarmFlagLastStep == false
                                        )
                                     {
+                                        //if (item.OvenId == 13)
+                                        //{
+                                        //    var a = 10;
+                                        //}
+
                                         item.Alarm = 1;
                                         item.SerienStatus = 1;
                                         item.AlarmDescription = $"Nhiệt độ chưa đạt";
@@ -686,46 +713,23 @@ namespace GiamSat.Scada
 
                                         //log DB alarm
                                         //var p = new DynamicParameters();
-                                        item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
+                                        //item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
                                         item.AlarmFlagLastStep = true;
                                         item.AlarmFlag = false;
-                                        Debug.WriteLine($"< T={item.Temperature} - LSet={item.SetPointLastStep}- NSet={item.SetPoint} - {item.OvenName}-  " +
-                                            $"EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
+                                        item.ResetAlarmFlag = true;
+
+                                        //Debug.WriteLine($"On Alarm {item.StepName.ToString()} Up|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
+                                        //    $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
                                     }
-                                    //else if (
-                                    //     (item.Temperature >= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp)
-                                    //   && item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp))
-                                    //   && item.AlarmFlagLastStep == true
-                                    //    )
-                                    //{
-                                    //    item.Alarm = 0;
-                                    //    item.SerienStatus = 0;
-                                    //    item.AlarmDescription = null;
-                                    //    //await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
-                                    //    _alarmEnable[item.OvenId - 1] = true;
-                                    //    _alarmValue[item.OvenId - 1] = "0";
-
-                                    //    item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
-                                    //    item.AlarmFlagLastStep = false;
-
-                                    //    Debug.WriteLine($"< T={item.Temperature} - LSet={item.SetPointLastStep} - NSet={item.SetPoint} - {item.OvenName}-  " +
-                                    //        $"EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                                    //}
-                                    //else if (
-                                    //     (item.Temperature >= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp)
-                                    //   && item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp))
-                                    //    )
-                                    //{
-                                    //    item.EndStep = 0;
-
-                                    //    Debug.WriteLine($"< T={item.Temperature} - LSet={item.SetPointLastStep} - NSet={item.SetPoint} - {item.OvenName}-  " +
-                                    //        $"EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                                    //}
                                 }
                             }
                             //soak-ngâm
                             else if (item.SetPointLastStep == item.SetPoint)
                             {
+                                if (item.OvenId == 13)
+                                {
+                                    var a = 10;
+                                }
                                 if (item.EndStep == 0)
                                 {
                                     item.EndTimeAlarm = DateTime.Now;
@@ -745,13 +749,21 @@ namespace GiamSat.Scada
                                             )
                                        )
                                     {
+                                        //if (item.OvenId == 13)
+                                        //{
+                                        //    var a = 10;
+                                        //}
+
                                         item.Alarm = 1;
                                         item.SerienStatus = 1;
                                         item.AlarmDescription = $"Nhiệt độ chưa đạt";
                                         _alarmEnable[item.OvenId - 1] = true;
                                         _alarmValue[item.OvenId - 1] = "1";
                                         item.AlarmFlag = true;
-                                        Debug.WriteLine($"Check nhiet do thoi gian thuc|OvenId={item.OvenId} - T={item.Temperature}|tRequiered={item.TempRequired}|isCheckAlarm={item.IsCheckAlarm}|AlarmFlag={item.AlarmFlag}");
+                                        item.ResetAlarmFlag = true;
+                                        item.IsCheckAlarm = false;
+
+                                        //Debug.WriteLine($"On Alarm {item.StepName.ToString()}|Check nhiet do thoi gian thuc|Status={item.Status}|EndStep={item.EndStep}|OvenId={item.OvenId} - T={item.Temperature}|tRequiered={item.TempRequired}|isCheckAlarm={item.IsCheckAlarm}|AlarmFlag={item.AlarmFlag}");
 
                                     }
                                     else if (item.IsCheckAlarm && item.AlarmFlag
@@ -760,6 +772,12 @@ namespace GiamSat.Scada
                                             )
                                        )
                                     {
+                                        //if (item.OvenId == 13)
+                                        //{
+
+                                        //    var a = 10;
+                                        //}
+
                                         item.Alarm = 0;
                                         item.SerienStatus = 0;
                                         item.AlarmDescription = null;
@@ -769,8 +787,19 @@ namespace GiamSat.Scada
                                         item.AlarmFlag = false;
 
                                         item.IsCheckAlarm = false;
+                                        item.ResetAlarmFlag = true;
 
-                                        Debug.WriteLine($"Check nhiet do thoi gian thuc|OvenId={item.OvenId} - T={item.Temperature}|tRequiered={item.TempRequired}|isCheckAlarm={item.IsCheckAlarm}|AlarmFlag={item.AlarmFlag}");
+                                        //Debug.WriteLine($"Off Alarm {item.StepName.ToString()}|Check nhiet do thoi gian thuc|Status={item.Status}|EndStep={item.EndStep}|OvenId={item.OvenId} - T={item.Temperature}|tRequiered={item.TempRequired}|isCheckAlarm={item.IsCheckAlarm}|AlarmFlag={item.AlarmFlag}");
+                                    }
+                                    else if (!item.AlarmFlag && !item.ResetAlarmFlag)
+                                    {
+                                        if (item.OvenId == 13)
+                                        {
+                                            var a = 10;
+                                        }
+
+                                        item.AlarmFlag = true;
+                                        item.ResetAlarmFlag = true;
                                     }
                                 }
                                 else//so sánh của bước cũ, khi vừa kết thúc bước, chuyển qua bước khác.
@@ -781,6 +810,11 @@ namespace GiamSat.Scada
                                        && item.AlarmFlagLastStep == false
                                        )
                                     {
+                                        //if (item.OvenId == 13)
+                                        //{
+                                        //    var a = 10;
+                                        //}
+
                                         item.Alarm = 1;
                                         item.SerienStatus = 1;
                                         item.AlarmDescription = $"Nhiệt độ chưa đạt";
@@ -789,70 +823,108 @@ namespace GiamSat.Scada
                                         _alarmValue[item.OvenId - 1] = "1";
                                         //log DB alarm
                                         //var p = new DynamicParameters();
-                                        item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
+                                        //item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
                                         item.AlarmFlagLastStep = true;
                                         item.AlarmFlag = false;
-                                        Debug.WriteLine($"= T={item.Temperature} - LSet={item.SetPointLastStep}- NSet={item.SetPoint} - {item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
+                                        item.ResetAlarmFlag = true;
+
+                                        //Debug.WriteLine($"On Alarm {item.StepName.ToString()}|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
+                                        //    $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
                                     }
-                                    //else if (item.Temperature >= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp)
-                                    //    && item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp)
-                                    //    && item.AlarmFlagLastStep == true
-                                    //    )
-                                    //{
-                                    //    item.Alarm = 0;
-                                    //    item.SerienStatus = 0;
-                                    //    item.AlarmDescription = null;
-                                    //    //await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
-                                    //    _alarmEnable[item.OvenId - 1] = true;
-                                    //    _alarmValue[item.OvenId - 1] = "0";
-                                    //    item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
-                                    //    item.AlarmFlagLastStep = false;
-
-                                    //    Debug.WriteLine($"= T={item.Temperature} - LSet={item.SetPointLastStep}- NSet={item.SetPoint} - {item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                                    //}
-                                    //else if (
-                                    //    (item.Temperature >= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp)
-                                    //  && item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp))
-                                    //   )
-                                    //{
-                                    //    item.EndStep = 0;
-
-                                    //    Debug.WriteLine($"< T={item.Temperature} - LSet={item.SetPointLastStep} - NSet={item.SetPoint} - {item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                                    //}
                                 }
                             }
-                            //rampTime giảm nhiệt
+                            //rampTime giảm nhiệt(khi kết thúc bước soak) và bước end (khi kết thúc bước ramptime down) sẽ nhảy vào đây
                             else if (item.SetPointLastStep > item.SetPoint)
                             {
+                                if (item.OvenId == 13)
+                                {
+                                    var a = 10;
+                                }
+
                                 if (item.EndStep == 0)
                                 {
-                                    if (item.OvenId == 11)
+                                    //bước kế cuối, thường là bước ramp time down
+                                    if (item.StepName != EnumProfileStepType.End)
                                     {
-                                        var a = 11;
-                                    }
+                                        if (item.Temperature >= (item.SetPoint + GlobalVariable.ConfigSystem.ToleranceTempOutForRampDown)
+                                            && item.AlarmFlag == false
+                                           )
+                                        {
+                                            //if (item.OvenId == 13)
+                                            //{
+                                            //    var a = 10;
+                                            //}
+                                            item.AlarmFlag = true;
+                                            item.Alarm = 0;
+                                            item.SerienStatus = 0;
+                                            item.AlarmDescription = null;
+                                            //await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
+                                            _alarmEnable[item.OvenId - 1] = true;
+                                            _alarmValue[item.OvenId - 1] = "0";
+                                            //item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
+                                            item.AlarmFlagLastStep = false;
+                                            item.ResetAlarmFlag = true;
 
-                                    if (item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOutForRampDown)
-                                        && item.AlarmFlag == false
-                                        )
+                                            //Debug.WriteLine($"Off Alarm {item.StepName.ToString()} - down and end|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
+                                            //    $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
+                                        }
+                                        else if (!item.AlarmFlag && !item.ResetAlarmFlag)
+                                        {
+                                            if (item.OvenId == 13)
+                                            {
+                                                var a = 10;
+                                            }
+
+                                            item.AlarmFlag = true;
+                                            item.ResetAlarmFlag = true;
+                                        }
+                                    }
+                                    else
                                     {
-                                        item.AlarmFlag = true;
-                                        item.Alarm = 0;
-                                        item.SerienStatus = 0;
-                                        item.AlarmDescription = null;
-                                        //await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
-                                        _alarmEnable[item.OvenId - 1] = true;
-                                        _alarmValue[item.OvenId - 1] = "0";
-                                        item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
-                                        item.AlarmFlagLastStep = false;
-                                        Debug.WriteLine($"> T={item.Temperature} - LSet={item.SetPointLastStep}- NSet={item.SetPoint} - {item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
+                                        if (item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOutForRampDown)
+                                          && item.AlarmFlag == false
+                                          )
+                                        {
+                                            //if (item.OvenId == 13)
+                                            //{
+                                            //    var a = 10;
+                                            //}
+                                            item.AlarmFlag = true;
+                                            item.Alarm = 0;
+                                            item.SerienStatus = 0;
+                                            item.AlarmDescription = null;
+                                            //await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
+                                            _alarmEnable[item.OvenId - 1] = true;
+                                            _alarmValue[item.OvenId - 1] = "0";
+                                            //item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
+                                            item.AlarmFlagLastStep = false;
+                                            item.ResetAlarmFlag = true;
+
+                                            //Debug.WriteLine($"Off Alarm {item.StepName.ToString()} - down and end|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
+                                            //    $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
+                                        }
+                                        else if (!item.AlarmFlag && !item.ResetAlarmFlag)
+                                        {
+                                            if (item.OvenId == 13)
+                                            {
+                                                var a = 10;
+                                            }
+
+                                            item.AlarmFlag = true;
+                                            item.ResetAlarmFlag = true;
+                                        }
                                     }
                                 }
                                 else
                                 {
                                     if (item.Temperature > (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempForRampDown)
-                                   && item.AlarmFlagLastStep == false
-                                   )
+                                        && item.AlarmFlagLastStep == false
+                                       )
                                     {
+                                        //if (item.OvenId == 13)
+                                        //{
+                                        //    var a = 10;
+                                        //}
                                         item.Alarm = 1;
                                         item.SerienStatus = 1;
                                         item.AlarmDescription = $"Nhiệt độ cao";
@@ -860,47 +932,37 @@ namespace GiamSat.Scada
                                         _alarmEnable[item.OvenId - 1] = true;
                                         _alarmValue[item.OvenId - 1] = "1";
                                         //log DB alarm
-                                        var p = new DynamicParameters();
-                                        item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
+                                        //var p = new DynamicParameters();
                                         item.AlarmFlagLastStep = true;
                                         item.AlarmFlag = false;
-                                        Debug.WriteLine($"> T={item.Temperature} - LSet={item.SetPointLastStep}- NSet={item.SetPoint} - {item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                                    }
-                                    //else if (item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOutForRampDown)
-                                    //    && item.AlarmFlagLastStep == true
-                                    //    )
-                                    //{
-                                    //    item.Alarm = 0;
-                                    //    item.SerienStatus = 0;
-                                    //    item.AlarmDescription = null;
-                                    //    //await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
-                                    //    _alarmEnable[item.OvenId - 1] = true;
-                                    //    _alarmValue[item.OvenId - 1] = "0";
-                                    //    item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
-                                    //    item.AlarmFlagLastStep = false;
-                                    //    Debug.WriteLine($"> T={item.Temperature} - LSet={item.SetPointLastStep}- NSet={item.SetPoint} - {item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                                    //}
-                                    //else if (item.Temperature <= (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempOutForRampDown))
-                                    //{
-                                    //    item.EndStep = 0;
+                                        item.ResetAlarmFlag = true;
 
-                                    //    Debug.WriteLine($"< T={item.Temperature} - LSet={item.SetPointLastStep} - NSet={item.SetPoint} - {item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
-                                    //}
+                                        //Debug.WriteLine($"On Alarm {item.StepName.ToString()} - down and end|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
+                                        //    $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
+                                    }
+
                                 }
                             }
                         }
-                        //
-                        //else if (item.Status == 0 && item.CountSecondTagChange >= 2
-                        //       && item.AlarmFlagLastStep == true)
                         else if (item.Status == 0
                                && item.AlarmFlag == false)
                         {
+                            if (item.OvenId == 13)
+                            {
+                                var a = 10;
+                            }
+
                             double setPoint = 0;
                             if (item.StepName == EnumProfileStepType.End) setPoint = item.SetPointLastStep;
                             else setPoint = item.SetPoint;
 
                             if (item.Temperature <= (setPoint + GlobalVariable.ConfigSystem.ToleranceTempOutForRampDown))
                             {
+                                //if (item.OvenId == 13)
+                                //{
+                                //    var a = 10;
+                                //}
+
                                 item.Alarm = 0;
                                 item.SerienStatus = 0;
                                 item.AlarmDescription = null;
@@ -910,7 +972,9 @@ namespace GiamSat.Scada
                                 item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
                                 item.AlarmFlagLastStep = false;
                                 item.AlarmFlag = true;
-                                Debug.WriteLine($" T={item.Temperature} - LSet={item.SetPointLastStep}- NSet={item.SetPoint} - {item.OvenName}-  EndStep: {item.EndStep} - alarm: {item.Alarm} - alarmFlag: {item.AlarmFlag}- alarmFlagLastStep: {item.AlarmFlagLastStep}");
+
+                                //Debug.WriteLine($"Off Alarm {item.StepName.ToString()}|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
+                                //                                            $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
                             }
                         }
 
@@ -937,6 +1001,7 @@ namespace GiamSat.Scada
                         #endregion
 
                         index += 1;
+                        item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
                     }
                     #endregion
 
@@ -1318,6 +1383,7 @@ namespace GiamSat.Scada
                                 item.LastStepType = 0;
                                 item.EndStep = 0;
                             }
+
                             _isReOpenApp = false;
                         }
                         else
@@ -1343,6 +1409,7 @@ namespace GiamSat.Scada
                         item.IsCheckAlarm = false;
                         item.AlarmFlag = false;
                         item.AlarmFlagLastStep = false;
+                        //item.StatusFlag = false;
 
                         //cập nhật các thông số cảu step mới vào để chạy
 
@@ -1354,20 +1421,6 @@ namespace GiamSat.Scada
 
                             item.TempRange = Math.Round(Math.Abs((item.SetPoint - item.Temperature)), 2);
                         }
-
-                        //if (item.SetPointLastStep == 0 || (item.ProfileStepNumber_CurrentStatus == 1 && item.LastStepType != EnumProfileStepType.End))
-                        //20240808 tạm comment chỗ này lại
-                        //if (item.ProfileStepNumber_CurrentStatus == 1)// && item.LastStepType != EnumProfileStepType.End)
-                        //{
-                        //    item.SetPointLastStep = item.Temperature;
-                        //    item.LastStepType = item.StepName;
-                        //}
-
-                        // if (item.CountSecondTagChange >= 2 && ((item.ProfileStepNumber_CurrentStatus > 1)))// && item.LastStepType != EnumProfileStepType.End)
-                        //|| (item.ProfileStepNumber_CurrentStatus == 1 && item.LastStepType == EnumProfileStepType.End)))
-                        //{
-                        //    item.EndStep = 1;
-                        //}
 
                         _isLoaded = true;//báo đã khởi tạo xong cho phép các task chạy
 
