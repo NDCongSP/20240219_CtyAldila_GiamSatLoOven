@@ -677,8 +677,8 @@ namespace GiamSat.Scada
                                         item.AlarmFlagLastStep = false;
                                         item.ResetAlarmFlag = true;
 
-                                        //Debug.WriteLine($"Off Alarm {item.StepName.ToString()} up|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
-                                        //    $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
+                                        Debug.WriteLine($"Off Alarm {item.StepName.ToString()} up|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
+                                            $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
                                     }
                                     else if (item.AlarmFlag && !item.ResetAlarmFlag)
                                     {
@@ -718,8 +718,8 @@ namespace GiamSat.Scada
                                         item.AlarmFlag = false;
                                         item.ResetAlarmFlag = true;
 
-                                        //Debug.WriteLine($"On Alarm {item.StepName.ToString()} Up|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
-                                        //    $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
+                                        Debug.WriteLine($"On Alarm {item.StepName.ToString()} Up|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
+                                            $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
                                     }
                                 }
                             }
@@ -763,7 +763,7 @@ namespace GiamSat.Scada
                                         item.ResetAlarmFlag = true;
                                         item.IsCheckAlarm = false;
 
-                                        //Debug.WriteLine($"On Alarm {item.StepName.ToString()}|Check nhiet do thoi gian thuc|Status={item.Status}|EndStep={item.EndStep}|OvenId={item.OvenId} - T={item.Temperature}|tRequiered={item.TempRequired}|isCheckAlarm={item.IsCheckAlarm}|AlarmFlag={item.AlarmFlag}");
+                                        Debug.WriteLine($"On Alarm {item.StepName.ToString()}|Check nhiet do thoi gian thuc|Status={item.Status}|EndStep={item.EndStep}|OvenId={item.OvenId} - T={item.Temperature}|tRequiered={item.TempRequired}|isCheckAlarm={item.IsCheckAlarm}|AlarmFlag={item.AlarmFlag}");
 
                                     }
                                     else if (item.IsCheckAlarm && item.AlarmFlag
@@ -789,7 +789,7 @@ namespace GiamSat.Scada
                                         item.IsCheckAlarm = false;
                                         item.ResetAlarmFlag = true;
 
-                                        //Debug.WriteLine($"Off Alarm {item.StepName.ToString()}|Check nhiet do thoi gian thuc|Status={item.Status}|EndStep={item.EndStep}|OvenId={item.OvenId} - T={item.Temperature}|tRequiered={item.TempRequired}|isCheckAlarm={item.IsCheckAlarm}|AlarmFlag={item.AlarmFlag}");
+                                        Debug.WriteLine($"Off Alarm {item.StepName.ToString()}|Check nhiet do thoi gian thuc|Status={item.Status}|EndStep={item.EndStep}|OvenId={item.OvenId} - T={item.Temperature}|tRequiered={item.TempRequired}|isCheckAlarm={item.IsCheckAlarm}|AlarmFlag={item.AlarmFlag}");
                                     }
                                     else if (!item.AlarmFlag && !item.ResetAlarmFlag)
                                     {
@@ -828,8 +828,8 @@ namespace GiamSat.Scada
                                         item.AlarmFlag = false;
                                         item.ResetAlarmFlag = true;
 
-                                        //Debug.WriteLine($"On Alarm {item.StepName.ToString()}|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
-                                        //    $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
+                                        Debug.WriteLine($"On Alarm {item.StepName.ToString()}|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
+                                            $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
                                     }
                                 }
                             }
@@ -865,8 +865,8 @@ namespace GiamSat.Scada
                                             item.AlarmFlagLastStep = false;
                                             item.ResetAlarmFlag = true;
 
-                                            //Debug.WriteLine($"Off Alarm {item.StepName.ToString()} - down and end|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
-                                            //    $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
+                                            Debug.WriteLine($"Off Alarm {item.StepName.ToString()} - down and end|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
+                                                $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
                                         }
                                         else if (!item.AlarmFlag && !item.ResetAlarmFlag)
                                         {
@@ -900,8 +900,8 @@ namespace GiamSat.Scada
                                             item.AlarmFlagLastStep = false;
                                             item.ResetAlarmFlag = true;
 
-                                            //Debug.WriteLine($"Off Alarm {item.StepName.ToString()} - down and end|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
-                                            //    $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
+                                            Debug.WriteLine($"Off Alarm {item.StepName.ToString()} - down and end|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
+                                                $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
                                         }
                                         else if (!item.AlarmFlag && !item.ResetAlarmFlag)
                                         {
@@ -937,8 +937,8 @@ namespace GiamSat.Scada
                                         item.AlarmFlag = false;
                                         item.ResetAlarmFlag = true;
 
-                                        //Debug.WriteLine($"On Alarm {item.StepName.ToString()} - down and end|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
-                                        //    $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
+                                        Debug.WriteLine($"On Alarm {item.StepName.ToString()} - down and end|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
+                                            $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
                                     }
 
                                 }
@@ -973,8 +973,8 @@ namespace GiamSat.Scada
                                 item.AlarmFlagLastStep = false;
                                 item.AlarmFlag = true;
 
-                                //Debug.WriteLine($"Off Alarm {item.StepName.ToString()}|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
-                                //                                            $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
+                                Debug.WriteLine($"Off Alarm {item.StepName.ToString()}|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
+                                                                            $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
                             }
                         }
 
