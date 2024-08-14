@@ -12,29 +12,31 @@
             <RadzenColumn Size="5">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
                     <RadzenSidebarToggle Click="@(() => _sidebarExpanded = !_sidebarExpanded)" />
+                    <RadzenImage Path="images/logoAldila.ico" style="width: 40px; height: 40px;"></RadzenImage>
+                    <RadzenTabs />
                     <RadzenLabel Text="Giám Sát Lò Oven" />
                 </RadzenStack>
             </RadzenColumn>
             <RadzenColumn Size="7">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
                     <RadzenLabel>@GlobalVariable.UserName</RadzenLabel>
-                        <RadzenProfileMenu>
-                            <Template>
-                                <RadzenIcon Icon="account_circle" />
-                            </Template>
-                            <ChildContent>
-                                <RadzenProfileMenuItem Visible="@_changePass" Text="User info" Path="/dialogcardpageuserinfo" Icon="manage_accounts"></RadzenProfileMenuItem>
-                                <RadzenProfileMenuItem Visible="@_usersManager" Text="Users manager" Path="/usersmanager" Icon="people_alt"></RadzenProfileMenuItem>
-                                <RadzenProfileMenuItem Text="Logout" Path="/login" Icon="logout"></RadzenProfileMenuItem>
-                            </ChildContent>
-                        </RadzenProfileMenu>
-                    </RadzenStack>
-                </RadzenColumn>
-            </RadzenRow>
-        </RadzenHeader>
-        <RadzenSidebar Responsive="false" @bind-Expanded="@_sidebarExpanded">
-            <NavMenu/>
-        </RadzenSidebar>
+                    <RadzenProfileMenu>
+                        <Template>
+                            <RadzenIcon Icon="account_circle" />
+                        </Template>
+                        <ChildContent>
+                            <RadzenProfileMenuItem Visible="@_changePass" Text="User info" Path="/dialogcardpageuserinfo" Icon="manage_accounts"></RadzenProfileMenuItem>
+                            <RadzenProfileMenuItem Visible="@_usersManager" Text="Users manager" Path="/usersmanager" Icon="people_alt"></RadzenProfileMenuItem>
+                            <RadzenProfileMenuItem Text="Logout" Path="/login" Icon="logout"></RadzenProfileMenuItem>
+                        </ChildContent>
+                    </RadzenProfileMenu>
+                </RadzenStack>
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenHeader>
+    <RadzenSidebar Responsive="false" @bind-Expanded="@_sidebarExpanded">
+        <NavMenu />
+    </RadzenSidebar>
     <RadzenBody>
         <div class="rz-p-4">
             @Body
