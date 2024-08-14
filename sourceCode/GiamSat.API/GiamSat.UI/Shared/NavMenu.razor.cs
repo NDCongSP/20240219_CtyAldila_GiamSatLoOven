@@ -3,6 +3,7 @@ using GiamSat.Models;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using Radzen;
+using System;
 
 namespace GiamSat.UI.Shared
 {
@@ -39,6 +40,32 @@ namespace GiamSat.UI.Shared
                 _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "error", Detail = ex.Message, Duration = 2000 });
                 return;
             }
+        }
+
+        void OnParentClicked(MenuItemEventArgs args)
+        {
+            GlobalVariable.BreadCrumbData = null;
+            GlobalVariable.BreadCrumbData = new List<BreadCrumbModel>();
+            GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel() { 
+            Text = args.Text,
+            Path= args.Path
+            });
+        }
+        void OnChildClicked(MenuItemEventArgs args)
+        {
+            GlobalVariable.BreadCrumbData = null;
+            GlobalVariable.BreadCrumbData = new List<BreadCrumbModel>();
+
+            GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel()
+            {
+                Text = "Cấu hình Oven",
+            });
+
+            GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel()
+            {
+                Text = args.Text,
+                Path = args.Path
+            });
         }
     }
 }

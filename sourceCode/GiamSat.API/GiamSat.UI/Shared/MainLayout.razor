@@ -20,6 +20,7 @@
             <RadzenColumn Size="7">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
                     <RadzenLabel>@GlobalVariable.UserName</RadzenLabel>
+                    <RadzenAppearanceToggle />
                     <RadzenProfileMenu>
                         <Template>
                             <RadzenIcon Icon="account_circle" />
@@ -38,6 +39,16 @@
         <NavMenu />
     </RadzenSidebar>
     <RadzenBody>
+        <RadzenBreadCrumb>
+            @if (GlobalVariable.BreadCrumbData != null && GlobalVariable.BreadCrumbData.Count > 0)
+            {
+                @foreach (var item in GlobalVariable.BreadCrumbData)
+                {
+                    <RadzenBreadCrumbItem Path="@item.Path" Text="@item.Text" />
+                }
+
+            }
+        </RadzenBreadCrumb>
         <div class="rz-p-4">
             @Body
         </div>

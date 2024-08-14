@@ -17,7 +17,7 @@ namespace GiamSat.UI.Shared
 
         bool _sidebarExpanded = false;
         bool _usersManager = false;
-        bool _changePass = false;
+        bool _changePass = false;        
 
         protected override async Task OnInitializedAsync()
         {

@@ -1,4 +1,4 @@
-﻿<RadzenPanelMenu ShowArrow="true">
+﻿<RadzenPanelMenu ShowArrow="true" Click="@OnParentClicked">
     @* <RadzenStack AlignItems="Radzen.AlignItems.Center" class="rz-p-4" Style="padding: var(--rz-panel-menu-item-padding); border-bottom: var(--rz-panel-menu-item-border);">
         <RadzenImage Path="images/logoAldila.ico" style="width: 48px; height: 48px;"></RadzenImage>
     </RadzenStack> *@
@@ -8,7 +8,7 @@
             @foreach (var item in _ovensInfo)
             {
                 linkC = $"/ovenconfig/{item.Id}";
-                <RadzenPanelMenuItem Text=@item.Name Icon="label_important" Path=@linkC />
+                <RadzenPanelMenuItem Text=@item.Name Icon="label_important" Path=@linkC Click="OnChildClicked" />
             }
         </ChildContent>
     </RadzenPanelMenuItem>

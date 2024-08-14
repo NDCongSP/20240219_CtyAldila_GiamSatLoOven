@@ -18,5 +18,6 @@ namespace GiamSat.UI
 
         public static Guid UserId { get; set; }
         public static string UserName { get; set; } = "user";
+        public static List<BreadCrumbModel> BreadCrumbData { get; set; }=new List<BreadCrumbModel>();
     }
 }
