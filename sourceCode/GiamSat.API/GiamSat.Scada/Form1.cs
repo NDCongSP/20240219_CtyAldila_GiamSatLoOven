@@ -656,7 +656,7 @@ namespace GiamSat.Scada
                                 {
                                     if (
                                         item.Temperature <= (item.SetPoint + GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp)
-                                        //&& item.Temperature >= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp))
+                                      //&& item.Temperature >= (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp))
                                       && item.AlarmFlag == false
                                        )
                                     {
@@ -804,17 +804,17 @@ namespace GiamSat.Scada
                                 }
                                 else//so sánh của bước cũ, khi vừa kết thúc bước, chuyển qua bước khác.
                                 {
+                                    if (item.OvenId == 13)
+                                    {
+                                        var a = 10;
+                                    }
+
                                     if (
                                         (item.Temperature < (item.SetPointLastStep - GlobalVariable.ConfigSystem.ToleranceTempForRampUp)
                                        || item.Temperature > (item.SetPointLastStep + GlobalVariable.ConfigSystem.ToleranceTempForRampUp))
                                        && item.AlarmFlagLastStep == false
                                        )
                                     {
-                                        //if (item.OvenId == 13)
-                                        //{
-                                        //    var a = 10;
-                                        //}
-
                                         item.Alarm = 1;
                                         item.SerienStatus = 1;
                                         item.AlarmDescription = $"Nhiệt độ chưa đạt";
@@ -830,6 +830,10 @@ namespace GiamSat.Scada
 
                                         Debug.WriteLine($"On Alarm {item.StepName.ToString()}|Status={item.Status}|EndStep = {item.EndStep}| T: {item.Temperature}|SetPointLastStep={item.SetPointLastStep}" +
                                             $"|setpoint={item.SetPoint}|RampUpOn={GlobalVariable.ConfigSystem.ToleranceTempForRampUp}RampUpOff={GlobalVariable.ConfigSystem.ToleranceTempOutForRampUp}");
+                                    }
+                                    else
+                                    {
+
                                     }
                                 }
                             }
