@@ -339,7 +339,7 @@ namespace GiamSat.API
 
             foreach (var type in types)
             {
-                services.AddTransient(type.Service, type.Implementation);
+                services.AddScoped(type.Service, type.Implementation);
             }
 
             //services.AddTransient<ISDashboard, SDashboard>();

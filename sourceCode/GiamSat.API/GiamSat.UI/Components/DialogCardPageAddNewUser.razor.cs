@@ -8,7 +8,7 @@ namespace GiamSat.UI.Components
     public partial class DialogCardPageAddNewUser
     {
         private RegisterModel _model = new RegisterModel();
-        List<string> _role = new List<string>() { "User", "Operator" };
+        List<string> _roles = new List<string>() { "User", "Operator" };
 
         protected override async Task OnInitializedAsync()
         {

@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using GiamSat.APIClient;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using Radzen;
@@ -7,6 +8,7 @@ using Radzen.Blazor;
 
 namespace GiamSat.UI.Pages
 {
+    //[AllowAnonymous]
     public partial class Login
     {
         APIClient.LoginResult login;

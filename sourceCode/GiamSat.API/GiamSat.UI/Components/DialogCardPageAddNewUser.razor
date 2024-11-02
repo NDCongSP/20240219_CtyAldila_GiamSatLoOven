@@ -28,7 +28,7 @@
                             </RadzenColumn>
                              <RadzenColumn SizeXS="12" SizeSM="12">
                                 <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Phân quyền</RadzenText>
-                                <RadzenDropDown Name="_dropDownRoles" @bind-Value=@_model.Roles Data=@_role Multiple=true AllowClear=true Placeholder="Select roles"
+                                <RadzenDropDown Name="_dropDownRoles" @bind-Value=@_model.Roles Data=@_roles Multiple=true AllowClear=true Placeholder="Select roles"
                                                 Style="display: block;width:100%"></RadzenDropDown>
                                 <RadzenRequiredValidator Component="_dropDownRoles" Text="Chọn quyền" Popup="false" Style="position: absolute" />
                             </RadzenColumn>
