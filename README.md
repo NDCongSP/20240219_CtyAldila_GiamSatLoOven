@@ -31,3 +31,11 @@ web UI port 8083
                                      : e.NewValue == "3" ? EnumProfileStepType.Soak
                                      : e.NewValue == "4" ? EnumProfileStepType.Jump
                                      : EnumProfileStepType.End;
+
+PLC: kiểm tra mất kết nối đến Server
+- D203 = 1 and D204 = 1: Enanble check
+D203 ghi từ server xuống, để on/off check
+D204 ghi từ server xuống hoặc nhấn cùng lúc 3 nút trên tủ
+Khi check connection hoatj động sẽ on Y017
+
+
