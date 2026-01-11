@@ -16,7 +16,7 @@ namespace GiamSat.Models
 
         /// <summary>
         /// Lưu thông tin cấu hình của tất cả các lò.
-        /// RevoConfigs.
+        /// RevoConfigs model.
         /// </summary>
         public string? C000 { get; set; }
 
