@@ -1,0 +1,664 @@
+/* Header Controls Container */
+.header-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    background-color: var(--rz-base-background-color);
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* View Mode Buttons */
+.view-mode-btn {
+    min-width: 40px !important;
+    padding: 0.5rem !important;
+}
+
+/* Ensure view mode buttons stay on right */
+.header-controls > .rz-stack {
+    margin-left: auto;
+}
+
+/* Status Legend */
+.status-legend {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    gap: 2rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend-color {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.legend-running {
+    background-color: #4caf50;
+}
+
+.legend-error {
+    background-color: #f44336;
+}
+
+.legend-stopped {
+    background-color: #9e9e9e;
+}
+
+/* Oven Card Styling */
+.oven-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.oven-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Card Mode Specific Heights */
+.card-compact-mode {
+    min-height: 280px;
+    max-height: 280px;
+    overflow: hidden;
+}
+
+.card-full-mode {
+    min-height: auto;
+    max-height: none;
+    overflow: visible;
+}
+
+/* Card Status Background Colors - DEPRECATED - Giờ dùng note-* classes */
+/* .card-status-running {
+    background-color: #a5d6a7 !important;
+    border: 2px solid #66bb6a;
+}
+
+.card-status-error {
+    background-color: #ef9a9a !important;
+    border: 2px solid #e57373;
+}
+
+.card-status-stopped {
+    background-color: #e0e0e0 !important;
+    border: 2px solid #bdbdbd;
+} */
+
+/* Info Grid Layout */
+.info-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.info-grid-full {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.info-item,
+.info-item-small {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.info-label {
+    font-size: 0.7rem;
+    color: rgba(0, 0, 0, 0.6);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--rz-text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.info-value-small {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--rz-text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Step Progress Container */
+.step-progress-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.5rem 0;
+    border-top: 2px solid rgba(0, 0, 0, 0.1);
+    flex: 1;
+}
+
+/* Compact Mode - with scroll */
+.step-progress-compact {
+    max-height: 170px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 0.25rem;
+}
+
+/* Full Mode - no scroll, show all */
+.step-progress-full {
+    max-height: none;
+    overflow-y: visible;
+}
+
+/* Step Item */
+.step-item {
+    display: flex;
+    align-items: center;
+    padding: 0.4rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    gap: 0.5rem;
+}
+
+.step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.step-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    flex: 1;
+}
+
+.step-date {
+    font-size: 0.7rem;
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: auto;
+    text-align: right;
+    color: inherit;
+    opacity: 0.9;
+}
+
+/* Note Color Classes - Đổ màu nền cho CARD */
+::deep .note-green,
+::deep .note-green.rz-card {
+    background-color: #a5d6a7 !important;
+    border: 2px solid #66bb6a !important;
+}
+
+::deep .note-red,
+::deep .note-red.rz-card {
+    background-color: #ef9a9a !important;
+    border: 2px solid #e57373 !important;
+}
+
+::deep .note-gray,
+::deep .note-gray.rz-card {
+    background-color: #e0e0e0 !important;
+    border: 2px solid #bdbdbd !important;
+}
+
+/* Step Status - Active (Đang hoạt động - Xanh da trời nhạt) */
+.step-active {
+    background-color: #b3e5fc;
+    color: #01579b;
+}
+
+.step-active .step-number {
+    background-color: #0288d1;
+    color: white;
+}
+
+/* Step Status - Completed (Hoàn thành - Đen) */
+.step-completed {
+    background-color: #424242;
+    color: white;
+}
+
+.step-completed .step-number {
+    background-color: #212121;
+    color: white;
+}
+
+/* Step Status - Error (Lỗi - Đỏ nhẹ) */
+.step-error {
+    background-color: #ffcdd2;
+    color: #b71c1c;
+}
+
+.step-error .step-number {
+    background-color: #e53935;
+    color: white;
+}
+
+/* Step Status - Inactive (Không hoạt động - Xám) */
+.step-inactive {
+    background-color: #e0e0e0;
+    color: #757575;
+}
+
+.step-inactive .step-number {
+    background-color: #bdbdbd;
+    color: #616161;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .legend-running {
+        background-color: #2e7d32;
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .legend-error {
+        background-color: #c62828;
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .legend-stopped {
+        background-color: #616161;
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* DEPRECATED - Giờ dùng note-* classes */
+    /* .card-status-running {
+        background-color: #2e7d32 !important;
+        border-color: #66bb6a;
+    }
+
+    .card-status-error {
+        background-color: #c62828 !important;
+        border-color: #ef5350;
+    }
+
+    .card-status-stopped {
+        background-color: #616161 !important;
+        border-color: #bdbdbd;
+    } */
+
+    .info-label {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .step-active {
+        background-color: #01579b;
+        color: #b3e5fc;
+    }
+
+    .step-active .step-number {
+        background-color: #0288d1;
+        color: white;
+    }
+
+    .step-completed {
+        background-color: #212121;
+        color: #e0e0e0;
+    }
+
+    .step-completed .step-number {
+        background-color: #000000;
+        color: white;
+    }
+
+    .step-error {
+        background-color: #b71c1c;
+        color: #ffcdd2;
+    }
+
+    .step-error .step-number {
+        background-color: #e53935;
+        color: white;
+    }
+
+    .step-inactive {
+        background-color: #424242;
+        color: #9e9e9e;
+    }
+
+    .step-inactive .step-number {
+        background-color: #616161;
+        color: #bdbdbd;
+    }
+
+    .step-progress-compact::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .step-progress-compact::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .step-progress-compact::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.5);
+    }
+
+    .step-progress-compact {
+        scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.05);
+    }
+
+    /* Note Colors - Dark Mode - Đổ màu nền cho CARD */
+    ::deep .note-green,
+    ::deep .note-green.rz-card {
+        background-color: #2e7d32 !important;
+        border: 2px solid #66bb6a !important;
+    }
+
+    ::deep .note-red,
+    ::deep .note-red.rz-card {
+        background-color: #c62828 !important;
+        border: 2px solid #ef5350 !important;
+    }
+
+    ::deep .note-gray,
+    ::deep .note-gray.rz-card {
+        background-color: #616161 !important;
+        border: 2px solid #bdbdbd !important;
+    }
+}
+
+/* Scrollbar Styling */
+.step-progress-compact::-webkit-scrollbar {
+    width: 5px;
+}
+
+.step-progress-compact::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+}
+
+.step-progress-compact::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+.step-progress-compact::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+/* Firefox scrollbar */
+.step-progress-compact {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.05);
+}
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS
+   ============================================ */
+
+/* Mobile Small (< 480px) */
+@media (max-width: 479px) {
+    .header-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .status-legend {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 1rem;
+        font-size: 0.8rem;
+        width: 100%;
+    }
+    
+    .header-controls > .rz-stack {
+        margin-left: 0;
+        align-self: flex-end;
+    }
+
+    .legend-color {
+        width: 20px;
+        height: 20px;
+    }
+
+    .view-mode-btn {
+        min-width: 36px !important;
+        padding: 0.4rem !important;
+    }
+
+    .card-compact-mode {
+        min-height: 300px;
+        max-height: 300px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .info-grid-full {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+    }
+
+    .info-label {
+        font-size: 0.65rem;
+    }
+
+    .info-value {
+        font-size: 0.85rem;
+    }
+
+    .info-value-small {
+        font-size: 0.75rem;
+    }
+
+    .step-item {
+        padding: 0.3rem 0.4rem;
+    }
+
+    .step-number {
+        width: 18px;
+        height: 18px;
+        font-size: 0.65rem;
+    }
+
+    .step-label {
+        font-size: 0.75rem;
+    }
+
+    .step-date {
+        font-size: 0.65rem;
+    }
+
+    .step-progress-compact {
+        max-height: 130px;
+    }
+}
+
+/* Mobile (480px - 639px) */
+@media (min-width: 480px) and (max-width: 639px) {
+    .header-controls {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.65rem 0.85rem;
+    }
+
+    .status-legend {
+        justify-content: flex-start;
+        gap: 1.5rem;
+    }
+
+    .legend-color {
+        width: 24px;
+        height: 24px;
+    }
+
+    .card-compact-mode {
+        min-height: 280px;
+        max-height: 280px;
+    }
+
+    .info-grid-full {
+        grid-template-columns: 1fr;
+    }
+
+    .step-progress-compact {
+        max-height: 150px;
+    }
+}
+
+/* Tablet Portrait (640px - 767px) */
+@media (min-width: 640px) and (max-width: 767px) {
+    .header-controls {
+        gap: 1.5rem;
+        padding: 0.75rem 1rem;
+        justify-content: space-between;
+    }
+
+    .status-legend {
+        gap: 2rem;
+        justify-content: flex-start;
+    }
+
+    .info-grid-full {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .card-compact-mode {
+        min-height: 280px;
+        max-height: 280px;
+    }
+}
+
+/* Tablet Landscape (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .header-controls {
+        gap: 2rem;
+        justify-content: space-between;
+    }
+
+    .status-legend {
+        justify-content: flex-start;
+    }
+
+    .info-grid-full {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .card-compact-mode {
+        min-height: 280px;
+        max-height: 280px;
+    }
+}
+
+/* Desktop Small (1024px - 1279px) */
+@media (min-width: 1024px) and (max-width: 1279px) {
+    .header-controls {
+        gap: 2rem;
+        justify-content: space-between;
+    }
+
+    .status-legend {
+        gap: 2rem;
+        justify-content: flex-start;
+    }
+
+    .legend-color {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+/* Desktop Medium (1280px - 1439px) */
+@media (min-width: 1280px) and (max-width: 1439px) {
+    .card-compact-mode {
+        min-height: 290px;
+        max-height: 290px;
+    }
+
+    .step-progress-compact {
+        max-height: 180px;
+    }
+}
+
+/* Desktop Large (1440px+) */
+@media (min-width: 1440px) {
+    .header-controls {
+        padding: 1rem 1.5rem;
+        gap: 2.5rem;
+        justify-content: space-between;
+    }
+
+    .status-legend {
+        gap: 2.5rem;
+        justify-content: flex-start;
+    }
+
+    .card-compact-mode {
+        min-height: 300px;
+        max-height: 300px;
+    }
+
+    .step-progress-compact {
+        max-height: 190px;
+    }
+
+    .info-value {
+        font-size: 1rem;
+    }
+
+    .info-value-small {
+        font-size: 0.9rem;
+    }
+}
+
+/* Ultra Wide (1920px+) */
+@media (min-width: 1920px) {
+    .header-controls {
+        padding: 1.25rem 2rem;
+        gap: 3rem;
+        justify-content: space-between;
+    }
+
+    .status-legend {
+        gap: 3rem;
+        justify-content: flex-start;
+    }
+
+    .legend-color {
+        width: 32px;
+        height: 32px;
+    }
+
+    .card-compact-mode {
+        min-height: 320px;
+        max-height: 320px;
+    }
+
+    .step-progress-compact {
+        max-height: 200px;
+    }
+}

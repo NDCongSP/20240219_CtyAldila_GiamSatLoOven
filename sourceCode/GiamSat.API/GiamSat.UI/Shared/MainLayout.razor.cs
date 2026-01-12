@@ -14,6 +14,7 @@ namespace GiamSat.UI.Shared
     public partial class MainLayout : IDisposable
     {
         [Inject] IHttpInterceptorManager _httpInterceptorManager { get; set; }
+        [Inject] NavigationManager _navigationManager { get; set; }
 
         bool _sidebarExpanded = false;
         bool _usersManager = false;
@@ -75,6 +76,11 @@ namespace GiamSat.UI.Shared
         }
 
         async void OnclickLogout(MouseEventArgs args)
+        {
+            await _authSerivce.LogoutAsync();
+        }
+
+        async Task OnClickLogout()
         {
             await _authSerivce.LogoutAsync();
         }
