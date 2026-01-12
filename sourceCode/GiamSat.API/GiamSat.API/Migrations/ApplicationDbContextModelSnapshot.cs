@@ -92,7 +92,7 @@ namespace GiamSat.API.Migrations
                     b.Property<string>("OvenName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Temperature")
+                    b.Property<double>("Temperature")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -242,6 +242,98 @@ namespace GiamSat.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("FT06");
+                });
+
+            modelBuilder.Entity("GiamSat.Models.FT07_RevoConfig", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool?>("Actived")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("C000")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FT07");
+                });
+
+            modelBuilder.Entity("GiamSat.Models.FT08_RevoRealtime", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("C000_RevoId")
+                        .HasColumnType("int")
+                        .HasColumnName("C000");
+
+                    b.Property<string>("C001_Data")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("C001");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FT08");
+                });
+
+            modelBuilder.Entity("GiamSat.Models.FT09_RevoDatalog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ColorCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedMachine")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EndedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Mandrel")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MandrelStart")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Part")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Rev")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("RevoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RevoName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("StartedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("StepId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StepName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Work")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FT09");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
