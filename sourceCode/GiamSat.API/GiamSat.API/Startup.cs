@@ -407,13 +407,13 @@ namespace GiamSat.API
             #endregion
 
             var revoConfigs = new RevoConfigs();
-            for (int i = 1; i <= 3; i++)
+            for (int i = 1; i <= 9; i++)
             {
                 revoConfigs.Add(new RevoConfigModel()
                 {
                     Id = i,
                     Name = $"Revo {i}",
-                    Path = $"Local Station/Channel1/Revo{i}",
+                    Path = $"Local Station/Channel_Revo_{i}/Revo",
                 });
             }
 
@@ -434,6 +434,10 @@ namespace GiamSat.API
 
                 await scope.ServiceProvider.GetService<ApplicationDbContext>()
                     .SaveChangesAsync();
+
+                 existing = scope.ServiceProvider.GetService<ApplicationDbContext>()
+                .FT07_RevoConfigs
+                .FirstOrDefault();
             }
 
             var steps = new List<RevoStep>();

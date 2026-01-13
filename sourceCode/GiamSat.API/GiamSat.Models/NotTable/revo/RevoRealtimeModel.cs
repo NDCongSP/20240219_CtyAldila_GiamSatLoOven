@@ -11,6 +11,9 @@ namespace GiamSat.Models
         public int RevoId { get; set; }
         public string RevoName { get; set; }
 
+        /// <summary>
+        /// địa chỉ easy modbus của máy REVO.
+        /// </summary>
         public string? Path { get; set; }
 
         /// <summary>
@@ -19,9 +22,9 @@ namespace GiamSat.Models
         /// </summary>
         public int ConnectionStatus { get; set; }
 
-        public string? Work { get; set; }
-
         public string? Part { get; set; }
+
+        public string? Work { get; set; }
 
         public string? Rev { get; set; }
 
@@ -45,6 +48,11 @@ namespace GiamSat.Models
         /// REVO-STEP-4|1080|720|N 4 là bước 4, 1080 là góc quay, 720 là tốc độ quay (anh cũng chưa rõ đơn vị anh đoán là RPM).
         /// </summary>
         public string? StepConfig { get; set; }
+
+        /// <summary>
+        /// cho phép hiển thị hay không.
+        /// </summary>
+        public bool? Visible { get; set; } = false;
 
         /// <summary>
         /// Cho phép chay hay không.
