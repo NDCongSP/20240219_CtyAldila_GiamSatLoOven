@@ -3,103 +3,56 @@
     @* <RadzenStack AlignItems="Radzen.AlignItems.Center" class="rz-p-4" Style="padding: var(--rz-panel-menu-item-padding); border-bottom: var(--rz-panel-menu-item-border);">
         <RadzenImage Path="images/logoAldila.ico" style="width: 48px; height: 48px;"></RadzenImage>
     </RadzenStack> *@
-    
+
     @* Hệ thống lò 1 *@
-    <RadzenPanelMenuItem Text="Hệ thống lò 1" 
-                       Icon="device_thermostat" 
-                       Expanded="@_ovenSystems[0].IsExpanded"
-                       Click="@(args => OnOvenClicked(_ovenSystems[0], args))"
-                       @key="_ovenSystems[0].Id">
+    <RadzenPanelMenuItem Text="Hệ thống lò OVEN"
+                         Icon="device_thermostat"
+                         Expanded="@_ovenSystems[0].IsExpanded"
+                         Click="@(args => OnOvenClicked(_ovenSystems[0], args))"
+                         @key="_ovenSystems[0].Id">
         <ChildContent>
-            <RadzenPanelMenuItem Text="Trang chủ" 
-                               Icon="dashboard" 
-                               Path="/oven/1"
-                               Match="NavLinkMatch.All"
-                               Click="@(args => OnOvenMenuItemClicked(_ovenSystems[0], "Trang chủ", args))" />
-            
-            <RadzenPanelMenuItem Text="Cấu hình" 
-                               Icon="settings_applications" 
-                               Path="/oven/1/config"
-                               Match="NavLinkMatch.All"
-                               Click="@(args => OnOvenMenuItemClicked(_ovenSystems[0], "Cấu hình", args))" />
-            
-            <RadzenPanelMenuItem Text="Báo cáo" 
-                               Icon="description" 
-                               Path="/oven/1/report"
-                               Match="NavLinkMatch.All"
-                               Click="@(args => OnOvenMenuItemClicked(_ovenSystems[0], "Báo cáo", args))" />
-            
-            <RadzenPanelMenuItem Text="Cài đặt" 
-                               Icon="settings" 
-                               Path="/oven/1/settings"
-                               Match="NavLinkMatch.All"
-                               Click="@(args => OnOvenMenuItemClicked(_ovenSystems[0], "Cài đặt", args))" />
+            <RadzenPanelMenuItem Text="Trang chủ"
+                                 Icon="dashboard"
+                                 Path="/"
+                                 Match="NavLinkMatch.All"/>
+
+            <RadzenPanelMenuItem Text="Cấu hình"
+                                 Icon="settings_applications" >
+                <ChildContent>
+                    @foreach (var item in _ovensInfo)
+                    {
+                        linkC = $"/ovenconfig/{item.Id}";
+                        <RadzenPanelMenuItem Text=@item.Name Icon="label_important" Path=@linkC Click="OnChildClicked" />
+                    }
+                </ChildContent>
+            </RadzenPanelMenuItem>
+
+            <RadzenPanelMenuItem Text="Báo cáo" Icon="description" Path="/report" />
+            <RadzenPanelMenuItem Text="Cài đặt" Icon="settings" Path="/settings" />
         </ChildContent>
     </RadzenPanelMenuItem>
 
     @* Hệ thống lò 2 *@
-    <RadzenPanelMenuItem Text="Hệ thống lò 2" 
-                       Icon="device_thermostat" 
-                       Expanded="@_ovenSystems[1].IsExpanded"
-                       Click="@(args => OnOvenClicked(_ovenSystems[1], args))"
-                       @key="_ovenSystems[1].Id">
+    <RadzenPanelMenuItem Text="REVO"
+                         Icon="device_thermostat"
+                         Expanded="@_ovenSystems[1].IsExpanded"
+                         Click="@(args => OnOvenClicked(_ovenSystems[1], args))"
+                         @key="_ovenSystems[1].Id">
         <ChildContent>
-            <RadzenPanelMenuItem Text="Trang chủ" 
-                               Icon="dashboard" 
-                               Path="/oven/2"
-                               Match="NavLinkMatch.All"
-                               Click="@(args => OnOvenMenuItemClicked(_ovenSystems[1], "Trang chủ", args))" />
-            
-            <RadzenPanelMenuItem Text="Cấu hình" 
-                               Icon="settings_applications" 
-                               Path="/oven/2/config"
-                               Match="NavLinkMatch.All"
-                               Click="@(args => OnOvenMenuItemClicked(_ovenSystems[1], "Cấu hình", args))" />
-            
-            <RadzenPanelMenuItem Text="Báo cáo" 
-                               Icon="description" 
-                               Path="/oven/2/report"
-                               Match="NavLinkMatch.All"
-                               Click="@(args => OnOvenMenuItemClicked(_ovenSystems[1], "Báo cáo", args))" />
-            
-            <RadzenPanelMenuItem Text="Cài đặt" 
-                               Icon="settings" 
-                               Path="/oven/2/settings"
-                               Match="NavLinkMatch.All"
-                               Click="@(args => OnOvenMenuItemClicked(_ovenSystems[1], "Cài đặt", args))" />
-        </ChildContent>
-    </RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Text="Trang chủ"
+                                 Icon="dashboard"
+                                 Path="/oven/1"
+                                 Match="NavLinkMatch.All"/>
 
-    @* Hệ thống lò 3 *@
-    <RadzenPanelMenuItem Text="Hệ thống lò 3" 
-                       Icon="device_thermostat" 
-                       Expanded="@_ovenSystems[2].IsExpanded"
-                       Click="@(args => OnOvenClicked(_ovenSystems[2], args))"
-                       @key="_ovenSystems[2].Id">
-        <ChildContent>
-            <RadzenPanelMenuItem Text="Trang chủ" 
-                               Icon="dashboard" 
-                               Path="/oven/3"
-                               Match="NavLinkMatch.All"
-                               Click="@(args => OnOvenMenuItemClicked(_ovenSystems[2], "Trang chủ", args))" />
-            
-            <RadzenPanelMenuItem Text="Cấu hình" 
-                               Icon="settings_applications" 
-                               Path="/oven/3/config"
-                               Match="NavLinkMatch.All"
-                               Click="@(args => OnOvenMenuItemClicked(_ovenSystems[2], "Cấu hình", args))" />
-            
-            <RadzenPanelMenuItem Text="Báo cáo" 
-                               Icon="description" 
-                               Path="/oven/3/report"
-                               Match="NavLinkMatch.All"
-                               Click="@(args => OnOvenMenuItemClicked(_ovenSystems[2], "Báo cáo", args))" />
-            
-            <RadzenPanelMenuItem Text="Cài đặt" 
-                               Icon="settings" 
-                               Path="/oven/3/settings"
-                               Match="NavLinkMatch.All"
-                               Click="@(args => OnOvenMenuItemClicked(_ovenSystems[2], "Cài đặt", args))" />
+            <RadzenPanelMenuItem Text="Cấu hình"
+                                 Icon="settings_applications"
+                                 Path="/oven/1/config"
+                                 Match="NavLinkMatch.All"/>
+
+            <RadzenPanelMenuItem Text="Báo cáo"
+                                 Icon="description"
+                                 Path="/oven/1/report"
+                                 Match="NavLinkMatch.All"/>
         </ChildContent>
     </RadzenPanelMenuItem>
 </RadzenPanelMenu>

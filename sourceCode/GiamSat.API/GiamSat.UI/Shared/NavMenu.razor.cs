@@ -1,10 +1,8 @@
-﻿using GiamSat.APIClient;
-using GiamSat.Models;
+﻿using GiamSat.Models;
 using GiamSat.UI.Model;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using Radzen;
-using System;
 
 namespace GiamSat.UI.Shared
 {
@@ -14,114 +12,59 @@ namespace GiamSat.UI.Shared
         public bool sidebarExpanded { get; set; } = true;
 
         private List<OvenSystemModel> _ovenSystems = new List<OvenSystemModel>();
-        private int _currentExpandedOvenId = -1;
-
+        private OvensInfo _ovensInfo = new OvensInfo();
+        private string linkC;
         protected override async Task OnInitializedAsync()
-        {
-            await LoadOvenSystems();
-        }
-
-        private async Task LoadOvenSystems()
         {
             try
             {
-                // TODO: Uncomment when API is ready
-                // var res = await _ovenSystemClient.GetAllAsync();
-                // if (res.Succeeded)
-                // {
-                //     _ovenSystems = res.Data.ToList();
-                //     if (_ovenSystems.Any())
-                //     {
-                //         _ovenSystems[0].IsExpanded = true;
-                //         _currentExpandedOvenId = _ovenSystems[0].Id;
-                //     }
-                // }
+                var res = await _ft01Client.GetAllAsync();
 
-                // FAKE DATA - Remove when API is ready
-                _ovenSystems = new List<OvenSystemModel>
+                if (!res.Succeeded)
                 {
-                    new OvenSystemModel
-                    {
-                        Id = 1,
-                        Name = "Hệ thống lò 1",
-                        Description = "Lò sản xuất khu A",
-                        IsActive = true,
-                        IsExpanded = true // Mặc định mở lò đầu tiên
-                    },
-                    new OvenSystemModel
-                    {
-                        Id = 2,
-                        Name = "Hệ thống lò 2",
-                        Description = "Lò sản xuất khu B",
-                        IsActive = true,
-                        IsExpanded = false
-                    },
-                    new OvenSystemModel
-                    {
-                        Id = 3,
-                        Name = "Hệ thống lò 3",
-                        Description = "Lò sản xuất khu C",
-                        IsActive = true,
-                        IsExpanded = false
-                    }
-                };
+                    _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Warning", Detail = "Data empty", Duration = 2000 });
+                    return;
 
-                _currentExpandedOvenId = 1; // Lò đầu tiên
+                }
+
+                var ft01 = res.Data.ToList();
+                if (ft01 != null && ft01.Count > 0)
+                {
+                    _ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(ft01.FirstOrDefault().C001);
+                }
             }
             catch (Exception ex)
             {
-                _notificationService.Notify(new NotificationMessage 
-                { 
-                    Severity = NotificationSeverity.Error, 
-                    Summary = "Lỗi", 
-                    Detail = $"Không thể tải danh sách hệ thống lò: {ex.Message}", 
-                    Duration = 4000 
-                });
+                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "error", Detail = ex.Message, Duration = 2000 });
+                return;
             }
+        }
+        void OnChildClicked(MenuItemEventArgs args)
+        {
+            GlobalVariable.BreadCrumbData = null;
+            GlobalVariable.BreadCrumbData = new List<BreadCrumbModel>();
+
+            GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel()
+            {
+                Text = "Cấu hình Oven",
+            });
+
+            GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel()
+            {
+                Text = args.Text,
+                Path = args.Path
+            });
         }
 
         private void OnOvenClicked(OvenSystemModel oven, MenuItemEventArgs args)
         {
-            // Collapse tất cả các lò khác
-            foreach (var o in _ovenSystems)
-            {
-                o.IsExpanded = false;
-            }
-
-            // Expand lò được chọn và navigate về trang chủ
-            oven.IsExpanded = true;
-            _currentExpandedOvenId = oven.Id;
-
-            // Luôn navigate về trang chủ của lò khi click vào parent menu
-            _navigation.NavigateTo($"/oven/{oven.Id}", forceLoad: false);
-
             // Update breadcrumb - chỉ hiển thị tên lò và "Trang chủ"
             UpdateBreadcrumb(oven.Name, "Trang chủ");
             
             // Force re-render
             StateHasChanged();
         }
-
-        private void OnOvenMenuItemClicked(OvenSystemModel oven, string menuName, MenuItemEventArgs args)
-        {
-            // Đảm bảo lò này đang được expand
-            if (!oven.IsExpanded)
-            {
-                foreach (var o in _ovenSystems)
-                {
-                    o.IsExpanded = false;
-                }
-                oven.IsExpanded = true;
-                _currentExpandedOvenId = oven.Id;
-            }
-
-            // Update breadcrumb
-            UpdateBreadcrumb(oven.Name, menuName);
-            
-            // Force re-render để update active state
-            StateHasChanged();
-        }
-
+        
         private void UpdateBreadcrumb(string ovenName, string? menuName)
         {
             GlobalVariable.BreadCrumbData = new List<BreadCrumbModel>();
