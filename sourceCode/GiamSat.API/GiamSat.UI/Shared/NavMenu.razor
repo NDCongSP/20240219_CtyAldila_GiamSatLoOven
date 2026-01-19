@@ -1,15 +1,17 @@
-﻿<RadzenPanelMenu ShowArrow="true">
+<RadzenPanelMenu ShowArrow="true">
     @* Logo - có thể bỏ comment nếu muốn hiển thị *@
     @* <RadzenStack AlignItems="Radzen.AlignItems.Center" class="rz-p-4" Style="padding: var(--rz-panel-menu-item-padding); border-bottom: var(--rz-panel-menu-item-border);">
         <RadzenImage Path="images/logoAldila.ico" style="width: 48px; height: 48px;"></RadzenImage>
     </RadzenStack> *@
 
     @* Hệ thống lò 1 *@
-    <RadzenPanelMenuItem Text="Hệ thống lò OVEN"
-                         Icon="device_thermostat"
-                         Expanded="@_ovenSystems[0].IsExpanded"
-                         Click="@(args => OnOvenClicked(_ovenSystems[0], args))"
-                         @key="_ovenSystems[0].Id">
+    @if (_ovenSystems != null && _ovenSystems.Count > 0)
+    {
+        <RadzenPanelMenuItem Text="Hệ thống lò OVEN"
+                             Icon="device_thermostat"
+                             Expanded="@_ovenSystems[0].IsExpanded"
+                             Click="@(args => OnOvenClicked(_ovenSystems[0], args))"
+                             @key="_ovenSystems[0].Id">
         <ChildContent>
             <RadzenPanelMenuItem Text="Trang chủ"
                                  Icon="dashboard"
@@ -19,10 +21,13 @@
             <RadzenPanelMenuItem Text="Cấu hình"
                                  Icon="settings_applications" >
                 <ChildContent>
-                    @foreach (var item in _ovensInfo)
+                    @if (_ovensInfo != null && _ovensInfo.Count > 0)
                     {
-                        linkC = $"/ovenconfig/{item.Id}";
-                        <RadzenPanelMenuItem Text=@item.Name Icon="label_important" Path=@linkC Click="OnChildClicked" />
+                        @foreach (var item in _ovensInfo)
+                        {
+                            var linkC = $"/ovenconfig/{item.Id}";
+                            <RadzenPanelMenuItem Text="@item.Name" Icon="label_important" Path="@linkC" Click="OnChildClicked" />
+                        }
                     }
                 </ChildContent>
             </RadzenPanelMenuItem>
@@ -30,29 +35,33 @@
             <RadzenPanelMenuItem Text="Báo cáo" Icon="description" Path="/report" />
             <RadzenPanelMenuItem Text="Cài đặt" Icon="settings" Path="/settings" />
         </ChildContent>
-    </RadzenPanelMenuItem>
+        </RadzenPanelMenuItem>
+    }
 
     @* Hệ thống lò 2 *@
-    <RadzenPanelMenuItem Text="REVO"
-                         Icon="device_thermostat"
-                         Expanded="@_ovenSystems[1].IsExpanded"
-                         Click="@(args => OnOvenClicked(_ovenSystems[1], args))"
-                         @key="_ovenSystems[1].Id">
+    @if (_ovenSystems != null && _ovenSystems.Count > 1)
+    {
+        <RadzenPanelMenuItem Text="REVO"
+                             Icon="device_thermostat"
+                             Expanded="@_ovenSystems[1].IsExpanded"
+                             Click="@(args => OnOvenClicked(_ovenSystems[1], args))"
+                             @key="_ovenSystems[1].Id">
         <ChildContent>
             <RadzenPanelMenuItem Text="Trang chủ"
                                  Icon="dashboard"
-                                 Path="/oven/1"
+                                 Path="/revo"
                                  Match="NavLinkMatch.All"/>
 
             <RadzenPanelMenuItem Text="Cấu hình"
                                  Icon="settings_applications"
-                                 Path="/oven/1/config"
+                                 Path="/revo/config"
                                  Match="NavLinkMatch.All"/>
 
             <RadzenPanelMenuItem Text="Báo cáo"
                                  Icon="description"
-                                 Path="/oven/1/report"
+                                 Path="/revo/report"
                                  Match="NavLinkMatch.All"/>
         </ChildContent>
-    </RadzenPanelMenuItem>
+        </RadzenPanelMenuItem>
+    }
 </RadzenPanelMenu>

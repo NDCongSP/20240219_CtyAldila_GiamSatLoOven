@@ -1,4 +1,4 @@
-﻿using GiamSat.Models;
+using GiamSat.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -223,6 +223,8 @@ namespace GiamSat.API
             services.AddScoped<ISFT04, SFT04>();
             services.AddScoped<ISFT05, SFT05>();
             services.AddScoped<ISFT06, SFT06>();
+            services.AddScoped<ISFT07, SFT07>();
+            services.AddScoped<ISFT08, SFT08>();
             services.AddScoped<SCommon>();
 
             services.AddSwaggerGen(c =>

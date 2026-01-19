@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -72,6 +72,14 @@ namespace GiamSat.Models
         public static class FT06
         {
             public const string BasePath = "api/FT06";
+        }
+        public static class FT07
+        {
+            public const string BasePath = "api/FT07";
+        }
+        public static class FT08
+        {
+            public const string BasePath = "api/FT08";
         }
     }
 }

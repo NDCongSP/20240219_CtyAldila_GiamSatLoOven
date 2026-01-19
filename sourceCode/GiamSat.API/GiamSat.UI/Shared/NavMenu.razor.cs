@@ -1,4 +1,4 @@
-﻿using GiamSat.Models;
+using GiamSat.Models;
 using GiamSat.UI.Model;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
@@ -13,11 +13,29 @@ namespace GiamSat.UI.Shared
 
         private List<OvenSystemModel> _ovenSystems = new List<OvenSystemModel>();
         private OvensInfo _ovensInfo = new OvensInfo();
-        private string linkC;
         protected override async Task OnInitializedAsync()
         {
             try
             {
+                // Initialize oven systems
+                _ovenSystems = new List<OvenSystemModel>
+                {
+                    new OvenSystemModel
+                    {
+                        Id = 1,
+                        Name = "Hệ thống lò OVEN",
+                        IsExpanded = false,
+                        IsActive = true
+                    },
+                    new OvenSystemModel
+                    {
+                        Id = 2,
+                        Name = "REVO",
+                        IsExpanded = false,
+                        IsActive = true
+                    }
+                };
+
                 var res = await _ft01Client.GetAllAsync();
 
                 if (!res.Succeeded)
@@ -30,7 +48,11 @@ namespace GiamSat.UI.Shared
                 var ft01 = res.Data.ToList();
                 if (ft01 != null && ft01.Count > 0)
                 {
-                    _ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(ft01.FirstOrDefault().C001);
+                    var ovensInfoJson = ft01.FirstOrDefault()?.C001;
+                    if (!string.IsNullOrEmpty(ovensInfoJson))
+                    {
+                        _ovensInfo = JsonConvert.DeserializeObject<OvensInfo>(ovensInfoJson) ?? new OvensInfo();
+                    }
                 }
             }
             catch (Exception ex)

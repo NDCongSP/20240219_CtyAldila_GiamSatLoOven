@@ -1,0 +1,26 @@
+@using GiamSat.Models
+
+<RadzenTemplateForm Data="@_model" Submit="@((RevoConfigModel args) => { Submit(args); })">
+    <RadzenStack Gap="1rem">
+        <RadzenFieldset Text="@(_isEdit ? "Chỉnh sửa REVO" : "Thêm REVO mới")">
+            <RadzenStack Gap="1rem">
+                <RadzenFormField Text="ID" class="rz-col-12">
+                    <RadzenNumeric @bind-Value="@_model.Id" Disabled="true" Style="width: 100%;" />
+                </RadzenFormField>
+
+                <RadzenFormField Text="Tên REVO" class="rz-col-12">
+                    <RadzenTextBox @bind-Value="@_model.Name" Placeholder="Nhập tên REVO" Style="width: 100%;" />
+                </RadzenFormField>
+
+                <RadzenFormField Text="Đường dẫn" class="rz-col-12">
+                    <RadzenTextBox @bind-Value="@_model.Path" Placeholder="Nhập đường dẫn" Style="width: 100%;" />
+                </RadzenFormField>
+            </RadzenStack>
+        </RadzenFieldset>
+
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem">
+            <RadzenButton Text="Hủy" ButtonStyle="ButtonStyle.Light" Click="@(() => DialogService.Close())" />
+            <RadzenButton Text="@(_isEdit ? "Cập nhật" : "Thêm")" ButtonStyle="ButtonStyle.Primary" Type="Submit" />
+        </RadzenStack>
+    </RadzenStack>
+</RadzenTemplateForm>

@@ -1,191 +1,69 @@
-@page "/oven/{OvenId:int}/config"
+@page "/revo/config"
+@using GiamSat.Models
+@attribute [Authorize(Roles = "Admin,User")]
 
 <RadzenRow Gap="1rem">
     <RadzenColumn Size="12">
         <RadzenCard class="rz-shadow-3">
-            <!-- Filter Section -->
-            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.End" Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-mb-4">
-                <RadzenStack Gap="0.2rem" Style="flex: 1; min-width: 200px;">
-                    <RadzenLabel Text="Tìm kiếm" />
-                    <RadzenTextBox @bind-Value="@_searchText" Placeholder="Tên lò..." Style="width: 100%;" />
+            <RadzenStack Gap="1rem">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenText TextStyle="TextStyle.H5">Cấu hình REVO</RadzenText>
+                    <RadzenButton Icon="add_circle" 
+                                Text="Thêm REVO" 
+                                ButtonStyle="ButtonStyle.Success" 
+                                Click="@OnAddRevo" />
                 </RadzenStack>
-                <RadzenStack Gap="0.2rem" Style="min-width: 150px;">
-                    <RadzenLabel Text="Trạng thái" />
-                    <RadzenDropDown @bind-Value="@_filterStatus" Data="@_statusList" Style="width: 100%;" />
-                </RadzenStack>
-                <div class="button-actions-right">
-                    <RadzenButton Icon="add_circle" Text="Thêm lò" ButtonStyle="ButtonStyle.Success" Click="@OnAddOven" />
-                    <RadzenButton Icon="search" Text="Tìm" ButtonStyle="ButtonStyle.Primary" Click="@OnSearch" />
-                    <RadzenButton Icon="refresh" ButtonStyle="ButtonStyle.Light" Click="@OnReset" />
-                </div>
-            </RadzenStack>
 
-            <!-- DataGrid -->
-            <RadzenDataGrid @ref="_dataGrid" 
-                          Data="@_filteredOvens" 
-                          TItem="OvenModel" 
-                          AllowPaging="true" 
-                          PageSize="10"
-                          AllowSorting="true"
-                          AllowFiltering="false"
-                          PagerHorizontalAlign="HorizontalAlign.Right"
-                          ShowPagingSummary="true"
-                          PagingSummaryFormat="Hiển thị {0} - {1} / {2} mục"
-                          class="rz-mt-3">
-                <Columns>
-                    <RadzenDataGridColumn TItem="OvenModel" Property="Id" Title="ID" Width="80px" TextAlign="TextAlign.Center" />
-                    <RadzenDataGridColumn TItem="OvenModel" Property="Name" Title="Tên lò" Width="250px" />
-                    <RadzenDataGridColumn TItem="OvenModel" Property="Temperature" Title="Nhiệt độ (°C)" Width="150px" TextAlign="TextAlign.Center">
-                        <Template Context="oven">
-                            <RadzenText TextStyle="TextStyle.Body1">@oven.Temperature.ToString("F1")°C</RadzenText>
-                        </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="OvenModel" Property="Status" Title="Trạng thái" Width="150px" TextAlign="TextAlign.Center">
-                        <Template Context="oven">
-                            <RadzenBadge BadgeStyle="@(oven.Status == "Running" ? BadgeStyle.Success : BadgeStyle.Secondary)" 
-                                       Text="@(oven.Status == "Running" ? "Đang chạy" : "Dừng")" />
-                        </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="OvenModel" Property="LastUpdate" Title="Cập nhật" Width="180px">
-                        <Template Context="oven">
-                            <RadzenText TextStyle="TextStyle.Body2">@oven.LastUpdate.ToString("dd/MM/yyyy HH:mm")</RadzenText>
-                        </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="OvenModel" Title="Hành động" Width="180px" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
-                        <Template Context="oven">
-                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" JustifyContent="JustifyContent.Center">
-                                <RadzenButton Icon="visibility" 
-                                            ButtonStyle="ButtonStyle.Info" 
-                                            Size="ButtonSize.Small" 
-                                            Variant="Variant.Flat"
-                                            Click="@(() => OnView(oven))"
-                                            title="Xem chi tiết" />
-                                <RadzenButton Icon="edit" 
-                                            ButtonStyle="ButtonStyle.Primary" 
-                                            Size="ButtonSize.Small" 
-                                            Variant="Variant.Flat"
-                                            Click="@(() => OnEdit(oven))"
-                                            title="Chỉnh sửa" />
-                                <RadzenButton Icon="settings" 
-                                            ButtonStyle="ButtonStyle.Warning" 
-                                            Size="ButtonSize.Small" 
-                                            Variant="Variant.Flat"
-                                            Click="@(() => OnConfigure(oven))"
-                                            title="Cấu hình" />
-                                <RadzenButton Icon="delete" 
-                                            ButtonStyle="ButtonStyle.Danger" 
-                                            Size="ButtonSize.Small" 
-                                            Variant="Variant.Flat"
-                                            Click="@(() => OnDelete(oven))"
-                                            title="Xóa" />
-                            </RadzenStack>
-                        </Template>
-                    </RadzenDataGridColumn>
-                </Columns>
-            </RadzenDataGrid>
+                @if (_isLoading)
+                {
+                    <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+                    <RadzenText>Đang tải dữ liệu...</RadzenText>
+                }
+                else if (_revoConfigs == null || _revoConfigs.Count == 0)
+                {
+                    <RadzenText TextStyle="TextStyle.Body2" Style="color: var(--rz-text-muted-color);">
+                        Chưa có dữ liệu. Vui lòng thêm REVO mới.
+                    </RadzenText>
+                }
+                else
+                {
+                    <!-- DataGrid -->
+                    <RadzenDataGrid @ref="_dataGrid" 
+                                  Data="@_revoConfigs" 
+                                  TItem="RevoConfigModel" 
+                                  AllowPaging="true" 
+                                  PageSize="10"
+                                  AllowSorting="true"
+                                  PagerHorizontalAlign="HorizontalAlign.Right"
+                                  ShowPagingSummary="true"
+                                  PagingSummaryFormat="Hiển thị {0} - {1} / {2} mục"
+                                  class="rz-mt-3">
+                        <Columns>
+                            <RadzenDataGridColumn TItem="RevoConfigModel" Property="Id" Title="ID" Width="100px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn TItem="RevoConfigModel" Property="Name" Title="Tên REVO" Width="250px" />
+                            <RadzenDataGridColumn TItem="RevoConfigModel" Property="Path" Title="Đường dẫn" Width="300px" />
+                            <RadzenDataGridColumn TItem="RevoConfigModel" Title="Hành động" Width="200px" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+                                <Template Context="item">
+                                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" JustifyContent="JustifyContent.Center">
+                                        <RadzenButton Icon="edit" 
+                                                    ButtonStyle="ButtonStyle.Primary" 
+                                                    Size="ButtonSize.Small" 
+                                                    Variant="Variant.Flat"
+                                                    Click="@(() => OnEdit(item))"
+                                                    title="Chỉnh sửa" />
+                                        <RadzenButton Icon="delete" 
+                                                    ButtonStyle="ButtonStyle.Danger" 
+                                                    Size="ButtonSize.Small" 
+                                                    Variant="Variant.Flat"
+                                                    Click="@(() => OnDelete(item))"
+                                                    title="Xóa" />
+                                    </RadzenStack>
+                                </Template>
+                            </RadzenDataGridColumn>
+                        </Columns>
+                    </RadzenDataGrid>
+                }
+            </RadzenStack>
         </RadzenCard>
     </RadzenColumn>
 </RadzenRow>
-
-@code {
-    [Parameter]
-    public int OvenId { get; set; }
-
-    [Inject] private NotificationService NotificationService { get; set; } = default!;
-    [Inject] private DialogService DialogService { get; set; } = default!;
-
-    private RadzenDataGrid<OvenModel> _dataGrid = default!;
-    private List<OvenModel> _ovens = new();
-    private List<OvenModel> _filteredOvens = new();
-    private string _searchText = string.Empty;
-    private string _filterStatus = "Tất cả";
-    private List<string> _statusList = new() { "Tất cả", "Đang chạy", "Dừng" };
-
-    protected override async Task OnInitializedAsync()
-    {
-        LoadOvens();
-    }
-
-    protected override void OnParametersSet()
-    {
-        LoadOvens();
-    }
-
-    private void LoadOvens()
-    {
-        // TODO: Load from API
-        // var data = await _ovenClient.GetOvensBySystemIdAsync(OvenId);
-        
-        // Fake data
-        _ovens = new List<OvenModel>();
-        for (int i = 1; i <= 13; i++)
-        {
-            _ovens.Add(new OvenModel
-            {
-                Id = i,
-                Name = $"Lò {i} - Hệ thống {OvenId}",
-                Status = i % 3 == 0 ? "Stopped" : "Running",
-                Temperature = 150 + i * 5 + Random.Shared.Next(-5, 5),
-                LastUpdate = DateTime.Now.AddMinutes(-Random.Shared.Next(1, 120))
-            });
-        }
-        _filteredOvens = _ovens;
-    }
-
-    private void OnSearch()
-    {
-        _filteredOvens = _ovens.Where(o =>
-            (string.IsNullOrEmpty(_searchText) || o.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase)) &&
-            (_filterStatus == "Tất cả" || 
-             (_filterStatus == "Đang chạy" && o.Status == "Running") ||
-             (_filterStatus == "Dừng" && o.Status == "Stopped"))
-        ).ToList();
-    }
-
-    private void OnReset()
-    {
-        _searchText = string.Empty;
-        _filterStatus = "Tất cả";
-        _filteredOvens = _ovens;
-    }
-
-    private void OnAddOven()
-    {
-        NotificationService.Notify(NotificationSeverity.Info, "Thêm lò", "Chức năng đang phát triển");
-    }
-
-    private void OnView(OvenModel oven)
-    {
-        NotificationService.Notify(NotificationSeverity.Info, "Xem chi tiết", $"Xem chi tiết {oven.Name}");
-    }
-
-    private void OnEdit(OvenModel oven)
-    {
-        NotificationService.Notify(NotificationSeverity.Info, "Chỉnh sửa", $"Chỉnh sửa {oven.Name}");
-    }
-
-    private void OnConfigure(OvenModel oven)
-    {
-        NotificationService.Notify(NotificationSeverity.Info, "Cấu hình", $"Cấu hình {oven.Name}");
-    }
-
-    private async Task OnDelete(OvenModel oven)
-    {
-        var confirm = await DialogService.Confirm($"Bạn có chắc muốn xóa {oven.Name}?", "Xác nhận xóa", 
-            new ConfirmOptions { OkButtonText = "Xóa", CancelButtonText = "Hủy" });
-        
-        if (confirm == true)
-        {
-            NotificationService.Notify(NotificationSeverity.Success, "Đã xóa", $"Đã xóa {oven.Name}");
-        }
-    }
-
-    public class OvenModel
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Status { get; set; } = string.Empty;
-        public double Temperature { get; set; }
-        public DateTime LastUpdate { get; set; }
-    }
-}
