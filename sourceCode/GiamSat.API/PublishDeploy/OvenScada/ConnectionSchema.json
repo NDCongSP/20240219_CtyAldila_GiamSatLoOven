@@ -1,0 +1,7690 @@
+{
+  "ItemType": "ConnectionSchema",
+  "ServerAddress": "127.0.0.1",
+  "Port": 8800,
+  "CommunicationMode": "ReceiveFromServer",
+  "RefreshRate": 1000,
+  "CreatedDate": "2024-03-26T22:02:04.4401372+07:00",
+  "Username": null,
+  "Password": null,
+  "Properties": {},
+  "Childs": [
+    {
+  "ItemType": "LocalStation",
+  "Name": "Local Station",
+  "Path": "Local Station",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {},
+  "Childs": [
+    {
+  "ItemType": "Channel",
+  "Name": "Channel1",
+  "Path": "Local Station/Channel1",
+  "Description": null,
+  "DisplayInfo": "ModbusRTU COM11.9600.8.N.1",
+  "Error": null,
+  "Properties": {
+  "Port": "COM11",
+  "ScanRate": "1000",
+  "Baudrate": "9600",
+  "Parity": "None",
+  "StopBits": "One",
+  "DelayBetweenPool": "5",
+  "MaxWritesCount": "10",
+  "DataBits": "8"
+},
+  "Childs": [
+    {
+  "ItemType": "Device",
+  "Name": "Oven1",
+  "Path": "Local Station/Channel1/Oven1",
+  "Description": null,
+  "DisplayInfo": "1",
+  "Error": null,
+  "Properties": {
+  "DeviceId": "1",
+  "Timeout": "1000",
+  "TryReadWriteTimes": "3",
+  "ReadMode": "Block",
+  "InputContactReadBlockSettings": "[]",
+  "OutputCoilsReadBlockSettings": "[]",
+  "InputRegisterReadBlockSettings": "[]",
+  "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400026\",\r\n    \"EndAddress\": \"400060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404001\",\r\n    \"EndAddress\": \"404060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400061\",\r\n    \"EndAddress\": \"400101\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404061\",\r\n    \"EndAddress\": \"404123\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"403501\",\r\n    \"EndAddress\": \"403520\"\r\n  }\r\n]"
+},
+  "Childs": [
+    {
+  "ItemType": "Tag",
+  "Name": "SetupPage",
+  "Path": "Local Station/Channel1/Oven1/SetupPage",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "401303"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "DigitalInput1Status",
+  "Path": "Local Station/Channel1/Oven1/DigitalInput1Status",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400202"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Temperature",
+  "Path": "Local Station/Channel1/Oven1/Temperature",
+  "Description": "400101",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400201"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven1/ProfileNumber_CurrentStatus",
+  "Description": "ID cua pro hien dang run",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404101"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven1/ProfileStepNumber_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404102"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven1/ProfileStepType_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404103"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "HoursRemaining_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven1/HoursRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404120"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "MinutesRemaining_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven1/MinutesRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404121"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SecondsRemaining_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven1/SecondsRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404122"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven1/SetPointCh1_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404123"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EndSetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven1/EndSetPointCh1_CurrentStatus",
+  "Description": "EndSetPointCh1",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404130"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_Settings",
+  "Path": "Local Station/Channel1/Oven1/ProfileNumber_Settings",
+  "Description": "chon profile",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404001"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_Settings",
+  "Path": "Local Station/Channel1/Oven1/ProfileStepNumber_Settings",
+  "Description": "Chon step number",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404002"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EditProfileAction_Settings",
+  "Path": "Local Station/Channel1/Oven1/EditProfileAction_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404003"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_Settings",
+  "Path": "Local Station/Channel1/Oven1/ProfileStepType_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404004"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeHours_Settings",
+  "Path": "Local Station/Channel1/Oven1/StepTimeHours_Settings",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404010"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeMinutes_Settings",
+  "Path": "Local Station/Channel1/Oven1/StepTimeMinutes_Settings",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404011"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeSeconds_Settings",
+  "Path": "Local Station/Channel1/Oven1/StepTimeSeconds_Settings",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404012"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RateValue_Settings",
+  "Path": "Local Station/Channel1/Oven1/RateValue_Settings",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404044"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel1_Settings",
+  "Path": "Local Station/Channel1/Oven1/RampSetPointChannel1_Settings",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404045"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel2_Settings",
+  "Path": "Local Station/Channel1/Oven1/RampSetPointChannel2_Settings",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404046"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SaveChanges_Settings",
+  "Path": "Local Station/Channel1/Oven1/SaveChanges_Settings",
+  "Description": "ghi gia tri 0 de luu",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400203"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C1",
+  "Path": "Local Station/Channel1/Oven1/Profile1Name_C1",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403501"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C2",
+  "Path": "Local Station/Channel1/Oven1/Profile1Name_C2",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403502"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C3",
+  "Path": "Local Station/Channel1/Oven1/Profile1Name_C3",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403503"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C4",
+  "Path": "Local Station/Channel1/Oven1/Profile1Name_C4",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403504"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C5",
+  "Path": "Local Station/Channel1/Oven1/Profile1Name_C5",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403505"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C6",
+  "Path": "Local Station/Channel1/Oven1/Profile1Name_C6",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403506"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C7",
+  "Path": "Local Station/Channel1/Oven1/Profile1Name_C7",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403507"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C8",
+  "Path": "Local Station/Channel1/Oven1/Profile1Name_C8",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403508"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C9",
+  "Path": "Local Station/Channel1/Oven1/Profile1Name_C9",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403509"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C10",
+  "Path": "Local Station/Channel1/Oven1/Profile1Name_C10",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403510"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C1",
+  "Path": "Local Station/Channel1/Oven1/Profile2Name_C1",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403511"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C2",
+  "Path": "Local Station/Channel1/Oven1/Profile2Name_C2",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403512"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C3",
+  "Path": "Local Station/Channel1/Oven1/Profile2Name_C3",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403513"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C4",
+  "Path": "Local Station/Channel1/Oven1/Profile2Name_C4",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403514"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C5",
+  "Path": "Local Station/Channel1/Oven1/Profile2Name_C5",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403515"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C6",
+  "Path": "Local Station/Channel1/Oven1/Profile2Name_C6",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403516"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C7",
+  "Path": "Local Station/Channel1/Oven1/Profile2Name_C7",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403517"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C8",
+  "Path": "Local Station/Channel1/Oven1/Profile2Name_C8",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403518"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C9",
+  "Path": "Local Station/Channel1/Oven1/Profile2Name_C9",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403519"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C10",
+  "Path": "Local Station/Channel1/Oven1/Profile2Name_C10",
+  "Description": null,
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403520"
+},
+  "Childs": []
+}
+  ]
+},
+    {
+  "ItemType": "Device",
+  "Name": "Oven2",
+  "Path": "Local Station/Channel1/Oven2",
+  "Description": null,
+  "DisplayInfo": "1",
+  "Error": null,
+  "Properties": {
+  "DeviceId": "1",
+  "Timeout": "1000",
+  "TryReadWriteTimes": "3",
+  "ReadMode": "Block",
+  "InputContactReadBlockSettings": "[]",
+  "OutputCoilsReadBlockSettings": "[]",
+  "InputRegisterReadBlockSettings": "[]",
+  "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400026\",\r\n    \"EndAddress\": \"400060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404001\",\r\n    \"EndAddress\": \"404060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400061\",\r\n    \"EndAddress\": \"400101\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404061\",\r\n    \"EndAddress\": \"404123\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"403501\",\r\n    \"EndAddress\": \"403520\"\r\n  }\r\n]"
+},
+  "Childs": [
+    {
+  "ItemType": "Tag",
+  "Name": "SetupPage",
+  "Path": "Local Station/Channel1/Oven2/SetupPage",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "401303"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "DigitalInput1Status",
+  "Path": "Local Station/Channel1/Oven2/DigitalInput1Status",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400202"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Temperature",
+  "Path": "Local Station/Channel1/Oven2/Temperature",
+  "Description": "400101",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400201"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven2/ProfileNumber_CurrentStatus",
+  "Description": "ID cua pro hien dang run",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404101"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven2/ProfileStepNumber_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404102"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven2/ProfileStepType_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404103"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "HoursRemaining_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven2/HoursRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404120"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "MinutesRemaining_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven2/MinutesRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404121"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SecondsRemaining_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven2/SecondsRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404122"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven2/SetPointCh1_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404123"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EndSetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven2/EndSetPointCh1_CurrentStatus",
+  "Description": "EndSetPointCh1",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404130"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_Settings",
+  "Path": "Local Station/Channel1/Oven2/ProfileNumber_Settings",
+  "Description": "chon profile",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404001"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_Settings",
+  "Path": "Local Station/Channel1/Oven2/ProfileStepNumber_Settings",
+  "Description": "Chon step number",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404002"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EditProfileAction_Settings",
+  "Path": "Local Station/Channel1/Oven2/EditProfileAction_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404003"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_Settings",
+  "Path": "Local Station/Channel1/Oven2/ProfileStepType_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404004"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeHours_Settings",
+  "Path": "Local Station/Channel1/Oven2/StepTimeHours_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404010"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeMinutes_Settings",
+  "Path": "Local Station/Channel1/Oven2/StepTimeMinutes_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404011"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeSeconds_Settings",
+  "Path": "Local Station/Channel1/Oven2/StepTimeSeconds_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404012"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RateValue_Settings",
+  "Path": "Local Station/Channel1/Oven2/RateValue_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404044"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel1_Settings",
+  "Path": "Local Station/Channel1/Oven2/RampSetPointChannel1_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404045"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel2_Settings",
+  "Path": "Local Station/Channel1/Oven2/RampSetPointChannel2_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404046"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SaveChanges_Settings",
+  "Path": "Local Station/Channel1/Oven2/SaveChanges_Settings",
+  "Description": "ghi gia tri 0 de luu",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400203"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C1",
+  "Path": "Local Station/Channel1/Oven2/Profile1Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403501"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C2",
+  "Path": "Local Station/Channel1/Oven2/Profile1Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403502"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C3",
+  "Path": "Local Station/Channel1/Oven2/Profile1Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403503"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C4",
+  "Path": "Local Station/Channel1/Oven2/Profile1Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403504"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C5",
+  "Path": "Local Station/Channel1/Oven2/Profile1Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403505"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C6",
+  "Path": "Local Station/Channel1/Oven2/Profile1Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403506"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C7",
+  "Path": "Local Station/Channel1/Oven2/Profile1Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403507"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C8",
+  "Path": "Local Station/Channel1/Oven2/Profile1Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403508"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C9",
+  "Path": "Local Station/Channel1/Oven2/Profile1Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403509"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C10",
+  "Path": "Local Station/Channel1/Oven2/Profile1Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403510"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C1",
+  "Path": "Local Station/Channel1/Oven2/Profile2Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403511"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C2",
+  "Path": "Local Station/Channel1/Oven2/Profile2Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403512"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C3",
+  "Path": "Local Station/Channel1/Oven2/Profile2Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403513"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C4",
+  "Path": "Local Station/Channel1/Oven2/Profile2Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403514"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C5",
+  "Path": "Local Station/Channel1/Oven2/Profile2Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403515"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C6",
+  "Path": "Local Station/Channel1/Oven2/Profile2Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403516"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C7",
+  "Path": "Local Station/Channel1/Oven2/Profile2Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403517"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C8",
+  "Path": "Local Station/Channel1/Oven2/Profile2Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403518"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C9",
+  "Path": "Local Station/Channel1/Oven2/Profile2Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403519"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C10",
+  "Path": "Local Station/Channel1/Oven2/Profile2Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403520"
+},
+  "Childs": []
+}
+  ]
+},
+    {
+  "ItemType": "Device",
+  "Name": "Oven3",
+  "Path": "Local Station/Channel1/Oven3",
+  "Description": null,
+  "DisplayInfo": "1",
+  "Error": null,
+  "Properties": {
+  "DeviceId": "1",
+  "Timeout": "1000",
+  "TryReadWriteTimes": "3",
+  "ReadMode": "Block",
+  "InputContactReadBlockSettings": "[]",
+  "OutputCoilsReadBlockSettings": "[]",
+  "InputRegisterReadBlockSettings": "[]",
+  "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400026\",\r\n    \"EndAddress\": \"400060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404001\",\r\n    \"EndAddress\": \"404060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400061\",\r\n    \"EndAddress\": \"400101\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404061\",\r\n    \"EndAddress\": \"404123\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"403501\",\r\n    \"EndAddress\": \"403520\"\r\n  }\r\n]"
+},
+  "Childs": [
+    {
+  "ItemType": "Tag",
+  "Name": "SetupPage",
+  "Path": "Local Station/Channel1/Oven3/SetupPage",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "401303"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "DigitalInput1Status",
+  "Path": "Local Station/Channel1/Oven3/DigitalInput1Status",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400202"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Temperature",
+  "Path": "Local Station/Channel1/Oven3/Temperature",
+  "Description": "400101",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400201"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven3/ProfileNumber_CurrentStatus",
+  "Description": "ID cua pro hien dang run",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404101"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven3/ProfileStepNumber_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404102"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven3/ProfileStepType_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404103"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "HoursRemaining_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven3/HoursRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404120"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "MinutesRemaining_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven3/MinutesRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404121"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SecondsRemaining_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven3/SecondsRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404122"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven3/SetPointCh1_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404123"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EndSetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven3/EndSetPointCh1_CurrentStatus",
+  "Description": "EndSetPointCh1",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404130"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_Settings",
+  "Path": "Local Station/Channel1/Oven3/ProfileNumber_Settings",
+  "Description": "chon profile",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404001"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_Settings",
+  "Path": "Local Station/Channel1/Oven3/ProfileStepNumber_Settings",
+  "Description": "Chon step number",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404002"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EditProfileAction_Settings",
+  "Path": "Local Station/Channel1/Oven3/EditProfileAction_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404003"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_Settings",
+  "Path": "Local Station/Channel1/Oven3/ProfileStepType_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404004"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeHours_Settings",
+  "Path": "Local Station/Channel1/Oven3/StepTimeHours_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404010"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeMinutes_Settings",
+  "Path": "Local Station/Channel1/Oven3/StepTimeMinutes_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404011"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeSeconds_Settings",
+  "Path": "Local Station/Channel1/Oven3/StepTimeSeconds_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404012"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RateValue_Settings",
+  "Path": "Local Station/Channel1/Oven3/RateValue_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404044"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel1_Settings",
+  "Path": "Local Station/Channel1/Oven3/RampSetPointChannel1_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404045"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel2_Settings",
+  "Path": "Local Station/Channel1/Oven3/RampSetPointChannel2_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404046"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SaveChanges_Settings",
+  "Path": "Local Station/Channel1/Oven3/SaveChanges_Settings",
+  "Description": "ghi gia tri 0 de luu",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400203"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C1",
+  "Path": "Local Station/Channel1/Oven3/Profile1Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403501"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C2",
+  "Path": "Local Station/Channel1/Oven3/Profile1Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403502"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C3",
+  "Path": "Local Station/Channel1/Oven3/Profile1Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403503"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C4",
+  "Path": "Local Station/Channel1/Oven3/Profile1Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403504"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C5",
+  "Path": "Local Station/Channel1/Oven3/Profile1Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403505"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C6",
+  "Path": "Local Station/Channel1/Oven3/Profile1Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403506"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C7",
+  "Path": "Local Station/Channel1/Oven3/Profile1Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403507"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C8",
+  "Path": "Local Station/Channel1/Oven3/Profile1Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403508"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C9",
+  "Path": "Local Station/Channel1/Oven3/Profile1Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403509"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C10",
+  "Path": "Local Station/Channel1/Oven3/Profile1Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403510"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C1",
+  "Path": "Local Station/Channel1/Oven3/Profile2Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403511"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C2",
+  "Path": "Local Station/Channel1/Oven3/Profile2Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403512"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C3",
+  "Path": "Local Station/Channel1/Oven3/Profile2Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403513"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C4",
+  "Path": "Local Station/Channel1/Oven3/Profile2Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403514"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C5",
+  "Path": "Local Station/Channel1/Oven3/Profile2Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403515"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C6",
+  "Path": "Local Station/Channel1/Oven3/Profile2Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403516"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C7",
+  "Path": "Local Station/Channel1/Oven3/Profile2Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403517"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C8",
+  "Path": "Local Station/Channel1/Oven3/Profile2Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403518"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C9",
+  "Path": "Local Station/Channel1/Oven3/Profile2Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403519"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C10",
+  "Path": "Local Station/Channel1/Oven3/Profile2Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403520"
+},
+  "Childs": []
+}
+  ]
+},
+    {
+  "ItemType": "Device",
+  "Name": "Oven4",
+  "Path": "Local Station/Channel1/Oven4",
+  "Description": null,
+  "DisplayInfo": "1",
+  "Error": null,
+  "Properties": {
+  "DeviceId": "1",
+  "Timeout": "1000",
+  "TryReadWriteTimes": "3",
+  "ReadMode": "Block",
+  "InputContactReadBlockSettings": "[]",
+  "OutputCoilsReadBlockSettings": "[]",
+  "InputRegisterReadBlockSettings": "[]",
+  "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400026\",\r\n    \"EndAddress\": \"400060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404001\",\r\n    \"EndAddress\": \"404060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400061\",\r\n    \"EndAddress\": \"400101\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404061\",\r\n    \"EndAddress\": \"404123\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"403501\",\r\n    \"EndAddress\": \"403520\"\r\n  }\r\n]"
+},
+  "Childs": [
+    {
+  "ItemType": "Tag",
+  "Name": "SetupPage",
+  "Path": "Local Station/Channel1/Oven4/SetupPage",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "401303"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "DigitalInput1Status",
+  "Path": "Local Station/Channel1/Oven4/DigitalInput1Status",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400202"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Temperature",
+  "Path": "Local Station/Channel1/Oven4/Temperature",
+  "Description": "400101",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400201"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven4/ProfileNumber_CurrentStatus",
+  "Description": "ID cua pro hien dang run",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404101"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven4/ProfileStepNumber_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404102"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven4/ProfileStepType_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404103"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "HoursRemaining_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven4/HoursRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404120"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "MinutesRemaining_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven4/MinutesRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404121"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SecondsRemaining_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven4/SecondsRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404122"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven4/SetPointCh1_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404123"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EndSetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven4/EndSetPointCh1_CurrentStatus",
+  "Description": "EndSetPointCh1",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404130"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_Settings",
+  "Path": "Local Station/Channel1/Oven4/ProfileNumber_Settings",
+  "Description": "chon profile",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404001"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_Settings",
+  "Path": "Local Station/Channel1/Oven4/ProfileStepNumber_Settings",
+  "Description": "Chon step number",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404002"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EditProfileAction_Settings",
+  "Path": "Local Station/Channel1/Oven4/EditProfileAction_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404003"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_Settings",
+  "Path": "Local Station/Channel1/Oven4/ProfileStepType_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404004"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeHours_Settings",
+  "Path": "Local Station/Channel1/Oven4/StepTimeHours_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404010"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeMinutes_Settings",
+  "Path": "Local Station/Channel1/Oven4/StepTimeMinutes_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404011"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeSeconds_Settings",
+  "Path": "Local Station/Channel1/Oven4/StepTimeSeconds_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404012"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RateValue_Settings",
+  "Path": "Local Station/Channel1/Oven4/RateValue_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404044"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel1_Settings",
+  "Path": "Local Station/Channel1/Oven4/RampSetPointChannel1_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404045"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel2_Settings",
+  "Path": "Local Station/Channel1/Oven4/RampSetPointChannel2_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404046"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SaveChanges_Settings",
+  "Path": "Local Station/Channel1/Oven4/SaveChanges_Settings",
+  "Description": "ghi gia tri 0 de luu",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400203"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C1",
+  "Path": "Local Station/Channel1/Oven4/Profile1Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403501"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C2",
+  "Path": "Local Station/Channel1/Oven4/Profile1Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403502"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C3",
+  "Path": "Local Station/Channel1/Oven4/Profile1Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403503"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C4",
+  "Path": "Local Station/Channel1/Oven4/Profile1Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403504"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C5",
+  "Path": "Local Station/Channel1/Oven4/Profile1Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403505"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C6",
+  "Path": "Local Station/Channel1/Oven4/Profile1Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403506"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C7",
+  "Path": "Local Station/Channel1/Oven4/Profile1Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403507"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C8",
+  "Path": "Local Station/Channel1/Oven4/Profile1Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403508"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C9",
+  "Path": "Local Station/Channel1/Oven4/Profile1Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403509"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C10",
+  "Path": "Local Station/Channel1/Oven4/Profile1Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403510"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C1",
+  "Path": "Local Station/Channel1/Oven4/Profile2Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403511"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C2",
+  "Path": "Local Station/Channel1/Oven4/Profile2Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403512"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C3",
+  "Path": "Local Station/Channel1/Oven4/Profile2Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403513"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C4",
+  "Path": "Local Station/Channel1/Oven4/Profile2Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403514"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C5",
+  "Path": "Local Station/Channel1/Oven4/Profile2Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403515"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C6",
+  "Path": "Local Station/Channel1/Oven4/Profile2Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403516"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C7",
+  "Path": "Local Station/Channel1/Oven4/Profile2Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403517"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C8",
+  "Path": "Local Station/Channel1/Oven4/Profile2Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403518"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C9",
+  "Path": "Local Station/Channel1/Oven4/Profile2Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403519"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C10",
+  "Path": "Local Station/Channel1/Oven4/Profile2Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403520"
+},
+  "Childs": []
+}
+  ]
+},
+    {
+  "ItemType": "Device",
+  "Name": "Oven5",
+  "Path": "Local Station/Channel1/Oven5",
+  "Description": null,
+  "DisplayInfo": "1",
+  "Error": null,
+  "Properties": {
+  "DeviceId": "1",
+  "Timeout": "1000",
+  "TryReadWriteTimes": "3",
+  "ReadMode": "Block",
+  "InputContactReadBlockSettings": "[]",
+  "OutputCoilsReadBlockSettings": "[]",
+  "InputRegisterReadBlockSettings": "[]",
+  "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400026\",\r\n    \"EndAddress\": \"400060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404001\",\r\n    \"EndAddress\": \"404060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404061\",\r\n    \"EndAddress\": \"404123\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400061\",\r\n    \"EndAddress\": \"400101\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"403501\",\r\n    \"EndAddress\": \"403520\"\r\n  }\r\n]"
+},
+  "Childs": [
+    {
+  "ItemType": "Tag",
+  "Name": "SetupPage",
+  "Path": "Local Station/Channel1/Oven5/SetupPage",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "401303"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "DigitalInput1Status",
+  "Path": "Local Station/Channel1/Oven5/DigitalInput1Status",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400202"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Temperature",
+  "Path": "Local Station/Channel1/Oven5/Temperature",
+  "Description": "400101",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400201"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven5/ProfileNumber_CurrentStatus",
+  "Description": "ID cua pro hien dang run",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404101"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven5/ProfileStepNumber_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404102"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven5/ProfileStepType_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404103"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "HoursRemaining_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven5/HoursRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404120"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "MinutesRemaining_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven5/MinutesRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404121"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SecondsRemaining_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven5/SecondsRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404122"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven5/SetPointCh1_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404123"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EndSetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel1/Oven5/EndSetPointCh1_CurrentStatus",
+  "Description": "EndSetPointCh1",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404130"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_Settings",
+  "Path": "Local Station/Channel1/Oven5/ProfileNumber_Settings",
+  "Description": "chon profile",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404001"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_Settings",
+  "Path": "Local Station/Channel1/Oven5/ProfileStepNumber_Settings",
+  "Description": "Chon step number",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404002"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EditProfileAction_Settings",
+  "Path": "Local Station/Channel1/Oven5/EditProfileAction_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404003"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_Settings",
+  "Path": "Local Station/Channel1/Oven5/ProfileStepType_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404004"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeHours_Settings",
+  "Path": "Local Station/Channel1/Oven5/StepTimeHours_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404010"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeMinutes_Settings",
+  "Path": "Local Station/Channel1/Oven5/StepTimeMinutes_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404011"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeSeconds_Settings",
+  "Path": "Local Station/Channel1/Oven5/StepTimeSeconds_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404012"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RateValue_Settings",
+  "Path": "Local Station/Channel1/Oven5/RateValue_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404044"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel1_Settings",
+  "Path": "Local Station/Channel1/Oven5/RampSetPointChannel1_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404045"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel2_Settings",
+  "Path": "Local Station/Channel1/Oven5/RampSetPointChannel2_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404046"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SaveChanges_Settings",
+  "Path": "Local Station/Channel1/Oven5/SaveChanges_Settings",
+  "Description": "ghi gia tri 0 de luu",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400203"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C1",
+  "Path": "Local Station/Channel1/Oven5/Profile1Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403501"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C2",
+  "Path": "Local Station/Channel1/Oven5/Profile1Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403502"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C3",
+  "Path": "Local Station/Channel1/Oven5/Profile1Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403503"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C4",
+  "Path": "Local Station/Channel1/Oven5/Profile1Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403504"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C5",
+  "Path": "Local Station/Channel1/Oven5/Profile1Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403505"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C6",
+  "Path": "Local Station/Channel1/Oven5/Profile1Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403506"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C7",
+  "Path": "Local Station/Channel1/Oven5/Profile1Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403507"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C8",
+  "Path": "Local Station/Channel1/Oven5/Profile1Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403508"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C9",
+  "Path": "Local Station/Channel1/Oven5/Profile1Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403509"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C10",
+  "Path": "Local Station/Channel1/Oven5/Profile1Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403510"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C1",
+  "Path": "Local Station/Channel1/Oven5/Profile2Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403511"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C2",
+  "Path": "Local Station/Channel1/Oven5/Profile2Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403512"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C3",
+  "Path": "Local Station/Channel1/Oven5/Profile2Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403513"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C4",
+  "Path": "Local Station/Channel1/Oven5/Profile2Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403514"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C5",
+  "Path": "Local Station/Channel1/Oven5/Profile2Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403515"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C6",
+  "Path": "Local Station/Channel1/Oven5/Profile2Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403516"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C7",
+  "Path": "Local Station/Channel1/Oven5/Profile2Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403517"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C8",
+  "Path": "Local Station/Channel1/Oven5/Profile2Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403518"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C9",
+  "Path": "Local Station/Channel1/Oven5/Profile2Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403519"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C10",
+  "Path": "Local Station/Channel1/Oven5/Profile2Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403520"
+},
+  "Childs": []
+}
+  ]
+}
+  ]
+},
+    {
+  "ItemType": "Channel",
+  "Name": "Channel2",
+  "Path": "Local Station/Channel2",
+  "Description": null,
+  "DisplayInfo": "ModbusRTU COM13.9600.8.N.1",
+  "Error": null,
+  "Properties": {
+  "Port": "COM13",
+  "ScanRate": "1000",
+  "Baudrate": "9600",
+  "Parity": "None",
+  "StopBits": "One",
+  "DelayBetweenPool": "5",
+  "MaxWritesCount": "10",
+  "DataBits": "8"
+},
+  "Childs": [
+    {
+  "ItemType": "Device",
+  "Name": "Oven6",
+  "Path": "Local Station/Channel2/Oven6",
+  "Description": null,
+  "DisplayInfo": "1",
+  "Error": null,
+  "Properties": {
+  "DeviceId": "1",
+  "Timeout": "1000",
+  "TryReadWriteTimes": "3",
+  "ReadMode": "Block",
+  "InputContactReadBlockSettings": "[]",
+  "OutputCoilsReadBlockSettings": "[]",
+  "InputRegisterReadBlockSettings": "[]",
+  "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400026\",\r\n    \"EndAddress\": \"400060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404001\",\r\n    \"EndAddress\": \"404060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400061\",\r\n    \"EndAddress\": \"400101\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404061\",\r\n    \"EndAddress\": \"404123\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"403501\",\r\n    \"EndAddress\": \"403520\"\r\n  }\r\n]"
+},
+  "Childs": [
+    {
+  "ItemType": "Tag",
+  "Name": "SetupPage",
+  "Path": "Local Station/Channel2/Oven6/SetupPage",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "401303"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "DigitalInput1Status",
+  "Path": "Local Station/Channel2/Oven6/DigitalInput1Status",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400202"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Temperature",
+  "Path": "Local Station/Channel2/Oven6/Temperature",
+  "Description": "400101",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400201"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven6/ProfileNumber_CurrentStatus",
+  "Description": "ID cua pro hien dang run",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404101"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven6/ProfileStepNumber_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404102"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven6/ProfileStepType_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404103"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "HoursRemaining_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven6/HoursRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404120"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "MinutesRemaining_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven6/MinutesRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404121"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SecondsRemaining_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven6/SecondsRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404122"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven6/SetPointCh1_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404123"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EndSetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven6/EndSetPointCh1_CurrentStatus",
+  "Description": "EndSetPointCh1",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404130"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_Settings",
+  "Path": "Local Station/Channel2/Oven6/ProfileNumber_Settings",
+  "Description": "chon profile",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404001"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_Settings",
+  "Path": "Local Station/Channel2/Oven6/ProfileStepNumber_Settings",
+  "Description": "Chon step number",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404002"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EditProfileAction_Settings",
+  "Path": "Local Station/Channel2/Oven6/EditProfileAction_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404003"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_Settings",
+  "Path": "Local Station/Channel2/Oven6/ProfileStepType_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404004"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeHours_Settings",
+  "Path": "Local Station/Channel2/Oven6/StepTimeHours_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404010"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeMinutes_Settings",
+  "Path": "Local Station/Channel2/Oven6/StepTimeMinutes_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404011"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeSeconds_Settings",
+  "Path": "Local Station/Channel2/Oven6/StepTimeSeconds_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404012"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RateValue_Settings",
+  "Path": "Local Station/Channel2/Oven6/RateValue_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404044"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel1_Settings",
+  "Path": "Local Station/Channel2/Oven6/RampSetPointChannel1_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404045"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel2_Settings",
+  "Path": "Local Station/Channel2/Oven6/RampSetPointChannel2_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404046"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SaveChanges_Settings",
+  "Path": "Local Station/Channel2/Oven6/SaveChanges_Settings",
+  "Description": "ghi gia tri 0 de luu",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400203"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C1",
+  "Path": "Local Station/Channel2/Oven6/Profile1Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403501"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C2",
+  "Path": "Local Station/Channel2/Oven6/Profile1Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403502"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C3",
+  "Path": "Local Station/Channel2/Oven6/Profile1Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403503"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C4",
+  "Path": "Local Station/Channel2/Oven6/Profile1Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403504"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C5",
+  "Path": "Local Station/Channel2/Oven6/Profile1Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403505"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C6",
+  "Path": "Local Station/Channel2/Oven6/Profile1Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403506"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C7",
+  "Path": "Local Station/Channel2/Oven6/Profile1Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403507"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C8",
+  "Path": "Local Station/Channel2/Oven6/Profile1Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403508"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C9",
+  "Path": "Local Station/Channel2/Oven6/Profile1Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403509"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C10",
+  "Path": "Local Station/Channel2/Oven6/Profile1Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403510"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C1",
+  "Path": "Local Station/Channel2/Oven6/Profile2Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403511"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C2",
+  "Path": "Local Station/Channel2/Oven6/Profile2Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403512"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C3",
+  "Path": "Local Station/Channel2/Oven6/Profile2Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403513"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C4",
+  "Path": "Local Station/Channel2/Oven6/Profile2Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403514"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C5",
+  "Path": "Local Station/Channel2/Oven6/Profile2Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403515"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C6",
+  "Path": "Local Station/Channel2/Oven6/Profile2Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403516"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C7",
+  "Path": "Local Station/Channel2/Oven6/Profile2Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403517"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C8",
+  "Path": "Local Station/Channel2/Oven6/Profile2Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403518"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C9",
+  "Path": "Local Station/Channel2/Oven6/Profile2Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403519"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C10",
+  "Path": "Local Station/Channel2/Oven6/Profile2Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403520"
+},
+  "Childs": []
+}
+  ]
+},
+    {
+  "ItemType": "Device",
+  "Name": "Oven7",
+  "Path": "Local Station/Channel2/Oven7",
+  "Description": null,
+  "DisplayInfo": "1",
+  "Error": null,
+  "Properties": {
+  "DeviceId": "1",
+  "Timeout": "1000",
+  "TryReadWriteTimes": "3",
+  "ReadMode": "Block",
+  "InputContactReadBlockSettings": "[]",
+  "OutputCoilsReadBlockSettings": "[]",
+  "InputRegisterReadBlockSettings": "[]",
+  "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400026\",\r\n    \"EndAddress\": \"400060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404001\",\r\n    \"EndAddress\": \"404060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400061\",\r\n    \"EndAddress\": \"400101\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404061\",\r\n    \"EndAddress\": \"404123\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"403501\",\r\n    \"EndAddress\": \"403520\"\r\n  }\r\n]"
+},
+  "Childs": [
+    {
+  "ItemType": "Tag",
+  "Name": "SetupPage",
+  "Path": "Local Station/Channel2/Oven7/SetupPage",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "401303"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "DigitalInput1Status",
+  "Path": "Local Station/Channel2/Oven7/DigitalInput1Status",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400202"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Temperature",
+  "Path": "Local Station/Channel2/Oven7/Temperature",
+  "Description": "400101",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400201"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven7/ProfileNumber_CurrentStatus",
+  "Description": "ID cua pro hien dang run",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404101"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven7/ProfileStepNumber_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404102"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven7/ProfileStepType_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404103"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "HoursRemaining_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven7/HoursRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404120"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "MinutesRemaining_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven7/MinutesRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404121"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SecondsRemaining_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven7/SecondsRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404122"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven7/SetPointCh1_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404123"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EndSetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven7/EndSetPointCh1_CurrentStatus",
+  "Description": "EndSetPointCh1",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404130"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_Settings",
+  "Path": "Local Station/Channel2/Oven7/ProfileNumber_Settings",
+  "Description": "chon profile",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404001"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_Settings",
+  "Path": "Local Station/Channel2/Oven7/ProfileStepNumber_Settings",
+  "Description": "Chon step number",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404002"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EditProfileAction_Settings",
+  "Path": "Local Station/Channel2/Oven7/EditProfileAction_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404003"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_Settings",
+  "Path": "Local Station/Channel2/Oven7/ProfileStepType_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404004"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeHours_Settings",
+  "Path": "Local Station/Channel2/Oven7/StepTimeHours_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404010"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeMinutes_Settings",
+  "Path": "Local Station/Channel2/Oven7/StepTimeMinutes_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404011"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeSeconds_Settings",
+  "Path": "Local Station/Channel2/Oven7/StepTimeSeconds_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404012"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RateValue_Settings",
+  "Path": "Local Station/Channel2/Oven7/RateValue_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404044"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel1_Settings",
+  "Path": "Local Station/Channel2/Oven7/RampSetPointChannel1_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404045"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel2_Settings",
+  "Path": "Local Station/Channel2/Oven7/RampSetPointChannel2_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404046"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SaveChanges_Settings",
+  "Path": "Local Station/Channel2/Oven7/SaveChanges_Settings",
+  "Description": "ghi gia tri 0 de luu",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400203"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C1",
+  "Path": "Local Station/Channel2/Oven7/Profile1Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403501"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C2",
+  "Path": "Local Station/Channel2/Oven7/Profile1Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403502"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C3",
+  "Path": "Local Station/Channel2/Oven7/Profile1Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403503"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C4",
+  "Path": "Local Station/Channel2/Oven7/Profile1Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403504"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C5",
+  "Path": "Local Station/Channel2/Oven7/Profile1Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403505"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C6",
+  "Path": "Local Station/Channel2/Oven7/Profile1Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403506"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C7",
+  "Path": "Local Station/Channel2/Oven7/Profile1Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403507"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C8",
+  "Path": "Local Station/Channel2/Oven7/Profile1Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403508"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C9",
+  "Path": "Local Station/Channel2/Oven7/Profile1Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403509"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C10",
+  "Path": "Local Station/Channel2/Oven7/Profile1Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403510"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C1",
+  "Path": "Local Station/Channel2/Oven7/Profile2Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403511"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C2",
+  "Path": "Local Station/Channel2/Oven7/Profile2Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403512"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C3",
+  "Path": "Local Station/Channel2/Oven7/Profile2Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403513"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C4",
+  "Path": "Local Station/Channel2/Oven7/Profile2Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403514"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C5",
+  "Path": "Local Station/Channel2/Oven7/Profile2Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403515"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C6",
+  "Path": "Local Station/Channel2/Oven7/Profile2Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403516"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C7",
+  "Path": "Local Station/Channel2/Oven7/Profile2Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403517"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C8",
+  "Path": "Local Station/Channel2/Oven7/Profile2Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403518"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C9",
+  "Path": "Local Station/Channel2/Oven7/Profile2Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403519"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C10",
+  "Path": "Local Station/Channel2/Oven7/Profile2Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403520"
+},
+  "Childs": []
+}
+  ]
+},
+    {
+  "ItemType": "Device",
+  "Name": "Oven8",
+  "Path": "Local Station/Channel2/Oven8",
+  "Description": null,
+  "DisplayInfo": "1",
+  "Error": null,
+  "Properties": {
+  "DeviceId": "1",
+  "Timeout": "1000",
+  "TryReadWriteTimes": "3",
+  "ReadMode": "Block",
+  "InputContactReadBlockSettings": "[]",
+  "OutputCoilsReadBlockSettings": "[]",
+  "InputRegisterReadBlockSettings": "[]",
+  "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400026\",\r\n    \"EndAddress\": \"400060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404001\",\r\n    \"EndAddress\": \"404060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400061\",\r\n    \"EndAddress\": \"400101\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404061\",\r\n    \"EndAddress\": \"404123\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"403502\",\r\n    \"EndAddress\": \"403520\"\r\n  }\r\n]"
+},
+  "Childs": [
+    {
+  "ItemType": "Tag",
+  "Name": "SetupPage",
+  "Path": "Local Station/Channel2/Oven8/SetupPage",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "401303"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "DigitalInput1Status",
+  "Path": "Local Station/Channel2/Oven8/DigitalInput1Status",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400202"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Temperature",
+  "Path": "Local Station/Channel2/Oven8/Temperature",
+  "Description": "400101",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400201"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven8/ProfileNumber_CurrentStatus",
+  "Description": "ID cua pro hien dang run",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404101"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven8/ProfileStepNumber_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404102"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven8/ProfileStepType_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404103"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "HoursRemaining_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven8/HoursRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404120"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "MinutesRemaining_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven8/MinutesRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404121"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SecondsRemaining_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven8/SecondsRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404122"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven8/SetPointCh1_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404123"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EndSetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven8/EndSetPointCh1_CurrentStatus",
+  "Description": "EndSetPointCh1",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404130"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_Settings",
+  "Path": "Local Station/Channel2/Oven8/ProfileNumber_Settings",
+  "Description": "chon profile",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404001"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_Settings",
+  "Path": "Local Station/Channel2/Oven8/ProfileStepNumber_Settings",
+  "Description": "Chon step number",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404002"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EditProfileAction_Settings",
+  "Path": "Local Station/Channel2/Oven8/EditProfileAction_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404003"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_Settings",
+  "Path": "Local Station/Channel2/Oven8/ProfileStepType_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404004"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeHours_Settings",
+  "Path": "Local Station/Channel2/Oven8/StepTimeHours_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404010"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeMinutes_Settings",
+  "Path": "Local Station/Channel2/Oven8/StepTimeMinutes_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404011"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeSeconds_Settings",
+  "Path": "Local Station/Channel2/Oven8/StepTimeSeconds_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404012"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RateValue_Settings",
+  "Path": "Local Station/Channel2/Oven8/RateValue_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404044"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel1_Settings",
+  "Path": "Local Station/Channel2/Oven8/RampSetPointChannel1_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404045"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel2_Settings",
+  "Path": "Local Station/Channel2/Oven8/RampSetPointChannel2_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404046"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SaveChanges_Settings",
+  "Path": "Local Station/Channel2/Oven8/SaveChanges_Settings",
+  "Description": "ghi gia tri 0 de luu",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400203"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C1",
+  "Path": "Local Station/Channel2/Oven8/Profile1Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403501"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C2",
+  "Path": "Local Station/Channel2/Oven8/Profile1Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403502"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C3",
+  "Path": "Local Station/Channel2/Oven8/Profile1Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403503"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C4",
+  "Path": "Local Station/Channel2/Oven8/Profile1Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403504"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C5",
+  "Path": "Local Station/Channel2/Oven8/Profile1Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403505"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C6",
+  "Path": "Local Station/Channel2/Oven8/Profile1Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403506"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C7",
+  "Path": "Local Station/Channel2/Oven8/Profile1Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403507"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C8",
+  "Path": "Local Station/Channel2/Oven8/Profile1Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403508"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C9",
+  "Path": "Local Station/Channel2/Oven8/Profile1Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403509"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C10",
+  "Path": "Local Station/Channel2/Oven8/Profile1Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403510"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C1",
+  "Path": "Local Station/Channel2/Oven8/Profile2Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403511"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C2",
+  "Path": "Local Station/Channel2/Oven8/Profile2Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403512"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C3",
+  "Path": "Local Station/Channel2/Oven8/Profile2Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403513"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C4",
+  "Path": "Local Station/Channel2/Oven8/Profile2Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403514"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C5",
+  "Path": "Local Station/Channel2/Oven8/Profile2Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403515"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C6",
+  "Path": "Local Station/Channel2/Oven8/Profile2Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403516"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C7",
+  "Path": "Local Station/Channel2/Oven8/Profile2Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403517"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C8",
+  "Path": "Local Station/Channel2/Oven8/Profile2Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403518"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C9",
+  "Path": "Local Station/Channel2/Oven8/Profile2Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403519"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C10",
+  "Path": "Local Station/Channel2/Oven8/Profile2Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403520"
+},
+  "Childs": []
+}
+  ]
+},
+    {
+  "ItemType": "Device",
+  "Name": "Oven9",
+  "Path": "Local Station/Channel2/Oven9",
+  "Description": null,
+  "DisplayInfo": "1",
+  "Error": null,
+  "Properties": {
+  "DeviceId": "1",
+  "Timeout": "1000",
+  "TryReadWriteTimes": "3",
+  "ReadMode": "Block",
+  "InputContactReadBlockSettings": "[]",
+  "OutputCoilsReadBlockSettings": "[]",
+  "InputRegisterReadBlockSettings": "[]",
+  "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400026\",\r\n    \"EndAddress\": \"400060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404001\",\r\n    \"EndAddress\": \"404060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400061\",\r\n    \"EndAddress\": \"400101\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404061\",\r\n    \"EndAddress\": \"404123\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"403501\",\r\n    \"EndAddress\": \"403520\"\r\n  }\r\n]"
+},
+  "Childs": [
+    {
+  "ItemType": "Tag",
+  "Name": "SetupPage",
+  "Path": "Local Station/Channel2/Oven9/SetupPage",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "401303"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "DigitalInput1Status",
+  "Path": "Local Station/Channel2/Oven9/DigitalInput1Status",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400202"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Temperature",
+  "Path": "Local Station/Channel2/Oven9/Temperature",
+  "Description": "400101",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400201"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven9/ProfileNumber_CurrentStatus",
+  "Description": "ID cua pro hien dang run",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404101"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven9/ProfileStepNumber_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404102"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven9/ProfileStepType_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404103"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "HoursRemaining_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven9/HoursRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404120"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "MinutesRemaining_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven9/MinutesRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404121"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SecondsRemaining_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven9/SecondsRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404122"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven9/SetPointCh1_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404123"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EndSetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven9/EndSetPointCh1_CurrentStatus",
+  "Description": "EndSetPointCh1",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404130"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_Settings",
+  "Path": "Local Station/Channel2/Oven9/ProfileNumber_Settings",
+  "Description": "chon profile",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404001"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_Settings",
+  "Path": "Local Station/Channel2/Oven9/ProfileStepNumber_Settings",
+  "Description": "Chon step number",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404002"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EditProfileAction_Settings",
+  "Path": "Local Station/Channel2/Oven9/EditProfileAction_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404003"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_Settings",
+  "Path": "Local Station/Channel2/Oven9/ProfileStepType_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404004"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeHours_Settings",
+  "Path": "Local Station/Channel2/Oven9/StepTimeHours_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404010"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeMinutes_Settings",
+  "Path": "Local Station/Channel2/Oven9/StepTimeMinutes_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404011"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeSeconds_Settings",
+  "Path": "Local Station/Channel2/Oven9/StepTimeSeconds_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404012"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RateValue_Settings",
+  "Path": "Local Station/Channel2/Oven9/RateValue_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404044"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel1_Settings",
+  "Path": "Local Station/Channel2/Oven9/RampSetPointChannel1_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404045"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel2_Settings",
+  "Path": "Local Station/Channel2/Oven9/RampSetPointChannel2_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404046"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SaveChanges_Settings",
+  "Path": "Local Station/Channel2/Oven9/SaveChanges_Settings",
+  "Description": "ghi gia tri 0 de luu",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400203"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C1",
+  "Path": "Local Station/Channel2/Oven9/Profile1Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403501"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C2",
+  "Path": "Local Station/Channel2/Oven9/Profile1Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403502"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C3",
+  "Path": "Local Station/Channel2/Oven9/Profile1Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403503"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C4",
+  "Path": "Local Station/Channel2/Oven9/Profile1Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403504"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C5",
+  "Path": "Local Station/Channel2/Oven9/Profile1Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403505"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C6",
+  "Path": "Local Station/Channel2/Oven9/Profile1Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403506"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C7",
+  "Path": "Local Station/Channel2/Oven9/Profile1Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403507"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C8",
+  "Path": "Local Station/Channel2/Oven9/Profile1Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403508"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C9",
+  "Path": "Local Station/Channel2/Oven9/Profile1Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403509"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C10",
+  "Path": "Local Station/Channel2/Oven9/Profile1Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403510"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C1",
+  "Path": "Local Station/Channel2/Oven9/Profile2Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403511"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C2",
+  "Path": "Local Station/Channel2/Oven9/Profile2Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403512"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C3",
+  "Path": "Local Station/Channel2/Oven9/Profile2Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403513"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C4",
+  "Path": "Local Station/Channel2/Oven9/Profile2Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403514"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C5",
+  "Path": "Local Station/Channel2/Oven9/Profile2Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403515"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C6",
+  "Path": "Local Station/Channel2/Oven9/Profile2Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403516"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C7",
+  "Path": "Local Station/Channel2/Oven9/Profile2Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403517"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C8",
+  "Path": "Local Station/Channel2/Oven9/Profile2Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403518"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C9",
+  "Path": "Local Station/Channel2/Oven9/Profile2Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403519"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C10",
+  "Path": "Local Station/Channel2/Oven9/Profile2Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403520"
+},
+  "Childs": []
+}
+  ]
+},
+    {
+  "ItemType": "Device",
+  "Name": "Oven10",
+  "Path": "Local Station/Channel2/Oven10",
+  "Description": null,
+  "DisplayInfo": "1",
+  "Error": null,
+  "Properties": {
+  "DeviceId": "1",
+  "Timeout": "1000",
+  "TryReadWriteTimes": "3",
+  "ReadMode": "Block",
+  "InputContactReadBlockSettings": "[]",
+  "OutputCoilsReadBlockSettings": "[]",
+  "InputRegisterReadBlockSettings": "[]",
+  "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400026\",\r\n    \"EndAddress\": \"400060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404001\",\r\n    \"EndAddress\": \"404060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400061\",\r\n    \"EndAddress\": \"400101\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404061\",\r\n    \"EndAddress\": \"404123\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"403501\",\r\n    \"EndAddress\": \"403520\"\r\n  }\r\n]"
+},
+  "Childs": [
+    {
+  "ItemType": "Tag",
+  "Name": "SetupPage",
+  "Path": "Local Station/Channel2/Oven10/SetupPage",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "401303"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "DigitalInput1Status",
+  "Path": "Local Station/Channel2/Oven10/DigitalInput1Status",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400202"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Temperature",
+  "Path": "Local Station/Channel2/Oven10/Temperature",
+  "Description": "400101",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400201"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven10/ProfileNumber_CurrentStatus",
+  "Description": "ID cua pro hien dang run",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404101"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven10/ProfileStepNumber_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404102"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven10/ProfileStepType_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404103"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "HoursRemaining_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven10/HoursRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404120"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "MinutesRemaining_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven10/MinutesRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404121"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SecondsRemaining_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven10/SecondsRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404122"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven10/SetPointCh1_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404123"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EndSetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel2/Oven10/EndSetPointCh1_CurrentStatus",
+  "Description": "EndSetPointCh1",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404130"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_Settings",
+  "Path": "Local Station/Channel2/Oven10/ProfileNumber_Settings",
+  "Description": "chon profile",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404001"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_Settings",
+  "Path": "Local Station/Channel2/Oven10/ProfileStepNumber_Settings",
+  "Description": "Chon step number",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404002"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EditProfileAction_Settings",
+  "Path": "Local Station/Channel2/Oven10/EditProfileAction_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404003"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_Settings",
+  "Path": "Local Station/Channel2/Oven10/ProfileStepType_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404004"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeHours_Settings",
+  "Path": "Local Station/Channel2/Oven10/StepTimeHours_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404010"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeMinutes_Settings",
+  "Path": "Local Station/Channel2/Oven10/StepTimeMinutes_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404011"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeSeconds_Settings",
+  "Path": "Local Station/Channel2/Oven10/StepTimeSeconds_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404012"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RateValue_Settings",
+  "Path": "Local Station/Channel2/Oven10/RateValue_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404044"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel1_Settings",
+  "Path": "Local Station/Channel2/Oven10/RampSetPointChannel1_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404045"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel2_Settings",
+  "Path": "Local Station/Channel2/Oven10/RampSetPointChannel2_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404046"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SaveChanges_Settings",
+  "Path": "Local Station/Channel2/Oven10/SaveChanges_Settings",
+  "Description": "ghi gia tri 0 de luu",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400203"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C1",
+  "Path": "Local Station/Channel2/Oven10/Profile1Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403501"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C2",
+  "Path": "Local Station/Channel2/Oven10/Profile1Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403502"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C3",
+  "Path": "Local Station/Channel2/Oven10/Profile1Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403503"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C4",
+  "Path": "Local Station/Channel2/Oven10/Profile1Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403504"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C5",
+  "Path": "Local Station/Channel2/Oven10/Profile1Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403505"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C6",
+  "Path": "Local Station/Channel2/Oven10/Profile1Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403506"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C7",
+  "Path": "Local Station/Channel2/Oven10/Profile1Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403507"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C8",
+  "Path": "Local Station/Channel2/Oven10/Profile1Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403508"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C9",
+  "Path": "Local Station/Channel2/Oven10/Profile1Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403509"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C10",
+  "Path": "Local Station/Channel2/Oven10/Profile1Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403510"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C1",
+  "Path": "Local Station/Channel2/Oven10/Profile2Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403511"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C2",
+  "Path": "Local Station/Channel2/Oven10/Profile2Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403512"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C3",
+  "Path": "Local Station/Channel2/Oven10/Profile2Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403513"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C4",
+  "Path": "Local Station/Channel2/Oven10/Profile2Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403514"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C5",
+  "Path": "Local Station/Channel2/Oven10/Profile2Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403515"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C6",
+  "Path": "Local Station/Channel2/Oven10/Profile2Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403516"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C7",
+  "Path": "Local Station/Channel2/Oven10/Profile2Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403517"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C8",
+  "Path": "Local Station/Channel2/Oven10/Profile2Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403518"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C9",
+  "Path": "Local Station/Channel2/Oven10/Profile2Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403519"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C10",
+  "Path": "Local Station/Channel2/Oven10/Profile2Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403520"
+},
+  "Childs": []
+}
+  ]
+}
+  ]
+},
+    {
+  "ItemType": "Channel",
+  "Name": "Channel3",
+  "Path": "Local Station/Channel3",
+  "Description": null,
+  "DisplayInfo": "ModbusRTU COM15.9600.8.N.1",
+  "Error": null,
+  "Properties": {
+  "Port": "COM15",
+  "ScanRate": "1000",
+  "Baudrate": "9600",
+  "Parity": "None",
+  "StopBits": "One",
+  "DelayBetweenPool": "5",
+  "MaxWritesCount": "10",
+  "DataBits": "8"
+},
+  "Childs": [
+    {
+  "ItemType": "Device",
+  "Name": "Oven11",
+  "Path": "Local Station/Channel3/Oven11",
+  "Description": null,
+  "DisplayInfo": "1",
+  "Error": null,
+  "Properties": {
+  "DeviceId": "1",
+  "Timeout": "1000",
+  "TryReadWriteTimes": "3",
+  "ReadMode": "Block",
+  "InputContactReadBlockSettings": "[]",
+  "OutputCoilsReadBlockSettings": "[]",
+  "InputRegisterReadBlockSettings": "[]",
+  "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400026\",\r\n    \"EndAddress\": \"400060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404001\",\r\n    \"EndAddress\": \"404060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400061\",\r\n    \"EndAddress\": \"400101\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404061\",\r\n    \"EndAddress\": \"404123\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"403501\",\r\n    \"EndAddress\": \"403520\"\r\n  }\r\n]"
+},
+  "Childs": [
+    {
+  "ItemType": "Tag",
+  "Name": "SetupPage",
+  "Path": "Local Station/Channel3/Oven11/SetupPage",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "401303"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "DigitalInput1Status",
+  "Path": "Local Station/Channel3/Oven11/DigitalInput1Status",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400202"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Temperature",
+  "Path": "Local Station/Channel3/Oven11/Temperature",
+  "Description": "400101",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400201"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven11/ProfileNumber_CurrentStatus",
+  "Description": "ID cua pro hien dang run",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404101"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven11/ProfileStepNumber_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404102"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven11/ProfileStepType_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404103"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "HoursRemaining_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven11/HoursRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404120"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "MinutesRemaining_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven11/MinutesRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404121"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SecondsRemaining_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven11/SecondsRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404122"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven11/SetPointCh1_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404123"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EndSetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven11/EndSetPointCh1_CurrentStatus",
+  "Description": "EndSetPointCh1",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404130"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_Settings",
+  "Path": "Local Station/Channel3/Oven11/ProfileNumber_Settings",
+  "Description": "chon profile",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404001"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_Settings",
+  "Path": "Local Station/Channel3/Oven11/ProfileStepNumber_Settings",
+  "Description": "Chon step number",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404002"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EditProfileAction_Settings",
+  "Path": "Local Station/Channel3/Oven11/EditProfileAction_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404003"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_Settings",
+  "Path": "Local Station/Channel3/Oven11/ProfileStepType_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404004"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeHours_Settings",
+  "Path": "Local Station/Channel3/Oven11/StepTimeHours_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404010"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeMinutes_Settings",
+  "Path": "Local Station/Channel3/Oven11/StepTimeMinutes_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404011"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeSeconds_Settings",
+  "Path": "Local Station/Channel3/Oven11/StepTimeSeconds_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404012"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RateValue_Settings",
+  "Path": "Local Station/Channel3/Oven11/RateValue_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404044"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel1_Settings",
+  "Path": "Local Station/Channel3/Oven11/RampSetPointChannel1_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404045"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel2_Settings",
+  "Path": "Local Station/Channel3/Oven11/RampSetPointChannel2_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404046"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SaveChanges_Settings",
+  "Path": "Local Station/Channel3/Oven11/SaveChanges_Settings",
+  "Description": "ghi gia tri 0 de luu",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400203"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C1",
+  "Path": "Local Station/Channel3/Oven11/Profile1Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403501"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C2",
+  "Path": "Local Station/Channel3/Oven11/Profile1Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403502"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C3",
+  "Path": "Local Station/Channel3/Oven11/Profile1Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403503"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C4",
+  "Path": "Local Station/Channel3/Oven11/Profile1Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403504"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C5",
+  "Path": "Local Station/Channel3/Oven11/Profile1Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403505"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C6",
+  "Path": "Local Station/Channel3/Oven11/Profile1Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403506"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C7",
+  "Path": "Local Station/Channel3/Oven11/Profile1Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403507"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C8",
+  "Path": "Local Station/Channel3/Oven11/Profile1Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403508"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C9",
+  "Path": "Local Station/Channel3/Oven11/Profile1Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403509"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C10",
+  "Path": "Local Station/Channel3/Oven11/Profile1Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403510"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C1",
+  "Path": "Local Station/Channel3/Oven11/Profile2Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403511"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C2",
+  "Path": "Local Station/Channel3/Oven11/Profile2Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403512"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C3",
+  "Path": "Local Station/Channel3/Oven11/Profile2Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403513"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C4",
+  "Path": "Local Station/Channel3/Oven11/Profile2Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403514"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C5",
+  "Path": "Local Station/Channel3/Oven11/Profile2Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403515"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C6",
+  "Path": "Local Station/Channel3/Oven11/Profile2Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403516"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C7",
+  "Path": "Local Station/Channel3/Oven11/Profile2Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403517"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C8",
+  "Path": "Local Station/Channel3/Oven11/Profile2Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403518"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C9",
+  "Path": "Local Station/Channel3/Oven11/Profile2Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403519"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C10",
+  "Path": "Local Station/Channel3/Oven11/Profile2Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403520"
+},
+  "Childs": []
+}
+  ]
+},
+    {
+  "ItemType": "Device",
+  "Name": "Oven12",
+  "Path": "Local Station/Channel3/Oven12",
+  "Description": null,
+  "DisplayInfo": "1",
+  "Error": null,
+  "Properties": {
+  "DeviceId": "1",
+  "Timeout": "1000",
+  "TryReadWriteTimes": "3",
+  "ReadMode": "Block",
+  "InputContactReadBlockSettings": "[]",
+  "OutputCoilsReadBlockSettings": "[]",
+  "InputRegisterReadBlockSettings": "[]",
+  "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400026\",\r\n    \"EndAddress\": \"400060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404001\",\r\n    \"EndAddress\": \"404060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400061\",\r\n    \"EndAddress\": \"400101\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404061\",\r\n    \"EndAddress\": \"404123\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"403501\",\r\n    \"EndAddress\": \"403520\"\r\n  }\r\n]"
+},
+  "Childs": [
+    {
+  "ItemType": "Tag",
+  "Name": "SetupPage",
+  "Path": "Local Station/Channel3/Oven12/SetupPage",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "401303"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "DigitalInput1Status",
+  "Path": "Local Station/Channel3/Oven12/DigitalInput1Status",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400202"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Temperature",
+  "Path": "Local Station/Channel3/Oven12/Temperature",
+  "Description": "400101",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400201"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven12/ProfileNumber_CurrentStatus",
+  "Description": "ID cua pro hien dang run",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404101"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven12/ProfileStepNumber_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404102"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven12/ProfileStepType_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404103"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "HoursRemaining_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven12/HoursRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404120"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "MinutesRemaining_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven12/MinutesRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404121"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SecondsRemaining_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven12/SecondsRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404122"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven12/SetPointCh1_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404123"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EndSetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven12/EndSetPointCh1_CurrentStatus",
+  "Description": "EndSetPointCh1",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404130"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_Settings",
+  "Path": "Local Station/Channel3/Oven12/ProfileNumber_Settings",
+  "Description": "chon profile",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404001"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_Settings",
+  "Path": "Local Station/Channel3/Oven12/ProfileStepNumber_Settings",
+  "Description": "Chon step number",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404002"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EditProfileAction_Settings",
+  "Path": "Local Station/Channel3/Oven12/EditProfileAction_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404003"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_Settings",
+  "Path": "Local Station/Channel3/Oven12/ProfileStepType_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404004"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeHours_Settings",
+  "Path": "Local Station/Channel3/Oven12/StepTimeHours_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404010"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeMinutes_Settings",
+  "Path": "Local Station/Channel3/Oven12/StepTimeMinutes_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404011"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeSeconds_Settings",
+  "Path": "Local Station/Channel3/Oven12/StepTimeSeconds_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404012"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RateValue_Settings",
+  "Path": "Local Station/Channel3/Oven12/RateValue_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404044"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel1_Settings",
+  "Path": "Local Station/Channel3/Oven12/RampSetPointChannel1_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404045"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel2_Settings",
+  "Path": "Local Station/Channel3/Oven12/RampSetPointChannel2_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404046"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SaveChanges_Settings",
+  "Path": "Local Station/Channel3/Oven12/SaveChanges_Settings",
+  "Description": "ghi gia tri 0 de luu",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400203"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C1",
+  "Path": "Local Station/Channel3/Oven12/Profile1Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403501"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C2",
+  "Path": "Local Station/Channel3/Oven12/Profile1Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403502"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C3",
+  "Path": "Local Station/Channel3/Oven12/Profile1Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403503"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C4",
+  "Path": "Local Station/Channel3/Oven12/Profile1Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403504"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C5",
+  "Path": "Local Station/Channel3/Oven12/Profile1Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403505"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C6",
+  "Path": "Local Station/Channel3/Oven12/Profile1Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403506"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C7",
+  "Path": "Local Station/Channel3/Oven12/Profile1Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403507"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C8",
+  "Path": "Local Station/Channel3/Oven12/Profile1Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403508"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C9",
+  "Path": "Local Station/Channel3/Oven12/Profile1Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403509"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C10",
+  "Path": "Local Station/Channel3/Oven12/Profile1Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403510"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C1",
+  "Path": "Local Station/Channel3/Oven12/Profile2Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403511"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C2",
+  "Path": "Local Station/Channel3/Oven12/Profile2Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403512"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C3",
+  "Path": "Local Station/Channel3/Oven12/Profile2Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403513"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C4",
+  "Path": "Local Station/Channel3/Oven12/Profile2Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403514"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C5",
+  "Path": "Local Station/Channel3/Oven12/Profile2Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403515"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C6",
+  "Path": "Local Station/Channel3/Oven12/Profile2Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403516"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C7",
+  "Path": "Local Station/Channel3/Oven12/Profile2Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403517"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C8",
+  "Path": "Local Station/Channel3/Oven12/Profile2Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403518"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C9",
+  "Path": "Local Station/Channel3/Oven12/Profile2Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403519"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C10",
+  "Path": "Local Station/Channel3/Oven12/Profile2Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403520"
+},
+  "Childs": []
+}
+  ]
+},
+    {
+  "ItemType": "Device",
+  "Name": "Oven13",
+  "Path": "Local Station/Channel3/Oven13",
+  "Description": null,
+  "DisplayInfo": "1",
+  "Error": null,
+  "Properties": {
+  "DeviceId": "1",
+  "Timeout": "1000",
+  "TryReadWriteTimes": "3",
+  "ReadMode": "Block",
+  "InputContactReadBlockSettings": "[]",
+  "OutputCoilsReadBlockSettings": "[]",
+  "InputRegisterReadBlockSettings": "[]",
+  "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400026\",\r\n    \"EndAddress\": \"400060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404001\",\r\n    \"EndAddress\": \"404060\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400061\",\r\n    \"EndAddress\": \"400101\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404061\",\r\n    \"EndAddress\": \"404123\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"403501\",\r\n    \"EndAddress\": \"403520\"\r\n  }\r\n]"
+},
+  "Childs": [
+    {
+  "ItemType": "Tag",
+  "Name": "SetupPage",
+  "Path": "Local Station/Channel3/Oven13/SetupPage",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "401303"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "DigitalInput1Status",
+  "Path": "Local Station/Channel3/Oven13/DigitalInput1Status",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400202"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Temperature",
+  "Path": "Local Station/Channel3/Oven13/Temperature",
+  "Description": "400101",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400201"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven13/ProfileNumber_CurrentStatus",
+  "Description": "ID cua pro hien dang run",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404101"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven13/ProfileStepNumber_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404102"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven13/ProfileStepType_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404103"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "HoursRemaining_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven13/HoursRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404120"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "MinutesRemaining_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven13/MinutesRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404121"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SecondsRemaining_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven13/SecondsRemaining_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404122"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven13/SetPointCh1_CurrentStatus",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404123"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EndSetPointCh1_CurrentStatus",
+  "Path": "Local Station/Channel3/Oven13/EndSetPointCh1_CurrentStatus",
+  "Description": "EndSetPointCh1",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404130"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileNumber_Settings",
+  "Path": "Local Station/Channel3/Oven13/ProfileNumber_Settings",
+  "Description": "chon profile",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404001"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepNumber_Settings",
+  "Path": "Local Station/Channel3/Oven13/ProfileStepNumber_Settings",
+  "Description": "Chon step number",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404002"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "EditProfileAction_Settings",
+  "Path": "Local Station/Channel3/Oven13/EditProfileAction_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404003"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "ProfileStepType_Settings",
+  "Path": "Local Station/Channel3/Oven13/ProfileStepType_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404004"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeHours_Settings",
+  "Path": "Local Station/Channel3/Oven13/StepTimeHours_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404010"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeMinutes_Settings",
+  "Path": "Local Station/Channel3/Oven13/StepTimeMinutes_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404011"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "StepTimeSeconds_Settings",
+  "Path": "Local Station/Channel3/Oven13/StepTimeSeconds_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404012"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RateValue_Settings",
+  "Path": "Local Station/Channel3/Oven13/RateValue_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404044"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel1_Settings",
+  "Path": "Local Station/Channel3/Oven13/RampSetPointChannel1_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404045"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "RampSetPointChannel2_Settings",
+  "Path": "Local Station/Channel3/Oven13/RampSetPointChannel2_Settings",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "404046"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "SaveChanges_Settings",
+  "Path": "Local Station/Channel3/Oven13/SaveChanges_Settings",
+  "Description": "ghi gia tri 0 de luu",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "400203"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C1",
+  "Path": "Local Station/Channel3/Oven13/Profile1Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403501"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C2",
+  "Path": "Local Station/Channel3/Oven13/Profile1Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403502"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C3",
+  "Path": "Local Station/Channel3/Oven13/Profile1Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403503"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C4",
+  "Path": "Local Station/Channel3/Oven13/Profile1Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403504"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C5",
+  "Path": "Local Station/Channel3/Oven13/Profile1Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403505"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C6",
+  "Path": "Local Station/Channel3/Oven13/Profile1Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403506"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C7",
+  "Path": "Local Station/Channel3/Oven13/Profile1Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403507"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C8",
+  "Path": "Local Station/Channel3/Oven13/Profile1Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403508"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C9",
+  "Path": "Local Station/Channel3/Oven13/Profile1Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403509"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile1Name_C10",
+  "Path": "Local Station/Channel3/Oven13/Profile1Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403510"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C1",
+  "Path": "Local Station/Channel3/Oven13/Profile2Name_C1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403511"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C2",
+  "Path": "Local Station/Channel3/Oven13/Profile2Name_C2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403512"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C3",
+  "Path": "Local Station/Channel3/Oven13/Profile2Name_C3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403513"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C4",
+  "Path": "Local Station/Channel3/Oven13/Profile2Name_C4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403514"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C5",
+  "Path": "Local Station/Channel3/Oven13/Profile2Name_C5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403515"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C6",
+  "Path": "Local Station/Channel3/Oven13/Profile2Name_C6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403516"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C7",
+  "Path": "Local Station/Channel3/Oven13/Profile2Name_C7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403517"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C8",
+  "Path": "Local Station/Channel3/Oven13/Profile2Name_C8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403518"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C9",
+  "Path": "Local Station/Channel3/Oven13/Profile2Name_C9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403519"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "Profile2Name_C10",
+  "Path": "Local Station/Channel3/Oven13/Profile2Name_C10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Word",
+  "Address": "403520"
+},
+  "Childs": []
+}
+  ]
+}
+  ]
+},
+    {
+  "ItemType": "Channel",
+  "Name": "Channel4",
+  "Path": "Local Station/Channel4",
+  "Description": null,
+  "DisplayInfo": "ModbusRTU COM17.9600.8.N.1",
+  "Error": null,
+  "Properties": {
+  "Port": "COM17",
+  "ScanRate": "1000",
+  "Baudrate": "9600",
+  "Parity": "None",
+  "StopBits": "One",
+  "DelayBetweenPool": "5",
+  "MaxWritesCount": "10",
+  "DataBits": "8"
+},
+  "Childs": [
+    {
+  "ItemType": "Device",
+  "Name": "PLC",
+  "Path": "Local Station/Channel4/PLC",
+  "Description": null,
+  "DisplayInfo": "1",
+  "Error": null,
+  "Properties": {
+  "DeviceId": "1",
+  "Timeout": "1000",
+  "TryReadWriteTimes": "3",
+  "ReadMode": "Block",
+  "InputContactReadBlockSettings": "[]",
+  "OutputCoilsReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 0,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"11\",\r\n    \"EndAddress\": \"25\"\r\n  }\r\n]",
+  "InputRegisterReadBlockSettings": "[]",
+  "HoldingRegisterReadBlockSettings": "[]"
+},
+  "Childs": [
+    {
+  "ItemType": "Tag",
+  "Name": "AL1",
+  "Path": "Local Station/Channel4/PLC/AL1",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Bool",
+  "Address": "11"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "AL2",
+  "Path": "Local Station/Channel4/PLC/AL2",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Bool",
+  "Address": "12"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "AL3",
+  "Path": "Local Station/Channel4/PLC/AL3",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Bool",
+  "Address": "13"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "AL4",
+  "Path": "Local Station/Channel4/PLC/AL4",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Bool",
+  "Address": "14"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "AL5",
+  "Path": "Local Station/Channel4/PLC/AL5",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Bool",
+  "Address": "15"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "AL6",
+  "Path": "Local Station/Channel4/PLC/AL6",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Bool",
+  "Address": "16"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "AL7",
+  "Path": "Local Station/Channel4/PLC/AL7",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Bool",
+  "Address": "17"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "AL8",
+  "Path": "Local Station/Channel4/PLC/AL8",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Bool",
+  "Address": "18"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "AL9",
+  "Path": "Local Station/Channel4/PLC/AL9",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Bool",
+  "Address": "19"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "AL10",
+  "Path": "Local Station/Channel4/PLC/AL10",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Bool",
+  "Address": "20"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "AL11",
+  "Path": "Local Station/Channel4/PLC/AL11",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Bool",
+  "Address": "21"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "AL12",
+  "Path": "Local Station/Channel4/PLC/AL12",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Bool",
+  "Address": "22"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "AL13",
+  "Path": "Local Station/Channel4/PLC/AL13",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Bool",
+  "Address": "23"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "AL14",
+  "Path": "Local Station/Channel4/PLC/AL14",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Bool",
+  "Address": "24"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "AL15",
+  "Path": "Local Station/Channel4/PLC/AL15",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Bool",
+  "Address": "25"
+},
+  "Childs": []
+},
+    {
+  "ItemType": "Tag",
+  "Name": "AL16",
+  "Path": "Local Station/Channel4/PLC/AL16",
+  "Description": "",
+  "DisplayInfo": null,
+  "Error": null,
+  "Properties": {
+  "DataType": "Bool",
+  "Address": "26"
+},
+  "Childs": []
+}
+  ]
+}
+  ]
+}
+  ]
+}
+  ]
+}
