@@ -125,3 +125,16 @@ Thumbs.db
 ## Blazor
 *.blazor.js
 *.blazor.server.js
+
+## Docker files
+docker-compose*.yml
+docker-compose*.yaml
+Dockerfile*
+.dockerignore
+
+## Documentation files (Markdown)
+*.md
+!README.md
+
+## PowerShell scripts
+*.ps1
