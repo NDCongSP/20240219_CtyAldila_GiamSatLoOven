@@ -225,6 +225,7 @@ namespace GiamSat.API
             services.AddScoped<ISFT06, SFT06>();
             services.AddScoped<ISFT07, SFT07>();
             services.AddScoped<ISFT08, SFT08>();
+            services.AddScoped<ISFT09, SFT09>();
             services.AddScoped<SCommon>();
 
             services.AddSwaggerGen(c =>
@@ -442,60 +443,6 @@ namespace GiamSat.API
                 .FirstOrDefault();
             }
 
-            var steps = new List<RevoStep>();
-            for (int j = 1; j <= 20; j++)
-            {
-                steps.Add(new RevoStep()
-                {
-                    StepIndex = j,
-                    StepName = $"REVO-STEP-{j}",
-                    StepConfig = $"REVO-STEP-{j}|0|0|H",
-                    Enanble = false,
-                    Speed_Hz = 0,
-                    SoLuongXung = 0,
-                    StartAt = null,
-                    EndAt = null
-                });
-            }
-
-            var revoRealtime = new List<FT08_RevoRealtime>();
-            foreach (var item in JsonConvert.DeserializeObject<RevoConfigs>(existing.C000))
-            {
-                var data = new RevoRealtimeModel()
-                {
-                    RevoId = item.Id ?? 0,
-                    RevoName = item.Name,
-                    Path = item.Path,
-                    ConnectionStatus = 0,
-                    Work = "WORK",
-                    Part = "AU228-IR-F",
-                    Rev = "A",
-                    ColorCode = "",
-                    Mandrel = "M541",
-                    MandrelStart = "2.5",
-                    Steps = steps
-                };
-
-                revoRealtime.Add(new FT08_RevoRealtime()
-                {
-                    Id = Guid.NewGuid(),
-                    C000_RevoId = item.Id,
-                    C001_Data = JsonConvert.SerializeObject(data)
-                });
-            }
-
-            var existingRevoRealtime= scope.ServiceProvider.GetService<ApplicationDbContext>()
-                .FT08_RevoRealtimes
-                .FirstOrDefault();
-            if (existingRevoRealtime == null)
-            {
-                await scope.ServiceProvider.GetService<ApplicationDbContext>()
-                    .FT08_RevoRealtimes
-                    .AddRangeAsync(revoRealtime);
-
-                await scope.ServiceProvider.GetService<ApplicationDbContext>()
-                    .SaveChangesAsync();
-            }
         }
     }
 }

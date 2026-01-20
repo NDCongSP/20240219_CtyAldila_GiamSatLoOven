@@ -12,8 +12,6 @@ namespace GiamSat.UI.Pages
     public partial class RevoHome : IDisposable
     {
         [Inject] private IHttpClientFactory HttpClientFactory { get; set; } = default!;
-        [Inject] private DialogService DialogService { get; set; } = default!;
-        [Inject] private NotificationService NotificationService { get; set; } = default!;
 
         private List<RevoRealtimeModel> _revoData = new List<RevoRealtimeModel>();
         private bool _isLoading = true;
@@ -109,7 +107,7 @@ namespace GiamSat.UI.Pages
             }
             catch (Exception ex)
             {
-                NotificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Lỗi khi tải dữ liệu: {ex.Message}");
+                _notificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Lỗi khi tải dữ liệu: {ex.Message}");
             }
             finally
             {
@@ -124,7 +122,7 @@ namespace GiamSat.UI.Pages
             var dialogWidth = "90vw";
             var dialogHeight = "90vh";
             
-            await DialogService.OpenAsync<DialogRevoDetail>("Chi tiết REVO",
+            await _dialogService.OpenAsync<DialogRevoDetail>("Chi tiết REVO",
                 new Dictionary<string, object> { { "RevoData", revo } },
                 new DialogOptions { Width = dialogWidth, Height = dialogHeight, Resizable = true, Draggable = true });
         }

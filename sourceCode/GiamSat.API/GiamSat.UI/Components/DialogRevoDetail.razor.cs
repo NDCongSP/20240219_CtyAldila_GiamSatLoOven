@@ -13,7 +13,6 @@ namespace GiamSat.UI.Components
         [Parameter]
         public RevoRealtimeModel RevoData { get; set; } = new RevoRealtimeModel();
 
-        [Inject] private DialogService DialogService { get; set; } = default!;
         [Inject] private IHttpClientFactory HttpClientFactory { get; set; } = default!;
 
         private RevoRealtimeModel _revoData = new RevoRealtimeModel();

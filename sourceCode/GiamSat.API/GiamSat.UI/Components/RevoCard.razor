@@ -44,11 +44,11 @@
         }
 
         <!-- Steps List (4 steps starting from running step) -->
-        @if (RevoData.Steps != null && RevoData.Steps.Any(s => s.Visible == true))
+        @if (RevoData.Steps != null && RevoData.Steps.Any(s => s.Visible.HasValue && s.Visible.Value == true))
         {
             <div class="steps-container">
                 @{
-                    var visibleSteps = RevoData.Steps.Where(s => s.Visible == true).OrderBy(s => s.StepIndex).ToList();
+                    var visibleSteps = RevoData.Steps.Where(s => s.Visible.HasValue && s.Visible.Value == true).OrderBy(s => s.StepIndex).ToList();
                     var now = DateTime.Now;
                     
                     // Find the running step (startAt != null, endAt == null) or the first step

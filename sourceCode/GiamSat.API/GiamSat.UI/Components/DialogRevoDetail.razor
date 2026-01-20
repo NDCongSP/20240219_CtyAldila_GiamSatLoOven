@@ -40,9 +40,9 @@
 
     <!-- Steps List - 4 columns layout -->
     <RadzenFieldset Text="Danh sách Steps">
-        @if (_revoData.Steps != null && _revoData.Steps.Any(s => s.Visible == true))
+        @if (_revoData.Steps != null && _revoData.Steps.Any(s => s.Visible.HasValue && s.Visible.Value == true))
         {
-            var visibleSteps = _revoData.Steps.Where(s => s.Visible == true).OrderBy(s => s.StepIndex).ToList();
+            var visibleSteps = _revoData.Steps.Where(s => s.Visible.HasValue && s.Visible.Value == true).OrderBy(s => s.StepIndex).ToList();
             var stepNumber = 1;
             <div class="steps-grid">
                 @foreach (var step in visibleSteps)
@@ -85,7 +85,7 @@
     </RadzenFieldset>
 
     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem">
-        <RadzenButton Text="Đóng" ButtonStyle="ButtonStyle.Light" Click="@(() => DialogService.Close())" />
+        <RadzenButton Text="Đóng" ButtonStyle="ButtonStyle.Light" Click="@(() => _dialogService.Close())" />
     </RadzenStack>
 </RadzenStack>
 

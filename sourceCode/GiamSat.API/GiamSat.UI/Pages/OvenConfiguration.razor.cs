@@ -7,7 +7,6 @@ using Radzen;
 using Radzen.Blazor;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Net.Http.Headers;
 
 namespace GiamSat.UI.Pages
 {
@@ -16,8 +15,6 @@ namespace GiamSat.UI.Pages
         [Parameter]
         public int OvenId { get; set; }
 
-        [Inject] private NotificationService NotificationService { get; set; } = default!;
-        [Inject] private DialogService DialogService { get; set; } = default!;
         [Inject] private IHttpClientFactory HttpClientFactory { get; set; } = default!;
 
         private RadzenDataGrid<RevoConfigModel> _dataGrid = default!;
@@ -70,13 +67,13 @@ namespace GiamSat.UI.Pages
                 }
                 else
                 {
-                    NotificationService.Notify(NotificationSeverity.Error, "Lỗi", "Không thể tải dữ liệu từ server");
+                    _notificationService.Notify(NotificationSeverity.Error, "Lỗi", "Không thể tải dữ liệu từ server");
                     _revoConfigs = new RevoConfigs();
                 }
             }
             catch (Exception ex)
             {
-                NotificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Lỗi khi tải dữ liệu: {ex.Message}");
+                _notificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Lỗi khi tải dữ liệu: {ex.Message}");
                 _revoConfigs = new RevoConfigs();
             }
             finally
@@ -108,8 +105,13 @@ namespace GiamSat.UI.Pages
                     if (!response.IsSuccessStatusCode)
                     {
                         var error = await response.Content.ReadAsStringAsync();
-                        NotificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Không thể tạo mới: {error}");
+                        _notificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Không thể tạo mới: {error}");
                         return;
+                    }
+                    var result = await response.Content.ReadFromJsonAsync<Result<FT07_RevoConfig>>();
+                    if (result != null && result.Succeeded)
+                    {
+                        _ft07Record = result.Data;
                     }
                 }
                 else
@@ -120,16 +122,16 @@ namespace GiamSat.UI.Pages
                     if (!response.IsSuccessStatusCode)
                     {
                         var error = await response.Content.ReadAsStringAsync();
-                        NotificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Không thể cập nhật: {error}");
+                        _notificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Không thể cập nhật: {error}");
                         return;
                     }
                 }
 
-                NotificationService.Notify(NotificationSeverity.Success, "Thành công", "Đã lưu dữ liệu thành công");
+                _notificationService.Notify(NotificationSeverity.Success, "Thành công", "Đã lưu dữ liệu thành công");
             }
             catch (Exception ex)
             {
-                NotificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Lỗi khi lưu dữ liệu: {ex.Message}");
+                _notificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Lỗi khi lưu dữ liệu: {ex.Message}");
             }
         }
 
@@ -142,7 +144,7 @@ namespace GiamSat.UI.Pages
                 Path = ""
             };
 
-            var result = await DialogService.OpenAsync<DialogRevoConfig>("Thêm REVO mới",
+            var result = await _dialogService.OpenAsync<DialogRevoConfig>("Thêm REVO mới",
                 new Dictionary<string, object> { { "Model", newRevo }, { "IsEdit", false } },
                 new DialogOptions { Width = "500px", Resizable = true, Draggable = true });
 
@@ -163,7 +165,7 @@ namespace GiamSat.UI.Pages
                 Path = item.Path
             };
 
-            var result = await DialogService.OpenAsync<DialogRevoConfig>("Chỉnh sửa REVO",
+            var result = await _dialogService.OpenAsync<DialogRevoConfig>("Chỉnh sửa REVO",
                 new Dictionary<string, object> { { "Model", editItem }, { "IsEdit", true } },
                 new DialogOptions { Width = "500px", Resizable = true, Draggable = true });
 
@@ -181,7 +183,7 @@ namespace GiamSat.UI.Pages
 
         private async Task OnDelete(RevoConfigModel item)
         {
-            var confirm = await DialogService.Confirm($"Bạn có chắc muốn xóa {item.Name}?", "Xác nhận xóa",
+            var confirm = await _dialogService.Confirm($"Bạn có chắc muốn xóa {item.Name}?", "Xác nhận xóa",
                 new ConfirmOptions { OkButtonText = "Xóa", CancelButtonText = "Hủy" });
 
             if (confirm == true)
@@ -189,7 +191,7 @@ namespace GiamSat.UI.Pages
                 _revoConfigs.Remove(item);
                 await SaveData();
                 await _dataGrid.Reload();
-                NotificationService.Notify(NotificationSeverity.Success, "Thành công", $"Đã xóa {item.Name}");
+                _notificationService.Notify(NotificationSeverity.Success, "Thành công", $"Đã xóa {item.Name}");
             }
         }
     }
