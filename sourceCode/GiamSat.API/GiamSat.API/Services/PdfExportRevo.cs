@@ -1,0 +1,152 @@
+using GiamSat.Models;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+using System.Collections.Generic;
+
+namespace GiamSat.API.Services
+{
+    public class PdfExportRevo
+    {
+        public byte[] GeneratePdfFile(List<FT09_RevoDatalog> data, string dateQuery)
+        {
+            QuestPDF.Settings.License = LicenseType.Community;
+
+            var document = Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Size(PageSizes.A4);
+                    page.Margin(2, Unit.Centimetre);
+                    page.PageColor(Colors.White);
+                    page.DefaultTextStyle(x => x.FontSize(10));
+
+                    page.Header()
+                        .Background(Colors.Green.Darken1)
+                        .Padding(10)
+                        .AlignCenter()
+                        .AlignMiddle()
+                        .Text("BÁO CÁO REVO")
+                        .FontSize(20)
+                        .Bold()
+                        .FontColor(Colors.White);
+
+                    page.Content()
+                        .PaddingVertical(1, Unit.Centimetre)
+                        .Column(column =>
+                        {
+                            column.Spacing(10);
+
+                            // Thông tin thời gian
+                            column.Item()
+                                .AlignCenter()
+                                .Text($"Thời gian: {dateQuery}")
+                                .FontSize(12)
+                                .Bold();
+
+                            // Bảng dữ liệu
+                            column.Item()
+                                .Table(table =>
+                                {
+                                    // Header
+                                    table.ColumnsDefinition(columns =>
+                                    {
+                                        columns.RelativeColumn(1.2f); // Tên REVO
+                                        columns.RelativeColumn(1.0f); // Part
+                                        columns.RelativeColumn(0.8f); // Rev
+                                        columns.RelativeColumn(0.8f); // Màu
+                                        columns.RelativeColumn(1.0f); // Mandrel
+                                        columns.RelativeColumn(1.5f); // Tên Step
+                                        columns.RelativeColumn(1.3f); // Thời gian bắt đầu
+                                        columns.RelativeColumn(1.3f); // Thời gian kết thúc
+                                        columns.RelativeColumn(1.0f); // Thời lượng
+                                        columns.RelativeColumn(1.0f); // Work
+                                    });
+
+                                    // Header row
+                                    table.Header(header =>
+                                    {
+                                        header.Cell().Element(CellStyle).Text("Tên REVO").Bold();
+                                        header.Cell().Element(CellStyle).Text("Part").Bold();
+                                        header.Cell().Element(CellStyle).Text("Rev").Bold();
+                                        header.Cell().Element(CellStyle).Text("Màu").Bold();
+                                        header.Cell().Element(CellStyle).Text("Mandrel").Bold();
+                                        header.Cell().Element(CellStyle).Text("Tên Step").Bold();
+                                        header.Cell().Element(CellStyle).Text("TG bắt đầu").Bold();
+                                        header.Cell().Element(CellStyle).Text("TG kết thúc").Bold();
+                                        header.Cell().Element(CellStyle).Text("Thời lượng").Bold();
+                                        header.Cell().Element(CellStyle).Text("Work").Bold();
+
+                                        static IContainer CellStyle(IContainer container)
+                                        {
+                                            return container
+                                                .Background(Colors.Grey.Lighten3)
+                                                .BorderBottom(1)
+                                                .BorderColor(Colors.Grey.Lighten1)
+                                                .PaddingVertical(5)
+                                                .PaddingHorizontal(5);
+                                        }
+                                    });
+
+                                    // Data rows
+                                    foreach (var item in data)
+                                    {
+                                        var durationText = "N/A";
+                                        if (item.StartedAt.HasValue && item.EndedAt.HasValue)
+                                        {
+                                            var duration = item.EndedAt.Value - item.StartedAt.Value;
+                                            durationText = duration.ToString(@"hh\:mm\:ss");
+                                        }
+                                        else if (item.StartedAt.HasValue)
+                                        {
+                                            durationText = "Đang chạy...";
+                                        }
+
+                                        table.Cell().Element(CellStyle).Text(item.RevoName ?? "N/A");
+                                        table.Cell().Element(CellStyle).Text(item.Part ?? "N/A");
+                                        table.Cell().Element(CellStyle).Text(item.Rev ?? "N/A");
+                                        table.Cell().Element(CellStyle).Text(item.ColorCode ?? "N/A");
+                                        table.Cell().Element(CellStyle).Text(item.Mandrel ?? "N/A");
+                                        table.Cell().Element(CellStyle).Text(item.StepName ?? "N/A");
+                                        table.Cell().Element(CellStyle).Text(item.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A");
+                                        table.Cell().Element(CellStyle).Text(item.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A");
+                                        table.Cell().Element(CellStyle).Text(durationText);
+                                        table.Cell().Element(CellStyle).Text(item.Work ?? "N/A");
+
+                                        static IContainer CellStyle(IContainer container)
+                                        {
+                                            return container
+                                                .BorderBottom(1)
+                                                .BorderColor(Colors.Grey.Lighten2)
+                                                .PaddingVertical(3)
+                                                .PaddingHorizontal(5);
+                                        }
+                                    }
+                                });
+
+                            // Footer với tổng số bản ghi
+                            column.Item()
+                                .AlignRight()
+                                .PaddingTop(10)
+                                .Text($"Tổng số bản ghi: {data.Count}")
+                                .FontSize(10)
+                                .Italic();
+                        });
+
+                    page.Footer()
+                        .AlignCenter()
+                        .Text(x =>
+                        {
+                            x.DefaultTextStyle(TextStyle.Default.FontSize(9).FontColor(Colors.Grey.Medium));
+                            x.Span("Trang ");
+                            x.CurrentPageNumber();
+                            x.Span(" / ");
+                            x.TotalPages();
+                        });
+                });
+            });
+
+            return document.GeneratePdf();
+        }
+    }
+}

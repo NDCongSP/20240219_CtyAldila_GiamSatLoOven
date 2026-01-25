@@ -1,0 +1,72 @@
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.step-item-detail {
+    padding: 0.5rem;
+    border-radius: 4px;
+    min-height: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.step-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.step-number-detail {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+    color: var(--rz-text-color);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Override for step-running to ensure visibility */
+.step-running .step-number-detail {
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    color: #212121;
+}
+
+.step-time-right {
+    text-align: right;
+    font-size: 0.875rem;
+    color: var(--rz-text-secondary-color);
+    margin-top: auto;
+}
+
+.step-disabled {
+    background-color: #212121;
+    color: white;
+}
+
+.step-pending {
+    background-color: #9e9e9e; /* Gray - not started */
+    color: white;
+}
+
+.step-running {
+    background-color: #ffffff; /* White - running */
+    color: #212121;
+    border: 1px solid #e0e0e0;
+}
+
+.step-completed {
+    background-color: #8DD7E2; /* Light blue - completed */
+    color: white;
+}

@@ -1,0 +1,35 @@
+@page "/revo"
+@using GiamSat.Models
+@using GiamSat.UI.Components
+@attribute [Authorize(Roles = "Admin,User")]
+
+<RadzenRow Gap="1rem">
+    @if (_isLoading)
+    {
+        <RadzenColumn Size="12">
+            <RadzenCard>
+                <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+                <RadzenText>Đang tải dữ liệu...</RadzenText>
+            </RadzenCard>
+        </RadzenColumn>
+    }
+    else if (_revoData == null || _revoData.Count == 0)
+    {
+        <RadzenColumn Size="12">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Body2" Style="color: var(--rz-text-muted-color);">
+                    Chưa có dữ liệu REVO.
+                </RadzenText>
+            </RadzenCard>
+        </RadzenColumn>
+    }
+    else
+    {
+        @foreach (var revo in _revoData)
+        {
+            <RadzenColumn Size="12" SizeMD="6" SizeLG="4" SizeXL="3">
+                <RevoCard RevoData="@revo" OnDetailClick="@(() => OnShowDetail(revo))" />
+            </RadzenColumn>
+        }
+    }
+</RadzenRow>

@@ -1,0 +1,48 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+README_DOCKER_SQL.md
+DOCKER_HUONG_DAN.md
+*.md
+
+# Docker files
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Scripts
+*.ps1
+*.sh
+
+# IDE
+.vs
+.vscode
+.idea
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+[Bb]in/
+[Oo]bj/
+
+# Info folder
+info/
+
+# PLC
+PLC/
+
+# Test projects
+**/BlazorApp1/
+**/BlazorApp2/
+**/BlazorApp3/
+
+# Published output
+**/PublishDeploy/

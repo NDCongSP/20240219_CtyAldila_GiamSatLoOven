@@ -1,0 +1,91 @@
+@using GiamSat.Models
+
+<RadzenStack Gap="1rem">
+    <RadzenText TextStyle="TextStyle.H5" Style="font-weight: 600;">@_revoData.RevoName</RadzenText>
+
+    <!-- Part Information -->
+    <RadzenFieldset Text="Thông tin Part">
+        <RadzenStack Gap="0.5rem">
+            <RadzenRow>
+                <RadzenColumn Size="6">
+                    <RadzenText TextStyle="TextStyle.Caption">PART:</RadzenText>
+                    <RadzenText>@(_revoData.Part ?? "N/A")</RadzenText>
+                </RadzenColumn>
+                <RadzenColumn Size="6">
+                    <RadzenText TextStyle="TextStyle.Caption">REV:</RadzenText>
+                    <RadzenText>@(_revoData.Rev ?? "NC")</RadzenText>
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenRow>
+                <RadzenColumn Size="6">
+                    <RadzenText TextStyle="TextStyle.Caption">COLOR:</RadzenText>
+                    <RadzenText>@(_revoData.ColorCode ?? "none")</RadzenText>
+                </RadzenColumn>
+                <RadzenColumn Size="6">
+                    <RadzenText TextStyle="TextStyle.Caption">MANDREL:</RadzenText>
+                    <RadzenText>@(_revoData.Mandrel ?? "N/A")</RadzenText>
+                </RadzenColumn>
+            </RadzenRow>
+            @if (!string.IsNullOrEmpty(_revoData.MandrelStart))
+            {
+                <RadzenRow>
+                    <RadzenColumn Size="6">
+                        <RadzenText TextStyle="TextStyle.Caption">SIZE:</RadzenText>
+                        <RadzenText>@_revoData.MandrelStart</RadzenText>
+                    </RadzenColumn>
+                </RadzenRow>
+            }
+        </RadzenStack>
+    </RadzenFieldset>
+
+    <!-- Steps List - 4 columns layout -->
+    <RadzenFieldset Text="Danh sách Steps">
+        @if (_revoData.Steps != null && _revoData.Steps.Any(s => s.Visible.HasValue && s.Visible.Value == true))
+        {
+            var visibleSteps = _revoData.Steps.Where(s => s.Visible.HasValue && s.Visible.Value == true).OrderBy(s => s.StepIndex).ToList();
+            var stepNumber = 1;
+            <div class="steps-grid">
+                @foreach (var step in visibleSteps)
+                {
+                    <div class="step-item-detail @GetStepClass(step)">
+                        <div class="step-header">
+                            <div class="step-number-detail">@stepNumber</div>
+                            <RadzenText TextStyle="TextStyle.Body1" Style="font-weight: 500; flex: 1;">
+                                @(step.StepName ?? $"REVO-STEP-{step.StepIndex}")
+                            </RadzenText>
+                        </div>
+                        @if (step.StartAt.HasValue || step.EndAt.HasValue)
+                        {
+                            <div class="step-time-right">
+                                @if (step.StartAt.HasValue && step.EndAt.HasValue)
+                                {
+                                    <span>@step.StartAt.Value.ToString("HH:mm") → @step.EndAt.Value.ToString("HH:mm")</span>
+                                }
+                                else if (step.StartAt.HasValue)
+                                {
+                                    <span>@step.StartAt.Value.ToString("HH:mm") → ...</span>
+                                }
+                                else if (step.EndAt.HasValue)
+                                {
+                                    <span>Kết thúc: @step.EndAt.Value.ToString("HH:mm")</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                    stepNumber++;
+                }
+            </div>
+        }
+        else
+        {
+            <RadzenText TextStyle="TextStyle.Body2" Style="color: var(--rz-text-muted-color);">
+                Không có step nào được hiển thị.
+            </RadzenText>
+        }
+    </RadzenFieldset>
+
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem">
+        <RadzenButton Text="Đóng" ButtonStyle="ButtonStyle.Light" Click="@(() => _dialogService.Close())" />
+    </RadzenStack>
+</RadzenStack>
+

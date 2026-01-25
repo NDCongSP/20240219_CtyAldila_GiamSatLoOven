@@ -1,0 +1,146 @@
+@page "/revo/report"
+@using GiamSat.Models
+@attribute [Authorize(Roles = "Admin,User")]
+
+<RadzenRow Gap="1rem">
+    <RadzenColumn Size="12">
+        <RadzenCard class="rz-shadow-3">
+            <!-- Filter Section -->
+            <RadzenStack Gap="1rem">
+                <RadzenText TextStyle="TextStyle.Subtitle1" Style="font-weight: 600;">Bộ lọc</RadzenText>
+                
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.End" Gap="1rem" Wrap="FlexWrap.Wrap">
+                    <RadzenStack Gap="0.2rem" Style="min-width: 200px;">
+                        <RadzenLabel Text="Chọn REVO" />
+                        <RadzenDropDown @bind-Value="@_selectedRevoId" 
+                                      Data="@_revoList" 
+                                      TextProperty="Name" 
+                                      ValueProperty="Id"
+                                      AllowClear="true"
+                                      Style="width: 100%;" 
+                                      Placeholder="Tất cả REVO" />
+                    </RadzenStack>
+                    
+                    <RadzenStack Gap="0.2rem" Style="min-width: 200px;">
+                        <RadzenLabel Text="Từ ngày" />
+                        <RadzenDatePicker @bind-Value="@_fromDate" 
+                                        ShowTime="true" 
+                                        ShowSeconds="true"
+                                        DateFormat="dd/MM/yyyy HH:mm:ss"
+                                        Style="width: 100%;" />
+                    </RadzenStack>
+                    
+                    <RadzenStack Gap="0.2rem" Style="min-width: 200px;">
+                        <RadzenLabel Text="Đến ngày" />
+                        <RadzenDatePicker @bind-Value="@_toDate" 
+                                        ShowTime="true" 
+                                        ShowSeconds="true"
+                                        DateFormat="dd/MM/yyyy HH:mm:ss"
+                                        Style="width: 100%;" />
+                    </RadzenStack>
+                    
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                        <RadzenButton Icon="search" 
+                                    Text="Truy vấn" 
+                                    ButtonStyle="ButtonStyle.Primary" 
+                                    Click="@OnSearch"
+                                    Disabled="@_isLoading" />
+                        <RadzenButton Icon="refresh" 
+                                    Text="Làm mới" 
+                                    ButtonStyle="ButtonStyle.Light" 
+                                    Click="@OnReset" />
+                    </RadzenStack>
+                </RadzenStack>
+                
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Style="margin-top: 0.5rem;">
+                    <RadzenButton Icon="file_download" 
+                                Text="Xuất Excel" 
+                                ButtonStyle="ButtonStyle.Success" 
+                                Click="@OnExportExcel"
+                                Disabled="@(!_hasData || _isLoading)" />
+                    <RadzenButton Icon="picture_as_pdf" 
+                                Text="Xuất PDF" 
+                                ButtonStyle="ButtonStyle.Danger" 
+                                Click="@OnExportPDF"
+                                Disabled="@(!_hasData || _isLoading)" />
+                </RadzenStack>
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+</RadzenRow>
+
+<RadzenRow Gap="1rem" class="rz-mt-4">
+    <RadzenColumn Size="12">
+        <RadzenCard class="rz-shadow-3">
+            <RadzenText TextStyle="TextStyle.Subtitle1" Style="font-weight: 600;" class="rz-mb-3">Dữ liệu báo cáo</RadzenText>
+            
+            @if (_isLoading)
+            {
+                <div style="text-align: center; padding: 3rem;">
+                    <RadzenProgressBarCircular ProgressBarStyle="ProgressBarStyle.Primary" 
+                                             Value="100" 
+                                             ShowValue="false" 
+                                             Mode="ProgressBarMode.Indeterminate" />
+                    <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">Đang tải dữ liệu...</RadzenText>
+                </div>
+            }
+            else if (!_hasData)
+            {
+                <div style="text-align: center; padding: 3rem;">
+                    <RadzenText TextStyle="TextStyle.Body1" Style="color: var(--rz-text-secondary-color);">
+                        Chưa có dữ liệu. Vui lòng chọn khoảng thời gian và nhấn "Truy vấn".
+                    </RadzenText>
+                </div>
+            }
+            else
+            {
+                <RadzenDataGrid @ref="_dataGrid" 
+                              Data="@_reportData" 
+                              TItem="FT09_RevoDatalog" 
+                              AllowPaging="true" 
+                              PageSize="20"
+                              AllowSorting="true"
+                              PagerHorizontalAlign="HorizontalAlign.Right"
+                              ShowPagingSummary="true"
+                              PagingSummaryFormat="Hiển thị {0} - {1} / {2} mục">
+                    <Columns>
+                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="RevoName" Title="Tên REVO" Width="150px" />
+                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="Part" Title="Part" Width="120px" />
+                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="Rev" Title="Rev" Width="80px" />
+                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="ColorCode" Title="Màu" Width="100px" />
+                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="Mandrel" Title="Mandrel" Width="120px" />
+                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="StepName" Title="Tên Step" Width="150px" />
+                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="StartedAt" Title="Thời gian bắt đầu" Width="180px">
+                            <Template Context="data">
+                                @(data.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A")
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="EndedAt" Title="Thời gian kết thúc" Width="180px">
+                            <Template Context="data">
+                                @(data.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A")
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Title="Thời lượng" Width="120px" TextAlign="TextAlign.Center">
+                            <Template Context="data">
+                                @if (data.StartedAt.HasValue && data.EndedAt.HasValue)
+                                {
+                                    var duration = data.EndedAt.Value - data.StartedAt.Value;
+                                    <span>@duration.ToString(@"hh\:mm\:ss")</span>
+                                }
+                                else if (data.StartedAt.HasValue)
+                                {
+                                    <span>Đang chạy...</span>
+                                }
+                                else
+                                {
+                                    <span>N/A</span>
+                                }
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="Work" Title="Work" Width="100px" />
+                    </Columns>
+                </RadzenDataGrid>
+            }
+        </RadzenCard>
+    </RadzenColumn>
+</RadzenRow>

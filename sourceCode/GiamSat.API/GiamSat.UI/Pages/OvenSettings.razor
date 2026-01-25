@@ -1,0 +1,245 @@
+@page "/oven/{OvenId:int}/settings"
+@using GiamSat.Models
+
+@if (_configInfo == null)
+{
+    <RadzenRow Gap="1rem" class="rz-mt-4">
+        <RadzenColumn Size="12">
+            <RadzenCard class="rz-shadow-3">
+                <p><em>Loading...</em></p>
+            </RadzenCard>
+        </RadzenColumn>
+    </RadzenRow>
+}
+else
+{
+    <RadzenTemplateForm Data="@_configInfo" Submit="@((ConfigModel args) => { Submit(args); })">
+        <RadzenRow Gap="1rem" class="rz-mt-4">
+            <RadzenColumn Size="12">
+                <RadzenCard class="rz-shadow-3">
+                    <RadzenStack Gap="1rem">
+                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                            <RadzenIcon Icon="settings" Style="color: var(--rz-primary);" />
+                            <RadzenText TextStyle="TextStyle.Subtitle1">Thông tin chung</RadzenText>
+                        </RadzenStack>
+
+                        <RadzenRow Gap="1rem">
+                            <RadzenColumn Size="12" SizeMD="3">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Dấu thập phân</RadzenText>
+                                <RadzenNumeric Placeholder="0.0" Step="0.1" @bind-Value="@_configInfo.Gain" TextAlign="TextAlign.Right"
+                                             Style="width: 100%" />
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="12" SizeMD="3">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">TG log bình thường (ms)</RadzenText>
+                                <RadzenNumeric @bind-Value="@_configInfo.DataLogInterval" TextAlign="TextAlign.Right"
+                                             Style="width: 100%" />
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="12" SizeMD="3">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">TG log khi chạy profile (ms)</RadzenText>
+                                <RadzenNumeric @bind-Value="@_configInfo.DataLogWhenRunProfileInterval" TextAlign="TextAlign.Right"
+                                             Style="width: 100%" />
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="12" SizeMD="3">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">TG cập nhật Realtime (ms)</RadzenText>
+                                <RadzenNumeric @bind-Value="@_configInfo.DisplayRealtimeInterval" TextAlign="TextAlign.Right"
+                                             Style="width: 100%" />
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="12" SizeMD="3">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">TG check trạng thái chạy/dừng (ms)</RadzenText>
+                                <RadzenNumeric @bind-Value="@_configInfo.CountSecondStop" TextAlign="TextAlign.Right"
+                                             Style="width: 100%" />
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="12" SizeMD="3">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">NĐ dung sai bật cảnh báo ramp down (°C)</RadzenText>
+                                <RadzenNumeric @bind-Value="@_configInfo.ToleranceTempForRampDown" TextAlign="TextAlign.Right" Step="0.1"
+                                             Style="width: 100%" />
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="12" SizeMD="3">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">NĐ dung sai tắt cảnh báo ramp down (°C)</RadzenText>
+                                <RadzenNumeric @bind-Value="@_configInfo.ToleranceTempOutForRampDown" TextAlign="TextAlign.Right" Step="0.1"
+                                             Style="width: 100%" />
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="12" SizeMD="3">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">NĐ dung sai bật cảnh báo ramp up (°C)</RadzenText>
+                                <RadzenNumeric @bind-Value="@_configInfo.ToleranceTempForRampUp" TextAlign="TextAlign.Right" Step="0.1"
+                                             Style="width: 100%" />
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="12" SizeMD="3">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">NĐ dung sai tắt cảnh báo ramp up (°C)</RadzenText>
+                                <RadzenNumeric @bind-Value="@_configInfo.ToleranceTempOutForRampUp" TextAlign="TextAlign.Right" Step="0.1"
+                                             Style="width: 100%" />
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="12" SizeMD="3">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">TG kiểm tra nhiệt khi chạy profile (ms)</RadzenText>
+                                <RadzenNumeric @bind-Value="@_configInfo.TimeTempChange" TextAlign="TextAlign.Right"
+                                             Style="width: 100%" />
+                            </RadzenColumn>
+                        </RadzenRow>
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenColumn>
+        </RadzenRow>
+
+        <RadzenRow Gap="1rem" class="rz-mt-4">
+            <RadzenColumn Size="12">
+                <RadzenCard class="rz-shadow-3">
+                    <RadzenStack Gap="1rem">
+                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                            <RadzenIcon Icon="dashboard" Style="color: var(--rz-success);" />
+                            <RadzenText TextStyle="TextStyle.Subtitle1">UI</RadzenText>
+                        </RadzenStack>
+
+                        <RadzenRow Gap="1rem">
+                            <RadzenColumn Size="12" SizeMD="3">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">RefreshInterval (ms)</RadzenText>
+                                <RadzenNumeric @bind-Value="@_configInfo.RefreshInterval" TextAlign="TextAlign.Right"
+                                             Style="width: 100%" />
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="12" SizeMD="3">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">ChartRefreshInterval (ms)</RadzenText>
+                                <RadzenNumeric @bind-Value="@_configInfo.ChartRefreshInterval" TextAlign="TextAlign.Right"
+                                             Style="width: 100%" />
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="12" SizeMD="3">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">ChartPointNum</RadzenText>
+                                <RadzenNumeric @bind-Value="@_configInfo.ChartPointNum" TextAlign="TextAlign.Right"
+                                             Style="width: 100%" />
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="12" SizeMD="3">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Cho phép user đổi pass</RadzenText>
+                                <RadzenCheckBox @bind-Value="@_configInfo.ChangePassUser" Name="ChangePassUser"/>
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="12" SizeMD="3">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Chart-Smooth</RadzenText>
+                                <RadzenCheckBox @bind-Value="@_configInfo.Smooth" Name="Smooth"/>
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="12" SizeMD="3">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Chart-ShowDataLabels</RadzenText>
+                                <RadzenCheckBox @bind-Value="@_configInfo.ShowDataLabels" Name="ShowDataLabels"/>
+                            </RadzenColumn>
+
+                            <RadzenColumn Size="12" SizeMD="3">
+                                <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Chart-ShowMarkers</RadzenText>
+                                <RadzenCheckBox @bind-Value="@_configInfo.ShowMarkers" Name="ShowMarkers"/>
+                            </RadzenColumn>
+                        </RadzenRow>
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenColumn>
+        </RadzenRow>
+
+        <RadzenRow Gap="1rem" class="rz-mt-4">
+            <RadzenColumn Size="12">
+                <div class="button-actions-right">
+                    <RadzenButton Variant="Variant.Filled" 
+                                ButtonType="ButtonType.Submit" 
+                                Size="ButtonSize.Large" 
+                                Icon="save" 
+                                Text="Save" 
+                                ButtonStyle="ButtonStyle.Primary" />
+                </div>
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenTemplateForm>
+}
+
+@code {
+    [Parameter]
+    public int OvenId { get; set; }
+    
+    private int _previousOvenId;
+
+    [Inject] private NotificationService NotificationService { get; set; } = default!;
+
+    private ConfigModel? _configInfo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _previousOvenId = OvenId;
+        await LoadConfig();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Only reload if OvenId has changed
+        if (_previousOvenId != OvenId)
+        {
+            _previousOvenId = OvenId;
+            await LoadConfig();
+        }
+    }
+
+    private async Task LoadConfig()
+    {
+        // Reset config while loading
+        _configInfo = null;
+        
+        // TODO: Load from API based on OvenId
+        // var res = await _ft01Client.GetByOvenIdAsync(OvenId);
+        
+        // Fake data for now
+        await Task.Delay(100); // Simulate API call
+        
+        _configInfo = new ConfigModel
+        {
+            Gain = 1.0,
+            DataLogInterval = 1000,
+            DataLogWhenRunProfileInterval = 500,
+            DisplayRealtimeInterval = 1000,
+            CountSecondStop = 5000,
+            ToleranceTempForRampDown = 2.0,
+            ToleranceTempOutForRampDown = 1.0,
+            ToleranceTempForRampUp = 2.0,
+            ToleranceTempOutForRampUp = 1.0,
+            TimeTempChange = 1000,
+            RefreshInterval = 1000,
+            ChartRefreshInterval = 1000,
+            ChartPointNum = 100,
+            ChangePassUser = true,
+            Smooth = true,
+            ShowDataLabels = false,
+            ShowMarkers = true
+        };
+    }
+
+    private async void Submit(ConfigModel config)
+    {
+        try
+        {
+            // TODO: Save to API
+            // var res = await _ft01Client.UpdateAsync(config);
+            
+            NotificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Lưu thành công",
+                Detail = "Cài đặt đã được cập nhật",
+                Duration = 3000
+            });
+        }
+        catch (Exception ex)
+        {
+            NotificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Lỗi",
+                Detail = $"Không thể lưu cài đặt: {ex.Message}",
+                Duration = 4000
+            });
+        }
+    }
+}

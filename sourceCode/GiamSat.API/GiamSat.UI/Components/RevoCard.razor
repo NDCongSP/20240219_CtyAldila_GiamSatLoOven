@@ -1,0 +1,172 @@
+@using GiamSat.Models
+
+<RadzenCard class="@($"revo-card rz-shadow-3 {GetCardConnectionClass()}")" Style="@GetCardStyle()">
+    <RadzenStack Gap="0.5rem">
+        <!-- REVO Name and Detail Button -->
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+            <RadzenText TextStyle="TextStyle.H6" Style="font-weight: 600;">@RevoData.RevoName</RadzenText>
+            <RadzenButton Icon="info" 
+                        Text="Chi tiết" 
+                        ButtonStyle="ButtonStyle.Info" 
+                        Size="ButtonSize.Small"
+                        Click="@OnDetailClick" />
+        </RadzenStack>
+
+        <!-- Part Info -->
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">PART:</span>
+                <span class="info-value">@(RevoData.Part ?? "N/A")</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">REV:</span>
+                <span class="info-value">@(RevoData.Rev ?? "NC")</span>
+            </div>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">COLOR:</span>
+                <span class="info-value">@(RevoData.ColorCode ?? "none")</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">MANDREL:</span>
+                <span class="info-value">@(RevoData.Mandrel ?? "N/A")</span>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(RevoData.MandrelStart))
+        {
+            <div class="info-item">
+                <span class="info-label">SIZE:</span>
+                <span class="info-value">@RevoData.MandrelStart</span>
+            </div>
+        }
+
+        <!-- Steps List (4 steps starting from running step) -->
+        @if (RevoData.Steps != null && RevoData.Steps.Any(s => s.Visible.HasValue && s.Visible.Value == true))
+        {
+            <div class="steps-container">
+                @{
+                    var visibleSteps = RevoData.Steps.Where(s => s.Visible.HasValue && s.Visible.Value == true).OrderBy(s => s.StepIndex).ToList();
+                    var now = DateTime.Now;
+                    
+                    // Find the running step (startAt != null, endAt == null) or the first step
+                    var runningStepIndex = -1;
+                    for (int i = 0; i < visibleSteps.Count; i++)
+                    {
+                        var step = visibleSteps[i];
+                        if (step.StartAt.HasValue && !step.EndAt.HasValue)
+                        {
+                            runningStepIndex = i;
+                            break;
+                        }
+                    }
+                    
+                    // If no running step found, start from first step
+                    var startIndex = runningStepIndex >= 0 ? runningStepIndex : 0;
+                    var stepsToShow = visibleSteps.Skip(startIndex).Take(4).ToList();
+                    var hasMore = visibleSteps.Count > startIndex + 4;
+                    var actualStepNumber = startIndex + 1; // Step number starting from the running step
+                }
+                @for (int i = 0; i < stepsToShow.Count; i++)
+                {
+                    var step = stepsToShow[i];
+                    var isPartial = hasMore && i == 3; // Show half of 4th step if there are more
+                    var stepNumber = actualStepNumber + i;
+                    
+                    <div class="step-item @GetStepClass(step)" style="@(isPartial ? "height: 50%; overflow: hidden; opacity: 0.7;" : "")">
+                        <div class="step-number">@stepNumber</div>
+                        <div class="step-content">
+                            <div class="step-name">@(step.StepName ?? $"REVO-STEP-{step.StepIndex}")</div>
+                            @if (step.StartAt.HasValue)
+                            {
+                                <div class="step-time">
+                                    @if (step.EndAt.HasValue)
+                                    {
+                                        <span>@step.StartAt.Value.ToString("HH:mm") → @step.EndAt.Value.ToString("HH:mm")</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@step.StartAt.Value.ToString("HH:mm") → ...</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </RadzenStack>
+</RadzenCard>
+
+@code {
+    [Parameter]
+    public RevoRealtimeModel RevoData { get; set; } = new RevoRealtimeModel();
+
+    [Parameter]
+    public EventCallback OnDetailClick { get; set; }
+
+    private string GetCardConnectionClass()
+    {
+        return RevoData.ConnectionStatus == 1 ? "card-connected" : "card-disconnected";
+    }
+
+    private string GetCardStyle()
+    {
+        if (RevoData.ConnectionStatus == 1)
+        {
+            return "background-color: #e8f5e9 !important; border: 2px solid #4caf50 !important;";
+        }
+        else
+        {
+            return "background-color: #ffebee !important; border: 2px solid #f44336 !important;";
+        }
+    }
+
+    private string GetStepClass(RevoStep step)
+    {
+        if (!step.Visible.HasValue || step.Visible.Value == false)
+            return "";
+
+        var now = DateTime.Now;
+        var classes = new List<string>();
+
+        // Enable status - if disabled, always black
+        if (step.Enanble.HasValue && step.Enanble.Value == false)
+        {
+            classes.Add("step-disabled"); // Black
+        }
+        else
+        {
+            // Check for running step (startAt != null, endAt == null)
+            if (step.StartAt.HasValue && !step.EndAt.HasValue)
+            {
+                classes.Add("step-running"); // White - running
+            }
+            // Time-based status
+            else if (step.StartAt.HasValue && step.EndAt.HasValue)
+            {
+                if (now < step.StartAt.Value)
+                {
+                    classes.Add("step-pending"); // Gray - not started
+                }
+                else if (now >= step.StartAt.Value && now <= step.EndAt.Value)
+                {
+                    classes.Add("step-running"); // White - running
+                }
+                else
+                {
+                    classes.Add("step-completed"); // Light blue - completed
+                }
+            }
+            else
+            {
+                // No time info, default to pending
+                classes.Add("step-pending");
+            }
+        }
+
+        return string.Join(" ", classes);
+    }
+}
