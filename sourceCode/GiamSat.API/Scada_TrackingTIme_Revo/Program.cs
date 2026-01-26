@@ -14,6 +14,8 @@ namespace Scada_TrackingTIme_Revo
         [STAThread]
         static void Main()
         {
+            GlobalVariable.RevoId = Properties.Settings.Default.RevoId;
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
