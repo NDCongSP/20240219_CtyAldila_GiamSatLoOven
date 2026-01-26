@@ -46,3 +46,9 @@ function BlazorOpenFile(filename, content) {
     a.target = "_self";
     a.click();
 }
+
+function scrollStepsContainer(containerRef, scrollPosition) {
+    if (containerRef) {
+        containerRef.scrollTop = scrollPosition;
+    }
+}
