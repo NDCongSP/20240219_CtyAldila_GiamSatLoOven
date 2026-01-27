@@ -9,7 +9,9 @@ using System.Data;
 using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -17,10 +19,11 @@ namespace Scada_TrackingTIme_Revo
 {
     public partial class Form1 : Form
     {
-        private EasyDriverConnector _easyDriverConnector = new EasyDriverConnector();
+        private EasyDriverConnector _easyDriverConnector;
+        private ConnectionStatus _easyStatus;
 
-        private RevoConfigModel _revoConfig = new RevoConfigModel();
-        private RevoRealtimeModel _revoRealtimeModel = new RevoRealtimeModel();
+        private CancellationTokenSource _timerCts;
+        private Task _timerTask;
 
         public Form1()
         {
@@ -32,8 +35,26 @@ namespace Scada_TrackingTIme_Revo
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _easyDriverConnector.ConnectionStatusChaged -= _easyDriverConnector_ConnectionStatusChaged;
-            _easyDriverConnector.Started -= _easyDriverConnector_Started;
+            try
+            {
+                _easyDriverConnector.ConnectionStatusChaged -= _easyDriverConnector_ConnectionStatusChaged;
+                _easyDriverConnector.Started -= _easyDriverConnector_Started;
+                _easyDriverConnector.Stop();
+
+                _timerCts.Cancel();
+                _timerTask.Wait(1000);
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                _timerCts?.Dispose();
+                _timerTask = null;
+            }
+
         }
 
         private async void Form1_Load(object sender, EventArgs e)
@@ -41,24 +62,27 @@ namespace Scada_TrackingTIme_Revo
             //ddocj gias trij config
             using (var dbContext = new ApplicationDbContext())
             {
+                var constring = dbContext.Database.Connection.ConnectionString;
+                GlobalVariable.IpDbServer = constring.Split(';')[0].Split('=')[1];
+
                 var ft07 = await dbContext.FT07_RevoConfigs
                     .FirstOrDefaultAsync(f => f.Actived == true);
 
                 if (ft07 != null)
                 {
-                    _revoConfig = JsonConvert.DeserializeObject<RevoConfigs>(ft07.C000).FirstOrDefault(x => x.Id == GlobalVariable.RevoId);
+                    GlobalVariable.RevoConfig = JsonConvert.DeserializeObject<RevoConfigs>(ft07.C000).FirstOrDefault(x => x.Id == GlobalVariable.RevoId);
 
-                    if (!_revoConfig.Id.HasValue)
+                    if (!GlobalVariable.RevoConfig.Id.HasValue)
                     {
-                        MessageBox.Show("Không đọc được thông tin cấu hình, vui lòng kiểm tra lại kết nối đến server. Rồi tắt mở lại chương trình.", 
-                            "CẢNH BÁO", MessageBoxButtons.OK, 
+                        MessageBox.Show("Không đọc được thông tin cấu hình, vui lòng kiểm tra lại kết nối đến server. Rồi tắt mở lại chương trình.",
+                            "CẢNH BÁO", MessageBoxButtons.OK,
                             MessageBoxIcon.Warning
                             );
 
                         return;
                     }
 
-                    Text = $"Chương trình giám sát thời gian chạy - Máy {_revoConfig.Name}";
+                    Text = $"Chương trình giám sát thời gian chạy - Máy {GlobalVariable.RevoConfig.Name}";
                 }
             }
 
@@ -67,7 +91,7 @@ namespace Scada_TrackingTIme_Revo
             _easyDriverConnector.ConnectionStatusChaged += _easyDriverConnector_ConnectionStatusChaged;
             _easyDriverConnector.BeginInit();
             _easyDriverConnector.EndInit();
-            _labSriverStatus.Text = $"TT kết nối easy driver: {_easyDriverConnector.ConnectionStatus.ToString()}";
+            _easyStatus = _easyDriverConnector.ConnectionStatus;
 
             _easyDriverConnector.Started += _easyDriverConnector_Started;
             if (_easyDriverConnector.IsStarted)
@@ -75,15 +99,20 @@ namespace Scada_TrackingTIme_Revo
                 _easyDriverConnector_Started(null, null);
             }
             #endregion
+
+            _timerCts = new CancellationTokenSource();
+            _timerTask = Task.Run(async () => await TaskTimerAsync(_timerCts.Token));
         }
 
         private void _easyDriverConnector_ConnectionStatusChaged(object sender, ConnectionStatusChangedEventArgs e)
         {
-            GlobalVariable.InvokeIfRequired(this, () =>
-            {
-                _labSriverStatus.BackColor = GetConnectionStatusColor(e.NewStatus);
-                _labSriverStatus.Text = $"TT kết nối easy driver: {_easyDriverConnector.ConnectionStatus.ToString()}";
-            });
+            _easyStatus = e.NewStatus;
+
+            //GlobalVariable.InvokeIfRequired(this, () =>
+            //{
+            //    _labSriverStatus.BackColor = GetConnectionStatusColor(e.NewStatus);
+            //    _labSriverStatus.Text = $"TT kết nối easy driver: {_easyDriverConnector.ConnectionStatus.ToString()}";
+            //});
         }
 
         private System.Drawing.Color GetConnectionStatusColor(ConnectionStatus status)
@@ -136,6 +165,44 @@ namespace Scada_TrackingTIme_Revo
                 //Target2_ValueChanged(_easyDriverConnector.GetTag($"Local Station/Channel1/Device1/Target2")
                 //   , new TagValueChangedEventArgs(_easyDriverConnector.GetTag($"Local Station/Channel1/Device1/Target2")
                 //   , "", _easyDriverConnector.GetTag($"Local Station/Channel1/Device1/Target2").Value));
+            }
+        }
+
+        private async Task TaskTimerAsync(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                try
+                {
+                    //var ping = PingServer(GlobalVariable.IpDbServer);
+                    GlobalVariable.InvokeIfRequired(this, () =>
+                    {
+                        _labTime.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+
+                        //_labStatus.BackColor = GetConnectionStatusColor(_easyStatus);
+                       
+                        _labStatus.Text = $"Easy Driver: {_easyStatus} - DB Server:";
+                    });
+                }
+                catch (Exception ex)
+                {
+                    // Log lỗi nếu cần
+                }
+                await Task.Delay(100, token); // Chờ 1 giây trước khi lặp lại
+            }
+        }
+        string PingServer(string host)
+        {
+            try
+            {
+                Ping ping = new Ping();
+                PingReply reply = ping.Send(host, 3000); // timeout 3s
+
+                return reply.Status == IPStatus.Success ? "Good" : "Bad";
+            }
+            catch
+            {
+                return "Bad";
             }
         }
     }

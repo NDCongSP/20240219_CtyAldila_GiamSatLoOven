@@ -1,4 +1,5 @@
-﻿using GiamSat.Models;
+﻿using EasyScada.Winforms.Controls;
+using GiamSat.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -15,6 +16,10 @@ namespace Scada_TrackingTIme_Revo
         /// Định dánh máy theo ID để truy cập và DB lây thông tin cấu hình của máy để hoạt động, lưu trữ data theo thông tin này.
         /// </summary>
         public static int RevoId { get; set; }
+
+        public static RevoConfigModel RevoConfig { get; set; } = new RevoConfigModel();
+        public static RevoRealtimeModel RevoRealtimeModel { get; set; } = new RevoRealtimeModel();
+
         public static void InvokeIfRequired(Control control, Action action)
         {
             if (control.InvokeRequired)
@@ -26,5 +31,7 @@ namespace Scada_TrackingTIme_Revo
                 action();
             }
         }
+
+        public static string? IpDbServer { get; set; }
     }
 }

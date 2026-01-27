@@ -59,6 +59,8 @@ Khi check connection hoatj động sẽ on Y017
 -----------------------------------------------------------------------
 Hệ thống giám sát thời gian chạy máy Revo Goft và auto rolling
 -----------------------------------------------------------------------
+EasyDrriverServer dùng Byte Order là Hight Byte First / Low Word First. bởi vì PLC wecon nó dùng Low Word First.
+
 Revo
     |-Revo_1:
     |   |-IP:192.168.1.220

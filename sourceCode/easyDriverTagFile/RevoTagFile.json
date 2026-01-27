@@ -11,7 +11,7 @@
   "IsReadOnly": true,
   "Enabled": true,
   "CreatedDate": "2026-01-25T10:38:22.5925922+07:00",
-  "ModifiedDate": "2026-01-26T19:59:56.0452198+07:00",
+  "ModifiedDate": "2026-01-27T21:27:35.1348074+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -31,7 +31,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-01-11T13:39:10.08618+07:00",
-  "ModifiedDate": "2026-01-26T19:59:56.0452198+07:00",
+  "ModifiedDate": "2026-01-27T21:27:35.1348074+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -51,7 +51,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-01-11T13:39:22.309004+07:00",
-  "ModifiedDate": "2026-01-26T20:51:40.0824835+07:00",
+  "ModifiedDate": "2026-01-27T21:27:35.1348074+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -67,7 +67,7 @@
     "MaxWritesCount": "10"
   }
 },
-  "ByteOrder": "ABCD",
+  "ByteOrder": "CDAB",
   "Childs": [],
   "HaveTags": true,
   "Tags": [
@@ -82,10 +82,13 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "DWord",
+    "Address": "404097"
+  }
 },
   "Address": "404097",
-  "DataTypeName": "Word",
+  "DataTypeName": "DWord",
   "RefreshRate": 100,
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
@@ -109,10 +112,13 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "DWord",
+    "Address": "404099"
+  }
 },
   "Address": "404099",
-  "DataTypeName": "Word",
+  "DataTypeName": "DWord",
   "RefreshRate": 100,
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
@@ -136,7 +142,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4099"
+  }
 },
   "Address": "4099",
   "DataTypeName": "Bool",
@@ -163,7 +172,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4100"
+  }
 },
   "Address": "4100",
   "DataTypeName": "Bool",
@@ -190,7 +202,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4101"
+  }
 },
   "Address": "4101",
   "DataTypeName": "Bool",
@@ -217,7 +232,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4102"
+  }
 },
   "Address": "4102",
   "DataTypeName": "Bool",
@@ -244,7 +262,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4103"
+  }
 },
   "Address": "4103",
   "DataTypeName": "Bool",
@@ -271,7 +292,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4104"
+  }
 },
   "Address": "4104",
   "DataTypeName": "Bool",
@@ -298,7 +322,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4107"
+  }
 },
   "Address": "4107",
   "DataTypeName": "Bool",
@@ -325,7 +352,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4108"
+  }
 },
   "Address": "4108",
   "DataTypeName": "Bool",
@@ -352,7 +382,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4109"
+  }
 },
   "Address": "4109",
   "DataTypeName": "Bool",
@@ -379,7 +412,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4110"
+  }
 },
   "Address": "4110",
   "DataTypeName": "Bool",
@@ -406,7 +442,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4111"
+  }
 },
   "Address": "4111",
   "DataTypeName": "Bool",
@@ -433,7 +472,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4112"
+  }
 },
   "Address": "4112",
   "DataTypeName": "Bool",
@@ -460,7 +502,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4113"
+  }
 },
   "Address": "4113",
   "DataTypeName": "Bool",
@@ -487,7 +532,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4114"
+  }
 },
   "Address": "4114",
   "DataTypeName": "Bool",
@@ -514,7 +562,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4115"
+  }
 },
   "Address": "4115",
   "DataTypeName": "Bool",
@@ -541,7 +592,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4116"
+  }
 },
   "Address": "4116",
   "DataTypeName": "Bool",
@@ -568,7 +622,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4117"
+  }
 },
   "Address": "4117",
   "DataTypeName": "Bool",
@@ -595,7 +652,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4118"
+  }
 },
   "Address": "4118",
   "DataTypeName": "Bool",
@@ -622,7 +682,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4119"
+  }
 },
   "Address": "4119",
   "DataTypeName": "Bool",
@@ -649,7 +712,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4120"
+  }
 },
   "Address": "4120",
   "DataTypeName": "Bool",
@@ -676,7 +742,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4121"
+  }
 },
   "Address": "4121",
   "DataTypeName": "Bool",
@@ -703,7 +772,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4122"
+  }
 },
   "Address": "4122",
   "DataTypeName": "Bool",
@@ -730,7 +802,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4123"
+  }
 },
   "Address": "4123",
   "DataTypeName": "Bool",
@@ -757,7 +832,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4124"
+  }
 },
   "Address": "4124",
   "DataTypeName": "Bool",
@@ -784,7 +862,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4125"
+  }
 },
   "Address": "4125",
   "DataTypeName": "Bool",
@@ -811,7 +892,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4126"
+  }
 },
   "Address": "4126",
   "DataTypeName": "Bool",
@@ -838,7 +922,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4127"
+  }
 },
   "Address": "4127",
   "DataTypeName": "Bool",
@@ -856,7 +943,7 @@
 },
     {
   "Name": "TIME_MOTOR_RUN_MS",
-  "Description": "Thoi gian chay cua dong co = toc do/goc quay . d2/d0",
+  "Description": "D4. Thoi gian chay cua dong co = toc do/goc quay . d2/d0",
   "ItemType": "Tag",
   "IsReadOnly": false,
   "Enabled": true,
@@ -865,7 +952,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "404101"
+  }
 },
   "Address": "404101",
   "DataTypeName": "Word",
@@ -892,7 +982,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "61441"
+  }
 },
   "Address": "61441",
   "DataTypeName": "Bool",
@@ -919,7 +1012,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "61442"
+  }
 },
   "Address": "61442",
   "DataTypeName": "Bool",
@@ -946,7 +1042,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "61443"
+  }
 },
   "Address": "61443",
   "DataTypeName": "Bool",
@@ -973,7 +1072,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "61444"
+  }
 },
   "Address": "61444",
   "DataTypeName": "Bool",
@@ -1000,7 +1102,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "61445"
+  }
 },
   "Address": "61445",
   "DataTypeName": "Bool",
@@ -1027,7 +1132,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "61446"
+  }
 },
   "Address": "61446",
   "DataTypeName": "Bool",
@@ -1054,7 +1162,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "61447"
+  }
 },
   "Address": "61447",
   "DataTypeName": "Bool",
@@ -1081,7 +1192,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "61448"
+  }
 },
   "Address": "61448",
   "DataTypeName": "Bool",
@@ -1108,7 +1222,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4105"
+  }
 },
   "Address": "4105",
   "DataTypeName": "Bool",
@@ -1135,7 +1252,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4106"
+  }
 },
   "Address": "4106",
   "DataTypeName": "Bool",
@@ -1162,7 +1282,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4097"
+  }
 },
   "Address": "4097",
   "DataTypeName": "Bool",
@@ -1189,7 +1312,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "423161"
+  }
 },
   "Address": "423161",
   "DataTypeName": "Word",
@@ -1216,7 +1342,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "423162"
+  }
 },
   "Address": "423162",
   "DataTypeName": "Word",
@@ -1243,7 +1372,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "423163"
+  }
 },
   "Address": "423163",
   "DataTypeName": "Word",
@@ -1270,7 +1402,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "423164"
+  }
 },
   "Address": "423164",
   "DataTypeName": "Word",
@@ -1297,7 +1432,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "23161"
+  }
 },
   "Address": "23161",
   "DataTypeName": "Bool",
@@ -1324,7 +1462,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "23163"
+  }
 },
   "Address": "23163",
   "DataTypeName": "Bool",
@@ -1351,7 +1492,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4128"
+  }
 },
   "Address": "4128",
   "DataTypeName": "Bool",
@@ -1378,7 +1522,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Bool",
+    "Address": "4129"
+  }
 },
   "Address": "4129",
   "DataTypeName": "Bool",
