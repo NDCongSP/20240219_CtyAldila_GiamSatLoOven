@@ -12,15 +12,15 @@ namespace GiamSat.Models
         public string RevoName { get; set; }
 
         /// <summary>
-        /// địa chỉ easy modbus của máy REVO.
+        /// địa chỉ easy driver của máy REVO.
         /// </summary>
-        public string? Path { get; set; }
+        public string?  Path { get; set; }
 
         /// <summary>
         /// trạng thái kết nối modbus đến máy.
-        /// 1-Kết nối; 0 - mất kết nối.
+        /// true-Kết nối; false - mất kết nối.
         /// </summary>
-        public int ConnectionStatus { get; set; }
+        public bool PlcConnected { get; set; }
 
         public string? Part { get; set; }
 
@@ -57,12 +57,16 @@ namespace GiamSat.Models
         /// <summary>
         /// Cho phép chay hay không.
         /// </summary>
-        public bool? Enanble { get; set; } = false;
+        public bool? Enable { get; set; } = false;
 
+        /// <summary>
+        /// tốc độ, số vòng quay trên giây.
+        /// </summary>
         public double? Speed_Hz { get; set; }
 
         /// <summary>
-        /// =0 là quay mãi,
+        /// =0 là quay mãi.
+        /// Góc quay.số vòng quay.
         /// </summary>
         public double? SoLuongXung { get; set; }
 

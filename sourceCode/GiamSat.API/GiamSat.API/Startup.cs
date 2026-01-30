@@ -416,7 +416,7 @@ namespace GiamSat.API
                 {
                     Id = i,
                     Name = $"Revo {i}",
-                    Path = $"Local Station/Channel_Revo_{i}/Revo",
+                    Path = $"Local Station/Channel_Revo_{i}/Device1",
                     ConstringAccessDb= "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=D:\\MyCompany\\8.SourceCode\\3.Projects\\20240219_CtyAldila_GiamSatLoOven\\info\\RevoGoft\\Roll3.mdb;"
                 });
             }

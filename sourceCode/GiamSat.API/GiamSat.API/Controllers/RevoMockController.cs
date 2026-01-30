@@ -59,7 +59,7 @@ namespace GiamSat.API.Controllers
                             StepName = $"REVO-STEP-{j}",
                             StepConfig = $"REVO-STEP-{j}|0|0|H",
                             Visible = true,
-                            Enanble = true,
+                            Enable = true,
                             Speed_Hz = 0,
                             SoLuongXung = 0,
                             StartAt = null,
@@ -94,7 +94,7 @@ namespace GiamSat.API.Controllers
                         else if (j >= 11 && j <= 12)
                         {
                             // Disabled
-                            step.Enanble = false;
+                            step.Enable = false;
                         }
                         // Steps 13-20: Không có StartAt/EndAt (màu xám mặc định)
 
@@ -106,7 +106,7 @@ namespace GiamSat.API.Controllers
                         RevoId = config.Id ?? 0,
                         RevoName = config.Name,
                         Path = config.Path,
-                        ConnectionStatus = 1, // Connected
+                        PlcConnected = true, // Connected
                         Work = "WORK",
                         Part = "AU228-IR-F",
                         Rev = "A",
@@ -181,7 +181,7 @@ namespace GiamSat.API.Controllers
                         var revoRealtime = JsonConvert.DeserializeObject<RevoRealtimeModel>(ft08.C001_Data);
                         if (revoRealtime != null)
                         {
-                            revoRealtime.ConnectionStatus = 0; // Disconnected
+                            revoRealtime.PlcConnected = false; // Disconnected
                             ft08.C001_Data = JsonConvert.SerializeObject(revoRealtime);
                             updatedCount++;
                         }
@@ -232,7 +232,7 @@ namespace GiamSat.API.Controllers
                         var revoRealtime = JsonConvert.DeserializeObject<RevoRealtimeModel>(ft08.C001_Data);
                         if (revoRealtime != null)
                         {
-                            revoRealtime.ConnectionStatus = 1; // Connected
+                            revoRealtime.PlcConnected = true; // Connected
                             ft08.C001_Data = JsonConvert.SerializeObject(revoRealtime);
                             updatedCount++;
                         }
@@ -287,7 +287,7 @@ namespace GiamSat.API.Controllers
                 // Set step đang chạy
                 step.StartAt = now.AddMinutes(-2); // Bắt đầu 2 phút trước
                 step.EndAt = now.AddMinutes(8); // Kết thúc sau 8 phút
-                step.Enanble = true;
+                step.Enable = true;
                 step.Visible = true;
 
                 // Set step trước đó đã hoàn thành
@@ -296,7 +296,7 @@ namespace GiamSat.API.Controllers
                 {
                     prevStep.StartAt = now.AddMinutes(-15);
                     prevStep.EndAt = now.AddMinutes(-2);
-                    prevStep.Enanble = true;
+                    prevStep.Enable = true;
                     prevStep.Visible = true;
                 }
 

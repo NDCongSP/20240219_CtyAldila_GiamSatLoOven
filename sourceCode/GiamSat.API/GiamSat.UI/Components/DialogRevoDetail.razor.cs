@@ -120,7 +120,7 @@ namespace GiamSat.UI.Components
             var classes = new List<string>();
 
             // Enable status - if disabled, always black
-            if (step.Enanble.HasValue && step.Enanble.Value == false)
+            if (step.Enable.HasValue && step.Enable.Value == false)
             {
                 classes.Add("step-disabled"); // Black
             }

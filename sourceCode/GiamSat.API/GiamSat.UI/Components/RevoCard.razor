@@ -153,12 +153,12 @@
 
     private string GetCardConnectionClass()
     {
-        return RevoData.ConnectionStatus == 1 ? "card-connected" : "card-disconnected";
+        return RevoData.EasyDriverStatus == 1 ? "card-connected" : "card-disconnected";
     }
 
     private string GetCardStyle()
     {
-        if (RevoData.ConnectionStatus == 1)
+        if (RevoData.EasyDriverStatus == 1)
         {
             return "background-color: #e8f5e9 !important; border: 2px solid #4caf50 !important;";
         }
@@ -177,7 +177,7 @@
         var classes = new List<string>();
 
         // Enable status - if disabled, always black
-        if (step.Enanble.HasValue && step.Enanble.Value == false)
+        if (step.Enable.HasValue && step.Enable.Value == false)
         {
             classes.Add("step-disabled"); // Black
         }

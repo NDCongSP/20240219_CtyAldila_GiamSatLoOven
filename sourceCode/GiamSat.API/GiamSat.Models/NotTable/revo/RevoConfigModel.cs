@@ -20,5 +20,10 @@ namespace GiamSat.Models
         public string? Path { get; set; }
 
         public string? ConstringAccessDb { get; set; }
+
+        /// <summary>
+        /// độ phân giải của driver trên máy REVO (pulse/rev).
+        /// </summary>
+        public int Pulse_Rev { get; set; } = 3200;
     }
 }
