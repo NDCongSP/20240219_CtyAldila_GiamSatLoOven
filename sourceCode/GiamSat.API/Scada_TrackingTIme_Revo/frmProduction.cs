@@ -248,7 +248,7 @@ namespace Scada_TrackingTIme_Revo
 
             // Thanh REVO
             Label lblStep = new Label();
-            lblStep.Text = $"{step.StepName}{Environment.NewLine}Pul={step.SoLuongXung} - Seed = {step.Speed_Hz}";
+            lblStep.Text = $"{step.StepName}{Environment.NewLine}Pul={step.SoLuongXung} - Speed = {step.Speed_Hz}";
             lblStep.Width = 450;
             lblStep.Height = 58;
             lblStep.Location = new Point(60, 5);
