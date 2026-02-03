@@ -153,12 +153,12 @@
 
     private string GetCardConnectionClass()
     {
-        return RevoData.EasyDriverStatus == 1 ? "card-connected" : "card-disconnected";
+        return RevoData.PlcConnected == true ? "card-connected" : "card-disconnected";
     }
 
     private string GetCardStyle()
     {
-        if (RevoData.EasyDriverStatus == 1)
+        if (RevoData.PlcConnected == true)
         {
             return "background-color: #e8f5e9 !important; border: 2px solid #4caf50 !important;";
         }

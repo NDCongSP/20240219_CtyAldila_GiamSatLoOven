@@ -319,6 +319,9 @@ namespace GiamSat.API.Migrations
                     b.Property<string>("RevoName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("ShaftNum")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("StartedAt")
                         .HasColumnType("datetime2");
 

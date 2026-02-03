@@ -44,7 +44,6 @@
             this.label8 = new System.Windows.Forms.Label();
             this._labMandrelStart = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
-            this._btnStartStop = new System.Windows.Forms.Button();
             this.flowMain = new System.Windows.Forms.FlowLayoutPanel();
             this.SuspendLayout();
             // 
@@ -92,6 +91,7 @@
             this._txtPart.Name = "_txtPart";
             this._txtPart.Size = new System.Drawing.Size(285, 30);
             this._txtPart.TabIndex = 5;
+            this._txtPart.Text = "5AWA60A";
             // 
             // _txtWork
             // 
@@ -192,17 +192,6 @@
             this.label10.TabIndex = 14;
             this.label10.Text = "Mandrel Start:";
             // 
-            // _btnStartStop
-            // 
-            this._btnStartStop.BackColor = System.Drawing.Color.Gray;
-            this._btnStartStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._btnStartStop.Location = new System.Drawing.Point(1167, 20);
-            this._btnStartStop.Name = "_btnStartStop";
-            this._btnStartStop.Size = new System.Drawing.Size(171, 71);
-            this._btnStartStop.TabIndex = 16;
-            this._btnStartStop.Text = "START";
-            this._btnStartStop.UseVisualStyleBackColor = false;
-            // 
             // flowMain
             // 
             this.flowMain.Location = new System.Drawing.Point(17, 117);
@@ -216,7 +205,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1350, 729);
             this.Controls.Add(this.flowMain);
-            this.Controls.Add(this._btnStartStop);
             this.Controls.Add(this._labMandrelStart);
             this.Controls.Add(this.label10);
             this.Controls.Add(this._labMandrel);
@@ -257,7 +245,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label _labMandrelStart;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Button _btnStartStop;
         private System.Windows.Forms.FlowLayoutPanel flowMain;
     }
 }

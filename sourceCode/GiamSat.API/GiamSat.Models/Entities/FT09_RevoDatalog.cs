@@ -38,5 +38,11 @@ namespace GiamSat.Models
         public DateTime? StartedAt { get; set; }
 
         public DateTime? EndedAt { get; set; }
+
+        /// <summary>
+        /// đánh dấu cây shaft mà dữ liệu này thuộc về.
+        /// cá bước trong 1 cây shaft thì có cùng 1 ShaftNum.
+        /// </summary>
+        public Guid? ShaftNum { get; set; }
     }
 }

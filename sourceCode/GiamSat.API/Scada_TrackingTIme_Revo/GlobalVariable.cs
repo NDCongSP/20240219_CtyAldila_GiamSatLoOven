@@ -128,7 +128,7 @@ namespace Scada_TrackingTIme_Revo
                 });
             }
 
-            return result;
+            return result.OrderBy(x=>x.StepIndex).ToList();
         }
 
     }

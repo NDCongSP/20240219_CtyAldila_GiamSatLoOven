@@ -34,7 +34,13 @@ namespace GiamSat.Models
 
         public string? MandrelStart { get; set; }
 
-        public List<RevoStep> Steps { get; set; }
+        public List<RevoStep> Steps { get; set; }=new List<RevoStep>();
+
+        /// <summary>
+        /// đánh dấu cây shaft mà dữ liệu này thuộc về.
+        /// cá bước trong 1 cây shaft thì có cùng 1 ShaftNum.
+        /// </summary>
+        public Guid? ShaftNum { get; set; }
     }
 
     public class RevoStep
@@ -73,5 +79,11 @@ namespace GiamSat.Models
         public DateTime? StartAt { get; set; }
 
         public DateTime? EndAt { get; set; }
+
+        /// <summary>
+        /// Tổng thời gian chạy bước (giây).
+        /// =StartAt - EndAt
+        /// </summary>
+        public double? TotalRunTime { get; set; } = 0;
     }
 }
