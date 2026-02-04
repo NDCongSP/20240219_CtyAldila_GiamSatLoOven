@@ -15,6 +15,14 @@
                 <RadzenFormField Text="Đường dẫn" class="rz-col-12">
                     <RadzenTextBox @bind-Value="@_model.Path" Placeholder="Nhập đường dẫn" Style="width: 100%;" />
                 </RadzenFormField>
+
+                <RadzenFormField Text="Chuỗi kết nối Access DB" class="rz-col-12">
+                    <RadzenTextBox @bind-Value="@_model.ConstringAccessDb" Placeholder="Provider=Microsoft.Jet.OLEDB.4.0;Data Source=..." Style="width: 100%;" Rows="2" />
+                </RadzenFormField>
+
+                <RadzenFormField Text="Pulse/Rev (độ phân giải driver)" class="rz-col-12">
+                    <RadzenNumeric @bind-Value="@_model.Pulse_Rev" Min="1" Style="width: 100%;" />
+                </RadzenFormField>
             </RadzenStack>
         </RadzenFieldset>
 

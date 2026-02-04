@@ -52,6 +52,8 @@ namespace GiamSat.API.Services
                                     table.ColumnsDefinition(columns =>
                                     {
                                         columns.RelativeColumn(1.2f); // Tên REVO
+                                        columns.RelativeColumn(1.8f); // ShaftNum
+                                        columns.RelativeColumn(0.6f); // StepId
                                         columns.RelativeColumn(1.0f); // Part
                                         columns.RelativeColumn(0.8f); // Rev
                                         columns.RelativeColumn(0.8f); // Màu
@@ -67,6 +69,8 @@ namespace GiamSat.API.Services
                                     table.Header(header =>
                                     {
                                         header.Cell().Element(CellStyle).Text("Tên REVO").Bold();
+                                        header.Cell().Element(CellStyle).Text("ShaftNum").Bold();
+                                        header.Cell().Element(CellStyle).Text("StepId").Bold();
                                         header.Cell().Element(CellStyle).Text("Part").Bold();
                                         header.Cell().Element(CellStyle).Text("Rev").Bold();
                                         header.Cell().Element(CellStyle).Text("Màu").Bold();
@@ -103,6 +107,8 @@ namespace GiamSat.API.Services
                                         }
 
                                         table.Cell().Element(CellStyle).Text(item.RevoName ?? "N/A");
+                                        table.Cell().Element(CellStyle).Text(item.ShaftNum?.ToString() ?? "N/A");
+                                        table.Cell().Element(CellStyle).Text(item.StepId?.ToString() ?? "N/A");
                                         table.Cell().Element(CellStyle).Text(item.Part ?? "N/A");
                                         table.Cell().Element(CellStyle).Text(item.Rev ?? "N/A");
                                         table.Cell().Element(CellStyle).Text(item.ColorCode ?? "N/A");
