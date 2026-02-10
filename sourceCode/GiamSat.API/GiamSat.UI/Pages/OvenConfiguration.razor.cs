@@ -141,7 +141,9 @@ namespace GiamSat.UI.Pages
             {
                 Id = _revoConfigs.Count > 0 ? _revoConfigs.Max(x => x.Id ?? 0) + 1 : 1,
                 Name = $"REVO {(_revoConfigs.Count + 1)}",
-                Path = ""
+                Path = "",
+                ConstringAccessDb = "",
+                Pulse_Rev = 3200
             };
 
             var result = await _dialogService.OpenAsync<DialogRevoConfig>("Thêm REVO mới",
@@ -162,7 +164,9 @@ namespace GiamSat.UI.Pages
             {
                 Id = item.Id,
                 Name = item.Name,
-                Path = item.Path
+                Path = item.Path,
+                ConstringAccessDb = item.ConstringAccessDb,
+                Pulse_Rev = item.Pulse_Rev
             };
 
             var result = await _dialogService.OpenAsync<DialogRevoConfig>("Chỉnh sửa REVO",

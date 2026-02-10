@@ -70,7 +70,11 @@ namespace GiamSat.API
                     query = query.Where(x => x.RevoId == model.RevoId);
                 }
 
-                var result = await query.OrderBy(x => x.StartedAt ?? x.CreatedAt ?? DateTime.MinValue).ToListAsync();
+                var result = await query
+                    .OrderBy(x => x.ShaftNum ?? Guid.Empty)
+                    .ThenBy(x => x.StepId ?? 0)
+                    .ThenBy(x => x.StartedAt ?? x.CreatedAt ?? DateTime.MinValue)
+                    .ToListAsync();
                 return await Result<List<FT09_RevoDatalog>>.SuccessAsync(result);
             }
             catch (Exception ex)
