@@ -273,14 +273,21 @@ namespace GiamSat.API
 
             // Allow arbitrary client browser apps to access the API.
             // In a production environment, make sure to allow only origins you trust.
-            services.AddCors(cors => cors.AddDefaultPolicy(policy => policy//.WithOrigins("http://*:5001/")
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowAnyOrigin()
-                .WithExposedHeaders("Content-Disposition")));
+            //services.AddCors(cors => cors.AddDefaultPolicy(policy => policy//.WithOrigins("http://*:5001/")
+            //    .AllowAnyHeader()
+            //    .AllowAnyMethod()
+            //    .AllowAnyOrigin()
+            //    .WithExposedHeaders("Content-Disposition")));
 
-            //services.AddCors();
-
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()                           
+                           .AllowAnyHeader();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -293,10 +300,12 @@ namespace GiamSat.API
             ////create DB
             //scope.ServiceProvider.GetService<ApplicationDbContext>().Database.EnsureCreated();
             ////create table
-            scope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
+            //scope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
 
             SeedingData(scope).Wait();
             #endregion
+
+            app.UseCors("AllowAll");
 
             if (env.IsDevelopment() || env.IsProduction())
             {
@@ -304,15 +313,7 @@ namespace GiamSat.API
             }
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GiamSat.API v1"));
-
-            app.UseCors();
-            //app.UseCors(o =>
-            //{
-            //    o.AllowAnyOrigin();
-            //    o.AllowAnyHeader();
-            //    o.AllowAnyMethod();
-            //});
-
+           
             app.UseRouting();
 
             //them
