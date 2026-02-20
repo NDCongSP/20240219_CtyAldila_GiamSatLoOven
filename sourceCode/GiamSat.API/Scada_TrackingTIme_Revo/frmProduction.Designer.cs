@@ -91,7 +91,6 @@
             this._txtPart.Name = "_txtPart";
             this._txtPart.Size = new System.Drawing.Size(285, 30);
             this._txtPart.TabIndex = 5;
-            this._txtPart.Text = "5AWA60A";
             // 
             // _txtWork
             // 

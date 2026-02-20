@@ -16,6 +16,7 @@ namespace Scada_TrackingTIme_Revo
         static void Main()
         {
             GlobalVariable.RevoId = Properties.Settings.Default.RevoId;
+            GlobalVariable.Part = Properties.Settings.Default.Part;//5AWA60A
 
             Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()

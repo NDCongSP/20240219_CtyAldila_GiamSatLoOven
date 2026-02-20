@@ -20,6 +20,11 @@ namespace Scada_TrackingTIme_Revo
         /// </summary>
         public static int RevoId { get; set; }
 
+        /// <summary>
+        /// Thong tin Paat, luu lai part dang chay de hien thi, luu tru data theo part, va truy xuat thong tin cau hinh theo part.
+        /// </summary>
+        public static string Part { get; set; }
+
         public static RevoConfigModel RevoConfig { get; set; } = new RevoConfigModel();
         public static RevoRealtimeModel RevoRealtimeModel { get; set; } = new RevoRealtimeModel();
 

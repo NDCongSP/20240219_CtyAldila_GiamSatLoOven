@@ -85,5 +85,10 @@ namespace GiamSat.Models
         /// =StartAt - EndAt
         /// </summary>
         public double? TotalRunTime { get; set; } = 0;
+
+        /// <summary>
+        /// The hien buoc nao dang chon.
+        /// </summary>
+        public bool StepSelection { get; set; } = false;
     }
 }

@@ -32,6 +32,8 @@ namespace Scada_TrackingTIme_Revo
         private CancellationTokenSource _checkingTimeStepCts;
         private readonly AsyncAutoResetEvent _triggerCheckTimeStep = new AsyncAutoResetEvent();
 
+        private CancellationTokenSource _resetShaftCts;
+        private readonly AsyncAutoResetEvent _triggerResetShaft = new AsyncAutoResetEvent();
 
         private List<PartModel> _parts = new List<PartModel>();
         private List<MandrelModel> _mandrels = new List<MandrelModel>();
@@ -53,7 +55,7 @@ namespace Scada_TrackingTIme_Revo
         {
             try
             {
-                _txtPart.KeyDown += _txtPart_KeyDown;
+                _txtPart.KeyDown -= _txtPart_KeyDown;
                 _easyDriverConnector.ConnectionStatusChaged -= _easyDriverConnector_ConnectionStatusChaged;
                 _easyDriverConnector.Started -= _easyDriverConnector_Started;
                 _easyDriverConnector.Stop();
@@ -62,6 +64,7 @@ namespace Scada_TrackingTIme_Revo
                 _timerTask.Wait(1000);
 
                 _checkingTimeStepCts.Cancel();
+                _resetShaftCts.Cancel();
             }
             catch
             {
@@ -73,6 +76,7 @@ namespace Scada_TrackingTIme_Revo
                 _timerTask = null;
 
                 _checkingTimeStepCts?.Dispose();
+                _resetShaftCts?.Dispose();
             }
 
         }
@@ -104,85 +108,105 @@ namespace Scada_TrackingTIme_Revo
 
                     Text = $"Chương trình giám sát thời gian chạy - Máy {GlobalVariable.RevoConfig.Name}";
                 }
-            }
-
-            //khởi tạo model realtime data
-            GlobalVariable.RevoRealtimeModel = new RevoRealtimeModel()
-            {
-                RevoId = GlobalVariable.RevoConfig.Id.Value,
-                RevoName = GlobalVariable.RevoConfig.Name,
-                Path = GlobalVariable.RevoConfig.Path,
-                Steps = new List<RevoStep>()
-            };
-
-            #region Khởi tạo easy drirver connector
-            _easyDriverConnector = new EasyDriverConnector();
-            _easyDriverConnector.ConnectionStatusChaged += _easyDriverConnector_ConnectionStatusChaged;
-            _easyDriverConnector.BeginInit();
-            _easyDriverConnector.EndInit();
-            //_easyStatus = _easyDriverConnector.ConnectionStatus;
-
-            _easyDriverConnector.Started += _easyDriverConnector_Started;
-            if (_easyDriverConnector.IsStarted)
-            {
-                _easyDriverConnector_Started(null, null);
-            }
-            #endregion
-
-            //khởi tạo panel chứa các step
-            //flowMain.Dock = DockStyle.Fill;
-            flowMain.FlowDirection = FlowDirection.TopDown;
-            flowMain.WrapContents = true;      // CHO PHÉP CHẠY SANG CỘT
-            flowMain.AutoScroll = false;       // KHÔNG DÙNG SCROLL
-            flowMain.Dock = DockStyle.None;    // hoặc Fill nếu đủ rộng
-            flowMain.Width = 1323;             // đủ rộng cho 3 cột, 1 cột 480 margin 5
-            flowMain.Height = 580;              // cố định chiều cao, 10 step, 1 hàng 58
-
-            //đọc data master từ access
-            DataTable dt = new DataTable();
-            using (OleDbConnection conn = new OleDbConnection(GlobalVariable.RevoConfig.ConstringAccessDb))
-            {
-                conn.Open();
-
-                string sql = $"SELECT * FROM Part";
-                OleDbDataAdapter da = new OleDbDataAdapter(sql, conn);
-                da.Fill(dt);
-
-                _parts = GlobalVariable.ToModels<PartModel>(dt);
-
-                sql = $"SELECT * FROM Mandrel";
-                da = new OleDbDataAdapter(sql, conn);
-                da.Fill(dt);
-
-                _mandrels = GlobalVariable.ToModels<MandrelModel>(dt);
-
-                sql = $"SELECT * FROM Color";
-                da = new OleDbDataAdapter(sql, conn);
-                da.Fill(dt);
-
-                _colors = GlobalVariable.ToModels<ColorModel>(dt);
-
-                sql = $"SELECT * FROM Pattern";
-                da = new OleDbDataAdapter(sql, conn);
-                da.Fill(dt);
-
-                _patterns = GlobalVariable.ToModels<PatternModel>(dt);
-            }
-
-            _txtPart.KeyDown += _txtPart_KeyDown;
-            _txtWork.KeyDown += (s, o) =>
-            {
-                if (o.KeyCode == Keys.Enter)
+                else
                 {
-                    GlobalVariable.RevoRealtimeModel.Work = s.ToString();
+                    MessageBox.Show("Không đọc được thông tin cấu hình, vui lòng kiểm tra lại kết nối đến server. Rồi tắt mở lại chương trình.",
+                        "CẢNH BÁO", MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                        );
+                    return;
                 }
-            };
 
-            _timerCts = new CancellationTokenSource();
-            _timerTask = Task.Run(async () => await TaskTimerAsync(_timerCts.Token));
+                //khởi tạo model realtime data
+                GlobalVariable.RevoRealtimeModel = new RevoRealtimeModel()
+                {
+                    RevoId = GlobalVariable.RevoConfig.Id.Value,
+                    RevoName = GlobalVariable.RevoConfig.Name,
+                    Path = GlobalVariable.RevoConfig.Path,
+                    Steps = new List<RevoStep>()
+                };
 
-            _checkingTimeStepCts = new CancellationTokenSource();
-            _ = TaskCheckTimeStepAsync(_checkingTimeStepCts.Token);
+                #region Khởi tạo easy drirver connector
+                _easyDriverConnector = new EasyDriverConnector();
+                _easyDriverConnector.ConnectionStatusChaged += _easyDriverConnector_ConnectionStatusChaged;
+                _easyDriverConnector.BeginInit();
+                _easyDriverConnector.EndInit();
+                //_easyStatus = _easyDriverConnector.ConnectionStatus;
+
+                _easyDriverConnector.Started += _easyDriverConnector_Started;
+                if (_easyDriverConnector.IsStarted)
+                {
+                    _easyDriverConnector_Started(null, null);
+                }
+                #endregion
+
+                //khởi tạo panel chứa các step
+                //flowMain.Dock = DockStyle.Fill;
+                flowMain.FlowDirection = FlowDirection.TopDown;
+                flowMain.WrapContents = true;      // CHO PHÉP CHẠY SANG CỘT
+                flowMain.AutoScroll = false;       // KHÔNG DÙNG SCROLL
+                flowMain.Dock = DockStyle.None;    // hoặc Fill nếu đủ rộng
+                flowMain.Width = 1323;             // đủ rộng cho 3 cột, 1 cột 480 margin 5
+                flowMain.Height = 580;              // cố định chiều cao, 10 step, 1 hàng 58
+
+                //đọc data master từ access
+                DataTable dt = new DataTable();
+                using (OleDbConnection conn = new OleDbConnection(GlobalVariable.RevoConfig.ConstringAccessDb))
+                {
+                    conn.Open();
+
+                    string sql = $"SELECT * FROM Part";
+                    OleDbDataAdapter da = new OleDbDataAdapter(sql, conn);
+                    da.Fill(dt);
+
+                    _parts = GlobalVariable.ToModels<PartModel>(dt);
+
+                    sql = $"SELECT * FROM Mandrel";
+                    da = new OleDbDataAdapter(sql, conn);
+                    da.Fill(dt);
+
+                    _mandrels = GlobalVariable.ToModels<MandrelModel>(dt);
+
+                    sql = $"SELECT * FROM Color";
+                    da = new OleDbDataAdapter(sql, conn);
+                    da.Fill(dt);
+
+                    _colors = GlobalVariable.ToModels<ColorModel>(dt);
+
+                    sql = $"SELECT * FROM Pattern";
+                    da = new OleDbDataAdapter(sql, conn);
+                    da.Fill(dt);
+
+                    _patterns = GlobalVariable.ToModels<PatternModel>(dt);
+                }
+
+                _txtPart.KeyDown += _txtPart_KeyDown;
+
+
+                if (!string.IsNullOrEmpty(GlobalVariable.Part))
+                {
+                    _txtPart.Text = GlobalVariable.Part;
+
+                    _txtPart_KeyDown(this, new KeyEventArgs(Keys.Enter));
+                }
+
+
+                _txtWork.KeyDown += (s, o) =>
+                {
+                    if (o.KeyCode == Keys.Enter)
+                    {
+                        GlobalVariable.RevoRealtimeModel.Work = s.ToString();
+                    }
+                };
+
+                _timerCts = new CancellationTokenSource();
+                _timerTask = Task.Run(async () => await TaskTimerAsync(_timerCts.Token));
+
+                _checkingTimeStepCts = new CancellationTokenSource();
+                _ = TaskCheckTimeStepAsync(_checkingTimeStepCts.Token);
+                _resetShaftCts = new CancellationTokenSource();
+                _ = TaskResetShaftAsync(_resetShaftCts.Token);
+            }
         }
 
         private void _btnStartStop_Click(object sender, EventArgs e)
@@ -214,6 +238,15 @@ namespace Scada_TrackingTIme_Revo
                         return;
                     }
 
+                    //Luu path va part vao bien toan cuc de su dung sau nay
+                    if (GlobalVariable.Part != part.PN)
+                    {
+                        GlobalVariable.Part = part.PN;
+
+                        Properties.Settings.Default.Part = GlobalVariable.Part;
+                        Properties.Settings.Default.Save();
+                    }
+
                     var steps = GlobalVariable.BuildSteps(part);
 
                     GlobalVariable.RevoRealtimeModel = new RevoRealtimeModel()
@@ -226,11 +259,14 @@ namespace Scada_TrackingTIme_Revo
                         ColorCode = part.Flex_Color,
                         Mandrel = _mandrels.FirstOrDefault(x => x.ID == part.Mandrel)?.PN,
                         MandrelStart = part.Mandrel_Start.ToString(),
-                        Steps = steps
+                        Steps = steps,
+                        ShaftNum = Guid.NewGuid()
                     };
 
                     //taojj ui step lan dau tien
                     LoadStepsToFlowPanel();
+
+                    LogDb(isNew: true);
 
                     //ghi step đầu tiên xuống plc
                     var currentStep = GlobalVariable.RevoRealtimeModel.Steps
@@ -238,6 +274,18 @@ namespace Scada_TrackingTIme_Revo
                        s.Enable == true &&
                        !s.StartAt.HasValue
                    );
+
+                    if (currentStep == null)
+                    {
+                        MessageBox.Show($"Part {GlobalVariable.Part} khong co thong tin step.");
+                        Log.Warning($"Part {GlobalVariable.Part} khong co thong tin step.");
+                        return;
+                    }
+
+                    var newValue = PC_ALLOW_RUN_TO_PLC ? "0" : "1";
+                    _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/PC_ALLOW_RUN_TO_PLC"
+                                                                , newValue
+                                                                 , WritePiority.High);
 
                     _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/TOC_DO_HZ"
                                                           , currentStep?.Speed_Hz.ToString() ?? "0"
@@ -336,7 +384,7 @@ namespace Scada_TrackingTIme_Revo
                             if (currentStep != null && currentStep.StartAt.HasValue && !currentStep.EndAt.HasValue)
                             {
                                 currentStep.EndAt = DateTime.Now;
-                                currentStep.TotalRunTime = (currentStep.EndAt - currentStep.StartAt)?.TotalSeconds;
+                                currentStep.TotalRunTime = Math.Round((double)((currentStep.EndAt - currentStep.StartAt)?.TotalSeconds), 2);
 
                                 Log.Information($"Kết thúc step {currentStep.StepIndex} - {currentStep.StepName} lúc {currentStep.EndAt}");
                                 Debug.WriteLine($"Kết thúc step {currentStep.StepIndex} - {currentStep.StepName} lúc {currentStep.EndAt}");
@@ -348,55 +396,88 @@ namespace Scada_TrackingTIme_Revo
                                             s.StartAt == null
                                         );
 
+
+
+
                                 if (nextStep != null)
                                 {
                                     _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/TOC_DO_HZ"
-                                                                          , currentStep.Speed_Hz.HasValue ? currentStep.Speed_Hz.Value.ToString() : "0"
+                                                                          , nextStep.Speed_Hz.HasValue ? nextStep.Speed_Hz.Value.ToString() : "0"
                                                                            , WritePiority.High);
 
                                     _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SO_LUONG_XUNG"
-                                                                         , currentStep.SoLuongXung.HasValue ? currentStep.SoLuongXung.Value.ToString() : "0"
+                                                                         , nextStep.SoLuongXung.HasValue ? nextStep.SoLuongXung.Value.ToString() : "0"
                                                                           , WritePiority.High);
 
                                     _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SENT"
                                                                         , "1"
                                                                          , WritePiority.High);
+
+                                    UpdateStepUI(nextStep, true);
                                 }
-                                else
+                                else//da xong quy trinh.
                                 {
-                                    GlobalVariable.RevoRealtimeModel.Steps.ForEach(x =>
-                                    {
-                                        x.StartAt = null;
-                                        x.EndAt = null;
-                                        x.TotalRunTime = 0;
-                                    });
-
-                                    var step = GlobalVariable.RevoRealtimeModel.Steps
-                                        .FirstOrDefault(s =>
-                                            s.Enable == true &&
-                                            s.StartAt == null
-                                        );
-
-                                    _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/TOC_DO_HZ"
-                                                                         , currentStep.Speed_Hz.HasValue ? currentStep.Speed_Hz.Value.ToString() : "0"
-                                                                          , WritePiority.High);
-
-                                    _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SO_LUONG_XUNG"
-                                                                         , currentStep.SoLuongXung.HasValue ? currentStep.SoLuongXung.Value.ToString() : "0"
-                                                                          , WritePiority.High);
-
-                                    _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SENT"
-                                                                        , "1"
-                                                                         , WritePiority.High);
+                                    _triggerResetShaft.Set();
                                 }
                             }
                         }
 
+                        //Log data
+                        LogDb();
+
                         //cập nhật lại giao diện
                         UpdateStepUI(currentStep);
-
-
                     }
+                    // xong việc → quay lại vòng chờ (không cần Delay hay poll)
+                }
+            }
+            catch (OperationCanceledException) { /* thoát êm */ }
+        }
+
+        private async Task TaskResetShaftAsync(CancellationToken token)
+        {
+            try
+            {
+                while (true)
+                {
+                    // chờ sự kiện → không tốn CPU, không Sleep
+                    await _triggerResetShaft.WaitAsync(token);
+
+                    // === xử lý 1 lần duy nhất mỗi lần được kích ===
+                    Debug.WriteLine($"TaskCheckTimeStepAsync triggered {START_STOP_STEP}");
+
+                    await Task.Delay(GlobalVariable.RevoConfig.IntervalResetShaft, token); // Chờ 1 giây trước khi lặp lại
+
+                    GlobalVariable.RevoRealtimeModel.Steps.ForEach(x =>
+                    {
+                        x.StartAt = null;
+                        x.EndAt = null;
+                        x.TotalRunTime = 0;
+                    });
+
+                    LoadStepsToFlowPanel();
+
+                    var step = GlobalVariable.RevoRealtimeModel.Steps
+                        .FirstOrDefault(s =>
+                            s.Enable == true &&
+                            s.StartAt == null
+                        );
+
+                    _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/TOC_DO_HZ"
+                                                         , step.Speed_Hz.HasValue ? step.Speed_Hz.Value.ToString() : "0"
+                                                          , WritePiority.High);
+
+                    _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SO_LUONG_XUNG"
+                                                         , step.SoLuongXung.HasValue ? step.SoLuongXung.Value.ToString() : "0"
+                                                          , WritePiority.High);
+
+                    _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SENT"
+                                                        , "1"
+                                                         , WritePiority.High);
+
+                    UpdateStepUI(step, true);
+
+                    LogDb(isNew: true);
                     // xong việc → quay lại vòng chờ (không cần Delay hay poll)
                 }
             }
@@ -480,6 +561,12 @@ namespace Scada_TrackingTIme_Revo
 
                 count++;
             }
+
+            var stepF = GlobalVariable.RevoRealtimeModel
+                .Steps
+                .FirstOrDefault(x => x.Enable == true);
+
+            UpdateStepUI(stepF, true);
         }
         private Panel CreateStepRow(RevoStep step)
         {
@@ -529,7 +616,7 @@ namespace Scada_TrackingTIme_Revo
             };
         }
 
-        public void UpdateStepUI(RevoStep step)
+        public void UpdateStepUI(RevoStep step, bool isFirst = false)
         {
             foreach (Control ctrl in flowMain.Controls)
             {
@@ -540,11 +627,14 @@ namespace Scada_TrackingTIme_Revo
 
                     lblIndex.Text = step.StepIndex.ToString();
 
-                    lblStep.Text = $"{step.StepName} - {(DateTime)step.StartAt} -> {step.EndAt}: {step.TotalRunTime}s" +
+                    var startAtText = step.StartAt.HasValue ? ((DateTime)step.StartAt).ToString("HH:mm:ss") : "null";
+                    var endAtText = step.EndAt.HasValue ? ((DateTime)step.EndAt).ToString("HH:mm:ss") : "null";
+
+                    lblStep.Text = $"{step.StepName} - {startAtText} -> {endAtText}: {step.TotalRunTime}s" +
                         $"{Environment.NewLine}" +
                         $"Pul={step.SoLuongXung} - Speed = {step.Speed_Hz}";
 
-                    if (step.StartAt.HasValue && !step.EndAt.HasValue)
+                    if ((step.StartAt.HasValue && !step.EndAt.HasValue) || isFirst)
                     {
                         lblStep.BackColor = Color.Green;
                         lblStep.ForeColor = Color.Black;
@@ -576,6 +666,64 @@ namespace Scada_TrackingTIme_Revo
                     return System.Drawing.Color.White;
             }
 
+        }
+
+        public async void LogDb(bool isNew = false)
+        {
+            using (var dbContext = new ApplicationDbContext())
+            {
+                #region Data log
+                //if (isNew)
+                //{
+                //    var log = new RevoLog
+                //    {
+                //        RevoId = GlobalVariable.RevoRealtimeModel.RevoId,
+                //        Part = GlobalVariable.RevoRealtimeModel.Part,
+                //        Rev = GlobalVariable.RevoRealtimeModel.Rev,
+                //        ColorCode = GlobalVariable.RevoRealtimeModel.ColorCode,
+                //        Mandrel = GlobalVariable.RevoRealtimeModel.Mandrel,
+                //        MandrelStart = GlobalVariable.RevoRealtimeModel.MandrelStart,
+                //        Work = GlobalVariable.RevoRealtimeModel.Work,
+                //        Steps = JsonConvert.SerializeObject(GlobalVariable.RevoRealtimeModel.Steps),
+                //        ShaftNum = GlobalVariable.RevoRealtimeModel.ShaftNum,
+                //        CreatedAt = DateTime.Now
+                //    };
+                //    dbContext.RevoLogs.Add(log);
+                //}
+                //else
+                //{
+                //    var log = dbContext.RevoLogs.FirstOrDefault(l => l.ShaftNum == GlobalVariable.RevoRealtimeModel.ShaftNum);
+                //    if (log != null)
+                //    {
+                //        log.Steps = JsonConvert.SerializeObject(GlobalVariable.RevoRealtimeModel.Steps);
+                //        log.UpdatedAt = DateTime.Now;
+                //        dbContext.Entry(log).State = EntityState.Modified;
+                //    }
+                //}
+                #endregion
+
+                #region realtime log  
+                var rl = await dbContext.FT08_RevoRealtimes.FirstOrDefaultAsync(x => x.C000_RevoId == GlobalVariable.RevoId);
+
+                if (rl != null)
+                {
+                    rl.C001_Data = JsonConvert.SerializeObject(GlobalVariable.RevoRealtimeModel);
+                }
+                else
+                {
+                    var nl = new FT08_RevoRealtime()
+                    {
+                        Id = Guid.NewGuid(),
+                        C000_RevoId = GlobalVariable.RevoId,
+                        C001_Data = JsonConvert.SerializeObject(GlobalVariable.RevoRealtimeModel)
+                    };
+
+                    dbContext.FT08_RevoRealtimes.Add(nl);
+                }
+                #endregion
+
+                await dbContext.SaveChangesAsync();
+            }
         }
         #endregion
     }

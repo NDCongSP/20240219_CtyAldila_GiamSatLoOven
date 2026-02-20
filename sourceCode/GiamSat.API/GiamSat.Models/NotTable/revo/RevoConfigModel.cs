@@ -25,5 +25,7 @@ namespace GiamSat.Models
         /// độ phân giải của driver trên máy REVO (pulse/rev).
         /// </summary>
         public int Pulse_Rev { get; set; } = 3200;
+
+        public int IntervalResetShaft { get; set; } = 3000;
     }
 }

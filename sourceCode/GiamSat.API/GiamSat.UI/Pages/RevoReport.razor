@@ -1,5 +1,9 @@
 @page "/revo/report"
-@using GiamSat.Models
+
+
+@using ApiClientModels = GiamSat.APIClient
+@using DomainModels = GiamSat.Models
+
 @attribute [Authorize(Roles = "Admin,User")]
 
 <RadzenRow Gap="1rem">
@@ -95,34 +99,34 @@
             else
             {
                 <RadzenDataGrid @ref="_dataGrid" 
-                              Data="@_reportData" 
-                              TItem="FT09_RevoDatalog" 
-                              AllowPaging="true" 
+                              Data="@_reportData"
+                                TItem="DomainModels.FT09_RevoDatalog"
+                                AllowPaging="true" 
                               PageSize="20"
                               AllowSorting="true"
                               PagerHorizontalAlign="HorizontalAlign.Right"
                               ShowPagingSummary="true"
                               PagingSummaryFormat="Hiển thị {0} - {1} / {2} mục">
                     <Columns>
-                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="RevoName" Title="Tên REVO" Width="150px" />
-                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="ShaftNum" Title="ShaftNum" Width="280px" />
-                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="StepId" Title="StepId" Width="90px" TextAlign="TextAlign.Center" />
-                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="Part" Title="Part" Width="120px" />
-                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="Rev" Title="Rev" Width="80px" />
-                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="ColorCode" Title="Màu" Width="100px" />
-                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="Mandrel" Title="Mandrel" Width="120px" />
-                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="StepName" Title="Tên Step" Width="150px" />
-                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="StartedAt" Title="Thời gian bắt đầu" Width="180px">
+                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="RevoName" Title="Tên REVO" Width="150px" />
+                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="ShaftNum" Title="ShaftNum" Width="280px" />
+                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="StepId" Title="StepId" Width="90px" TextAlign="TextAlign.Center" />
+                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="Part" Title="Part" Width="120px" />
+                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="Rev" Title="Rev" Width="80px" />
+                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="ColorCode" Title="Màu" Width="100px" />
+                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="Mandrel" Title="Mandrel" Width="120px" />
+                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="StepName" Title="Tên Step" Width="150px" />
+                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="StartedAt" Title="Thời gian bắt đầu" Width="180px">
                             <Template Context="data">
                                 @(data.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A")
                             </Template>
                         </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="EndedAt" Title="Thời gian kết thúc" Width="180px">
+                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="EndedAt" Title="Thời gian kết thúc" Width="180px">
                             <Template Context="data">
                                 @(data.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A")
                             </Template>
                         </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Title="Thời lượng" Width="120px" TextAlign="TextAlign.Center">
+                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Title="Thời lượng" Width="120px" TextAlign="TextAlign.Center">
                             <Template Context="data">
                                 @if (data.StartedAt.HasValue && data.EndedAt.HasValue)
                                 {
@@ -139,7 +143,7 @@
                                 }
                             </Template>
                         </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="FT09_RevoDatalog" Property="Work" Title="Work" Width="100px" />
+                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="Work" Title="Work" Width="100px" />
                     </Columns>
                 </RadzenDataGrid>
             }

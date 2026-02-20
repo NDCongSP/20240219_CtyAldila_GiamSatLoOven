@@ -34,5 +34,17 @@ namespace Scada_TrackingTIme_Revo.Properties {
                 this["RevoId"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Part {
+            get {
+                return ((string)(this["Part"]));
+            }
+            set {
+                this["Part"] = value;
+            }
+        }
     }
 }

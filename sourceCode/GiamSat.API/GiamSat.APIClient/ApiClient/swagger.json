@@ -2046,6 +2046,684 @@
         }
       }
     },
+    "/api/FT07": {
+      "get": {
+        "tags": [
+          "FT07"
+        ],
+        "operationId": "FT07_GetAll",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT07_RevoConfigListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT07_RevoConfigListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT07_RevoConfigListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT07/{id}": {
+      "get": {
+        "tags": [
+          "FT07"
+        ],
+        "operationId": "FT07_GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT07_RevoConfigResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT07_RevoConfigResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT07_RevoConfigResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT07/insert": {
+      "post": {
+        "tags": [
+          "FT07"
+        ],
+        "operationId": "FT07_Insert",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT07_RevoConfig"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT07_RevoConfig"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT07_RevoConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT07_RevoConfigResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT07_RevoConfigResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT07_RevoConfigResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT07/update": {
+      "post": {
+        "tags": [
+          "FT07"
+        ],
+        "operationId": "FT07_Update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT07_RevoConfig"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT07_RevoConfig"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT07_RevoConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT07_RevoConfigResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT07_RevoConfigResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT07_RevoConfigResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT08": {
+      "get": {
+        "tags": [
+          "FT08"
+        ],
+        "operationId": "FT08_GetAll",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT08_RevoRealtimeListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT08_RevoRealtimeListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT08_RevoRealtimeListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT08/{id}": {
+      "get": {
+        "tags": [
+          "FT08"
+        ],
+        "operationId": "FT08_GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT08_RevoRealtimeResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT08_RevoRealtimeResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT08_RevoRealtimeResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT08/insert": {
+      "post": {
+        "tags": [
+          "FT08"
+        ],
+        "operationId": "FT08_Insert",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT08_RevoRealtime"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT08_RevoRealtime"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT08_RevoRealtime"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT08_RevoRealtimeResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT08_RevoRealtimeResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT08_RevoRealtimeResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT08/update": {
+      "post": {
+        "tags": [
+          "FT08"
+        ],
+        "operationId": "FT08_Update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT08_RevoRealtime"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT08_RevoRealtime"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT08_RevoRealtime"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT08_RevoRealtimeResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT08_RevoRealtimeResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT08_RevoRealtimeResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT09/GetFilter": {
+      "post": {
+        "tags": [
+          "FT09"
+        ],
+        "operationId": "FT09_GetFilter",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevoFilterModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevoFilterModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevoFilterModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT09_RevoDatalogListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT09_RevoDatalogListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT09_RevoDatalogListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT09/ExportPdf": {
+      "post": {
+        "tags": [
+          "FT09"
+        ],
+        "operationId": "FT09_ExportPdf",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevoFilterModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevoFilterModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevoFilterModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/FT09": {
+      "get": {
+        "tags": [
+          "FT09"
+        ],
+        "operationId": "FT09_GetAll",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT09_RevoDatalogListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT09_RevoDatalogListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT09_RevoDatalogListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT09/{id}": {
+      "get": {
+        "tags": [
+          "FT09"
+        ],
+        "operationId": "FT09_GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT09_RevoDatalogResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT09_RevoDatalogResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT09_RevoDatalogResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT09/insert": {
+      "post": {
+        "tags": [
+          "FT09"
+        ],
+        "operationId": "FT09_Insert",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT09_RevoDatalog"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT09_RevoDatalog"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT09_RevoDatalog"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT09_RevoDatalogResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT09_RevoDatalogResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT09_RevoDatalogResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT09/update": {
+      "post": {
+        "tags": [
+          "FT09"
+        ],
+        "operationId": "FT09_Update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT09_RevoDatalog"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT09_RevoDatalog"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT09_RevoDatalog"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT09_RevoDatalogResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT09_RevoDatalogResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT09_RevoDatalogResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/RevoMock/GenerateMockData": {
+      "post": {
+        "tags": [
+          "RevoMock"
+        ],
+        "operationId": "RevoMock_GenerateMockData",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/RevoMock/TestDisconnect": {
+      "post": {
+        "tags": [
+          "RevoMock"
+        ],
+        "operationId": "RevoMock_TestDisconnect",
+        "parameters": [
+          {
+            "name": "revoId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/RevoMock/TestConnect": {
+      "post": {
+        "tags": [
+          "RevoMock"
+        ],
+        "operationId": "RevoMock_TestConnect",
+        "parameters": [
+          {
+            "name": "revoId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/RevoMock/UpdateStepTime": {
+      "post": {
+        "tags": [
+          "RevoMock"
+        ],
+        "operationId": "RevoMock_UpdateStepTime",
+        "parameters": [
+          {
+            "name": "revoId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "stepIndex",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/fusion/kvs/Set": {
       "post": {
         "tags": [
@@ -2972,6 +3650,250 @@
         },
         "additionalProperties": false
       },
+      "FT07_RevoConfig": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "c000": {
+            "type": "string",
+            "nullable": true
+          },
+          "actived": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT07_RevoConfigListResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FT07_RevoConfig"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT07_RevoConfigResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/FT07_RevoConfig"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT08_RevoRealtime": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "c000_RevoId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "c001_Data": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT08_RevoRealtimeListResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FT08_RevoRealtime"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT08_RevoRealtimeResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/FT08_RevoRealtime"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT09_RevoDatalog": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdMachine": {
+            "type": "string",
+            "nullable": true
+          },
+          "revoId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "revoName": {
+            "type": "string",
+            "nullable": true
+          },
+          "work": {
+            "type": "string",
+            "nullable": true
+          },
+          "part": {
+            "type": "string",
+            "nullable": true
+          },
+          "rev": {
+            "type": "string",
+            "nullable": true
+          },
+          "colorCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "mandrel": {
+            "type": "string",
+            "nullable": true
+          },
+          "mandrelStart": {
+            "type": "string",
+            "nullable": true
+          },
+          "stepId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "stepName": {
+            "type": "string",
+            "nullable": true
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "endedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "shaftNum": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT09_RevoDatalogListResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FT09_RevoDatalog"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT09_RevoDatalogResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/FT09_RevoDatalog"
+          }
+        },
+        "additionalProperties": false
+      },
       "FilterModel": {
         "type": "object",
         "properties": {
@@ -3141,6 +4063,32 @@
           "message": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RevoFilterModel": {
+        "type": "object",
+        "properties": {
+          "getAll": {
+            "type": "boolean"
+          },
+          "revoId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "revoName": {
+            "type": "string",
+            "nullable": true
+          },
+          "fromDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "toDate": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
