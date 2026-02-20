@@ -1,4 +1,7 @@
 using GiamSat.Models;
+using ApiClientModels = GiamSat.APIClient;
+//using DomainModels = GiamSat.Models;
+
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
@@ -79,6 +82,7 @@ namespace GiamSat.UI.Pages
                 };
 
                 var response = await httpClient.PostAsJsonAsync("api/FT09/GetFilter", filterModel);
+                //var response1 = await _fT09Client.GetFilterAsync(filterModel);
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadFromJsonAsync<Result<List<FT09_RevoDatalog>>>();

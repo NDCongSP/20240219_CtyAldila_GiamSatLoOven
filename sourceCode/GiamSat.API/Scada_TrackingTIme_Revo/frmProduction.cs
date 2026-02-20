@@ -195,7 +195,8 @@ namespace Scada_TrackingTIme_Revo
                 {
                     if (o.KeyCode == Keys.Enter)
                     {
-                        GlobalVariable.RevoRealtimeModel.Work = s.ToString();
+                        var t = s as TextBox;
+                        GlobalVariable.RevoRealtimeModel.Work = t.Text;
                     }
                 };
 
@@ -396,9 +397,6 @@ namespace Scada_TrackingTIme_Revo
                                             s.StartAt == null
                                         );
 
-
-
-
                                 if (nextStep != null)
                                 {
                                     _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/TOC_DO_HZ"
@@ -454,6 +452,7 @@ namespace Scada_TrackingTIme_Revo
                         x.EndAt = null;
                         x.TotalRunTime = 0;
                     });
+                    GlobalVariable.RevoRealtimeModel.ShaftNum = Guid.NewGuid();
 
                     LoadStepsToFlowPanel();
 
@@ -562,6 +561,7 @@ namespace Scada_TrackingTIme_Revo
                 count++;
             }
 
+            //lấy step đầu tiên để cập nhật giao diện ngay khi load xong
             var stepF = GlobalVariable.RevoRealtimeModel
                 .Steps
                 .FirstOrDefault(x => x.Enable == true);
@@ -673,33 +673,65 @@ namespace Scada_TrackingTIme_Revo
             using (var dbContext = new ApplicationDbContext())
             {
                 #region Data log
-                //if (isNew)
-                //{
-                //    var log = new RevoLog
-                //    {
-                //        RevoId = GlobalVariable.RevoRealtimeModel.RevoId,
-                //        Part = GlobalVariable.RevoRealtimeModel.Part,
-                //        Rev = GlobalVariable.RevoRealtimeModel.Rev,
-                //        ColorCode = GlobalVariable.RevoRealtimeModel.ColorCode,
-                //        Mandrel = GlobalVariable.RevoRealtimeModel.Mandrel,
-                //        MandrelStart = GlobalVariable.RevoRealtimeModel.MandrelStart,
-                //        Work = GlobalVariable.RevoRealtimeModel.Work,
-                //        Steps = JsonConvert.SerializeObject(GlobalVariable.RevoRealtimeModel.Steps),
-                //        ShaftNum = GlobalVariable.RevoRealtimeModel.ShaftNum,
-                //        CreatedAt = DateTime.Now
-                //    };
-                //    dbContext.RevoLogs.Add(log);
-                //}
-                //else
-                //{
-                //    var log = dbContext.RevoLogs.FirstOrDefault(l => l.ShaftNum == GlobalVariable.RevoRealtimeModel.ShaftNum);
-                //    if (log != null)
-                //    {
-                //        log.Steps = JsonConvert.SerializeObject(GlobalVariable.RevoRealtimeModel.Steps);
-                //        log.UpdatedAt = DateTime.Now;
-                //        dbContext.Entry(log).State = EntityState.Modified;
-                //    }
-                //}
+                var createdAt = DateTime.Now;
+                var createdMachine = Environment.MachineName;
+
+                if (isNew)
+                {
+                    var dataLogs = new List<FT09_RevoDatalog>();
+
+
+                    foreach (var item in GlobalVariable.RevoRealtimeModel.Steps.Where(x => x.Enable == true))
+                    {
+                        var nl = new FT09_RevoDatalog()
+                        {
+                            Id = Guid.NewGuid(),
+                            CreatedAt = createdAt,
+                            CreatedMachine = createdMachine,
+                            RevoId = GlobalVariable.RevoRealtimeModel.RevoId,
+                            RevoName = GlobalVariable.RevoRealtimeModel.RevoName,
+                            Work = GlobalVariable.RevoRealtimeModel.Work,
+                            Part = GlobalVariable.RevoRealtimeModel.Part,
+                            Rev = GlobalVariable.RevoRealtimeModel.Rev,
+                            ColorCode = GlobalVariable.RevoRealtimeModel.ColorCode,
+                            Mandrel = GlobalVariable.RevoRealtimeModel.Mandrel,
+                            MandrelStart = GlobalVariable.RevoRealtimeModel.MandrelStart,
+                            ShaftNum = GlobalVariable.RevoRealtimeModel.ShaftNum,
+                            StepId = item.StepIndex,
+                            StepName = item.StepName,
+                        };
+
+                        dataLogs.Add(nl);
+                    }
+
+                    dbContext.FT09_RevoDatalogs.AddRange(dataLogs);
+                    await dbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    var dataLogUpdate = await dbContext.FT09_RevoDatalogs
+                        .Where(x =>
+                            x.ShaftNum == GlobalVariable.RevoRealtimeModel.ShaftNum &&
+                            x.RevoId == GlobalVariable.RevoRealtimeModel.RevoId
+                        )
+                        .ToListAsync();
+
+                    if (dataLogUpdate != null && dataLogUpdate.Count > 0)
+                    {
+                        foreach (var item in dataLogUpdate)
+                        {
+                            var lineUpdate = GlobalVariable.RevoRealtimeModel.Steps.FirstOrDefault(x => x.StepIndex == item.StepId);
+
+                            item.StartedAt = lineUpdate?.StartAt;
+                            item.EndedAt = lineUpdate?.EndAt;
+                            item.StartedAt = lineUpdate?.StartAt;
+                            item.TotalTime = lineUpdate?.TotalRunTime;
+                            item.Work = GlobalVariable.RevoRealtimeModel.Work;
+                        }
+
+                        await dbContext.SaveChangesAsync();
+                    }
+                }
                 #endregion
 
                 #region realtime log  
