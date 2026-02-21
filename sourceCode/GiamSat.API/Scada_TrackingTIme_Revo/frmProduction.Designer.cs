@@ -45,6 +45,7 @@
             this._labMandrelStart = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.flowMain = new System.Windows.Forms.FlowLayoutPanel();
+            this._btnTest = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // _lab
@@ -198,11 +199,21 @@
             this.flowMain.Size = new System.Drawing.Size(1320, 580);
             this.flowMain.TabIndex = 17;
             // 
+            // _btnTest
+            // 
+            this._btnTest.Location = new System.Drawing.Point(1252, 13);
+            this._btnTest.Name = "_btnTest";
+            this._btnTest.Size = new System.Drawing.Size(86, 32);
+            this._btnTest.TabIndex = 18;
+            this._btnTest.Text = "Maintenace";
+            this._btnTest.UseVisualStyleBackColor = true;
+            // 
             // frmProduction
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1350, 729);
+            this.Controls.Add(this._btnTest);
             this.Controls.Add(this.flowMain);
             this.Controls.Add(this._labMandrelStart);
             this.Controls.Add(this.label10);
@@ -245,6 +256,7 @@
         private System.Windows.Forms.Label _labMandrelStart;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.FlowLayoutPanel flowMain;
+        private System.Windows.Forms.Button _btnTest;
     }
 }
 

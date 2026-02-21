@@ -207,6 +207,17 @@ namespace Scada_TrackingTIme_Revo
                 _ = TaskCheckTimeStepAsync(_checkingTimeStepCts.Token);
                 _resetShaftCts = new CancellationTokenSource();
                 _ = TaskResetShaftAsync(_resetShaftCts.Token);
+
+                _btnTest.Click += (s, o) =>
+                {
+                    using (var nf = new frmTest())
+                    {
+                        nf.StartPosition = FormStartPosition.CenterScreen;
+                        nf.ShowDialog();
+                    }
+                };
+
+                _btnTest.Visible = false;
             }
         }
 
