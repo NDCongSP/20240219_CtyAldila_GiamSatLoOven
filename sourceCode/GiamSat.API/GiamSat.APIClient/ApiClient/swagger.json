@@ -3848,6 +3848,11 @@
             "type": "string",
             "format": "uuid",
             "nullable": true
+          },
+          "totalTime": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
           }
         },
         "additionalProperties": false
