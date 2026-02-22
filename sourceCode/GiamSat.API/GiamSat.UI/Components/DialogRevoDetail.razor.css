@@ -7,7 +7,7 @@
 }
 
 .step-item-detail {
-    padding: 0.5rem;
+    padding: 0.5rem 0.75rem;
     border-radius: 4px;
     min-height: 60px;
     display: flex;
@@ -19,6 +19,28 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
+}
+
+.step-header-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.step-name-detail {
+    font-weight: 500;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.step-time-detail {
+    font-size: 0.75rem;
+    opacity: 0.85;
+    white-space: nowrap;
 }
 
 .step-number-detail {
@@ -36,37 +58,74 @@
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* Override for step-running to ensure visibility */
-.step-running .step-number-detail {
-    background-color: rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    color: #212121;
+.step-detail-values {
+    font-size: 0.8rem;
+    opacity: 0.85;
+    margin-top: 0.15rem;
+    padding-left: calc(32px + 0.75rem); /* Align with text after step-number */
 }
 
-.step-time-right {
-    text-align: right;
-    font-size: 0.875rem;
-    color: var(--rz-text-secondary-color);
-    margin-top: auto;
-}
-
+/* Step status colors - same as RevoCard */
 .step-disabled {
-    background-color: #212121;
-    color: white;
+    background-color: #212121; /* Black - Enabled=false */
+    color: #ffffff;
 }
 
-.step-pending {
-    background-color: #9e9e9e; /* Gray - not started */
-    color: white;
-}
-
-.step-running {
-    background-color: #ffffff; /* White - running */
-    color: #212121;
-    border: 1px solid #e0e0e0;
+.step-disabled .step-number-detail {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
 }
 
 .step-completed {
-    background-color: #8DD7E2; /* Light blue - completed */
-    color: white;
+    background-color: #b0bec5; /* Gray - đã chạy xong */
+    color: #212121;
+}
+
+.step-completed .step-number-detail {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.15);
+    color: #212121;
+}
+
+.step-running {
+    background-color: #66bb6a; /* Green - đang chạy */
+    color: #ffffff;
+    border: 1px solid #43a047;
+}
+
+.step-running .step-number-detail {
+    background-color: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+}
+
+.step-pending {
+    background-color: #80deea; /* Cyan Blue - chưa chạy */
+    color: #004d40;
+}
+
+.step-pending .step-number-detail {
+    background-color: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.12);
+    color: #004d40;
+}
+
+/* Responsive: smaller screens use fewer columns */
+@media (max-width: 1200px) {
+    .steps-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .steps-grid {
+        grid-template-columns: 1fr;
+    }
 }

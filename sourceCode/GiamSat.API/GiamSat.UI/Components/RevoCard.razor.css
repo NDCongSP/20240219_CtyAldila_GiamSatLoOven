@@ -41,22 +41,18 @@
     height: fit-content;
 }
 
-/* Use ::deep to target RadzenCard's internal rz-card element */
-/* Multiple selectors to ensure style is applied */
+/* Card connection status */
 ::deep .card-connected,
-::deep .card-connected.rz-card,
-::deep .revo-card.card-connected,
-::deep .revo-card.card-connected.rz-card {
-    background-color: #e8f5e9 !important; /* Light green background */
-    border: 2px solid #4caf50 !important;
+::deep .card-connected.rz-card {
+    background-color: var(--rz-base-background-color, #ffffff) !important;
+    border-left: 4px solid #4caf50 !important;
 }
 
 ::deep .card-disconnected,
-::deep .card-disconnected.rz-card,
-::deep .revo-card.card-disconnected,
-::deep .revo-card.card-disconnected.rz-card {
-    background-color: #ffebee !important; /* Light red background */
-    border: 2px solid #f44336 !important;
+::deep .card-disconnected.rz-card {
+    background-color: #fff3f0 !important;
+    border-left: 4px solid #f44336 !important;
+    opacity: 0.85;
 }
 
 .info-grid {
@@ -116,13 +112,6 @@
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* Override for step-running to ensure visibility */
-.step-running .step-number {
-    background-color: rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    color: #212121;
-}
-
 .step-content {
     flex: 1;
     display: flex;
@@ -135,34 +124,74 @@
     font-size: 0.875rem;
 }
 
-.step-time {
-    font-size: 0.75rem;
-    color: var(--rz-text-secondary-color);
+/* Step runtime text */
+.step-runtime {
+    font-size: 0.7rem;
+    opacity: 0.85;
+    white-space: nowrap;
+}
+
+.step-runtime-running {
+    font-weight: 600;
+}
+
+/* Pull & Speed - right side */
+.step-pull-speed {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: 0.7rem;
     white-space: nowrap;
     flex-shrink: 0;
     margin-left: auto;
+    opacity: 0.85;
+    line-height: 1.3;
 }
 
 /* Step status colors */
 .step-disabled {
-    background-color: #212121; /* Black */
-    color: white;
+    background-color: #212121; /* Black - Enabled=false */
+    color: #ffffff;
 }
 
-.step-pending {
-    background-color: #9e9e9e; /* Gray - not started */
-    color: white;
-}
-
-.step-running {
-    background-color: #ffffff; /* White - running */
-    color: #212121;
-    border: 1px solid #e0e0e0;
+.step-disabled .step-number {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
 }
 
 .step-completed {
-    background-color: #8DD7E2; /* Light blue - completed */
-    color: white;
+    background-color: #b0bec5; /* Gray - đã chạy xong */
+    color: #212121;
+}
+
+.step-completed .step-number {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.15);
+    color: #212121;
+}
+
+.step-running {
+    background-color: #66bb6a; /* Green - đang chạy */
+    color: #ffffff;
+    border: 1px solid #43a047;
+}
+
+.step-running .step-number {
+    background-color: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+}
+
+.step-pending {
+    background-color: #80deea; /* Cyan Blue - chưa chạy */
+    color: #004d40;
+}
+
+.step-pending .step-number {
+    background-color: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.12);
+    color: #004d40;
 }
 
 .rz-button.rz-info.rz-shade-default {

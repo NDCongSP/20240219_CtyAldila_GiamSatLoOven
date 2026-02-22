@@ -75,20 +75,19 @@
                         <div class="step-number">@stepNumber</div>
                         <div class="step-content">
                             <div class="step-name">@(step.StepName ?? $"REVO-STEP-{step.StepIndex}")</div>
+                            @if (step.StartAt.HasValue && step.EndAt.HasValue && step.TotalRunTime.HasValue && step.TotalRunTime.Value > 0)
+                            {
+                                <div class="step-runtime">@step.StartAt.Value.ToString("mm:ss") → @step.EndAt.Value.ToString("mm:ss") · @($"{step.TotalRunTime.Value:F0}s")</div>
+                            }
+                            else if (step.StartAt.HasValue && step.EndAt.HasValue)
+                            {
+                                <div class="step-runtime">@step.StartAt.Value.ToString("mm:ss") → @step.EndAt.Value.ToString("mm:ss")</div>
+                            }
+                            else if (step.StartAt.HasValue)
+                            {
+                                <div class="step-runtime step-runtime-running">@step.StartAt.Value.ToString("mm:ss") → ...</div>
+                            }
                         </div>
-                        @if (step.StartAt.HasValue)
-                        {
-                            <div class="step-time">
-                                @if (step.EndAt.HasValue)
-                                {
-                                    <span>@step.StartAt.Value.ToString("HH:mm") → @step.EndAt.Value.ToString("HH:mm")</span>
-                                }
-                                else
-                                {
-                                    <span>@step.StartAt.Value.ToString("HH:mm") → ...</span>
-                                }
-                            </div>
-                        }
                     </div>
                 }
             </div>
@@ -164,7 +163,7 @@
         }
         else
         {
-            return "background-color: #ffebee !important; border: 2px solid #f44336 !important;";
+            return "background-color: #f6695e !important; border: 2px solid #f44336 !important;";
         }
     }
 
@@ -173,44 +172,35 @@
         if (!step.Visible.HasValue || step.Visible.Value == false)
             return "";
 
-        var now = DateTime.Now;
-        var classes = new List<string>();
-
-        // Enable status - if disabled, always black
+        // Enable = false → Black
         if (step.Enable.HasValue && step.Enable.Value == false)
         {
-            classes.Add("step-disabled"); // Black
-        }
-        else
-        {
-            // Check for running step (startAt != null, endAt == null)
-            if (step.StartAt.HasValue && !step.EndAt.HasValue)
-            {
-                classes.Add("step-running"); // White - running
-            }
-            // Time-based status
-            else if (step.StartAt.HasValue && step.EndAt.HasValue)
-            {
-                if (now < step.StartAt.Value)
-                {
-                    classes.Add("step-pending"); // Gray - not started
-                }
-                else if (now >= step.StartAt.Value && now <= step.EndAt.Value)
-                {
-                    classes.Add("step-running"); // White - running
-                }
-                else
-                {
-                    classes.Add("step-completed"); // Light blue - completed
-                }
-            }
-            else
-            {
-                // No time info, default to pending
-                classes.Add("step-pending");
-            }
+            return "step-disabled";
         }
 
-        return string.Join(" ", classes);
+        // Đã chạy xong (có StartAt + EndAt) → Gray
+        if (step.StartAt.HasValue && step.EndAt.HasValue)
+        {
+            return "step-completed";
+        }
+
+        // Đang chạy (có StartAt, chưa có EndAt) → Green
+        if (step.StartAt.HasValue && !step.EndAt.HasValue)
+        {
+            return "step-running";
+        }
+
+        // Chưa chạy → Cyan Blue
+        return "step-pending";
+    }
+
+    private string FormatRunTime(double totalSeconds)
+    {
+        if (totalSeconds <= 0) return "0s";
+        if (totalSeconds < 60) return $"{totalSeconds:F0}s";
+        var ts = System.TimeSpan.FromSeconds(totalSeconds);
+        if (ts.TotalHours >= 1) return $"{(int)ts.TotalHours}h{ts.Minutes:D2}m";
+        return $"{ts.Minutes}m{ts.Seconds:D2}s";
     }
 }
+

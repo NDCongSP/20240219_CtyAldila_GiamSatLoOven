@@ -50,27 +50,21 @@
                     <div class="step-item-detail @GetStepClass(step)">
                         <div class="step-header">
                             <div class="step-number-detail">@stepNumber</div>
-                            <RadzenText TextStyle="TextStyle.Body1" Style="font-weight: 500; flex: 1;">
-                                @(step.StepName ?? $"REVO-STEP-{step.StepIndex}")
-                            </RadzenText>
-                        </div>
-                        @if (step.StartAt.HasValue || step.EndAt.HasValue)
-                        {
-                            <div class="step-time-right">
+                            <div class="step-header-info">
+                                <span class="step-name-detail">@(step.StepName ?? $"REVO-STEP-{step.StepIndex}")</span>
                                 @if (step.StartAt.HasValue && step.EndAt.HasValue)
                                 {
-                                    <span>@step.StartAt.Value.ToString("HH:mm") → @step.EndAt.Value.ToString("HH:mm")</span>
+                                    <span class="step-time-detail">@step.StartAt.Value.ToString("mm:ss") → @step.EndAt.Value.ToString("mm:ss") · @($"{(step.TotalRunTime ?? 0):F0}s")</span>
                                 }
                                 else if (step.StartAt.HasValue)
                                 {
-                                    <span>@step.StartAt.Value.ToString("HH:mm") → ...</span>
-                                }
-                                else if (step.EndAt.HasValue)
-                                {
-                                    <span>Kết thúc: @step.EndAt.Value.ToString("HH:mm")</span>
+                                    <span class="step-time-detail">@step.StartAt.Value.ToString("mm:ss") → ...</span>
                                 }
                             </div>
-                        }
+                        </div>
+                        <div class="step-detail-values">
+                            <span>Pul=@(step.SoLuongXung?.ToString("0") ?? "0") - Speed = @(step.Speed_Hz?.ToString("0") ?? "0")</span>
+                        </div>
                     </div>
                     stepNumber++;
                 }

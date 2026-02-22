@@ -3,6 +3,7 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GiamSat.API.Services
 {
@@ -43,6 +44,19 @@ namespace GiamSat.API.Services
                                 .Text($"Thời gian: {dateQuery}")
                                 .FontSize(12)
                                 .Bold();
+
+                            // Summary: Shaft count + Record count (đưa lên trên đầu)
+                            var shaftCount = data.Select(x => x.ShaftNum).Where(x => x.HasValue).Distinct().Count();
+
+                            column.Item()
+                                .Background(Colors.Blue.Lighten5)
+                                .Padding(8)
+                                .Row(row =>
+                                {
+                                    row.AutoItem().Text($"Tổng số Shaft: {shaftCount}").Bold().FontSize(10);
+                                    row.AutoItem().PaddingHorizontal(10).Text("|").FontSize(10);
+                                    row.AutoItem().Text($"Tổng số bản ghi: {data.Count}").Bold().FontSize(10);
+                                });
 
                             // Bảng dữ liệu
                             column.Item()
@@ -130,13 +144,6 @@ namespace GiamSat.API.Services
                                     }
                                 });
 
-                            // Footer với tổng số bản ghi
-                            column.Item()
-                                .AlignRight()
-                                .PaddingTop(10)
-                                .Text($"Tổng số bản ghi: {data.Count}")
-                                .FontSize(10)
-                                .Italic();
                         });
 
                     page.Footer()

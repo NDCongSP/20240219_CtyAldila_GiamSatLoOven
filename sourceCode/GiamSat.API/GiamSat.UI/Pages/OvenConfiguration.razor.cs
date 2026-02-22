@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Newtonsoft.Json;
 using Radzen;
 using Radzen.Blazor;
-using System.Net.Http;
-using System.Net.Http.Json;
+using ApiClient = GiamSat.APIClient;
 
 namespace GiamSat.UI.Pages
 {
@@ -15,12 +14,10 @@ namespace GiamSat.UI.Pages
         [Parameter]
         public int OvenId { get; set; }
 
-        [Inject] private IHttpClientFactory HttpClientFactory { get; set; } = default!;
-
         private RadzenDataGrid<RevoConfigModel> _dataGrid = default!;
         private RevoConfigs _revoConfigs = new RevoConfigs();
         private bool _isLoading = true;
-        private FT07_RevoConfig? _ft07Record = null;
+        private ApiClient.FT07_RevoConfig? _ft07Record = null;
 
         protected override async Task OnInitializedAsync()
         {
@@ -39,26 +36,16 @@ namespace GiamSat.UI.Pages
                 _isLoading = true;
                 StateHasChanged();
 
-                var httpClient = HttpClientFactory.CreateClient("GiamSatAPI");
-                
-                // Get all FT07 records
-                var response = await httpClient.GetAsync("api/FT07");
-                if (response.IsSuccessStatusCode)
+                // Get all FT07 records via NSwag client
+                var result = await _fT07Client.GetAllAsync();
+                if (result.Succeeded && result.Data != null && result.Data.Count > 0)
                 {
-                    var result = await response.Content.ReadFromJsonAsync<Result<List<FT07_RevoConfig>>>();
-                    if (result != null && result.Succeeded && result.Data != null && result.Data.Count > 0)
+                    // Get the first active record or create new one
+                    _ft07Record = result.Data.FirstOrDefault(x => x.Actived == true) ?? result.Data.FirstOrDefault();
+                    
+                    if (_ft07Record != null && !string.IsNullOrEmpty(_ft07Record.C000))
                     {
-                        // Get the first active record or create new one
-                        _ft07Record = result.Data.FirstOrDefault(x => x.Actived == true) ?? result.Data.FirstOrDefault();
-                        
-                        if (_ft07Record != null && !string.IsNullOrEmpty(_ft07Record.C000))
-                        {
-                            _revoConfigs = JsonConvert.DeserializeObject<RevoConfigs>(_ft07Record.C000) ?? new RevoConfigs();
-                        }
-                        else
-                        {
-                            _revoConfigs = new RevoConfigs();
-                        }
+                        _revoConfigs = JsonConvert.DeserializeObject<RevoConfigs>(_ft07Record.C000) ?? new RevoConfigs();
                     }
                     else
                     {
@@ -67,7 +54,6 @@ namespace GiamSat.UI.Pages
                 }
                 else
                 {
-                    _notificationService.Notify(NotificationSeverity.Error, "Lỗi", "Không thể tải dữ liệu từ server");
                     _revoConfigs = new RevoConfigs();
                 }
             }
@@ -87,13 +73,12 @@ namespace GiamSat.UI.Pages
         {
             try
             {
-                var httpClient = HttpClientFactory.CreateClient("GiamSatAPI");
                 var jsonData = JsonConvert.SerializeObject(_revoConfigs);
                 
                 if (_ft07Record == null)
                 {
-                    // Create new record
-                    _ft07Record = new FT07_RevoConfig
+                    // Create new record via NSwag client
+                    var newRecord = new ApiClient.FT07_RevoConfig
                     {
                         Id = Guid.NewGuid(),
                         C000 = jsonData,
@@ -101,28 +86,27 @@ namespace GiamSat.UI.Pages
                         CreatedAt = DateTime.Now
                     };
 
-                    var response = await httpClient.PostAsJsonAsync("api/FT07/insert", _ft07Record);
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        var error = await response.Content.ReadAsStringAsync();
-                        _notificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Không thể tạo mới: {error}");
-                        return;
-                    }
-                    var result = await response.Content.ReadFromJsonAsync<Result<FT07_RevoConfig>>();
-                    if (result != null && result.Succeeded)
+                    var result = await _fT07Client.InsertAsync(newRecord);
+                    if (result.Succeeded)
                     {
                         _ft07Record = result.Data;
+                    }
+                    else
+                    {
+                        var errorMsg = result.Messages != null ? string.Join(", ", result.Messages) : "Không thể tạo mới";
+                        _notificationService.Notify(NotificationSeverity.Error, "Lỗi", errorMsg);
+                        return;
                     }
                 }
                 else
                 {
-                    // Update existing record
+                    // Update existing record via NSwag client
                     _ft07Record.C000 = jsonData;
-                    var response = await httpClient.PostAsJsonAsync("api/FT07/update", _ft07Record);
-                    if (!response.IsSuccessStatusCode)
+                    var result = await _fT07Client.UpdateAsync(_ft07Record);
+                    if (!result.Succeeded)
                     {
-                        var error = await response.Content.ReadAsStringAsync();
-                        _notificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Không thể cập nhật: {error}");
+                        var errorMsg = result.Messages != null ? string.Join(", ", result.Messages) : "Không thể cập nhật";
+                        _notificationService.Notify(NotificationSeverity.Error, "Lỗi", errorMsg);
                         return;
                     }
                 }
@@ -166,7 +150,8 @@ namespace GiamSat.UI.Pages
                 Name = item.Name,
                 Path = item.Path,
                 ConstringAccessDb = item.ConstringAccessDb,
-                Pulse_Rev = item.Pulse_Rev
+                Pulse_Rev = item.Pulse_Rev,
+                IntervalResetShaft = item.IntervalResetShaft
             };
 
             var result = await _dialogService.OpenAsync<DialogRevoConfig>("Chỉnh sửa REVO",
