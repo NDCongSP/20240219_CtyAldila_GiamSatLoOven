@@ -46,57 +46,72 @@ namespace GiamSat.API.Controllers
 
                 var updatedRealtimes = new List<FT08_RevoRealtime>();
 
+                var rnd = new Random();
+                var partPrefixes = new[] { "U0381B1", "P1538I1", "N0298A1", "P1799A0", "P0195A0", "M1371A1", "M1187A0", "CW183IR" };
+
                 foreach (var config in revoConfigs)
                 {
                     var steps = new List<RevoStep>();
+                    var baseTime = now.AddMinutes(-60); // Base time 1h trước
                     
-                    // Tạo 20 steps với các trạng thái khác nhau
-                    for (int j = 1; j <= 20; j++)
+                    // Tạo 10 steps mô phỏng giống ảnh thực tế
+                    for (int j = 1; j <= 10; j++)
                     {
+                        var partPrefix = partPrefixes[rnd.Next(partPrefixes.Length)];
+                        var partNumber = $"0{rnd.Next(2, 4)}10{rnd.Next(10, 60)}";
+                        var speedVal = new[] { 4800, 6400, 7200, 19200 }[rnd.Next(4)];
+                        var pulVal = rnd.Next(5, 30) * 800; // 4000 - 24000
+
                         var step = new RevoStep()
                         {
                             StepIndex = j,
-                            StepName = $"REVO-STEP-{j}",
-                            StepConfig = $"REVO-STEP-{j}|0|0|H",
+                            StepName = $"{partPrefix}-{partNumber}",
+                            StepConfig = $"{partPrefix}-{partNumber}|{pulVal}|{speedVal}|N",
                             Visible = true,
                             Enable = true,
-                            Speed_Hz = 0,
-                            SoLuongXung = 0,
+                            Speed_Hz = speedVal,
+                            SoLuongXung = pulVal,
                             StartAt = null,
-                            EndAt = null
+                            EndAt = null,
+                            TotalRunTime = 0
                         };
 
-                        // Phân bổ các trạng thái step:
-                        // Steps 1-3: Đã chạy xong (endAt < now) - màu xanh da trời
-                        // Steps 4-5: Đang chạy (startAt <= now <= endAt) - màu trắng
-                        // Steps 6-10: Chưa chạy (startAt > now) - màu xám
-                        // Steps 11-12: Disabled (Enanble = false) - màu đen
-                        // Steps 13-20: Chưa có thời gian - màu xám
+                        // Phân bổ trạng thái:
+                        // Steps 1-3: Đã chạy xong (gray) - có StartAt, EndAt, TotalRunTime
+                        // Step 4: Đang chạy (green) - có StartAt, chưa có EndAt
+                        // Steps 5-8: Chưa chạy (cyan blue) - chưa có StartAt
+                        // Steps 9-10: Disabled (black) - Enable = false
 
                         if (j <= 3)
                         {
-                            // Đã chạy xong
-                            step.StartAt = now.AddMinutes(-(30 - j * 5)); // Cách nhau 5 phút
-                            step.EndAt = now.AddMinutes(-(10 - j * 2)); // Kết thúc trước 2-6 phút
+                            // Đã chạy xong → Gray
+                            var startTime = baseTime.AddMinutes((j - 1) * 3);
+                            var runSeconds = rnd.Next(80, 200); // 80-200 giây
+                            step.StartAt = startTime;
+                            step.EndAt = startTime.AddSeconds(runSeconds);
+                            step.TotalRunTime = runSeconds + rnd.NextDouble() * 0.99; // e.g. 137.94s
                         }
-                        else if (j >= 4 && j <= 5)
+                        else if (j == 4)
                         {
-                            // Đang chạy
-                            step.StartAt = now.AddMinutes(-5); // Bắt đầu 5 phút trước
-                            step.EndAt = now.AddMinutes(5); // Kết thúc sau 5 phút
+                            // Đang chạy → Green
+                            step.StartAt = now.AddSeconds(-rnd.Next(10, 60));
+                            step.EndAt = null; // chưa kết thúc
+                            step.TotalRunTime = null;
                         }
-                        else if (j >= 6 && j <= 10)
+                        else if (j >= 5 && j <= 8)
                         {
-                            // Chưa chạy
-                            step.StartAt = now.AddMinutes(10 + (j - 6) * 5); // Bắt đầu sau 10-30 phút
-                            step.EndAt = now.AddMinutes(20 + (j - 6) * 5); // Kết thúc sau 20-40 phút
+                            // Chưa chạy → Cyan Blue
+                            step.StartAt = null;
+                            step.EndAt = null;
+                            step.TotalRunTime = null;
                         }
-                        else if (j >= 11 && j <= 12)
+                        else
                         {
-                            // Disabled
+                            // Disabled → Black
                             step.Enable = false;
+                            step.Speed_Hz = 0;
+                            step.SoLuongXung = 0;
                         }
-                        // Steps 13-20: Không có StartAt/EndAt (màu xám mặc định)
 
                         steps.Add(step);
                     }
@@ -106,7 +121,7 @@ namespace GiamSat.API.Controllers
                         RevoId = config.Id ?? 0,
                         RevoName = config.Name,
                         Path = config.Path,
-                        PlcConnected = true, // Connected
+                        PlcConnected = true,
                         Work = "WORK",
                         Part = "AU228-IR-F",
                         Rev = "A",

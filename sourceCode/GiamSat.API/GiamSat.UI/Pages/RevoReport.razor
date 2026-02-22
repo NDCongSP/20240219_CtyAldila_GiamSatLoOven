@@ -98,44 +98,54 @@
             }
             else
             {
+                <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" AllowClose="false" class="rz-mb-3">
+                    Tổng số Shaft: <strong>@_shaftCount</strong> &nbsp;|&nbsp; Tổng số bản ghi: <strong>@_reportData.Count</strong>
+                </RadzenAlert>
+
                 <RadzenDataGrid @ref="_dataGrid" 
                               Data="@_reportData"
-                                TItem="DomainModels.FT09_RevoDatalog"
-                                AllowPaging="true" 
-                              PageSize="20"
+                              TItem="DomainModels.FT09_RevoDatalog"
+                              AllowPaging="true" 
+                              PageSize="50"
                               AllowSorting="true"
+                              AllowGrouping="true"
+                              GroupRowRender="@OnGroupRowRender"
+                              Render="@OnGridRender"
                               PagerHorizontalAlign="HorizontalAlign.Right"
                               ShowPagingSummary="true"
                               PagingSummaryFormat="Hiển thị {0} - {1} / {2} mục">
                     <Columns>
                         <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="RevoName" Title="Tên REVO" Width="150px" />
-                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="ShaftNum" Title="ShaftNum" Width="280px" />
                         <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="StepId" Title="StepId" Width="90px" TextAlign="TextAlign.Center" />
                         <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="Part" Title="Part" Width="120px" />
                         <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="Rev" Title="Rev" Width="80px" />
                         <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="ColorCode" Title="Màu" Width="100px" />
                         <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="Mandrel" Title="Mandrel" Width="120px" />
                         <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="StepName" Title="Tên Step" Width="150px" />
-                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="StartedAt" Title="Thời gian bắt đầu" Width="180px">
+                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="StartedAt" Title="Bắt đầu" Width="180px">
                             <Template Context="data">
                                 @(data.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A")
                             </Template>
                         </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="EndedAt" Title="Thời gian kết thúc" Width="180px">
+                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="EndedAt" Title="Kết thúc" Width="180px">
                             <Template Context="data">
                                 @(data.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A")
                             </Template>
                         </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Title="Thời lượng" Width="120px" TextAlign="TextAlign.Center">
+                        <RadzenDataGridColumn TItem="DomainModels.FT09_RevoDatalog" Property="TotalTime" Title="Thời lượng (s)" Width="130px" TextAlign="TextAlign.Center">
                             <Template Context="data">
-                                @if (data.StartedAt.HasValue && data.EndedAt.HasValue)
+                                @if (data.TotalTime.HasValue && data.TotalTime.Value > 0)
+                                {
+                                    <span>@data.TotalTime.Value.ToString("F2")s</span>
+                                }
+                                else if (data.StartedAt.HasValue && data.EndedAt.HasValue)
                                 {
                                     var duration = data.EndedAt.Value - data.StartedAt.Value;
-                                    <span>@duration.ToString(@"hh\:mm\:ss")</span>
+                                    <span>@duration.TotalSeconds.ToString("F2")s</span>
                                 }
                                 else if (data.StartedAt.HasValue)
                                 {
-                                    <span>Đang chạy...</span>
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="Đang chạy" />
                                 }
                                 else
                                 {

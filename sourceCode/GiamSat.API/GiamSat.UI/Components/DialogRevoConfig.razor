@@ -23,6 +23,10 @@
                 <RadzenFormField Text="Pulse/Rev (độ phân giải driver)" class="rz-col-12">
                     <RadzenNumeric @bind-Value="@_model.Pulse_Rev" Min="1" Style="width: 100%;" />
                 </RadzenFormField>
+
+                <RadzenFormField Text="Interval Reset Shaft (ms)" class="rz-col-12">
+                    <RadzenNumeric @bind-Value="@_model.IntervalResetShaft" Min="0" Style="width: 100%;" Placeholder="3000" />
+                </RadzenFormField>
             </RadzenStack>
         </RadzenFieldset>
 
