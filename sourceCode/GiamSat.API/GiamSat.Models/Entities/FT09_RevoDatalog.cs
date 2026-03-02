@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -43,11 +44,15 @@ namespace GiamSat.Models
         /// đánh dấu cây shaft mà dữ liệu này thuộc về.
         /// cá bước trong 1 cây shaft thì có cùng 1 ShaftNum.
         /// </summary>
+        [Browsable(false)]
         public Guid? ShaftNum { get; set; } = null;
 
         /// <summary>
         /// Tổng thời gian chạy của bước = (StartAt - EndAt).totalSecond. 
         /// </summary>
         public double? TotalTime { get; set; } = 0;
+
+        [NotMapped]
+        public int ShaftNo { get; set; } = 1;
     }
 }

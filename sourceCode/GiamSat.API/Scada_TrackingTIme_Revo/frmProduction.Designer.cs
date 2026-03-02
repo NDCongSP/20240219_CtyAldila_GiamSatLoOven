@@ -38,7 +38,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this._labRev = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
+            this._labTotalShaftCurent = new System.Windows.Forms.Label();
             this._labColorCode = new System.Windows.Forms.Label();
             this._labMandrel = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -46,6 +46,8 @@
             this.label10 = new System.Windows.Forms.Label();
             this.flowMain = new System.Windows.Forms.FlowLayoutPanel();
             this._btnTest = new System.Windows.Forms.Button();
+            this._productivityPrevious = new System.Windows.Forms.Label();
+            this._labTotalShaftPrevious = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // _lab
@@ -132,25 +134,25 @@
             this._labRev.TabIndex = 9;
             this._labRev.Text = "B";
             // 
-            // label5
+            // _labTotalShaftCurent
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(451, 64);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(118, 25);
-            this.label5.TabIndex = 10;
-            this.label5.Text = "Color Code:";
+            this._labTotalShaftCurent.AutoSize = true;
+            this._labTotalShaftCurent.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._labTotalShaftCurent.Location = new System.Drawing.Point(451, 64);
+            this._labTotalShaftCurent.Name = "_labTotalShaftCurent";
+            this._labTotalShaftCurent.Size = new System.Drawing.Size(183, 25);
+            this._labTotalShaftCurent.TabIndex = 10;
+            this._labTotalShaftCurent.Text = "Total Shaft Current:";
             // 
             // _labColorCode
             // 
             this._labColorCode.AutoSize = true;
             this._labColorCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._labColorCode.Location = new System.Drawing.Point(575, 64);
+            this._labColorCode.Location = new System.Drawing.Point(640, 64);
             this._labColorCode.Name = "_labColorCode";
-            this._labColorCode.Size = new System.Drawing.Size(251, 25);
+            this._labColorCode.Size = new System.Drawing.Size(23, 25);
             this._labColorCode.TabIndex = 11;
-            this._labColorCode.Text = "White|Red|Green|Red|none";
+            this._labColorCode.Text = "0";
             // 
             // _labMandrel
             // 
@@ -201,18 +203,41 @@
             // 
             // _btnTest
             // 
-            this._btnTest.Location = new System.Drawing.Point(1252, 13);
+            this._btnTest.Location = new System.Drawing.Point(1123, 706);
             this._btnTest.Name = "_btnTest";
-            this._btnTest.Size = new System.Drawing.Size(86, 32);
+            this._btnTest.Size = new System.Drawing.Size(78, 20);
             this._btnTest.TabIndex = 18;
             this._btnTest.Text = "Maintenace";
             this._btnTest.UseVisualStyleBackColor = true;
+            // 
+            // _productivityPrevious
+            // 
+            this._productivityPrevious.BackColor = System.Drawing.Color.Red;
+            this._productivityPrevious.Font = new System.Drawing.Font("Microsoft Sans Serif", 40F, System.Drawing.FontStyle.Bold);
+            this._productivityPrevious.ForeColor = System.Drawing.Color.White;
+            this._productivityPrevious.Location = new System.Drawing.Point(1155, 34);
+            this._productivityPrevious.Name = "_productivityPrevious";
+            this._productivityPrevious.Size = new System.Drawing.Size(182, 68);
+            this._productivityPrevious.TabIndex = 19;
+            this._productivityPrevious.Text = "1000";
+            this._productivityPrevious.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // _labTotalShaftPrevious
+            // 
+            this._labTotalShaftPrevious.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._labTotalShaftPrevious.Location = new System.Drawing.Point(1155, 9);
+            this._labTotalShaftPrevious.Name = "_labTotalShaftPrevious";
+            this._labTotalShaftPrevious.Size = new System.Drawing.Size(182, 25);
+            this._labTotalShaftPrevious.TabIndex = 20;
+            this._labTotalShaftPrevious.Text = "Total Shaft At 13h";
             // 
             // frmProduction
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1350, 729);
+            this.Controls.Add(this._labTotalShaftPrevious);
+            this.Controls.Add(this._productivityPrevious);
             this.Controls.Add(this._btnTest);
             this.Controls.Add(this.flowMain);
             this.Controls.Add(this._labMandrelStart);
@@ -220,7 +245,7 @@
             this.Controls.Add(this._labMandrel);
             this.Controls.Add(this.label8);
             this.Controls.Add(this._labColorCode);
-            this.Controls.Add(this.label5);
+            this.Controls.Add(this._labTotalShaftCurent);
             this.Controls.Add(this._labRev);
             this.Controls.Add(this.label3);
             this.Controls.Add(this._txtWork);
@@ -249,7 +274,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label _labRev;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label _labTotalShaftCurent;
         private System.Windows.Forms.Label _labColorCode;
         private System.Windows.Forms.Label _labMandrel;
         private System.Windows.Forms.Label label8;
@@ -257,6 +282,8 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.FlowLayoutPanel flowMain;
         private System.Windows.Forms.Button _btnTest;
+        private System.Windows.Forms.Label _productivityPrevious;
+        private System.Windows.Forms.Label _labTotalShaftPrevious;
     }
 }
 

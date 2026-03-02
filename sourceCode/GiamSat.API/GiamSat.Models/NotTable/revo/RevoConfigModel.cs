@@ -27,5 +27,10 @@ namespace GiamSat.Models
         public int Pulse_Rev { get; set; } = 3200;
 
         public int IntervalResetShaft { get; set; } = 3000;
+
+        /// <summary>
+        /// Tùy chọn để lưu thời gian của 1 cây shaft, hay là lưu chi tiết từng bước.
+        /// </summary>
+        public EnumSaveMode SaveMode { get; set; } = EnumSaveMode.Save;
     }
 }

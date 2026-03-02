@@ -25,6 +25,12 @@ namespace Scada_TrackingTIme_Revo
         /// </summary>
         public static string Part { get; set; }
 
+        /// <summary>
+        /// Tùy chọn để lưu thời gian của 1 cây shaft, hay là lưu chi tiết từng bước.
+        /// False: chỉ lưu thời gian tổng của cây shaft, True: lưu chi tiết thời gian của từng bước (P1, P2, P3,...)
+        /// </summary>
+        public static bool SaveAll { get; set; } = false;
+
         public static RevoConfigModel RevoConfig { get; set; } = new RevoConfigModel();
         public static RevoRealtimeModel RevoRealtimeModel { get; set; } = new RevoRealtimeModel();
 

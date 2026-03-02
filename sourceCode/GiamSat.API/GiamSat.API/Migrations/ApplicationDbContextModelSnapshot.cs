@@ -42,7 +42,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT01");
+                    b.ToTable("FT01", (string)null);
                 });
 
             modelBuilder.Entity("GiamSat.Models.FT02", b =>
@@ -65,7 +65,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT02");
+                    b.ToTable("FT02", (string)null);
                 });
 
             modelBuilder.Entity("GiamSat.Models.FT03", b =>
@@ -97,7 +97,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT03");
+                    b.ToTable("FT03", (string)null);
                 });
 
             modelBuilder.Entity("GiamSat.Models.FT04", b =>
@@ -165,7 +165,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT04");
+                    b.ToTable("FT04", (string)null);
                 });
 
             modelBuilder.Entity("GiamSat.Models.FT05", b =>
@@ -227,7 +227,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT05");
+                    b.ToTable("FT05", (string)null);
                 });
 
             modelBuilder.Entity("GiamSat.Models.FT06", b =>
@@ -241,7 +241,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT06");
+                    b.ToTable("FT06", (string)null);
                 });
 
             modelBuilder.Entity("GiamSat.Models.FT07_RevoConfig", b =>
@@ -261,7 +261,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT07");
+                    b.ToTable("FT07", (string)null);
                 });
 
             modelBuilder.Entity("GiamSat.Models.FT08_RevoRealtime", b =>
@@ -280,7 +280,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT08");
+                    b.ToTable("FT08", (string)null);
                 });
 
             modelBuilder.Entity("GiamSat.Models.FT09_RevoDatalog", b =>
@@ -339,7 +339,7 @@ namespace GiamSat.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FT09");
+                    b.ToTable("FT09", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

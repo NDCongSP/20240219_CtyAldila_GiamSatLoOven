@@ -30,7 +30,7 @@ CH2(6-->10): 192.168.160.34 - COM22
 CH3(11-->13): 192.168.160.35 - COM23
 
 DB:
-Server=192.168.96.8;Database=oven;User Id=mfg;Password=Mfg@321!;TrustServerCertificate=True;
+Server=192.168.96.822;Database=oven;User Id=mfg;Password=Mfg@321!;TrustServerCertificate=True;
 
 ất cả các dự án giám sát trang trại của a Thám đều nằm trong này
 de host IIS cac ung dung ASP .net core thi mays tinhs can caif cai nay: dotnet-hosting-7.0.10-win

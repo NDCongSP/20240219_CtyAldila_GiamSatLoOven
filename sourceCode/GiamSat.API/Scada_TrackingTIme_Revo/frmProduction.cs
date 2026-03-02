@@ -150,29 +150,33 @@ namespace Scada_TrackingTIme_Revo
                 flowMain.Height = 580;              // cố định chiều cao, 10 step, 1 hàng 58
 
                 //đọc data master từ access
-                DataTable dt = new DataTable();
+                
                 using (OleDbConnection conn = new OleDbConnection(GlobalVariable.RevoConfig.ConstringAccessDb))
                 {
                     conn.Open();
 
+                    DataTable dt = new DataTable();
                     string sql = $"SELECT * FROM Part";
                     OleDbDataAdapter da = new OleDbDataAdapter(sql, conn);
                     da.Fill(dt);
 
                     _parts = GlobalVariable.ToModels<PartModel>(dt);
 
+                    dt = new DataTable();
                     sql = $"SELECT * FROM Mandrel";
                     da = new OleDbDataAdapter(sql, conn);
                     da.Fill(dt);
 
                     _mandrels = GlobalVariable.ToModels<MandrelModel>(dt);
 
+                    dt = new DataTable();
                     sql = $"SELECT * FROM Color";
                     da = new OleDbDataAdapter(sql, conn);
                     da.Fill(dt);
 
                     _colors = GlobalVariable.ToModels<ColorModel>(dt);
 
+                    dt = new DataTable();
                     sql = $"SELECT * FROM Pattern";
                     da = new OleDbDataAdapter(sql, conn);
                     da.Fill(dt);
@@ -596,7 +600,9 @@ namespace Scada_TrackingTIme_Revo
             lblIndex.Height = 58;
             lblIndex.TextAlign = ContentAlignment.MiddleCenter;
             lblIndex.Location = new Point(0, 5);
-            lblIndex.Font = new Font("Microsoft Sans Serif", 15, FontStyle.Regular);
+            lblIndex.Font = new Font("Microsoft Sans Serif", 20, FontStyle.Bold);
+            lblIndex.BackColor = (bool)step.Enable ? Color.LightBlue : Color.Black;
+            lblIndex.ForeColor = (bool)step.Enable ? Color.Black : Color.White;
 
             // Thanh REVO
             Label lblStep = new Label();
@@ -647,13 +653,19 @@ namespace Scada_TrackingTIme_Revo
 
                     if ((step.StartAt.HasValue && !step.EndAt.HasValue) || isFirst)
                     {
-                        lblStep.BackColor = Color.Green;
-                        lblStep.ForeColor = Color.Black;
+                        lblStep.BackColor = Color.Red;
+                        lblStep.ForeColor = Color.White;
+
+                        lblIndex.BackColor = Color.Red;
+                        lblIndex.ForeColor = Color.White;
                     }
                     else if (step.StartAt.HasValue && step.EndAt.HasValue)
                     {
                         lblStep.BackColor = Color.Gray;
                         lblStep.ForeColor = Color.White;
+
+                        lblIndex.BackColor = Color.Gray;
+                        lblIndex.ForeColor = Color.White;
                     }
 
                     break;
