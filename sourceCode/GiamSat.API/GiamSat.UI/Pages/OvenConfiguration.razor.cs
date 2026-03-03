@@ -127,7 +127,8 @@ namespace GiamSat.UI.Pages
                 Name = $"REVO {(_revoConfigs.Count + 1)}",
                 Path = "",
                 ConstringAccessDb = "",
-                Pulse_Rev = 3200
+                Pulse_Rev = 3200,
+                SaveMode = EnumSaveMode.Save
             };
 
             var result = await _dialogService.OpenAsync<DialogRevoConfig>("Thêm REVO mới",
@@ -151,7 +152,8 @@ namespace GiamSat.UI.Pages
                 Path = item.Path,
                 ConstringAccessDb = item.ConstringAccessDb,
                 Pulse_Rev = item.Pulse_Rev,
-                IntervalResetShaft = item.IntervalResetShaft
+                IntervalResetShaft = item.IntervalResetShaft,
+                SaveMode = item.SaveMode
             };
 
             var result = await _dialogService.OpenAsync<DialogRevoConfig>("Chỉnh sửa REVO",

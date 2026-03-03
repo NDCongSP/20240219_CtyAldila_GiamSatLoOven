@@ -11,14 +11,14 @@
 }
 
 /* Header container with title and button */
-::deep .revo-card > .rz-stack > .rz-stack:first-child {
+::deep .revo-card>.rz-stack>.rz-stack:first-child {
     min-height: auto;
     align-items: flex-start !important;
     width: 100%;
 }
 
 /* Title text - allow 2 lines with ellipsis */
-::deep .revo-card > .rz-stack > .rz-stack:first-child > .rz-text {
+::deep .revo-card>.rz-stack>.rz-stack:first-child>.rz-text {
     flex: 1;
     min-width: 0;
     margin-right: 0.5rem;
@@ -26,14 +26,16 @@
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     line-height: 1.4;
-    max-height: calc(1.4em * 2); /* 2 lines */
+    max-height: calc(1.4em * 2);
+    /* 2 lines */
     text-overflow: ellipsis;
 }
 
 /* Button "Chi tiết" - always visible, no shrink */
-::deep .revo-card > .rz-stack > .rz-stack:first-child > .rz-button {
+::deep .revo-card>.rz-stack>.rz-stack:first-child>.rz-button {
     flex-shrink: 0 !important;
     min-width: fit-content !important;
     white-space: nowrap !important;
@@ -80,7 +82,8 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    max-height: 203px; /* 3.5 steps: 3.5 * 58px (50px step + 8px gap) = 203px */
+    max-height: 203px;
+    /* 3.5 steps: 3.5 * 58px (50px step + 8px gap) = 203px */
     overflow-y: auto;
     overflow-x: hidden;
     margin-top: 0.5rem;
@@ -150,7 +153,8 @@
 
 /* Step status colors */
 .step-disabled {
-    background-color: #212121; /* Black - Enabled=false */
+    background-color: #212121;
+    /* Black - Enabled=false */
     color: #ffffff;
 }
 
@@ -161,7 +165,8 @@
 }
 
 .step-completed {
-    background-color: #b0bec5; /* Gray - đã chạy xong */
+    background-color: #b0bec5;
+    /* Gray - đã chạy xong */
     color: #212121;
 }
 
@@ -172,7 +177,8 @@
 }
 
 .step-running {
-    background-color: #66bb6a; /* Green - đang chạy */
+    background-color: #66bb6a;
+    /* Green - đang chạy */
     color: #ffffff;
     border: 1px solid #43a047;
 }
@@ -184,7 +190,8 @@
 }
 
 .step-pending {
-    background-color: #80deea; /* Cyan Blue - chưa chạy */
+    background-color: #80deea;
+    /* Cyan Blue - chưa chạy */
     color: #004d40;
 }
 
@@ -197,4 +204,28 @@
 .rz-button.rz-info.rz-shade-default {
     background-color: #8DD7E2 !important;
     color: white !important;
+}
+
+/* Row COLOR riêng - dòng thứ 3, full width, có border trên nhẹ */
+.info-color-row {
+    border-top: 1px dashed rgba(0, 0, 0, 0.12);
+    padding-top: 0.3rem;
+    margin-top: 0.1rem;
+    width: 100%;
+}
+
+/* Total Shaft Current badge bên trong card */
+.shaft-current-item {
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    margin-top: 0.15rem;
+    width: 100%;
+}
+
+.shaft-current-badge {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #d32f2f;
 }

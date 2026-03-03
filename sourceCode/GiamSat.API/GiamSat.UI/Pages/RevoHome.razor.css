@@ -1,0 +1,30 @@
+/* Wrapper bọc card + shaft-current bên ngoài */
+.revo-card-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* Total Shaft Current - hiển thị bên ngoài card, bên dưới */
+.shaft-current-outside {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #1a1a2e;
+    color: #ffffff;
+    border-radius: 0 0 8px 8px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+}
+
+.shaft-current-label {
+    font-weight: 500;
+    opacity: 0.85;
+    letter-spacing: 0.3px;
+}
+
+.shaft-current-number {
+    font-weight: 800;
+    font-size: 1.15rem;
+    color: #ff6b6b;
+}

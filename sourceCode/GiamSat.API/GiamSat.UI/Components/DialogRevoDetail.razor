@@ -3,38 +3,54 @@
 <RadzenStack Gap="1rem">
     <RadzenText TextStyle="TextStyle.H5" Style="font-weight: 600;">@_revoData.RevoName</RadzenText>
 
-    <!-- Part Information -->
+    <!-- Part Information + Shaft Stats -->
     <RadzenFieldset Text="Thông tin Part">
-        <RadzenStack Gap="0.5rem">
-            <RadzenRow>
-                <RadzenColumn Size="6">
-                    <RadzenText TextStyle="TextStyle.Caption">PART:</RadzenText>
-                    <RadzenText>@(_revoData.Part ?? "N/A")</RadzenText>
-                </RadzenColumn>
-                <RadzenColumn Size="6">
-                    <RadzenText TextStyle="TextStyle.Caption">REV:</RadzenText>
-                    <RadzenText>@(_revoData.Rev ?? "NC")</RadzenText>
-                </RadzenColumn>
-            </RadzenRow>
-            <RadzenRow>
-                <RadzenColumn Size="6">
-                    <RadzenText TextStyle="TextStyle.Caption">COLOR:</RadzenText>
-                    <RadzenText>@(_revoData.ColorCode ?? "none")</RadzenText>
-                </RadzenColumn>
-                <RadzenColumn Size="6">
-                    <RadzenText TextStyle="TextStyle.Caption">MANDREL:</RadzenText>
-                    <RadzenText>@(_revoData.Mandrel ?? "N/A")</RadzenText>
-                </RadzenColumn>
-            </RadzenRow>
-            @if (!string.IsNullOrEmpty(_revoData.MandrelStart))
-            {
-                <RadzenRow>
-                    <RadzenColumn Size="6">
-                        <RadzenText TextStyle="TextStyle.Caption">SIZE:</RadzenText>
-                        <RadzenText>@_revoData.MandrelStart</RadzenText>
-                    </RadzenColumn>
-                </RadzenRow>
-            }
+        <RadzenStack Gap="0.75rem">
+
+            <!-- Row 1: Part + Rev + Mandrel + [Total Shaft At PrevHour - big red box] -->
+            <div class="detail-info-row">
+                <div class="detail-info-fields">
+                    <div class="detail-field-row">
+                        <div class="detail-field">
+                            <span class="detail-label">Part:</span>
+                            <span class="detail-value">@(_revoData.Part ?? "N/A")</span>
+                        </div>
+                        <div class="detail-field">
+                            <span class="detail-label">Rev:</span>
+                            <span class="detail-value rev-value">@(_revoData.Rev ?? "NC")</span>
+                        </div>
+                        <div class="detail-field">
+                            <span class="detail-label">Mandrel:</span>
+                            <span class="detail-value">@(_revoData.Mandrel ?? "N/A")</span>
+                        </div>
+                    </div>
+                    <!-- Row 2: Work + Total Shaft Current + Mandrel Start -->
+                    <div class="detail-field-row">
+                        <div class="detail-field">
+                            <span class="detail-label">Work:</span>
+                            <span class="detail-value">@(_revoData.Work ?? "N/A")</span>
+                        </div>
+                        <div class="detail-field">
+                            <span class="detail-label">Total Shaft Current:</span>
+                            <span class="detail-value shaft-current-inline">@ShaftCurrentCount</span>
+                        </div>
+                        @if (!string.IsNullOrEmpty(_revoData.MandrelStart))
+                        {
+                            <div class="detail-field">
+                                <span class="detail-label">Mandrel Start:</span>
+                                <span class="detail-value">@_revoData.MandrelStart</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Big red box: Total Shaft At PrevHour -->
+                <div class="shaft-prev-box">
+                    <div class="shaft-prev-label">Total Shaft At @(PrevHour)h</div>
+                    <div class="shaft-prev-value">@ShaftPrevCount</div>
+                </div>
+            </div>
+
         </RadzenStack>
     </RadzenFieldset>
 
