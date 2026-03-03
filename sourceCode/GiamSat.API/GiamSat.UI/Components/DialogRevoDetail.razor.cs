@@ -11,6 +11,16 @@ namespace GiamSat.UI.Components
         [Parameter]
         public RevoRealtimeModel RevoData { get; set; } = new RevoRealtimeModel();
 
+        [Parameter]
+        public int ShaftCurrentCount { get; set; } = 0;
+
+        [Parameter]
+        public int ShaftPrevCount { get; set; } = 0;
+
+        /// <summary>Giờ trước (number), vd 13 thì hiển thị "Total Shaft At 13h"</summary>
+        [Parameter]
+        public int PrevHour { get; set; } = DateTime.Now.AddHours(-1).Hour;
+
         private RevoRealtimeModel _revoData = new RevoRealtimeModel();
         private System.Timers.Timer? _refreshTimer;
 

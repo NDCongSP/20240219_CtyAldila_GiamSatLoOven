@@ -27,6 +27,16 @@
                 <RadzenFormField Text="Interval Reset Shaft (ms)" class="rz-col-12">
                     <RadzenNumeric @bind-Value="@_model.IntervalResetShaft" Min="0" Style="width: 100%;" Placeholder="3000" />
                 </RadzenFormField>
+
+                <RadzenStack Gap="0.5rem" class="rz-pt-2">
+                    <RadzenText TextStyle="TextStyle.Caption" Style="color: var(--rz-text-secondary-color);">Chế độ lưu dữ liệu</RadzenText>
+                    <RadzenRadioButtonList @bind-Value="@_model.SaveMode" TValue="EnumSaveMode" Orientation="Orientation.Vertical">
+                        <Items>
+                            <RadzenRadioButtonListItem Text="Save (shaft)" Value="EnumSaveMode.Save" />
+                            <RadzenRadioButtonListItem Text="Save all (shaft+step)" Value="EnumSaveMode.SaveAll" />
+                        </Items>
+                    </RadzenRadioButtonList>
+                </RadzenStack>
             </RadzenStack>
         </RadzenFieldset>
 

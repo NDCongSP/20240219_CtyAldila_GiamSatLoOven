@@ -45,6 +45,11 @@
                             <RadzenDataGridColumn TItem="RevoConfigModel" Property="ConstringAccessDb" Title="Chuỗi kết nối Access DB" Width="350px" />
                             <RadzenDataGridColumn TItem="RevoConfigModel" Property="Pulse_Rev" Title="Pulse/Rev" Width="120px" TextAlign="TextAlign.Center" />
                             <RadzenDataGridColumn TItem="RevoConfigModel" Property="IntervalResetShaft" Title="Interval Reset Shaft (ms)" Width="200px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn TItem="RevoConfigModel" Title="Lưu chi tiết (SaveAll)" Width="150px" TextAlign="TextAlign.Center">
+                                <Template Context="item">
+                                    <RadzenSwitch Value="@(item.SaveMode == EnumSaveMode.SaveAll)" Disabled="true" />
+                                </Template>
+                            </RadzenDataGridColumn>
                             <RadzenDataGridColumn TItem="RevoConfigModel" Title="Hành động" Width="200px" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
                                 <Template Context="item">
                                     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" JustifyContent="JustifyContent.Center">

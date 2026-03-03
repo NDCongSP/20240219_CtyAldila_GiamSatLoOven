@@ -12,7 +12,7 @@
                         Click="@OnDetailClick" />
         </RadzenStack>
 
-        <!-- Part Info -->
+        <!-- Part Info: Row 1 = PART | REV -->
         <div class="info-grid">
             <div class="info-item">
                 <span class="info-label">PART:</span>
@@ -24,24 +24,29 @@
             </div>
         </div>
 
+        <!-- Row 2 = MANDREL | SIZE -->
         <div class="info-grid">
-            <div class="info-item">
-                <span class="info-label">COLOR:</span>
-                <span class="info-value">@(RevoData.ColorCode ?? "none")</span>
-            </div>
             <div class="info-item">
                 <span class="info-label">MANDREL:</span>
                 <span class="info-value">@(RevoData.Mandrel ?? "N/A")</span>
             </div>
-        </div>
-
-        @if (!string.IsNullOrEmpty(RevoData.MandrelStart))
-        {
             <div class="info-item">
                 <span class="info-label">SIZE:</span>
-                <span class="info-value">@RevoData.MandrelStart</span>
+                <span class="info-value">@(RevoData.MandrelStart ?? "-")</span>
             </div>
-        }
+        </div>
+
+        <!-- Row 3 = COLOR (1 dòng riêng) -->
+        <div class="info-item info-color-row">
+            <span class="info-label">COLOR:</span>
+            <span class="info-value">@(RevoData.ColorCode ?? "none")</span>
+        </div>
+
+        <!-- Total Shaft Current - bên trong card -->
+        <div class="info-item shaft-current-item">
+            <span class="info-label">Total Shaft Current:</span>
+            <span class="info-value shaft-current-badge">@ShaftCurrentCount</span>
+        </div>
 
         <!-- Steps List (all steps with scroll, default showing 3.5 steps) -->
         @if (RevoData.Steps != null && RevoData.Steps.Any(s => s.Visible.HasValue && s.Visible.Value == true))
@@ -98,6 +103,9 @@
 @code {
     [Parameter]
     public RevoRealtimeModel RevoData { get; set; } = new RevoRealtimeModel();
+
+    [Parameter]
+    public int ShaftCurrentCount { get; set; } = 0;
 
     [Parameter]
     public EventCallback OnDetailClick { get; set; }

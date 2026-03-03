@@ -24,8 +24,11 @@
     {
         @foreach (var revo in _revoData.OrderBy(x => x.RevoId))
         {
+            var stats = _shaftStats.TryGetValue(revo.RevoId, out var s) ? s : (Current: 0, Prev: 0);
             <RadzenColumn Size="12" SizeMD="6" SizeLG="4" SizeXL="3">
-                <RevoCard RevoData="@revo" OnDetailClick="@(() => OnShowDetail(revo))" />
+                <RevoCard RevoData="@revo"
+                          ShaftCurrentCount="@stats.Current"
+                          OnDetailClick="@(() => OnShowDetail(revo))" />
             </RadzenColumn>
         }
     }

@@ -12,6 +12,9 @@ namespace GiamSat.UI.Pages
         private bool _isLoading = true;
         private System.Timers.Timer? _refreshTimer;
 
+        // Key = RevoId, Value = (currentHourShafts, prevHourShafts)
+        private Dictionary<int, (int Current, int Prev)> _shaftStats = new();
+
         protected override async Task OnInitializedAsync()
         {
             await LoadData();
@@ -99,16 +102,86 @@ namespace GiamSat.UI.Pages
                 _isLoading = false;
                 StateHasChanged();
             }
+
+            // Load shaft stats sau khi đã có danh sách RevoId (ngoài try-catch chính)
+            await LoadShaftStats();
+        }
+
+        private async Task LoadShaftStats()
+        {
+            try
+            {
+                var now = DateTime.Now;
+                var currentHourStart = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0);
+                var currentHourEnd   = currentHourStart.AddHours(1);
+                var prevHourStart    = currentHourStart.AddHours(-1);
+
+                // Query toàn bộ trong 2 giờ (current + prev) theo tất cả REVO
+                var filter = new APIClient.RevoFilterModel
+                {
+                    GetAll  = true,
+                    FromDate = prevHourStart,
+                    ToDate   = currentHourEnd
+                };
+                var result = await _fT09Client.GetFilterAsync(filter);
+                if (result.Succeeded && result.Data != null)
+                {
+                    // Group by RevoId, then split by hour bucket
+                    var newStats = new Dictionary<int, (int Current, int Prev)>();
+                    var grouped = result.Data
+                        .Where(x => x.RevoId.HasValue)
+                        .GroupBy(x => x.RevoId!.Value);
+
+                    foreach (var g in grouped)
+                    {
+                        var revoId = g.Key;
+                        var currentShafts = g
+                            .Where(x => x.StartedAt.HasValue
+                                     && x.StartedAt.Value >= currentHourStart
+                                     && x.StartedAt.Value < currentHourEnd
+                                     && x.ShaftNum.HasValue)
+                            .Select(x => x.ShaftNum!.Value)
+                            .Distinct().Count();
+
+                        var prevShafts = g
+                            .Where(x => x.StartedAt.HasValue
+                                     && x.StartedAt.Value >= prevHourStart
+                                     && x.StartedAt.Value < currentHourStart
+                                     && x.ShaftNum.HasValue)
+                            .Select(x => x.ShaftNum!.Value)
+                            .Distinct().Count();
+
+                        newStats[revoId] = (currentShafts, prevShafts);
+                    }
+
+                    _shaftStats = newStats;
+                    StateHasChanged();
+                }
+            }
+            catch
+            {
+                // Silent fail - shaft stats is non-critical
+            }
         }
 
         private async Task OnShowDetail(RevoRealtimeModel revo)
         {
-            // Calculate dialog size: 90% of viewport (10% smaller than screen)
-            var dialogWidth = "90vw";
+            var dialogWidth  = "90vw";
             var dialogHeight = "90vh";
-            
+
+            var now = DateTime.Now;
+            var prevHour = now.AddHours(-1).Hour;
+
+            _shaftStats.TryGetValue(revo.RevoId, out var stats);
+
             await _dialogService.OpenAsync<DialogRevoDetail>("Chi tiết REVO",
-                new Dictionary<string, object> { { "RevoData", revo } },
+                new Dictionary<string, object>
+                {
+                    { "RevoData",          revo },
+                    { "ShaftCurrentCount", stats.Current },
+                    { "ShaftPrevCount",    stats.Prev },
+                    { "PrevHour",          prevHour }
+                },
                 new DialogOptions { Width = dialogWidth, Height = dialogHeight, Resizable = true, Draggable = true });
         }
     }

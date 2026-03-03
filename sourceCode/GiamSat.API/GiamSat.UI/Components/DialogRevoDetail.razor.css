@@ -1,4 +1,88 @@
+/* ── Part info layout: fields + big red shaft box ── */
+.detail-info-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.detail-info-fields {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    /* khoảng cách đều giữa các dòng */
+}
+
+.detail-field-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    /* khoảng cách đều giữa các field */
+    align-items: center;
+}
+
+.detail-field {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: var(--rz-text-secondary-color);
+    white-space: nowrap;
+}
+
+.detail-value {
+    color: var(--rz-text-color);
+}
+
+.rev-value {
+    color: #1565c0;
+    font-weight: 600;
+}
+
+/* Total Shaft Current - inline bold */
+.shaft-current-inline {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #d32f2f;
+}
+
+/* Total Shaft At PrevHour - big red block (like image) */
+.shaft-prev-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #d32f2f;
+    color: #fff;
+    border-radius: 6px;
+    padding: 0.4rem 1.2rem;
+    min-width: 110px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(211, 47, 47, 0.4);
+}
+
+.shaft-prev-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0.92;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.shaft-prev-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -1px;
+}
+
 .steps-grid {
+
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 0.75rem;
@@ -62,12 +146,14 @@
     font-size: 0.8rem;
     opacity: 0.85;
     margin-top: 0.15rem;
-    padding-left: calc(32px + 0.75rem); /* Align with text after step-number */
+    padding-left: calc(32px + 0.75rem);
+    /* Align with text after step-number */
 }
 
 /* Step status colors - same as RevoCard */
 .step-disabled {
-    background-color: #212121; /* Black - Enabled=false */
+    background-color: #212121;
+    /* Black - Enabled=false */
     color: #ffffff;
 }
 
@@ -78,7 +164,8 @@
 }
 
 .step-completed {
-    background-color: #b0bec5; /* Gray - đã chạy xong */
+    background-color: #b0bec5;
+    /* Gray - đã chạy xong */
     color: #212121;
 }
 
@@ -89,7 +176,8 @@
 }
 
 .step-running {
-    background-color: #66bb6a; /* Green - đang chạy */
+    background-color: #66bb6a;
+    /* Green - đang chạy */
     color: #ffffff;
     border: 1px solid #43a047;
 }
@@ -101,7 +189,8 @@
 }
 
 .step-pending {
-    background-color: #80deea; /* Cyan Blue - chưa chạy */
+    background-color: #80deea;
+    /* Cyan Blue - chưa chạy */
     color: #004d40;
 }
 
