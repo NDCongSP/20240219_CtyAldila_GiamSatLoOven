@@ -38,16 +38,16 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this._labRev = new System.Windows.Forms.Label();
-            this._labTotalShaftCurent = new System.Windows.Forms.Label();
-            this._labColorCode = new System.Windows.Forms.Label();
+            this._labShaftCurent = new System.Windows.Forms.Label();
+            this._labTotalShaftCurrentHour = new System.Windows.Forms.Label();
             this._labMandrel = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this._labMandrelStart = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.flowMain = new System.Windows.Forms.FlowLayoutPanel();
-            this._btnTest = new System.Windows.Forms.Button();
-            this._productivityPrevious = new System.Windows.Forms.Label();
-            this._labTotalShaftPrevious = new System.Windows.Forms.Label();
+            this._btnMaintenace = new System.Windows.Forms.Button();
+            this._labTotalShaftLastHour = new System.Windows.Forms.Label();
+            this._labShaftLastHour = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // _lab
@@ -134,31 +134,31 @@
             this._labRev.TabIndex = 9;
             this._labRev.Text = "B";
             // 
-            // _labTotalShaftCurent
+            // _labShaftCurent
             // 
-            this._labTotalShaftCurent.AutoSize = true;
-            this._labTotalShaftCurent.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._labTotalShaftCurent.Location = new System.Drawing.Point(451, 64);
-            this._labTotalShaftCurent.Name = "_labTotalShaftCurent";
-            this._labTotalShaftCurent.Size = new System.Drawing.Size(183, 25);
-            this._labTotalShaftCurent.TabIndex = 10;
-            this._labTotalShaftCurent.Text = "Total Shaft Current:";
+            this._labShaftCurent.AutoSize = true;
+            this._labShaftCurent.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._labShaftCurent.Location = new System.Drawing.Point(451, 64);
+            this._labShaftCurent.Name = "_labShaftCurent";
+            this._labShaftCurent.Size = new System.Drawing.Size(183, 25);
+            this._labShaftCurent.TabIndex = 10;
+            this._labShaftCurent.Text = "Total Shaft Current:";
             // 
-            // _labColorCode
+            // _labTotalShaftCurrentHour
             // 
-            this._labColorCode.AutoSize = true;
-            this._labColorCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._labColorCode.Location = new System.Drawing.Point(640, 64);
-            this._labColorCode.Name = "_labColorCode";
-            this._labColorCode.Size = new System.Drawing.Size(23, 25);
-            this._labColorCode.TabIndex = 11;
-            this._labColorCode.Text = "0";
+            this._labTotalShaftCurrentHour.AutoSize = true;
+            this._labTotalShaftCurrentHour.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._labTotalShaftCurrentHour.Location = new System.Drawing.Point(640, 64);
+            this._labTotalShaftCurrentHour.Name = "_labTotalShaftCurrentHour";
+            this._labTotalShaftCurrentHour.Size = new System.Drawing.Size(23, 25);
+            this._labTotalShaftCurrentHour.TabIndex = 11;
+            this._labTotalShaftCurrentHour.Text = "0";
             // 
             // _labMandrel
             // 
             this._labMandrel.AutoSize = true;
             this._labMandrel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._labMandrel.Location = new System.Drawing.Point(1023, 20);
+            this._labMandrel.Location = new System.Drawing.Point(892, 20);
             this._labMandrel.Name = "_labMandrel";
             this._labMandrel.Size = new System.Drawing.Size(62, 25);
             this._labMandrel.TabIndex = 13;
@@ -168,7 +168,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(882, 20);
+            this.label8.Location = new System.Drawing.Point(751, 20);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(89, 25);
             this.label8.TabIndex = 12;
@@ -178,7 +178,7 @@
             // 
             this._labMandrelStart.AutoSize = true;
             this._labMandrelStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._labMandrelStart.Location = new System.Drawing.Point(1023, 64);
+            this._labMandrelStart.Location = new System.Drawing.Point(892, 64);
             this._labMandrelStart.Name = "_labMandrelStart";
             this._labMandrelStart.Size = new System.Drawing.Size(39, 25);
             this._labMandrelStart.TabIndex = 15;
@@ -188,7 +188,7 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(882, 64);
+            this.label10.Location = new System.Drawing.Point(751, 64);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(135, 25);
             this.label10.TabIndex = 14;
@@ -201,51 +201,52 @@
             this.flowMain.Size = new System.Drawing.Size(1320, 580);
             this.flowMain.TabIndex = 17;
             // 
-            // _btnTest
+            // _btnMaintenace
             // 
-            this._btnTest.Location = new System.Drawing.Point(1123, 706);
-            this._btnTest.Name = "_btnTest";
-            this._btnTest.Size = new System.Drawing.Size(78, 20);
-            this._btnTest.TabIndex = 18;
-            this._btnTest.Text = "Maintenace";
-            this._btnTest.UseVisualStyleBackColor = true;
+            this._btnMaintenace.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
+            this._btnMaintenace.Location = new System.Drawing.Point(1123, 703);
+            this._btnMaintenace.Name = "_btnMaintenace";
+            this._btnMaintenace.Size = new System.Drawing.Size(78, 23);
+            this._btnMaintenace.TabIndex = 18;
+            this._btnMaintenace.Text = "Maintenace";
+            this._btnMaintenace.UseVisualStyleBackColor = false;
             // 
-            // _productivityPrevious
+            // _labTotalShaftLastHour
             // 
-            this._productivityPrevious.BackColor = System.Drawing.Color.Red;
-            this._productivityPrevious.Font = new System.Drawing.Font("Microsoft Sans Serif", 40F, System.Drawing.FontStyle.Bold);
-            this._productivityPrevious.ForeColor = System.Drawing.Color.White;
-            this._productivityPrevious.Location = new System.Drawing.Point(1155, 34);
-            this._productivityPrevious.Name = "_productivityPrevious";
-            this._productivityPrevious.Size = new System.Drawing.Size(182, 68);
-            this._productivityPrevious.TabIndex = 19;
-            this._productivityPrevious.Text = "1000";
-            this._productivityPrevious.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this._labTotalShaftLastHour.BackColor = System.Drawing.Color.Red;
+            this._labTotalShaftLastHour.Font = new System.Drawing.Font("Microsoft Sans Serif", 40F, System.Drawing.FontStyle.Bold);
+            this._labTotalShaftLastHour.ForeColor = System.Drawing.Color.White;
+            this._labTotalShaftLastHour.Location = new System.Drawing.Point(1079, 31);
+            this._labTotalShaftLastHour.Name = "_labTotalShaftLastHour";
+            this._labTotalShaftLastHour.Size = new System.Drawing.Size(258, 68);
+            this._labTotalShaftLastHour.TabIndex = 19;
+            this._labTotalShaftLastHour.Text = "1000";
+            this._labTotalShaftLastHour.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // _labTotalShaftPrevious
+            // _labShaftLastHour
             // 
-            this._labTotalShaftPrevious.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._labTotalShaftPrevious.Location = new System.Drawing.Point(1155, 9);
-            this._labTotalShaftPrevious.Name = "_labTotalShaftPrevious";
-            this._labTotalShaftPrevious.Size = new System.Drawing.Size(182, 25);
-            this._labTotalShaftPrevious.TabIndex = 20;
-            this._labTotalShaftPrevious.Text = "Total Shaft At 13h";
+            this._labShaftLastHour.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._labShaftLastHour.Location = new System.Drawing.Point(1079, 6);
+            this._labShaftLastHour.Name = "_labShaftLastHour";
+            this._labShaftLastHour.Size = new System.Drawing.Size(258, 25);
+            this._labShaftLastHour.TabIndex = 20;
+            this._labShaftLastHour.Text = "Total Shafts (13:00–13:59)";
             // 
             // frmProduction
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1350, 729);
-            this.Controls.Add(this._labTotalShaftPrevious);
-            this.Controls.Add(this._productivityPrevious);
-            this.Controls.Add(this._btnTest);
+            this.Controls.Add(this._labShaftLastHour);
+            this.Controls.Add(this._labTotalShaftLastHour);
+            this.Controls.Add(this._btnMaintenace);
             this.Controls.Add(this.flowMain);
             this.Controls.Add(this._labMandrelStart);
             this.Controls.Add(this.label10);
             this.Controls.Add(this._labMandrel);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this._labColorCode);
-            this.Controls.Add(this._labTotalShaftCurent);
+            this.Controls.Add(this._labTotalShaftCurrentHour);
+            this.Controls.Add(this._labShaftCurent);
             this.Controls.Add(this._labRev);
             this.Controls.Add(this.label3);
             this.Controls.Add(this._txtWork);
@@ -274,16 +275,16 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label _labRev;
-        private System.Windows.Forms.Label _labTotalShaftCurent;
-        private System.Windows.Forms.Label _labColorCode;
+        private System.Windows.Forms.Label _labShaftCurent;
+        private System.Windows.Forms.Label _labTotalShaftCurrentHour;
         private System.Windows.Forms.Label _labMandrel;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label _labMandrelStart;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.FlowLayoutPanel flowMain;
-        private System.Windows.Forms.Button _btnTest;
-        private System.Windows.Forms.Label _productivityPrevious;
-        private System.Windows.Forms.Label _labTotalShaftPrevious;
+        private System.Windows.Forms.Button _btnMaintenace;
+        private System.Windows.Forms.Label _labShaftLastHour;
+        private System.Windows.Forms.Label _labTotalShaftLastHour;
     }
 }
 

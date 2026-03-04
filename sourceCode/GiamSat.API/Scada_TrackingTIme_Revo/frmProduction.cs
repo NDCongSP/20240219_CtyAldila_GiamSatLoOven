@@ -15,6 +15,7 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Runtime.Remoting.Contexts;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -42,6 +43,8 @@ namespace Scada_TrackingTIme_Revo
 
         private bool PC_ALLOW_RUN_TO_PLC = false;
         private bool START_STOP_STEP = false;
+
+        private int _totalCurrentHour = 0, _totalLastHour = 0;
 
         public frmProduction()
         {
@@ -150,7 +153,6 @@ namespace Scada_TrackingTIme_Revo
                 flowMain.Height = 580;              // cố định chiều cao, 10 step, 1 hàng 58
 
                 //đọc data master từ access
-                
                 using (OleDbConnection conn = new OleDbConnection(GlobalVariable.RevoConfig.ConstringAccessDb))
                 {
                     conn.Open();
@@ -212,16 +214,13 @@ namespace Scada_TrackingTIme_Revo
                 _resetShaftCts = new CancellationTokenSource();
                 _ = TaskResetShaftAsync(_resetShaftCts.Token);
 
-                _btnTest.Click += (s, o) =>
+                _btnMaintenace.Click += (s, o) =>
                 {
-                    using (var nf = new frmTest())
+                    using (var nf = new frmConfig())
                     {
-                        nf.StartPosition = FormStartPosition.CenterScreen;
                         nf.ShowDialog();
                     }
                 };
-
-                _btnTest.Visible = false;
             }
         }
 
@@ -329,23 +328,32 @@ namespace Scada_TrackingTIme_Revo
             {
                 try
                 {
+                    var totalShaft = await GetTotalShaftAsync();
+                    _totalCurrentHour = totalShaft?.CurrentHour ?? 0;
+                    _totalLastHour = totalShaft?.LastHour ?? 0;
+
                     //var ping = PingServer(GlobalVariable.IpDbServer);
                     GlobalVariable.InvokeIfRequired(this, () =>
                     {
                         _labTime.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
                         _labRev.Text = GlobalVariable.RevoRealtimeModel.Rev;
-                        _labColorCode.Text = GlobalVariable.RevoRealtimeModel.ColorCode;
+                        _labTotalShaftCurrentHour.Text = _totalCurrentHour.ToString();
+                        _labTotalShaftLastHour.Text = _totalLastHour.ToString();
+                        _labShaftLastHour.Text = $"Total Shafts ({DateTime.Now.Hour -1}:00–{DateTime.Now.Hour-1}:59)";
                         _labMandrel.Text = GlobalVariable.RevoRealtimeModel.Mandrel;
                         _labMandrelStart.Text = GlobalVariable.RevoRealtimeModel.MandrelStart;
 
                         //_labStatus.BackColor = GetConnectionStatusColor(_easyStatus);
 
-                        _labStatus.Text = $"Easy Driver: {_easyStatus} - PLC: {GlobalVariable.RevoRealtimeModel.PlcConnected} - DB Server:";
+                        _labStatus.Text = $"Easy Driver: {_easyStatus} - PLC: {GlobalVariable.RevoRealtimeModel.PlcConnected} - DB Server: - Save type: {GlobalVariable.RevoConfig.SaveMode.ToString()}";
                     });
+
+                    
                 }
                 catch (Exception ex)
                 {
                     // Log lỗi nếu cần
+                    Log.Error($"Lỗi trong TaskTimerAsync: {ex.Message}");
                 }
                 await Task.Delay(100, token); // Chờ 1 giây trước khi lặp lại
             }
@@ -637,7 +645,7 @@ namespace Scada_TrackingTIme_Revo
         {
             foreach (Control ctrl in flowMain.Controls)
             {
-                if (ctrl is Panel row && row.Tag is int idx && idx == step.StepIndex)
+                if (ctrl is Panel row && row.Tag is int idx && idx == step?.StepIndex)
                 {
                     Label lblIndex = row.Controls["lblIndex"] as Label;
                     Label lblStep = row.Controls["lblStep"] as Label;
@@ -779,6 +787,60 @@ namespace Scada_TrackingTIme_Revo
 
                 await dbContext.SaveChangesAsync();
             }
+        }
+
+        private async Task<GroupShaftModel> GetTotalShaftAsync()
+        {
+            using var dbContext = new ApplicationDbContext();
+
+            // 1. Lấy giờ mới nhất
+            var maxCreatedAt = dbContext.FT09_RevoDatalogs
+                .Where(x => x.CreatedAt != null)
+                .Max(x => x.CreatedAt);
+
+            if (maxCreatedAt == null)
+                return null;
+
+            // 2. Chuẩn hóa giờ chẵn
+            var currentHour = new DateTime(
+                maxCreatedAt.Value.Year,
+                maxCreatedAt.Value.Month,
+                maxCreatedAt.Value.Day,
+                maxCreatedAt.Value.Hour,
+                0, 0);
+
+            var nextHour = currentHour.AddHours(1);
+            var lastHour = currentHour.AddHours(-1);
+
+
+            // 3. Đếm ShaftNum giờ hiện tại
+            var currentCount = dbContext.FT09_RevoDatalogs
+                .Where(x => x.CreatedAt >= currentHour
+                         && x.CreatedAt < nextHour
+                         && x.ShaftNum != null)
+                .Select(x => x.ShaftNum)
+                .Distinct()
+                .Count();
+
+
+            // 4. Đếm ShaftNum giờ trước
+            var lastCount = dbContext.FT09_RevoDatalogs
+                .Where(x => x.CreatedAt >= lastHour
+                         && x.CreatedAt < currentHour
+                         && x.ShaftNum != null)
+                .Select(x => x.ShaftNum)
+                .Distinct()
+                .Count();
+
+
+            // 5. Kết quả
+            var result = new GroupShaftModel
+            {
+                CurrentHour = currentCount,
+                LastHour = lastCount
+            };
+
+            return result;
         }
         #endregion
     }
