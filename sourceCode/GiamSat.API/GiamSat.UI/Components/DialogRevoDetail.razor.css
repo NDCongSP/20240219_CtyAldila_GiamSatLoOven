@@ -176,7 +176,7 @@
 }
 
 .step-running {
-    background-color: #66bb6a;
+    background-color: red;
     /* Green - đang chạy */
     color: #ffffff;
     border: 1px solid #43a047;
