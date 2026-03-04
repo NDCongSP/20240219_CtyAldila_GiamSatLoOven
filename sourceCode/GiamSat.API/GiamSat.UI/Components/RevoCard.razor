@@ -192,7 +192,7 @@
             return "step-completed";
         }
 
-        // Đang chạy (có StartAt, chưa có EndAt) → Green
+        // Đang chạy (có StartAt, chưa có EndAt) → Red
         if (step.StartAt.HasValue && !step.EndAt.HasValue)
         {
             return "step-running";
