@@ -43,6 +43,7 @@ namespace Scada_TrackingTIme_Revo
 
         private bool PC_ALLOW_RUN_TO_PLC = false;
         private bool START_STOP_STEP = false;
+        private bool SENT = false;
 
         private int _totalCurrentHour = 0, _totalLastHour = 0;
 
@@ -222,22 +223,79 @@ namespace Scada_TrackingTIme_Revo
                     }
                 };
             }
+
+            this.KeyPreview = true;
+
+            this.KeyDown += frmProduction_KeyDown;
         }
 
-        private void _btnStartStop_Click(object sender, EventArgs e)
+        private async void frmProduction_KeyDown(object sender, KeyEventArgs e)
         {
-            var newValue = PC_ALLOW_RUN_TO_PLC ? "0" : "1";
-            _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/PC_ALLOW_RUN_TO_PLC"
-                                                        , newValue
-                                                         , WritePiority.High);
-
-            if (!PC_ALLOW_RUN_TO_PLC)//nếu đang ở trạng thái dừng thì cho phép chạy, và lấy thông tin bước đang chạy hiện tại để nạp xuống lại PLC
+            if (e.KeyCode == Keys.Up)
             {
+                //MessageBox.Show("Nhấn mũi tên lên");
 
+                var currentStep = GlobalVariable.RevoRealtimeModel.Steps
+                              .FirstOrDefault(s =>
+                                      s.Enable == true &&
+                                      (s.StartAt == null || (s.StartAt.HasValue) && !s.EndAt.HasValue)
+                                  );
+
+                if (currentStep != null)
+                {
+                    currentStep.StartAt = null;
+                    currentStep.EndAt = null;
+
+                    //lấy bước trước đó ghi xuống để chạy lại
+                    var previousStep = GlobalVariable.RevoRealtimeModel.Steps
+                            .FirstOrDefault(s =>
+                                s.Enable == true &&
+                                s.StepIndex == currentStep.StepIndex - 1
+                            );
+
+                    if (previousStep != null)
+                    {
+                        previousStep.StartAt=previousStep.EndAt = null;
+
+                        Debug.WriteLine($"Previous step: {previousStep.StepIndex} - Speed:{previousStep.Speed_Hz} - Pul:{previousStep.SoLuongXung}");
+
+                        await _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/TOC_DO_HZ"
+                                                               , previousStep.Speed_Hz.HasValue ? previousStep.Speed_Hz.Value.ToString() : "0"
+                                                                , WritePiority.High);
+
+                        await _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SO_LUONG_XUNG"
+                                                             , previousStep.SoLuongXung.HasValue ? previousStep.SoLuongXung.Value.ToString() : "0"
+                                                              , WritePiority.High);
+
+                    Loop:
+                        await _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SENT"
+                                                            , "1"
+                                                             , WritePiority.High);
+                        if (!SENT)
+                        {
+                            goto Loop;
+                        }
+
+                        UpdateStepUI(currentStep, 2);
+                        UpdateStepUI(previousStep, 1);
+                    }
+                }
+                else if (e.KeyCode == Keys.Down)
+                {
+                    // MessageBox.Show("Nhấn mũi tên xuống");
+                }
+                else if (e.KeyCode == Keys.Left)
+                {
+                    //MessageBox.Show("Nhấn mũi tên trái");
+                }
+                else if (e.KeyCode == Keys.Right)
+                {
+                    //MessageBox.Show("Nhấn mũi tên phải");
+                }
             }
         }
 
-        private void _txtPart_KeyDown(object sender, KeyEventArgs e)
+        private async void _txtPart_KeyDown(object sender, KeyEventArgs e)
         {
             try
             {
@@ -297,22 +355,32 @@ namespace Scada_TrackingTIme_Revo
                         return;
                     }
 
-                    var newValue = PC_ALLOW_RUN_TO_PLC ? "0" : "1";
-                    _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/PC_ALLOW_RUN_TO_PLC"
-                                                                , newValue
-                                                                 , WritePiority.High);
+                Loop1:
+                    await _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/PC_ALLOW_RUN_TO_PLC"
+                                                                 , "1"
+                                                                  , WritePiority.High);
+                    if (!PC_ALLOW_RUN_TO_PLC)
+                    {
+                        goto Loop1;
+                    }
 
-                    _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/TOC_DO_HZ"
-                                                          , currentStep?.Speed_Hz.ToString() ?? "0"
-                                                           , WritePiority.High);
+                    await _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/TOC_DO_HZ"
+                                                            , currentStep?.Speed_Hz.ToString() ?? "0"
+                                                             , WritePiority.High);
 
-                    _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SO_LUONG_XUNG"
-                                                         , currentStep.SoLuongXung.Value.ToString() ?? "0"
-                                                          , WritePiority.High);
+                    await _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SO_LUONG_XUNG"
+                                                           , currentStep.SoLuongXung.Value.ToString() ?? "0"
+                                                            , WritePiority.High);
 
-                    _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SENT"
-                                                        , "1"
-                                                         , WritePiority.High);
+                Loop2:
+                    await _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SENT"
+                                                           , "1"
+                                                            , WritePiority.High);
+
+                    if (!SENT)
+                    {
+                        goto Loop2;
+                    }
                 }
             }
             catch (Exception ex)
@@ -339,7 +407,7 @@ namespace Scada_TrackingTIme_Revo
                         _labRev.Text = GlobalVariable.RevoRealtimeModel.Rev;
                         _labTotalShaftCurrentHour.Text = _totalCurrentHour.ToString();
                         _labTotalShaftLastHour.Text = _totalLastHour.ToString();
-                        _labShaftLastHour.Text = $"Total Shafts ({DateTime.Now.Hour -1}:00–{DateTime.Now.Hour-1}:59)";
+                        _labShaftLastHour.Text = $"Total Shafts ({DateTime.Now.Hour - 1}:00–{DateTime.Now.Hour - 1}:59)";
                         _labMandrel.Text = GlobalVariable.RevoRealtimeModel.Mandrel;
                         _labMandrelStart.Text = GlobalVariable.RevoRealtimeModel.MandrelStart;
 
@@ -348,7 +416,7 @@ namespace Scada_TrackingTIme_Revo
                         _labStatus.Text = $"Easy Driver: {_easyStatus} - PLC: {GlobalVariable.RevoRealtimeModel.PlcConnected} - DB Server: - Save type: {GlobalVariable.RevoConfig.SaveMode.ToString()}";
                     });
 
-                    
+
                 }
                 catch (Exception ex)
                 {
@@ -422,19 +490,26 @@ namespace Scada_TrackingTIme_Revo
 
                                 if (nextStep != null)
                                 {
-                                    _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/TOC_DO_HZ"
-                                                                          , nextStep.Speed_Hz.HasValue ? nextStep.Speed_Hz.Value.ToString() : "0"
-                                                                           , WritePiority.High);
+                                    Debug.WriteLine($"step: {nextStep.StepIndex} - Speed:{nextStep.Speed_Hz} - Pul:{nextStep.SoLuongXung}");
 
-                                    _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SO_LUONG_XUNG"
+                                    await _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/TOC_DO_HZ"
+                                                                           , nextStep.Speed_Hz.HasValue ? nextStep.Speed_Hz.Value.ToString() : "0"
+                                                                            , WritePiority.High);
+
+                                    await _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SO_LUONG_XUNG"
                                                                          , nextStep.SoLuongXung.HasValue ? nextStep.SoLuongXung.Value.ToString() : "0"
                                                                           , WritePiority.High);
 
-                                    _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SENT"
+                                Loop:
+                                    await _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SENT"
                                                                         , "1"
                                                                          , WritePiority.High);
+                                    if (!SENT)
+                                    {
+                                        goto Loop;
+                                    }
 
-                                    UpdateStepUI(nextStep, true);
+                                    UpdateStepUI(nextStep, 1);
                                 }
                                 else//da xong quy trinh.
                                 {
@@ -485,19 +560,24 @@ namespace Scada_TrackingTIme_Revo
                             s.StartAt == null
                         );
 
-                    _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/TOC_DO_HZ"
-                                                         , step.Speed_Hz.HasValue ? step.Speed_Hz.Value.ToString() : "0"
-                                                          , WritePiority.High);
+                    await _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/TOC_DO_HZ"
+                                                          , step.Speed_Hz.HasValue ? step.Speed_Hz.Value.ToString() : "0"
+                                                           , WritePiority.High);
 
-                    _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SO_LUONG_XUNG"
-                                                         , step.SoLuongXung.HasValue ? step.SoLuongXung.Value.ToString() : "0"
-                                                          , WritePiority.High);
+                    await _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SO_LUONG_XUNG"
+                                                           , step.SoLuongXung.HasValue ? step.SoLuongXung.Value.ToString() : "0"
+                                                            , WritePiority.High);
 
-                    _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SENT"
+                Loop:
+                    await _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/SENT"
                                                         , "1"
                                                          , WritePiority.High);
+                    if (!SENT)
+                    {
+                        goto Loop;
+                    }
 
-                    UpdateStepUI(step, true);
+                    UpdateStepUI(step, 1);
 
                     LogDb(isNew: true);
                     // xong việc → quay lại vòng chờ (không cần Delay hay poll)
@@ -526,10 +606,22 @@ namespace Scada_TrackingTIme_Revo
             _easyDriverConnector.GetTag($"{GlobalVariable.RevoConfig.Path}/TOC_DO_HZ").QualityChanged += TOC_DO_HZ_QualityChanged;
             _easyDriverConnector.GetTag($"{GlobalVariable.RevoConfig.Path}/START_STOP_STEP").ValueChanged += START_STOP_STEP_ValueChanged;
             _easyDriverConnector.GetTag($"{GlobalVariable.RevoConfig.Path}/PC_ALLOW_RUN_TO_PLC").ValueChanged += PC_ALLOW_RUN_TO_PLC_ValueChanged;
+            _easyDriverConnector.GetTag($"{GlobalVariable.RevoConfig.Path}/SENT").ValueChanged += SENT_ValueChanged;
 
             START_STOP_STEP_ValueChanged(_easyDriverConnector.GetTag($"{GlobalVariable.RevoConfig.Path}/START_STOP_STEP")
                 , new TagValueChangedEventArgs(_easyDriverConnector.GetTag($"{GlobalVariable.RevoConfig.Path}/START_STOP_STEP")
                 , "", _easyDriverConnector.GetTag($"{GlobalVariable.RevoConfig.Path}/START_STOP_STEP").Value));
+            PC_ALLOW_RUN_TO_PLC_ValueChanged(_easyDriverConnector.GetTag($"{GlobalVariable.RevoConfig.Path}/PC_ALLOW_RUN_TO_PLC")
+               , new TagValueChangedEventArgs(_easyDriverConnector.GetTag($"{GlobalVariable.RevoConfig.Path}/PC_ALLOW_RUN_TO_PLC")
+               , "", _easyDriverConnector.GetTag($"{GlobalVariable.RevoConfig.Path}/PC_ALLOW_RUN_TO_PLC").Value));
+            SENT_ValueChanged(_easyDriverConnector.GetTag($"{GlobalVariable.RevoConfig.Path}/SENT")
+               , new TagValueChangedEventArgs(_easyDriverConnector.GetTag($"{GlobalVariable.RevoConfig.Path}/SENT")
+               , "", _easyDriverConnector.GetTag($"{GlobalVariable.RevoConfig.Path}/SENT").Value));
+        }
+
+        private void SENT_ValueChanged(object sender, TagValueChangedEventArgs e)
+        {
+            SENT = e.NewValue == "1" ? true : false;
         }
 
         private void TOC_DO_HZ_QualityChanged(object sender, TagQualityChangedEventArgs e)
@@ -589,7 +681,7 @@ namespace Scada_TrackingTIme_Revo
                 .Steps
                 .FirstOrDefault(x => x.Enable == true);
 
-            UpdateStepUI(stepF, true);
+            UpdateStepUI(stepF, 1);
         }
         private Panel CreateStepRow(RevoStep step)
         {
@@ -641,7 +733,12 @@ namespace Scada_TrackingTIme_Revo
             };
         }
 
-        public void UpdateStepUI(RevoStep step, bool isFirst = false)
+        /// <summary>
+        /// cập nhật UI.
+        /// </summary>
+        /// <param name="step">Chứa thông tin bước chạy. để lấy index ggeer lấy ra đúng control.</param>
+        /// <param name="isFirst">0-nextStep; 1-new; 2-previous step.</param>
+        public void UpdateStepUI(RevoStep step, int isFirst = 0)
         {
             foreach (Control ctrl in flowMain.Controls)
             {
@@ -659,7 +756,7 @@ namespace Scada_TrackingTIme_Revo
                         $"{Environment.NewLine}" +
                         $"Pul={step.SoLuongXung} - Speed = {step.Speed_Hz}";
 
-                    if ((step.StartAt.HasValue && !step.EndAt.HasValue) || isFirst)
+                    if ((step.StartAt.HasValue && !step.EndAt.HasValue) || isFirst==1)
                     {
                         lblStep.BackColor = Color.Red;
                         lblStep.ForeColor = Color.White;
@@ -674,6 +771,14 @@ namespace Scada_TrackingTIme_Revo
 
                         lblIndex.BackColor = Color.Gray;
                         lblIndex.ForeColor = Color.White;
+                    }
+                    else if (isFirst == 2)
+                    {
+                        lblStep.BackColor = Color.LightBlue;
+                        lblStep.ForeColor = Color.Black;
+
+                        lblIndex.BackColor = Color.LightBlue;
+                        lblIndex.ForeColor = Color.Black;
                     }
 
                     break;
