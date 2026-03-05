@@ -178,7 +178,7 @@ namespace GiamSat.UI.Components
                 return "";
 
             // Enable = false → Black
-            if (step.Enanble.HasValue && step.Enanble.Value == false)
+            if (step.Enable.HasValue && step.Enable.Value == false)
             {
                 return "step-disabled";
             }
