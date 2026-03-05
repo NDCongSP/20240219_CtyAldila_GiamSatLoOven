@@ -45,7 +45,7 @@
             this._labMandrelStart = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.flowMain = new System.Windows.Forms.FlowLayoutPanel();
-            this._btnMaintenace = new System.Windows.Forms.Button();
+            this._btnMaintenance = new System.Windows.Forms.Button();
             this._labTotalShaftLastHour = new System.Windows.Forms.Label();
             this._labShaftLastHour = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -201,15 +201,15 @@
             this.flowMain.Size = new System.Drawing.Size(1320, 580);
             this.flowMain.TabIndex = 17;
             // 
-            // _btnMaintenace
+            // _btnMaintenance
             // 
-            this._btnMaintenace.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
-            this._btnMaintenace.Location = new System.Drawing.Point(1123, 703);
-            this._btnMaintenace.Name = "_btnMaintenace";
-            this._btnMaintenace.Size = new System.Drawing.Size(78, 23);
-            this._btnMaintenace.TabIndex = 18;
-            this._btnMaintenace.Text = "Maintenace";
-            this._btnMaintenace.UseVisualStyleBackColor = false;
+            this._btnMaintenance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
+            this._btnMaintenance.Location = new System.Drawing.Point(1123, 703);
+            this._btnMaintenance.Name = "_btnMaintenance";
+            this._btnMaintenance.Size = new System.Drawing.Size(78, 23);
+            this._btnMaintenance.TabIndex = 18;
+            this._btnMaintenance.Text = "Maintenance";
+            this._btnMaintenance.UseVisualStyleBackColor = false;
             // 
             // _labTotalShaftLastHour
             // 
@@ -239,7 +239,7 @@
             this.ClientSize = new System.Drawing.Size(1350, 729);
             this.Controls.Add(this._labShaftLastHour);
             this.Controls.Add(this._labTotalShaftLastHour);
-            this.Controls.Add(this._btnMaintenace);
+            this.Controls.Add(this._btnMaintenance);
             this.Controls.Add(this.flowMain);
             this.Controls.Add(this._labMandrelStart);
             this.Controls.Add(this.label10);
@@ -282,7 +282,7 @@
         private System.Windows.Forms.Label _labMandrelStart;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.FlowLayoutPanel flowMain;
-        private System.Windows.Forms.Button _btnMaintenace;
+        private System.Windows.Forms.Button _btnMaintenance;
         private System.Windows.Forms.Label _labShaftLastHour;
         private System.Windows.Forms.Label _labTotalShaftLastHour;
     }

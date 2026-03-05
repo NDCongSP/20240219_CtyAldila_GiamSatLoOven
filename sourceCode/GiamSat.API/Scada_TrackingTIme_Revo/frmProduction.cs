@@ -215,7 +215,7 @@ namespace Scada_TrackingTIme_Revo
                 _resetShaftCts = new CancellationTokenSource();
                 _ = TaskResetShaftAsync(_resetShaftCts.Token);
 
-                _btnMaintenace.Click += (s, o) =>
+                _btnMaintenance.Click += (s, o) =>
                 {
                     using (var nf = new frmConfig())
                     {
