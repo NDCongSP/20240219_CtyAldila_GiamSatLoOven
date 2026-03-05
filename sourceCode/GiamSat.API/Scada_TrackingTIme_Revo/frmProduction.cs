@@ -237,7 +237,7 @@ namespace Scada_TrackingTIme_Revo
 
                 var currentStep = GlobalVariable.RevoRealtimeModel.Steps
                               .FirstOrDefault(s =>
-                                      s.Enable == true &&
+                                      s.Enanble == true &&
                                       (s.StartAt == null || (s.StartAt.HasValue) && !s.EndAt.HasValue)
                                   );
 
@@ -249,7 +249,7 @@ namespace Scada_TrackingTIme_Revo
                     //lấy bước trước đó ghi xuống để chạy lại
                     var previousStep = GlobalVariable.RevoRealtimeModel.Steps
                             .FirstOrDefault(s =>
-                                s.Enable == true &&
+                                s.Enanble == true &&
                                 s.StepIndex == currentStep.StepIndex - 1
                             );
 
