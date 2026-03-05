@@ -24,17 +24,24 @@ namespace GiamSat.UI.Components
         private RevoRealtimeModel _revoData = new RevoRealtimeModel();
         private System.Timers.Timer? _refreshTimer;
 
+        // Live shaft counts (refreshed every timer tick from FT09)
+        private int _liveShaftCurrent = 0;
+        private int _liveShaftPrev = 0;
+        private int _livePrevHour = DateTime.Now.AddHours(-1).Hour;
+
         protected override void OnParametersSet()
         {
             _revoData = RevoData;
+            _liveShaftCurrent = ShaftCurrentCount;
+            _liveShaftPrev = ShaftPrevCount;
+            _livePrevHour = PrevHour;
         }
 
         protected override async Task OnInitializedAsync()
         {
             await LoadRevoData();
-            
-            // Setup timer to refresh every 10 seconds
-            _refreshTimer = new System.Timers.Timer(10000); // 10 seconds
+
+            _refreshTimer = new System.Timers.Timer(10000);
             _refreshTimer.Elapsed += OnTimerElapsed;
             _refreshTimer.AutoReset = true;
             _refreshTimer.Start();
@@ -46,6 +53,53 @@ namespace GiamSat.UI.Components
             {
                 await LoadRevoData();
             });
+        }
+
+        private async Task LoadShaftCountsAsync()
+        {
+            try
+            {
+                var now = DateTime.Now;
+                var currentHourStart = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0);
+                var currentHourEnd   = currentHourStart.AddHours(1);
+                var prevHourStart    = currentHourStart.AddHours(-1);
+
+                var filter = new APIClient.RevoFilterModel
+                {
+                    GetAll   = true,
+                    FromDate = prevHourStart,
+                    ToDate   = currentHourEnd
+                };
+
+                var result = await _fT09Client.GetFilterAsync(filter);
+                if (result.Succeeded && result.Data != null)
+                {
+                    var revoId = _revoData.RevoId;
+                    var records = result.Data.Where(x => x.RevoId == revoId).ToList();
+
+                    _liveShaftCurrent = records
+                        .Where(x => x.StartedAt.HasValue
+                                 && x.StartedAt.Value >= currentHourStart
+                                 && x.StartedAt.Value < currentHourEnd
+                                 && x.ShaftNum.HasValue)
+                        .Select(x => x.ShaftNum!.Value)
+                        .Distinct().Count();
+
+                    _liveShaftPrev = records
+                        .Where(x => x.StartedAt.HasValue
+                                 && x.StartedAt.Value >= prevHourStart
+                                 && x.StartedAt.Value < currentHourStart
+                                 && x.ShaftNum.HasValue)
+                        .Select(x => x.ShaftNum!.Value)
+                        .Distinct().Count();
+
+                    _livePrevHour = prevHourStart.Hour;
+                }
+            }
+            catch
+            {
+                // Silent fail – keep previous values
+            }
         }
 
         private async Task LoadRevoData()
@@ -96,16 +150,17 @@ namespace GiamSat.UI.Components
                             }
 
                             _revoData = revoRealtime;
-                            StateHasChanged();
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Silent fail for timer updates
                 System.Diagnostics.Debug.WriteLine($"Error refreshing REVO data: {ex.Message}");
             }
+
+            await LoadShaftCountsAsync();
+            StateHasChanged();
         }
 
         private string FormatRunTime(double totalSeconds)
@@ -123,7 +178,7 @@ namespace GiamSat.UI.Components
                 return "";
 
             // Enable = false → Black
-            if (step.Enable.HasValue && step.Enable.Value == false)
+            if (step.Enanble.HasValue && step.Enanble.Value == false)
             {
                 return "step-disabled";
             }

@@ -32,7 +32,7 @@
                         </div>
                         <div class="detail-field">
                             <span class="detail-label">Total Shaft Current:</span>
-                            <span class="detail-value shaft-current-inline">@ShaftCurrentCount</span>
+                            <span class="detail-value shaft-current-inline">@_liveShaftCurrent</span>
                         </div>
                         @if (!string.IsNullOrEmpty(_revoData.MandrelStart))
                         {
@@ -46,8 +46,8 @@
 
                 <!-- Big red box: Total Shaft At PrevHour -->
                 <div class="shaft-prev-box">
-                    <div class="shaft-prev-label">Total Shaft At @(PrevHour)h</div>
-                    <div class="shaft-prev-value">@ShaftPrevCount</div>
+                    <div class="shaft-prev-label">Total Shaft At @(_livePrevHour)h</div>
+                    <div class="shaft-prev-value">@_liveShaftPrev</div>
                 </div>
             </div>
 

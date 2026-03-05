@@ -344,7 +344,7 @@ namespace Scada_TrackingTIme_Revo
                     //ghi step đầu tiên xuống plc
                     var currentStep = GlobalVariable.RevoRealtimeModel.Steps
                    .FirstOrDefault(s =>
-                       s.Enable == true &&
+                       s.Enanble == true &&
                        !s.StartAt.HasValue
                    );
 
@@ -457,7 +457,7 @@ namespace Scada_TrackingTIme_Revo
                     {
                         var currentStep = GlobalVariable.RevoRealtimeModel.Steps
                                 .FirstOrDefault(s =>
-                                    s.Enable == true &&
+                                    s.Enanble == true &&
                                     (s.StartAt == null || (s.StartAt.HasValue) && !s.EndAt.HasValue)
                                 );
                         if (START_STOP_STEP)
@@ -484,7 +484,7 @@ namespace Scada_TrackingTIme_Revo
                                 //ghi xuống step tiếp theo nếu chưa  chạy hết bước. Nếu chạy hết bước thì rết step chạy lại bước đầu tiên
                                 var nextStep = GlobalVariable.RevoRealtimeModel.Steps
                                         .FirstOrDefault(s =>
-                                            s.Enable == true &&
+                                            s.Enanble == true &&
                                             s.StartAt == null
                                         );
 
@@ -556,7 +556,7 @@ namespace Scada_TrackingTIme_Revo
 
                     var step = GlobalVariable.RevoRealtimeModel.Steps
                         .FirstOrDefault(s =>
-                            s.Enable == true &&
+                            s.Enanble == true &&
                             s.StartAt == null
                         );
 
@@ -667,7 +667,7 @@ namespace Scada_TrackingTIme_Revo
                     flowMain.Controls.Add(CreateColumnSpacer(40));
                 }
 
-                Color c = (bool)step.Enable ? Color.LightBlue : Color.Black;
+                Color c = (bool)step.Enanble ? Color.LightBlue : Color.Black;
 
                 Panel row = CreateStepRow(step);
 
@@ -679,7 +679,7 @@ namespace Scada_TrackingTIme_Revo
             //lấy step đầu tiên để cập nhật giao diện ngay khi load xong
             var stepF = GlobalVariable.RevoRealtimeModel
                 .Steps
-                .FirstOrDefault(x => x.Enable == true);
+                .FirstOrDefault(x => x.Enanble == true);
 
             UpdateStepUI(stepF, 1);
         }
@@ -701,8 +701,8 @@ namespace Scada_TrackingTIme_Revo
             lblIndex.TextAlign = ContentAlignment.MiddleCenter;
             lblIndex.Location = new Point(0, 5);
             lblIndex.Font = new Font("Microsoft Sans Serif", 20, FontStyle.Bold);
-            lblIndex.BackColor = (bool)step.Enable ? Color.LightBlue : Color.Black;
-            lblIndex.ForeColor = (bool)step.Enable ? Color.Black : Color.White;
+            lblIndex.BackColor = (bool)step.Enanble ? Color.LightBlue : Color.Black;
+            lblIndex.ForeColor = (bool)step.Enanble ? Color.Black : Color.White;
 
             // Thanh REVO
             Label lblStep = new Label();
@@ -711,8 +711,8 @@ namespace Scada_TrackingTIme_Revo
             lblStep.Width = 610;
             lblStep.Height = 58;
             lblStep.Location = new Point(60, 5);
-            lblStep.BackColor = (bool)step.Enable ? Color.LightBlue : Color.Black;
-            lblStep.ForeColor = (bool)step.Enable ? Color.Black : Color.White;
+            lblStep.BackColor = (bool)step.Enanble ? Color.LightBlue : Color.Black;
+            lblStep.ForeColor = (bool)step.Enanble ? Color.Black : Color.White;
             lblStep.TextAlign = ContentAlignment.TopLeft;
             lblStep.Font = new Font("Microsoft Sans Serif", 13, FontStyle.Regular);
 
@@ -817,7 +817,7 @@ namespace Scada_TrackingTIme_Revo
                     var dataLogs = new List<FT09_RevoDatalog>();
 
 
-                    foreach (var item in GlobalVariable.RevoRealtimeModel.Steps.Where(x => x.Enable == true))
+                    foreach (var item in GlobalVariable.RevoRealtimeModel.Steps.Where(x => x.Enanble == true))
                     {
                         var nl = new FT09_RevoDatalog()
                         {
