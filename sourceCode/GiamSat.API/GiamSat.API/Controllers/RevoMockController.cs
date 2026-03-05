@@ -68,7 +68,7 @@ namespace GiamSat.API.Controllers
                             StepName = $"{partPrefix}-{partNumber}",
                             StepConfig = $"{partPrefix}-{partNumber}|{pulVal}|{speedVal}|N",
                             Visible = true,
-                            Enable = true,
+                            Enanble = true,
                             Speed_Hz = speedVal,
                             SoLuongXung = pulVal,
                             StartAt = null,
@@ -108,7 +108,7 @@ namespace GiamSat.API.Controllers
                         else
                         {
                             // Disabled → Black
-                            step.Enable = false;
+                            step.Enanble = false;
                             step.Speed_Hz = 0;
                             step.SoLuongXung = 0;
                         }
@@ -302,7 +302,7 @@ namespace GiamSat.API.Controllers
                 // Set step đang chạy
                 step.StartAt = now.AddMinutes(-2); // Bắt đầu 2 phút trước
                 step.EndAt = now.AddMinutes(8); // Kết thúc sau 8 phút
-                step.Enable = true;
+                step.Enanble = true;
                 step.Visible = true;
 
                 // Set step trước đó đã hoàn thành
@@ -311,7 +311,7 @@ namespace GiamSat.API.Controllers
                 {
                     prevStep.StartAt = now.AddMinutes(-15);
                     prevStep.EndAt = now.AddMinutes(-2);
-                    prevStep.Enable = true;
+                    prevStep.Enanble = true;
                     prevStep.Visible = true;
                 }
 
