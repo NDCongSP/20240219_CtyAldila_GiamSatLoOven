@@ -181,7 +181,7 @@
             return "";
 
         // Enable = false → Black
-        if (step.Enanble.HasValue && step.Enanble.Value == false)
+        if (step.Enable.HasValue && step.Enable.Value == false)
         {
             return "step-disabled";
         }
@@ -192,7 +192,7 @@
             return "step-completed";
         }
 
-        // Đang chạy (có StartAt, chưa có EndAt) → Red
+        // Đang chạy (có StartAt, chưa có EndAt) → Green
         if (step.StartAt.HasValue && !step.EndAt.HasValue)
         {
             return "step-running";

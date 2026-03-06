@@ -63,7 +63,7 @@ namespace GiamSat.Models
         /// <summary>
         /// Cho phép chay hay không.
         /// </summary>
-        public bool? Enanble { get; set; } = false;
+        public bool? Enable { get; set; } = false;
 
         /// <summary>
         /// tốc độ, số vòng quay trên giây.

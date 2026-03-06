@@ -177,10 +177,10 @@
 }
 
 .step-running {
-    background-color: red;
-    /* Red - đang chạy */
+    background-color: #66bb6a;
+    /* Green - đang chạy */
     color: #ffffff;
-    border: 1px solid red;
+    border: 1px solid #43a047;
 }
 
 .step-running .step-number {

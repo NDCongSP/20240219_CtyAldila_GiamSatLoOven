@@ -133,7 +133,7 @@ namespace Scada_TrackingTIme_Revo
                     StepName = stepSplit[0],
                     StepConfig = value,
                     Visible = true,
-                    Enanble = gocQuay==0&& tocDo==0 ? false : true,
+                    Enable = gocQuay==0&& tocDo==0 ? false : true,
                     SoLuongXung = soXung,
                     Speed_Hz = speed_PulsePerSec,
                 });
