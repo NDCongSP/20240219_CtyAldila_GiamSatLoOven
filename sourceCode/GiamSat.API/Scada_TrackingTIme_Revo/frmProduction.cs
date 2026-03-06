@@ -917,24 +917,44 @@ namespace Scada_TrackingTIme_Revo
             var lastHour = currentHour.AddHours(-1);
 
 
-            // 3. Đếm ShaftNum giờ hiện tại
-            var currentCount = dbContext.FT09_RevoDatalogs
-                .Where(x => x.CreatedAt >= currentHour
-                         && x.CreatedAt < nextHour
-                         && x.ShaftNum != null)
-                .Select(x => x.ShaftNum)
-                .Distinct()
-                .Count();
+            //// 3. Đếm ShaftNum giờ hiện tại
+            //var currentCount = dbContext.FT09_RevoDatalogs
+            //    .Where(x => x.CreatedAt >= currentHour
+            //             && x.CreatedAt < nextHour
+            //             && x.ShaftNum != null)
+            //    .Select(x => x.ShaftNum)
+            //    .Distinct()
+            //    .Count();
 
 
-            // 4. Đếm ShaftNum giờ trước
-            var lastCount = dbContext.FT09_RevoDatalogs
-                .Where(x => x.CreatedAt >= lastHour
-                         && x.CreatedAt < currentHour
-                         && x.ShaftNum != null)
-                .Select(x => x.ShaftNum)
-                .Distinct()
-                .Count();
+            //// 4. Đếm ShaftNum giờ trước
+            //var lastCount = dbContext.FT09_RevoDatalogs
+            //    .Where(x => x.CreatedAt >= lastHour
+            //             && x.CreatedAt < currentHour
+            //             && x.ShaftNum != null)
+            //    .Select(x => x.ShaftNum)
+            //    .Distinct()
+            //    .Count();
+
+
+            // 3) Đếm theo giờ hiện tại:
+            //    Group theo ShaftNum trong window giờ hiện tại
+            //    và CHỈ giữ group mà TẤT CẢ các dòng đều có StartedAt & EndedAt khác null
+            var currentCount = await dbContext.FT09_RevoDatalogs
+                .Where(x => x.CreatedAt >= currentHour && x.CreatedAt < nextHour)
+                .GroupBy(x => x.ShaftNum!)
+                .Where(g => g.All(r => r.StartedAt != null && r.EndedAt != null))
+                .Select(g => g.Key)
+                .CountAsync();
+
+            // 4) Đếm theo giờ trước đó:
+            var lastCount = await dbContext.FT09_RevoDatalogs
+                .Where(x => x.CreatedAt >= lastHour && x.CreatedAt < currentHour)
+                .GroupBy(x => x.ShaftNum!)
+                .Where(g => g.All(r => r.StartedAt != null && r.EndedAt != null))
+                .Select(g => g.Key)
+                .CountAsync();
+
 
 
             // 5. Kết quả
