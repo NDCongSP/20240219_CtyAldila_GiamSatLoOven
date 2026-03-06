@@ -136,17 +136,17 @@ namespace GiamSat.UI.Pages
                     {
                         var revoId = g.Key;
                         var currentShafts = g
-                            .Where(x => x.StartedAt.HasValue
-                                     && x.StartedAt.Value >= currentHourStart
-                                     && x.StartedAt.Value < currentHourEnd
+                            .Where(x => x.CreatedAt.HasValue
+                                     && x.CreatedAt.Value >= currentHourStart
+                                     && x.CreatedAt.Value < currentHourEnd
                                      && x.ShaftNum.HasValue)
                             .Select(x => x.ShaftNum!.Value)
                             .Distinct().Count();
 
                         var prevShafts = g
-                            .Where(x => x.StartedAt.HasValue
-                                     && x.StartedAt.Value >= prevHourStart
-                                     && x.StartedAt.Value < currentHourStart
+                            .Where(x => x.CreatedAt.HasValue
+                                     && x.CreatedAt.Value >= prevHourStart
+                                     && x.CreatedAt.Value < currentHourStart
                                      && x.ShaftNum.HasValue)
                             .Select(x => x.ShaftNum!.Value)
                             .Distinct().Count();

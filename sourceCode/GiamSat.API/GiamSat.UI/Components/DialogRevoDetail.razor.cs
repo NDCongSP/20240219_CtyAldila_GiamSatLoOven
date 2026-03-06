@@ -78,17 +78,17 @@ namespace GiamSat.UI.Components
                     var records = result.Data.Where(x => x.RevoId == revoId).ToList();
 
                     _liveShaftCurrent = records
-                        .Where(x => x.StartedAt.HasValue
-                                 && x.StartedAt.Value >= currentHourStart
-                                 && x.StartedAt.Value < currentHourEnd
+                        .Where(x => x.CreatedAt.HasValue
+                                 && x.CreatedAt.Value >= currentHourStart
+                                 && x.CreatedAt.Value < currentHourEnd
                                  && x.ShaftNum.HasValue)
                         .Select(x => x.ShaftNum!.Value)
                         .Distinct().Count();
 
                     _liveShaftPrev = records
-                        .Where(x => x.StartedAt.HasValue
-                                 && x.StartedAt.Value >= prevHourStart
-                                 && x.StartedAt.Value < currentHourStart
+                        .Where(x => x.CreatedAt.HasValue
+                                 && x.CreatedAt.Value >= prevHourStart
+                                 && x.CreatedAt.Value < currentHourStart
                                  && x.ShaftNum.HasValue)
                         .Select(x => x.ShaftNum!.Value)
                         .Distinct().Count();
