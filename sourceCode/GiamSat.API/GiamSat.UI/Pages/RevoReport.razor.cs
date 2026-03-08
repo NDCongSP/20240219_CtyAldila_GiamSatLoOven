@@ -372,23 +372,24 @@ namespace GiamSat.UI.Pages
             }
 
             // By shaft - 1 dòng / 1 ShaftNum (tổng hợp)
+            // Chỉ tính những shaft mà TẤT CẢ records đều có StartedAt và EndedAt != null (đã hoàn thành)
             var shaftGroups = normalized
                 .Where(x => x.Row.ShaftNum.HasValue)
                 .GroupBy(x => x.Row.ShaftNum!.Value)
+                .Where(g => g.All(x => x.Row.StartedAt.HasValue && x.Row.EndedAt.HasValue))
                 .Select(g =>
                 {
                     var first = g.OrderBy(x => x.Started).First().Row;
-                    var start = g.Min(x => x.Row.StartedAt) ?? g.Min(x => x.Started);
-                    var end = g.Max(x => x.Row.EndedAt) ?? (DateTime?)null;
-                    var endFallback = end ?? start;
-                    var totalTime = endFallback - start;
+                    var start = g.Min(x => x.Row.StartedAt)!.Value;
+                    var end   = g.Max(x => x.Row.EndedAt)!.Value;
+                    var totalTime = end - start;
 
                     return new
                     {
-                        ShaftNum = g.Key,
-                        FirstRow = first,
+                        ShaftNum  = g.Key,
+                        FirstRow  = first,
                         StartedAt = start,
-                        EndedAt = end,
+                        EndedAt   = end,
                         TotalTime = totalTime,
                         StepCount = g.Count()
                     };
