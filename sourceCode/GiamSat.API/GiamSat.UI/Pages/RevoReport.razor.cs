@@ -372,29 +372,54 @@ namespace GiamSat.UI.Pages
             }
 
             // By shaft - 1 dòng / 1 ShaftNum (tổng hợp)
-            // Chỉ tính những shaft mà TẤT CẢ records đều có StartedAt và EndedAt != null (đã hoàn thành)
+            // Bao gồm: (1) shaft có TẤT CẢ records có StartedAt và EndedAt != null HOẶC
+            //           (2) REVO có RevoName (lowercase) chứa "auto rolling" — những shaft này chỉ có TotalTime, không có StartedAt/EndedAt
             var shaftGroups = normalized
                 .Where(x => x.Row.ShaftNum.HasValue)
                 .GroupBy(x => x.Row.ShaftNum!.Value)
-                .Where(g => g.All(x => x.Row.StartedAt.HasValue && x.Row.EndedAt.HasValue))
+                .Where(g =>
+                {
+                    var isAutoRolling = g.Any(x => (x.Row.RevoName ?? "").ToLowerInvariant().Contains("auto rolling"));
+                    if (isAutoRolling) return true;
+                    return g.All(x => x.Row.StartedAt.HasValue && x.Row.EndedAt.HasValue);
+                })
                 .Select(g =>
                 {
                     var first = g.OrderBy(x => x.Started).First().Row;
+                    var isAutoRolling = g.Any(x => (x.Row.RevoName ?? "").ToLowerInvariant().Contains("auto rolling"));
+
+                    if (isAutoRolling)
+                    {
+                        var totalSeconds = g.Sum(x => x.Row.TotalTime ?? 0);
+                        var totalTimeRolling = TimeSpan.FromSeconds(totalSeconds);
+                        var orderKey = g.Min(x => x.Started);
+                        return new
+                        {
+                            ShaftNum   = g.Key,
+                            FirstRow   = first,
+                            StartedAt  = (DateTime?)null,
+                            EndedAt    = (DateTime?)null,
+                            TotalTime  = totalTimeRolling,
+                            StepCount  = g.Count(),
+                            OrderKey   = orderKey
+                        };
+                    }
+
                     var start = g.Min(x => x.Row.StartedAt)!.Value;
                     var end   = g.Max(x => x.Row.EndedAt)!.Value;
                     var totalTime = end - start;
-
                     return new
                     {
-                        ShaftNum  = g.Key,
-                        FirstRow  = first,
-                        StartedAt = start,
-                        EndedAt   = end,
-                        TotalTime = totalTime,
-                        StepCount = g.Count()
+                        ShaftNum   = g.Key,
+                        FirstRow   = first,
+                        StartedAt  = (DateTime?)start,
+                        EndedAt    = (DateTime?)end,
+                        TotalTime  = totalTime,
+                        StepCount  = g.Count(),
+                        OrderKey   = start
                     };
                 })
-                .OrderBy(x => x.StartedAt)
+                .OrderBy(x => x.OrderKey)
                 .ToList();
 
             _shaftRows = new List<RevoShaftRow>();
@@ -402,12 +427,13 @@ namespace GiamSat.UI.Pages
             foreach (var g in shaftGroups)
             {
                 shaftIndex++;
+                var hourForBucket = g.StartedAt ?? g.OrderKey;
                 _shaftRows.Add(new RevoShaftRow
                 {
                     ShaftLabel = $"Shaft {shaftIndex}",
                     RevoName = g.FirstRow.RevoName,
-                    Hour = g.StartedAt,
-                    HourBucket = $"{g.StartedAt:HH}:00-{g.StartedAt.AddHours(1):HH}:00",
+                    Hour = hourForBucket,
+                    HourBucket = $"{hourForBucket:HH}:00-{hourForBucket.AddHours(1):HH}:00",
                     ShaftNo = shaftIndex,
                     Stt = shaftIndex,
                     ShaftNum = g.ShaftNum,
