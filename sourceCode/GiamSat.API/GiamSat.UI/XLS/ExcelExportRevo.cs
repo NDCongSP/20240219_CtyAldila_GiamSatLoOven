@@ -176,7 +176,7 @@ namespace GiamSat.UI
                             if (isAutoRolling)
                             {
                                 var totalSeconds = g.Sum(x => x.Row.TotalTime ?? 0);
-                                var totalTime = TimeSpan.FromSeconds(totalSeconds);
+                                var totalTimeRolling = TimeSpan.FromSeconds(totalSeconds);
                                 var orderKey = g.Min(x => x.Started);
                                 return new
                                 {
@@ -185,7 +185,7 @@ namespace GiamSat.UI
                                     StepCount   = g.Count(),
                                     StartedAt   = (DateTime?)null,
                                     EndedAt     = (DateTime?)null,
-                                    TotalTime   = totalTime,
+                                    TotalTime   = totalTimeRolling,
                                     OrderKey    = orderKey
                                 };
                             }
