@@ -372,51 +372,46 @@ namespace GiamSat.UI.Pages
             }
 
             // By shaft - 1 dòng / 1 ShaftNum (tổng hợp)
-            // Bao gồm: (1) shaft có TẤT CẢ records có StartedAt và EndedAt != null HOẶC
-            //           (2) REVO có RevoName (lowercase) chứa "auto rolling" — những shaft này chỉ có TotalTime, không có StartedAt/EndedAt
+            // Non auto rolling: min StartedAt, max EndedAt, Thời lượng = sum(Row.TotalTime). Không filter theo null.
+            // Auto rolling: bỏ qua StartedAt/EndedAt (hiển thị N/A), Thời lượng = sum(Row.TotalTime).
             var shaftGroups = normalized
                 .Where(x => x.Row.ShaftNum.HasValue)
                 .GroupBy(x => x.Row.ShaftNum!.Value)
-                .Where(g =>
-                {
-                    var isAutoRolling = g.Any(x => (x.Row.RevoName ?? "").ToLowerInvariant().Contains("auto rolling"));
-                    if (isAutoRolling) return true;
-                    return g.All(x => x.Row.StartedAt.HasValue && x.Row.EndedAt.HasValue);
-                })
                 .Select(g =>
                 {
                     var first = g.OrderBy(x => x.Started).First().Row;
                     var isAutoRolling = g.Any(x => (x.Row.RevoName ?? "").ToLowerInvariant().Contains("auto rolling"));
+                    var totalSeconds = g.Sum(x => x.Row.TotalTime ?? 0);
+                    var totalTime = totalSeconds > 0 ? TimeSpan.FromSeconds(totalSeconds) : TimeSpan.Zero;
+                    DateTime orderKey;
 
                     if (isAutoRolling)
                     {
-                        var totalSeconds = g.Sum(x => x.Row.TotalTime ?? 0);
-                        var totalTimeRolling = TimeSpan.FromSeconds(totalSeconds);
-                        var orderKey = g.Min(x => x.Started);
+                        orderKey = g.Min(x => x.Started);
                         return new
                         {
                             ShaftNum   = g.Key,
                             FirstRow   = first,
                             StartedAt  = (DateTime?)null,
                             EndedAt    = (DateTime?)null,
-                            TotalTime  = totalTimeRolling,
+                            TotalTime  = totalTime,
                             StepCount  = g.Count(),
                             OrderKey   = orderKey
                         };
                     }
 
-                    var start = g.Min(x => x.Row.StartedAt)!.Value;
-                    var end   = g.Max(x => x.Row.EndedAt)!.Value;
-                    var totalTime = end - start;
+                    var start = g.Min(x => x.Row.StartedAt);
+                    var end   = g.Max(x => x.Row.EndedAt);
+                    orderKey = start ?? g.Min(x => x.Started);
                     return new
                     {
                         ShaftNum   = g.Key,
                         FirstRow   = first,
-                        StartedAt  = (DateTime?)start,
-                        EndedAt    = (DateTime?)end,
+                        StartedAt  = start,
+                        EndedAt    = end,
                         TotalTime  = totalTime,
                         StepCount  = g.Count(),
-                        OrderKey   = start
+                        OrderKey   = orderKey
                     };
                 })
                 .OrderBy(x => x.OrderKey)

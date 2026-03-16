@@ -158,26 +158,21 @@ namespace GiamSat.UI
 
                     StyleHeader(ws, currentRow, colCount);
 
-                    // Cùng logic với UI RebuildView - group by ShaftNum; bao gồm shaft đã hoàn thành hoặc REVO "auto rolling" (chỉ TotalTime)
+                    // Cùng logic với UI RebuildView - group by ShaftNum; non-auto: min StartedAt, max EndedAt, Thời lượng = sum(TotalTime); auto rolling: chỉ sum TotalTime
                     var shaftRows = normalized
                         .Where(x => x.Row.ShaftNum.HasValue)
                         .GroupBy(x => x.Row.ShaftNum!.Value)
-                        .Where(g =>
-                        {
-                            var isAutoRolling = g.Any(x => (x.Row.RevoName ?? "").ToLowerInvariant().Contains("auto rolling"));
-                            if (isAutoRolling) return true;
-                            return g.All(x => x.Row.StartedAt.HasValue && x.Row.EndedAt.HasValue);
-                        })
                         .Select(g =>
                         {
                             var firstRow = g.OrderBy(x => x.Started).First().Row;
                             var isAutoRolling = g.Any(x => (x.Row.RevoName ?? "").ToLowerInvariant().Contains("auto rolling"));
+                            var totalSeconds = g.Sum(x => x.Row.TotalTime ?? 0);
+                            var totalTime = totalSeconds > 0 ? TimeSpan.FromSeconds(totalSeconds) : TimeSpan.Zero;
+                            DateTime orderKey;
 
                             if (isAutoRolling)
                             {
-                                var totalSeconds = g.Sum(x => x.Row.TotalTime ?? 0);
-                                var totalTimeRolling = TimeSpan.FromSeconds(totalSeconds);
-                                var orderKey = g.Min(x => x.Started);
+                                orderKey = g.Min(x => x.Started);
                                 return new
                                 {
                                     ShaftGuid   = g.Key,
@@ -185,23 +180,23 @@ namespace GiamSat.UI
                                     StepCount   = g.Count(),
                                     StartedAt   = (DateTime?)null,
                                     EndedAt     = (DateTime?)null,
-                                    TotalTime   = totalTimeRolling,
+                                    TotalTime   = totalTime,
                                     OrderKey    = orderKey
                                 };
                             }
 
-                            var start = g.Min(x => x.Row.StartedAt)!.Value;
-                            var end   = g.Max(x => x.Row.EndedAt)!.Value;
-                            var totalTime = end - start;
+                            var start = g.Min(x => x.Row.StartedAt);
+                            var end   = g.Max(x => x.Row.EndedAt);
+                            orderKey = start ?? g.Min(x => x.Started);
                             return new
                             {
                                 ShaftGuid   = g.Key,
                                 FirstRow    = firstRow,
                                 StepCount   = g.Count(),
-                                StartedAt   = (DateTime?)start,
-                                EndedAt     = (DateTime?)end,
+                                StartedAt   = start,
+                                EndedAt     = end,
                                 TotalTime   = totalTime,
-                                OrderKey    = start
+                                OrderKey    = orderKey
                             };
                         })
                         .OrderBy(x => x.OrderKey)
