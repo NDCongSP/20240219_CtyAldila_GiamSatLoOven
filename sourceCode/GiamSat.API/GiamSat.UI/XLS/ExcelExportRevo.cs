@@ -158,28 +158,48 @@ namespace GiamSat.UI
 
                     StyleHeader(ws, currentRow, colCount);
 
-                    // Cùng logic với UI RebuildView - group by ShaftNum Guid, chỉ lấy shaft đã hoàn thành (tất cả records có StartedAt + EndedAt != null)
+                    // Cùng logic với UI RebuildView - group by ShaftNum; non-auto: min StartedAt, max EndedAt, Thời lượng = sum(TotalTime); auto rolling: chỉ sum TotalTime
                     var shaftRows = normalized
                         .Where(x => x.Row.ShaftNum.HasValue)
                         .GroupBy(x => x.Row.ShaftNum!.Value)
-                        .Where(g => g.All(x => x.Row.StartedAt.HasValue && x.Row.EndedAt.HasValue))
                         .Select(g =>
                         {
-                            var firstRow  = g.OrderBy(x => x.Started).First().Row;
-                            var start     = g.Min(x => x.Row.StartedAt)!.Value;
-                            var end       = g.Max(x => x.Row.EndedAt)!.Value;
-                            var totalTime = end - start;
+                            var firstRow = g.OrderBy(x => x.Started).First().Row;
+                            var isAutoRolling = g.Any(x => (x.Row.RevoName ?? "").ToLowerInvariant().Contains("auto rolling"));
+                            var totalSeconds = g.Sum(x => x.Row.TotalTime ?? 0);
+                            var totalTime = totalSeconds > 0 ? TimeSpan.FromSeconds(totalSeconds) : TimeSpan.Zero;
+                            DateTime orderKey;
+
+                            if (isAutoRolling)
+                            {
+                                orderKey = g.Min(x => x.Started);
+                                return new
+                                {
+                                    ShaftGuid   = g.Key,
+                                    FirstRow    = firstRow,
+                                    StepCount   = g.Count(),
+                                    StartedAt   = (DateTime?)null,
+                                    EndedAt     = (DateTime?)null,
+                                    TotalTime   = totalTime,
+                                    OrderKey    = orderKey
+                                };
+                            }
+
+                            var start = g.Min(x => x.Row.StartedAt);
+                            var end   = g.Max(x => x.Row.EndedAt);
+                            orderKey = start ?? g.Min(x => x.Started);
                             return new
                             {
-                                ShaftGuid  = g.Key,
-                                FirstRow   = firstRow,
-                                StepCount  = g.Count(),
-                                StartedAt  = start,
-                                EndedAt    = end,
-                                TotalTime  = totalTime
+                                ShaftGuid   = g.Key,
+                                FirstRow    = firstRow,
+                                StepCount   = g.Count(),
+                                StartedAt   = start,
+                                EndedAt     = end,
+                                TotalTime   = totalTime,
+                                OrderKey    = orderKey
                             };
                         })
-                        .OrderBy(x => x.StartedAt)
+                        .OrderBy(x => x.OrderKey)
                         .ToList();
 
                     var outRow = currentRow + 1;
@@ -193,8 +213,8 @@ namespace GiamSat.UI
                         ws.Cell(outRow, 4).Value = r.FirstRow.Work ?? "N/A";
                         ws.Cell(outRow, 5).Value = r.FirstRow.Mandrel ?? "N/A";
                         ws.Cell(outRow, 6).Value = r.StepCount;
-                        ws.Cell(outRow, 7).Value = r.StartedAt.ToString("dd/MM/yyyy HH:mm:ss");
-                        ws.Cell(outRow, 8).Value = r.EndedAt.ToString("dd/MM/yyyy HH:mm:ss");
+                        ws.Cell(outRow, 7).Value = r.StartedAt.HasValue ? r.StartedAt.Value.ToString("dd/MM/yyyy HH:mm:ss") : "N/A";
+                        ws.Cell(outRow, 8).Value = r.EndedAt.HasValue ? r.EndedAt.Value.ToString("dd/MM/yyyy HH:mm:ss") : "N/A";
                         ws.Cell(outRow, 9).Value = FormatDuration(r.TotalTime);
                         outRow++;
                     }
