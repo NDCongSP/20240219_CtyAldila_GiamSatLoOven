@@ -99,6 +99,12 @@
   <ItemGroup>
     <Compile Include="ApplicationDbContext.cs" />
     <Compile Include="AsyncAutoResetEvent.cs" />
+    <Compile Include="frmAutoRolling.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAutoRolling.Designer.cs">
+      <DependentUpon>frmAutoRolling.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -118,6 +124,7 @@
       <DependentUpon>frmTest.cs</DependentUpon>
     </Compile>
     <Compile Include="GlobalVariable.cs" />
+    <Compile Include="Models\AutoRollingTagChangedModel.cs" />
     <Compile Include="Models\ColorModel.cs" />
     <Compile Include="Models\GroupShaftModel.cs" />
     <Compile Include="Models\MandrelModel.cs" />

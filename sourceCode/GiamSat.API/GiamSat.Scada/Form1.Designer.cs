@@ -39,9 +39,7 @@ namespace GiamSat.Scada
             this.label2 = new System.Windows.Forms.Label();
             this._labSriverStatus = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.easyLabel1 = new EasyScada.Winforms.Controls.EasyLabel();
             ((System.ComponentModel.ISupportInitialize)(this.easyDriverConnector1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.easyLabel1)).BeginInit();
             this.SuspendLayout();
             // 
             // easyDriverConnector1
@@ -124,23 +122,11 @@ namespace GiamSat.Scada
             this.label4.TabIndex = 6;
             this.label4.Text = "TT kết nối Driver:";
             // 
-            // easyLabel1
-            // 
-            this.easyLabel1.DisplayMode = EasyScada.Winforms.Controls.DisplayMode.Value;
-            this.easyLabel1.Location = new System.Drawing.Point(212, 199);
-            this.easyLabel1.Name = "easyLabel1";
-            this.easyLabel1.Size = new System.Drawing.Size(100, 23);
-            this.easyLabel1.StringFormat = null;
-            this.easyLabel1.TabIndex = 7;
-            this.easyLabel1.TagPath = "Local Station/Channel_Auto_Rolling_1/Device1/Part_Code";
-            this.easyLabel1.Text = "easyLabel1";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(337, 263);
-            this.Controls.Add(this.easyLabel1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this._labSriverStatus);
             this.Controls.Add(this.label2);
@@ -152,7 +138,6 @@ namespace GiamSat.Scada
             this.Name = "Form1";
             this.Text = "Oven Server";
             ((System.ComponentModel.ISupportInitialize)(this.easyDriverConnector1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.easyLabel1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -168,7 +153,6 @@ namespace GiamSat.Scada
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label _labSriverStatus;
         private System.Windows.Forms.Label label4;
-        private EasyScada.Winforms.Controls.EasyLabel easyLabel1;
     }
 }
 

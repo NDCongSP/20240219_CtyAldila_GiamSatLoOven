@@ -33,37 +33,5 @@ namespace GiamSat.Scada
                 action();
             }
         }
-
-        /// <summary>
-        /// Định dánh máy theo ID để truy cập và DB lây thông tin cấu hình của máy để hoạt động, lưu trữ data theo thông tin này.
-        /// </summary>
-        public static int RevoId { get; set; }
-
-        /// <summary>
-        /// Thong tin Paat, luu lai part dang chay de hien thi, luu tru data theo part, va truy xuat thong tin cau hinh theo part.
-        /// </summary>
-        public static string Part { get; set; }
-
-        ////chỉ lấy máy autorolling
-        //public static RevoConfigs RevoConfigs { get; set; } = new RevoConfigs();
-        //public static List<RevoRealtimeModel> RevoRealtimeModel { get; set; } = new List<RevoRealtimeModel>();
-
-        public static string DecodeGotString(int[] words)
-        {
-            List<byte> bytes = new List<byte>();
-
-            foreach (int w in words)
-            {
-                ushort word = (ushort)w;
-
-                byte low = (byte)(word & 0xFF);
-                byte high = (byte)(word >> 8);
-
-                if (low != 0) bytes.Add(low);
-                if (high != 0) bytes.Add(high);
-            }
-
-            return System.Text.Encoding.ASCII.GetString(bytes.ToArray());
-        }
     }
 }
