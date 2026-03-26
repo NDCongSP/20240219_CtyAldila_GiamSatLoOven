@@ -1,6 +1,6 @@
 {
   "ItemType": 0,
-  "ServerAddress": "127.0.0.1",
+  "ServerAddress": "192.168.1.100",
   "Port": 8800,
   "CommunicationMode": 0,
   "RefreshRate": 100,

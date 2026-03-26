@@ -48,6 +48,8 @@
             this._btnMaintenance = new System.Windows.Forms.Button();
             this._labTotalShaftLastHour = new System.Windows.Forms.Label();
             this._labShaftLastHour = new System.Windows.Forms.Label();
+            this.easyLabel1 = new EasyScada.Winforms.Controls.EasyLabel();
+            ((System.ComponentModel.ISupportInitialize)(this.easyLabel1)).BeginInit();
             this.SuspendLayout();
             // 
             // _lab
@@ -232,11 +234,23 @@
             this._labShaftLastHour.TabIndex = 20;
             this._labShaftLastHour.Text = "Total Shafts (-- – --)";
             // 
+            // easyLabel1
+            // 
+            this.easyLabel1.DisplayMode = EasyScada.Winforms.Controls.DisplayMode.Value;
+            this.easyLabel1.Location = new System.Drawing.Point(17, 94);
+            this.easyLabel1.Name = "easyLabel1";
+            this.easyLabel1.Size = new System.Drawing.Size(100, 23);
+            this.easyLabel1.StringFormat = null;
+            this.easyLabel1.TabIndex = 21;
+            this.easyLabel1.TagPath = "Local Station/Channel_Revo_1/Device1/TOC_DO_HZ";
+            this.easyLabel1.Text = "easyLabel1";
+            // 
             // frmProduction
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1350, 729);
+            this.Controls.Add(this.easyLabel1);
             this.Controls.Add(this._labShaftLastHour);
             this.Controls.Add(this._labTotalShaftLastHour);
             this.Controls.Add(this._btnMaintenance);
@@ -259,6 +273,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmProduction";
             this.Text = "REVO- Production";
+            ((System.ComponentModel.ISupportInitialize)(this.easyLabel1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -285,6 +300,7 @@
         private System.Windows.Forms.Button _btnMaintenance;
         private System.Windows.Forms.Label _labShaftLastHour;
         private System.Windows.Forms.Label _labTotalShaftLastHour;
+        private EasyScada.Winforms.Controls.EasyLabel easyLabel1;
     }
 }
 

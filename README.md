@@ -80,10 +80,10 @@ máy này cần lập trình PLC
 -------------------------------------------------------------------------------------------
 Auto rolling
     |-Auto_Rolling_1
-    |   |-IP:192.168.1.226
+    |   |-IP:192.168.11.11
     |-Auto_Rolling_2
-    |   |-IP:192.168.1.227
+    |   |-IP:192.168.11.12
     |-Auto_Rolling_3
-    |   |-IP:192.168.1.228
+    |   |-IP:192.168.11.13
 
 máy auto rolling đac có HMI tính toán các thông số chạy máy hết rồi, nên chỉ cẩn kết nối với HMI để lấy thông tin lên lưu vào DB
