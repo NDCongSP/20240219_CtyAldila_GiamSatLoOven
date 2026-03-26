@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.5.11605.296 insiders
+VisualStudioVersion = 18.5.11605.296
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GiamSat.API", "GiamSat.API\GiamSat.API.csproj", "{60F76239-4766-419B-9377-1F8A4490B282}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scada_TrackingTIme_Revo", "Scada_TrackingTIme_Revo\Scada_TrackingTIme_Revo.csproj", "{A86E842F-3680-4680-BA45-3A0246CEF206}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GiamSat.Scada", "GiamSat.Scada\GiamSat.Scada.csproj", "{366818F3-FE70-4B7D-94C0-67233F486C9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scada_TrackingTime_AutoRolling", "Scada_TrackingTime_AutoRolling\Scada_TrackingTime_AutoRolling.csproj", "{6C731249-3FF2-425F-872B-A64169E22A3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{366818F3-FE70-4B7D-94C0-67233F486C9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{366818F3-FE70-4B7D-94C0-67233F486C9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{366818F3-FE70-4B7D-94C0-67233F486C9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C731249-3FF2-425F-872B-A64169E22A3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C731249-3FF2-425F-872B-A64169E22A3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C731249-3FF2-425F-872B-A64169E22A3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C731249-3FF2-425F-872B-A64169E22A3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +60,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{A86E842F-3680-4680-BA45-3A0246CEF206} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{366818F3-FE70-4B7D-94C0-67233F486C9B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{6C731249-3FF2-425F-872B-A64169E22A3C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8DEFC2AB-C8A9-4B7D-8A6E-F63904493042}

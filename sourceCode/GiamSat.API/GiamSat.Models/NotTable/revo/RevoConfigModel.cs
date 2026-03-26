@@ -17,7 +17,7 @@ namespace GiamSat.Models
 
         public string? Name { get; set; }
 
-        public string? Path { get; set; }
+        public string Path { get; set; }
 
         public string? ConstringAccessDb { get; set; }
 
