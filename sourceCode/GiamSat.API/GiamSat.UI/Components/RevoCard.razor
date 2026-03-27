@@ -80,7 +80,11 @@
                         <div class="step-number">@stepNumber</div>
                         <div class="step-content">
                             <div class="step-name">@(step.StepName ?? $"REVO-STEP-{step.StepIndex}")</div>
-                            @if (step.StartAt.HasValue && step.EndAt.HasValue && step.TotalRunTime.HasValue && step.TotalRunTime.Value > 0)
+                            @if (IsAutoRollingMode())
+                            {
+                                <div class="step-runtime">@FormatRunTime(step.TotalRunTime ?? 0)</div>
+                            }
+                            else if (step.StartAt.HasValue && step.EndAt.HasValue && step.TotalRunTime.HasValue && step.TotalRunTime.Value > 0)
                             {
                                 <div class="step-runtime">@step.StartAt.Value.ToString("mm:ss") → @step.EndAt.Value.ToString("mm:ss") · @($"{step.TotalRunTime.Value:F0}s")</div>
                             }
@@ -209,6 +213,16 @@
         var ts = System.TimeSpan.FromSeconds(totalSeconds);
         if (ts.TotalHours >= 1) return $"{(int)ts.TotalHours}h{ts.Minutes:D2}m";
         return $"{ts.Minutes}m{ts.Seconds:D2}s";
+    }
+
+    private bool IsAutoRollingMode()
+    {
+        var revo = RevoData.RevoName ?? string.Empty;
+        var work = RevoData.Work ?? string.Empty;
+        return revo.Contains("auto rolling", global::System.StringComparison.OrdinalIgnoreCase)
+            || work.Contains("auto rolling", global::System.StringComparison.OrdinalIgnoreCase)
+            || revo.Replace(" ", string.Empty).Contains("autorolling", global::System.StringComparison.OrdinalIgnoreCase)
+            || work.Replace(" ", string.Empty).Contains("autorolling", global::System.StringComparison.OrdinalIgnoreCase);
     }
 }
 
