@@ -1,0 +1,31 @@
+Device Data Transfer
+Block Number,26
+
+Device Type,Points,Source Device,Destination Device,Comment,Offset
+
+Signed BIN16,1,"D8027","@2 400026",PartName8,None   
+Signed BIN16,1,"D8026","@2 400025",PartName7,None   
+Signed BIN16,1,"D8025","@2 400024",PartName6,None   
+Signed BIN16,1,"D8024","@2 400023",PartName5,None   
+Signed BIN16,1,"D8023","@2 400022",PartName4,None   
+Signed BIN16,1,"D8022","@2 400021",PartName3,None   
+Signed BIN16,1,"D8021","@2 400020",PartName2,None   
+Signed BIN16,1,"D8020","@2 400019",PartName1,None   
+Signed BIN16,1,"D685","@2 400018",TimeRunStep15,None   
+Signed BIN16,1,"D684","@2 400017",TimeRunStep14,None   
+Signed BIN16,1,"D683","@2 400016",TimeRunStep13,None   
+Signed BIN16,1,"D682","@2 400015",TimeRunStep12,None   
+Signed BIN16,1,"D681","@2 400014",TimeRunStep11,None   
+Signed BIN16,1,"D680","@2 400013",TimeRunStep10,None   
+Signed BIN16,1,"D679","@2 400012",TimeRunStep9,None   
+Signed BIN16,1,"D678","@2 400011",TimeRunStep8,None   
+Unsigned BIN16,1,"D677","@2 400010",TimeRunStep7,None   
+Unsigned BIN16,1,"D676","@2 400009",TimeRunStep6,None   
+Unsigned BIN16,1,"D675","@2 400008",TimeRunStep5,None   
+Unsigned BIN16,1,"D674","@2 400007",TimeRunStep4,None   
+Unsigned BIN16,1,"D673","@2 400006",TimeRunStep3,None   
+Unsigned BIN16,1,"D672","@2 400005",TimeRunStep2,None   
+Unsigned BIN16,1,"D671","@2 400004",TimeRunStep1,None   
+Signed BIN16,1,"D1953","@2 400003",StepRun,None   
+Unsigned BIN16,1,"D10520","@2 400002",RecipeSettingStep,None   
+Unsigned BIN16,1,"D162","@2 400001",Part,None   

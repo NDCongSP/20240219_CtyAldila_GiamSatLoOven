@@ -1,10 +1,10 @@
 {
   "ItemType": 0,
-  "ServerAddress": "192.168.1.220",
+  "ServerAddress": "192.168.1.100",
   "Port": 8800,
   "CommunicationMode": 0,
   "RefreshRate": 100,
-  "CreatedDate": "2026-01-26T22:54:57.8333865+07:00",
+  "CreatedDate": "2026-03-26T21:05:19.1053627+07:00",
   "Username": null,
   "Password": null,
   "Childs": [
@@ -22,7 +22,7 @@
           "Name": "Channel_Revo_1",
           "Path": "Local Station/Channel_Revo_1",
           "Description": null,
-          "DisplayInfo": "ModbusTCP - 192.168.1.220:502",
+          "DisplayInfo": "ModbusTCP - 192.168.1.100:502",
           "Error": null,
           "ConnectionStatus": 0,
           "Childs": [
@@ -45,7 +45,7 @@
                   "ConnectionStatus": 0,
                   "Childs": [],
                   "Properties": {
-                    "DataType": "Word",
+                    "DataType": "DWord",
                     "Address": "404097"
                   }
                 },
@@ -59,7 +59,7 @@
                   "ConnectionStatus": 0,
                   "Childs": [],
                   "Properties": {
-                    "DataType": "Word",
+                    "DataType": "DWord",
                     "Address": "404099"
                   }
                 },
@@ -445,7 +445,7 @@
                   "ItemType": 6,
                   "Name": "TIME_MOTOR_RUN_MS",
                   "Path": "Local Station/Channel_Revo_1/Device1/TIME_MOTOR_RUN_MS",
-                  "Description": "Thoi gian chay cua dong co = toc do/goc quay . d2/d0",
+                  "Description": "D4. Thoi gian chay cua dong co = toc do/goc quay . d2/d0",
                   "DisplayInfo": null,
                   "Error": null,
                   "ConnectionStatus": 0,
@@ -736,7 +736,7 @@
             }
           ],
           "Properties": {
-            "IpAddress": "192.168.1.220",
+            "IpAddress": "192.168.1.100",
             "Port": "502",
             "DelayBetweenPool": "5",
             "ScanRate": "100"

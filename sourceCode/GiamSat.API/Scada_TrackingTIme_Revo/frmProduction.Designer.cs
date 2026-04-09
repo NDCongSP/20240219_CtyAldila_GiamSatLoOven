@@ -48,6 +48,8 @@
             this._btnMaintenance = new System.Windows.Forms.Button();
             this._labTotalShaftLastHour = new System.Windows.Forms.Label();
             this._labShaftLastHour = new System.Windows.Forms.Label();
+            this.easyLabel1 = new EasyScada.Winforms.Controls.EasyLabel();
+            ((System.ComponentModel.ISupportInitialize)(this.easyLabel1)).BeginInit();
             this.SuspendLayout();
             // 
             // _lab
@@ -130,9 +132,9 @@
             this._labRev.ForeColor = System.Drawing.SystemColors.Highlight;
             this._labRev.Location = new System.Drawing.Point(575, 20);
             this._labRev.Name = "_labRev";
-            this._labRev.Size = new System.Drawing.Size(25, 25);
+            this._labRev.Size = new System.Drawing.Size(26, 25);
             this._labRev.TabIndex = 9;
-            this._labRev.Text = "B";
+            this._labRev.Text = "--";
             // 
             // _labShaftCurent
             // 
@@ -150,9 +152,9 @@
             this._labTotalShaftCurrentHour.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._labTotalShaftCurrentHour.Location = new System.Drawing.Point(640, 64);
             this._labTotalShaftCurrentHour.Name = "_labTotalShaftCurrentHour";
-            this._labTotalShaftCurrentHour.Size = new System.Drawing.Size(23, 25);
+            this._labTotalShaftCurrentHour.Size = new System.Drawing.Size(26, 25);
             this._labTotalShaftCurrentHour.TabIndex = 11;
-            this._labTotalShaftCurrentHour.Text = "0";
+            this._labTotalShaftCurrentHour.Text = "--";
             // 
             // _labMandrel
             // 
@@ -160,9 +162,9 @@
             this._labMandrel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._labMandrel.Location = new System.Drawing.Point(892, 20);
             this._labMandrel.Name = "_labMandrel";
-            this._labMandrel.Size = new System.Drawing.Size(62, 25);
+            this._labMandrel.Size = new System.Drawing.Size(26, 25);
             this._labMandrel.TabIndex = 13;
-            this._labMandrel.Text = "M219";
+            this._labMandrel.Text = "--";
             // 
             // label8
             // 
@@ -180,9 +182,9 @@
             this._labMandrelStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._labMandrelStart.Location = new System.Drawing.Point(892, 64);
             this._labMandrelStart.Name = "_labMandrelStart";
-            this._labMandrelStart.Size = new System.Drawing.Size(39, 25);
+            this._labMandrelStart.Size = new System.Drawing.Size(26, 25);
             this._labMandrelStart.TabIndex = 15;
-            this._labMandrelStart.Text = "4.5";
+            this._labMandrelStart.Text = "--";
             // 
             // label10
             // 
@@ -216,11 +218,11 @@
             this._labTotalShaftLastHour.BackColor = System.Drawing.Color.Red;
             this._labTotalShaftLastHour.Font = new System.Drawing.Font("Microsoft Sans Serif", 40F, System.Drawing.FontStyle.Bold);
             this._labTotalShaftLastHour.ForeColor = System.Drawing.Color.White;
-            this._labTotalShaftLastHour.Location = new System.Drawing.Point(1079, 31);
+            this._labTotalShaftLastHour.Location = new System.Drawing.Point(1079, 37);
             this._labTotalShaftLastHour.Name = "_labTotalShaftLastHour";
             this._labTotalShaftLastHour.Size = new System.Drawing.Size(258, 68);
             this._labTotalShaftLastHour.TabIndex = 19;
-            this._labTotalShaftLastHour.Text = "1000";
+            this._labTotalShaftLastHour.Text = "--";
             this._labTotalShaftLastHour.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // _labShaftLastHour
@@ -230,13 +232,25 @@
             this._labShaftLastHour.Name = "_labShaftLastHour";
             this._labShaftLastHour.Size = new System.Drawing.Size(258, 25);
             this._labShaftLastHour.TabIndex = 20;
-            this._labShaftLastHour.Text = "Total Shafts (13:00–13:59)";
+            this._labShaftLastHour.Text = "Total Shafts (-- – --)";
+            // 
+            // easyLabel1
+            // 
+            this.easyLabel1.DisplayMode = EasyScada.Winforms.Controls.DisplayMode.Value;
+            this.easyLabel1.Location = new System.Drawing.Point(17, 94);
+            this.easyLabel1.Name = "easyLabel1";
+            this.easyLabel1.Size = new System.Drawing.Size(100, 23);
+            this.easyLabel1.StringFormat = null;
+            this.easyLabel1.TabIndex = 21;
+            this.easyLabel1.TagPath = "Local Station/Channel_Revo_1/Device1/TOC_DO_HZ";
+            this.easyLabel1.Text = "easyLabel1";
             // 
             // frmProduction
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1350, 729);
+            this.Controls.Add(this.easyLabel1);
             this.Controls.Add(this._labShaftLastHour);
             this.Controls.Add(this._labTotalShaftLastHour);
             this.Controls.Add(this._btnMaintenance);
@@ -259,6 +273,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmProduction";
             this.Text = "REVO- Production";
+            ((System.ComponentModel.ISupportInitialize)(this.easyLabel1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -285,6 +300,7 @@
         private System.Windows.Forms.Button _btnMaintenance;
         private System.Windows.Forms.Label _labShaftLastHour;
         private System.Windows.Forms.Label _labTotalShaftLastHour;
+        private EasyScada.Winforms.Controls.EasyLabel easyLabel1;
     }
 }
 

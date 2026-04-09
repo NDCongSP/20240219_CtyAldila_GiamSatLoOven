@@ -78,12 +78,18 @@ Revo
 máy này cần lập trình PLC
 đọc part word từ file access, sau đó lấy thồn tin về góc quay và tốc độ quay/2 truyền xuống PLC hoạt động. rồi lấy thông tin phản hồi START/STOP STEP từ PLC để log vào DB thời gian chạy dừng của các bước theo PART + WORK
 -------------------------------------------------------------------------------------------
-Auto rolling
-    |-Auto_Rolling_1
-    |   |-IP:192.168.1.226
-    |-Auto_Rolling_2
-    |   |-IP:192.168.1.227
-    |-Auto_Rolling_3
-    |   |-IP:192.168.1.228
+Auto rolling: HMI GOT2000, PLC-Q series
+    |-Auto_Rolling_1: AUTO_ROLLING_3073_6_2_2024
+        |-HMI:192.168.11.11
+        |-PLC: 192.168.11.14
+        |-HMI nhỏ: 192.168.11.17
+    |-Auto_Rolling_2: AUTO_ROLLING_3082_6_2_2024
+        |-HMI:192.168.11.12
+        |-PLC: 192.168.11.15
+        |-HMI nhỏ: 192.168.11.18
+    |-Auto_Rolling_3: AUTO_ROLLING_3083_6_2_2024
+        |-HMI:192.168.11.13
+        |-PLC: 192.168.11.16
+        |-HMI nhỏ: 192.168.11.19
 
 máy auto rolling đac có HMI tính toán các thông số chạy máy hết rồi, nên chỉ cẩn kết nối với HMI để lấy thông tin lên lưu vào DB
