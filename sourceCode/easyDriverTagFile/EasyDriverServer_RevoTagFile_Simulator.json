@@ -1,5 +1,5 @@
 {
-  "ProjectPath": "D:\\MyCompany\\8.SourceCode\\3.Projects\\20240219_CtyAldila_GiamSatLoOven\\sourceCode\\easyDriverTagFile\\EasyDriverServer_RevoTagFile_PRD.json",
+  "ProjectPath": "D:\\MyCompany\\8.SourceCode\\3.Projects\\20240219_CtyAldila_GiamSatLoOven\\sourceCode\\easyDriverTagFile\\EasyDriverServer_RevoTagFile_Simulator.json",
   "Username": null,
   "Password": null,
   "ParameterContainer": null,
@@ -11,7 +11,7 @@
   "IsReadOnly": true,
   "Enabled": true,
   "CreatedDate": "2026-01-25T10:38:22.5925922+07:00",
-  "ModifiedDate": "2026-04-09T18:36:15.0219909+07:00",
+  "ModifiedDate": "2026-04-09T18:41:33.9235554+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -31,12 +31,12 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-01-11T13:39:10.08618+07:00",
-  "ModifiedDate": "2026-04-09T18:36:15.0219909+07:00",
+  "ModifiedDate": "2026-04-09T18:41:33.9235554+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
   "Parameters": {
-    "IpAddress": "192.168.1.220",
+    "IpAddress": "192.168.1.100",
     "Port": "502",
     "DelayBetweenPool": "5",
     "ScanRate": "100"
@@ -51,7 +51,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-01-11T13:39:22.309004+07:00",
-  "ModifiedDate": "2026-04-09T18:36:15.0219909+07:00",
+  "ModifiedDate": "2026-04-09T18:41:33.9235554+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -87,7 +87,7 @@
     "Address": "404097"
   }
 },
-  "Address": "404097",
+  "Address": "400001",
   "DataTypeName": "DWord",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -117,7 +117,7 @@
     "Address": "404099"
   }
 },
-  "Address": "404099",
+  "Address": "400002",
   "DataTypeName": "DWord",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -147,7 +147,7 @@
     "Address": "4099"
   }
 },
-  "Address": "4099",
+  "Address": "1",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -177,7 +177,7 @@
     "Address": "4100"
   }
 },
-  "Address": "4100",
+  "Address": "2",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -207,7 +207,7 @@
     "Address": "4101"
   }
 },
-  "Address": "4101",
+  "Address": "3",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -237,7 +237,7 @@
     "Address": "4102"
   }
 },
-  "Address": "4102",
+  "Address": "4",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -267,7 +267,7 @@
     "Address": "4103"
   }
 },
-  "Address": "4103",
+  "Address": "5",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -297,7 +297,7 @@
     "Address": "4104"
   }
 },
-  "Address": "4104",
+  "Address": "6",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -327,7 +327,7 @@
     "Address": "4107"
   }
 },
-  "Address": "4107",
+  "Address": "7",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -357,7 +357,7 @@
     "Address": "4118"
   }
 },
-  "Address": "4118",
+  "Address": "8",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -387,7 +387,7 @@
     "Address": "4119"
   }
 },
-  "Address": "4119",
+  "Address": "9",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -417,7 +417,7 @@
     "Address": "4120"
   }
 },
-  "Address": "4120",
+  "Address": "10",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -447,7 +447,7 @@
     "Address": "4121"
   }
 },
-  "Address": "4121",
+  "Address": "11",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -477,7 +477,7 @@
     "Address": "4122"
   }
 },
-  "Address": "4122",
+  "Address": "12",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -507,7 +507,7 @@
     "Address": "4123"
   }
 },
-  "Address": "4123",
+  "Address": "13",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -537,7 +537,7 @@
     "Address": "4124"
   }
 },
-  "Address": "4124",
+  "Address": "14",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -567,7 +567,7 @@
     "Address": "4125"
   }
 },
-  "Address": "4125",
+  "Address": "15",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -597,7 +597,7 @@
     "Address": "4126"
   }
 },
-  "Address": "4126",
+  "Address": "16",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -627,7 +627,7 @@
     "Address": "4127"
   }
 },
-  "Address": "4127",
+  "Address": "17",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -657,7 +657,7 @@
     "Address": "404101"
   }
 },
-  "Address": "404101",
+  "Address": "400005",
   "DataTypeName": "Word",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -687,7 +687,7 @@
     "Address": "61441"
   }
 },
-  "Address": "61441",
+  "Address": "18",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -717,7 +717,7 @@
     "Address": "61442"
   }
 },
-  "Address": "61442",
+  "Address": "19",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -747,7 +747,7 @@
     "Address": "61443"
   }
 },
-  "Address": "61443",
+  "Address": "20",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -777,7 +777,7 @@
     "Address": "61444"
   }
 },
-  "Address": "61444",
+  "Address": "21",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -807,7 +807,7 @@
     "Address": "61445"
   }
 },
-  "Address": "61445",
+  "Address": "22",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -837,7 +837,7 @@
     "Address": "61446"
   }
 },
-  "Address": "61446",
+  "Address": "23",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -867,7 +867,7 @@
     "Address": "61447"
   }
 },
-  "Address": "61447",
+  "Address": "24",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -897,7 +897,7 @@
     "Address": "61448"
   }
 },
-  "Address": "61448",
+  "Address": "25",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -927,7 +927,7 @@
     "Address": "4105"
   }
 },
-  "Address": "4105",
+  "Address": "26",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -957,7 +957,7 @@
     "Address": "4106"
   }
 },
-  "Address": "4106",
+  "Address": "27",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -987,7 +987,7 @@
     "Address": "4097"
   }
 },
-  "Address": "4097",
+  "Address": "28",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -1017,7 +1017,7 @@
     "Address": "4128"
   }
 },
-  "Address": "4128",
+  "Address": "29",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -1044,7 +1044,7 @@
   "DisplayParameters": null,
   "Parameters": {}
 },
-  "Address": "4137",
+  "Address": "30",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 1,
@@ -1071,7 +1071,7 @@
   "DisplayParameters": null,
   "Parameters": {}
 },
-  "Address": "4138",
+  "Address": "31",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 1,
@@ -1098,7 +1098,7 @@
   "DisplayParameters": null,
   "Parameters": {}
 },
-  "Address": "4139",
+  "Address": "32",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 1,
