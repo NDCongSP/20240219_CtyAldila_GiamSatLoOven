@@ -152,6 +152,7 @@ namespace GiamSat.UI.Pages
                 Path = item.Path,
                 ConstringAccessDb = item.ConstringAccessDb,
                 Pulse_Rev = item.Pulse_Rev,
+                Pulse_rev_Offset = item.Pulse_rev_Offset,
                 IntervalResetShaft = item.IntervalResetShaft,
                 SaveMode = item.SaveMode
             };

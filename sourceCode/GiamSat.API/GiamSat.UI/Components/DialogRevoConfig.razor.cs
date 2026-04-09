@@ -26,6 +26,7 @@ namespace GiamSat.UI.Components
                 Path = Model.Path,
                 ConstringAccessDb = Model.ConstringAccessDb,
                 Pulse_Rev = Model.Pulse_Rev,
+                Pulse_rev_Offset = Model.Pulse_rev_Offset,
                 IntervalResetShaft = Model.IntervalResetShaft,
                 SaveMode = Model.SaveMode
             };
