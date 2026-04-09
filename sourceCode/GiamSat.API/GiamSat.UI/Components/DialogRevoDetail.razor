@@ -68,7 +68,11 @@
                             <div class="step-number-detail">@stepNumber</div>
                             <div class="step-header-info">
                                 <span class="step-name-detail">@(step.StepName ?? $"REVO-STEP-{step.StepIndex}")</span>
-                                @if (step.StartAt.HasValue && step.EndAt.HasValue)
+                                @if (IsAutoRollingMode())
+                                {
+                                    <span class="step-time-detail">@FormatRunTime(step.TotalRunTime ?? 0)</span>
+                                }
+                                else if (step.StartAt.HasValue && step.EndAt.HasValue)
                                 {
                                     <span class="step-time-detail">@step.StartAt.Value.ToString("mm:ss") → @step.EndAt.Value.ToString("mm:ss") · @($"{(step.TotalRunTime ?? 0):F0}s")</span>
                                 }

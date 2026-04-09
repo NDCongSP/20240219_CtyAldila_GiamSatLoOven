@@ -139,7 +139,9 @@ namespace GiamSat.UI.Pages
                             ShaftNum = x.ShaftNum,
                             TotalTime = x.TotalTime
                         })
-                        .OrderBy(x => x.StartedAt ?? x.CreatedAt ?? DateTime.MinValue)
+                        .OrderBy(x => x.ShaftNum ?? Guid.Empty)
+                        .ThenBy(x => x.StepId ?? 0)
+                        .ThenBy(x => x.StartedAt ?? x.CreatedAt ?? DateTime.MinValue)
                         .ToList();
 
                     RebuildView();
@@ -325,11 +327,17 @@ namespace GiamSat.UI.Pages
                 .OrderBy(x => x.Started)
                 .Select(x =>
                 {
+                    var isAutoRolling = IsAutoRolling(x.Row);
                     var durationText = "N/A";
-                    if (x.Row.StartedAt.HasValue && x.Row.EndedAt.HasValue)
+                    if (isAutoRolling)
+                    {
+                        var total = x.Row.TotalTime ?? 0;
+                        durationText = total > 0 ? FormatDuration(TimeSpan.FromSeconds(total)) : "N/A";
+                    }
+                    else if (x.Row.StartedAt.HasValue && x.Row.EndedAt.HasValue)
                     {
                         var dur = x.Row.EndedAt.Value - x.Row.StartedAt.Value;
-                        durationText = $"{(int)dur.TotalHours:D2}:{dur.Minutes:D2}:{dur.Seconds:D2}";
+                        durationText = FormatDuration(dur);
                     }
                     else if (x.Row.StartedAt.HasValue && !x.Row.EndedAt.HasValue)
                     {
@@ -353,9 +361,10 @@ namespace GiamSat.UI.Pages
                         Rev = x.Row.Rev,
                         Mandrel = x.Row.Mandrel,
                         StepDisplay = $"{stepName} ({stepIdText})",
-                        StartedAt = x.Row.StartedAt,
-                        EndedAt = x.Row.EndedAt,
+                        StartedAt = isAutoRolling ? null : x.Row.StartedAt,
+                        EndedAt = isAutoRolling ? null : x.Row.EndedAt,
                         DurationText = durationText,
+                        IsAutoRolling = isAutoRolling,
                         Stt = 0
                     };
                 })
@@ -380,7 +389,7 @@ namespace GiamSat.UI.Pages
                 .Select(g =>
                 {
                     var first = g.OrderBy(x => x.Started).First().Row;
-                    var isAutoRolling = g.Any(x => (x.Row.RevoName ?? "").ToLowerInvariant().Contains("auto rolling"));
+                    var isAutoRolling = g.Any(x => IsAutoRolling(x.Row));
                     var totalSeconds = g.Sum(x => x.Row.TotalTime ?? 0);
                     var totalTime = totalSeconds > 0 ? TimeSpan.FromSeconds(totalSeconds) : TimeSpan.Zero;
                     DateTime orderKey;
@@ -447,10 +456,22 @@ namespace GiamSat.UI.Pages
                 .GroupBy(x => x.Hour)
                 .Select(g =>
                 {
-                    var start = g.Min(x => x.Row.StartedAt) ?? g.Min(x => x.Started);
-                    var end = g.Max(x => x.Row.EndedAt) ?? (DateTime?)null;
-                    var endFallback = end ?? start;
-                    var totalHours = (endFallback - start).TotalHours;
+                    var autoRows = g.Where(x => IsAutoRolling(x.Row)).ToList();
+                    var nonAutoRows = g.Where(x => !IsAutoRolling(x.Row)).ToList();
+                    var isAutoOnly = nonAutoRows.Count == 0 && autoRows.Count > 0;
+
+                    var start = isAutoOnly
+                        ? (DateTime?)null
+                        : nonAutoRows.Select(x => x.Row.StartedAt).Where(x => x.HasValue).DefaultIfEmpty(g.Min(x => x.Started)).Min();
+
+                    var end = isAutoOnly
+                        ? (DateTime?)null
+                        : nonAutoRows.Select(x => x.Row.EndedAt).Where(x => x.HasValue).DefaultIfEmpty(null).Max();
+
+                    var totalSeconds = g.Sum(x => x.Row.TotalTime ?? 0);
+                    var totalTime = totalSeconds > 0
+                        ? TimeSpan.FromSeconds(totalSeconds)
+                        : TimeSpan.Zero;
                     var shaftCount = g.Select(x => x.Row.ShaftNum).Where(x => x.HasValue).Select(x => x!.Value).Distinct().Count();
 
                     return new RevoHourRow
@@ -460,12 +481,25 @@ namespace GiamSat.UI.Pages
                         ShaftCount = shaftCount,
                         StartedAt = start,
                         EndedAt = end,
-                        TotalHours = totalHours
+                        TotalTime = totalTime
                     };
                 })
                 .OrderBy(x => x.StartedAt ?? DateTime.MinValue)
                 .ToList();
         }
+
+        private static bool IsAutoRolling(FT09_RevoDatalog row)
+        {
+            var revo = row.RevoName ?? string.Empty;
+            var work = row.Work ?? string.Empty;
+            return revo.Contains("auto rolling", StringComparison.OrdinalIgnoreCase)
+                || work.Contains("auto rolling", StringComparison.OrdinalIgnoreCase)
+                || revo.Replace(" ", string.Empty).Contains("autorolling", StringComparison.OrdinalIgnoreCase)
+                || work.Replace(" ", string.Empty).Contains("autorolling", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string FormatDuration(TimeSpan ts)
+            => $"{(int)ts.TotalHours:D2}:{ts.Minutes:D2}:{ts.Seconds:D2}";
 
         public enum RevoReportMode
         {
@@ -497,6 +531,7 @@ namespace GiamSat.UI.Pages
             public DateTime? StartedAt { get; set; }
             public DateTime? EndedAt { get; set; }
             public string DurationText { get; set; } = string.Empty;
+            public bool IsAutoRolling { get; set; }
         }
 
         public class RevoShaftRow
@@ -525,8 +560,8 @@ namespace GiamSat.UI.Pages
             public int ShaftCount { get; set; }
             public DateTime? StartedAt { get; set; }
             public DateTime? EndedAt { get; set; }
-            public double TotalHours { get; set; }
-            public string TotalHoursText => $"{(int)TotalHours:D2}:{(int)(TotalHours % 1 * 60):D2}:{(int)(TotalHours % 1 * 3600 % 60):D2}";
+            public TimeSpan TotalTime { get; set; }
+            public string TotalHoursText => $"{(int)TotalTime.TotalHours:D2}:{TotalTime.Minutes:D2}:{TotalTime.Seconds:D2}";
         }
 
         public class RevoDropdownModel

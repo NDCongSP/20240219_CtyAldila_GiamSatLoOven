@@ -172,6 +172,16 @@ namespace GiamSat.UI.Components
             return $"{ts.Minutes}m{ts.Seconds:D2}s";
         }
 
+        private bool IsAutoRollingMode()
+        {
+            var revo = _revoData.RevoName ?? string.Empty;
+            var work = _revoData.Work ?? string.Empty;
+            return revo.Contains("auto rolling", StringComparison.OrdinalIgnoreCase)
+                || work.Contains("auto rolling", StringComparison.OrdinalIgnoreCase)
+                || revo.Replace(" ", string.Empty).Contains("autorolling", StringComparison.OrdinalIgnoreCase)
+                || work.Replace(" ", string.Empty).Contains("autorolling", StringComparison.OrdinalIgnoreCase);
+        }
+
         private string GetStepClass(RevoStep step)
         {
             if (!step.Visible.HasValue || step.Visible.Value == false)

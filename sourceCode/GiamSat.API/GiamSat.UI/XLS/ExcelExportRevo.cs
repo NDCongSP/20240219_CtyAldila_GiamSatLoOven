@@ -49,6 +49,16 @@ namespace GiamSat.UI
                 static string FormatDuration(TimeSpan ts)
                     => $"{(int)ts.TotalHours:D2}:{ts.Minutes:D2}:{ts.Seconds:D2}";
 
+                static bool IsAutoRolling(FT09_RevoDatalog row)
+                {
+                    var revo = row.RevoName ?? string.Empty;
+                    var work = row.Work ?? string.Empty;
+                    return revo.Contains("auto rolling", StringComparison.OrdinalIgnoreCase)
+                        || work.Contains("auto rolling", StringComparison.OrdinalIgnoreCase)
+                        || revo.Replace(" ", string.Empty).Contains("autorolling", StringComparison.OrdinalIgnoreCase)
+                        || work.Replace(" ", string.Empty).Contains("autorolling", StringComparison.OrdinalIgnoreCase);
+                }
+
                 // Determine column count by mode
                 int colCount = mode switch
                 {
@@ -112,12 +122,22 @@ namespace GiamSat.UI
                         var item      = x.Row;
                         var stepName  = string.IsNullOrWhiteSpace(item.StepName) ? "N/A" : item.StepName;
                         var stepIdTxt = item.StepId.HasValue ? item.StepId.Value.ToString() : "N/A";
-                        var durTxt    = "N/A";
+                        var isAutoRolling = IsAutoRolling(item);
+                        var durTxt = "N/A";
 
-                        if (item.StartedAt.HasValue && item.EndedAt.HasValue)
+                        if (isAutoRolling)
+                        {
+                            var total = item.TotalTime ?? 0;
+                            durTxt = total > 0 ? FormatDuration(TimeSpan.FromSeconds(total)) : "N/A";
+                        }
+                        else if (item.StartedAt.HasValue && item.EndedAt.HasValue)
+                        {
                             durTxt = FormatDuration(item.EndedAt.Value - item.StartedAt.Value);
+                        }
                         else if (item.StartedAt.HasValue)
+                        {
                             durTxt = "Đang chạy...";
+                        }
 
                         var shaftNo = ResolveGlobalShaftNo(item.ShaftNum);
                         var shaftLabel = shaftNo > 0 ? $"Shaft {shaftNo}" : "(Không xác định)";
@@ -132,8 +152,8 @@ namespace GiamSat.UI
                         ws.Cell(outRow, 6).Value  = item.Rev ?? "N/A";
                         ws.Cell(outRow, 7).Value  = item.Mandrel ?? "N/A";
                         ws.Cell(outRow, 8).Value  = $"{stepName} ({stepIdTxt})";
-                        ws.Cell(outRow, 9).Value  = item.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
-                        ws.Cell(outRow, 10).Value = item.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
+                        ws.Cell(outRow, 9).Value  = isAutoRolling ? "N/A" : item.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
+                        ws.Cell(outRow, 10).Value = isAutoRolling ? "N/A" : item.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
                         ws.Cell(outRow, 11).Value = durTxt;
                         outRow++;
                     }
@@ -165,7 +185,7 @@ namespace GiamSat.UI
                         .Select(g =>
                         {
                             var firstRow = g.OrderBy(x => x.Started).First().Row;
-                            var isAutoRolling = g.Any(x => (x.Row.RevoName ?? "").ToLowerInvariant().Contains("auto rolling"));
+                            var isAutoRolling = g.Any(x => IsAutoRolling(x.Row));
                             var totalSeconds = g.Sum(x => x.Row.TotalTime ?? 0);
                             var totalTime = totalSeconds > 0 ? TimeSpan.FromSeconds(totalSeconds) : TimeSpan.Zero;
                             DateTime orderKey;
@@ -239,10 +259,21 @@ namespace GiamSat.UI
                         .GroupBy(x => x.Hour)
                         .Select(g =>
                         {
-                            var start      = g.Min(x => x.Row.StartedAt) ?? g.Min(x => x.Started);
-                            var end        = g.Max(x => x.Row.EndedAt) ?? (DateTime?)null;
-                            var endFb      = end ?? start;
-                            var totalTime  = endFb - start;
+                            var autoRows = g.Where(x => IsAutoRolling(x.Row)).ToList();
+                            var nonAutoRows = g.Where(x => !IsAutoRolling(x.Row)).ToList();
+                            var isAutoOnly = nonAutoRows.Count == 0 && autoRows.Count > 0;
+
+                            var start = isAutoOnly
+                                ? (DateTime?)null
+                                : nonAutoRows.Select(x => x.Row.StartedAt).Where(x => x.HasValue).DefaultIfEmpty(g.Min(x => x.Started)).Min();
+                            var end = isAutoOnly
+                                ? (DateTime?)null
+                                : nonAutoRows.Select(x => x.Row.EndedAt).Where(x => x.HasValue).DefaultIfEmpty(null).Max();
+
+                            var totalSeconds = g.Sum(x => x.Row.TotalTime ?? 0);
+                            var totalTime = totalSeconds > 0
+                                ? TimeSpan.FromSeconds(totalSeconds)
+                                : TimeSpan.Zero;
                             var shaftCnt   = g.Select(x => x.Row.ShaftNum).Where(x => x.HasValue).Select(x => x!.Value).Distinct().Count();
                             return new
                             {
@@ -261,7 +292,7 @@ namespace GiamSat.UI
                     {
                         ws.Cell(outRow, 1).Value = r.HourRange;
                         ws.Cell(outRow, 2).Value = r.ShaftCount;
-                        ws.Cell(outRow, 3).Value = r.StartedAt.ToString("dd/MM/yyyy HH:mm:ss");
+                        ws.Cell(outRow, 3).Value = r.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
                         ws.Cell(outRow, 4).Value = r.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
                         ws.Cell(outRow, 5).Value = FormatDuration(r.TotalTime);
                         outRow++;

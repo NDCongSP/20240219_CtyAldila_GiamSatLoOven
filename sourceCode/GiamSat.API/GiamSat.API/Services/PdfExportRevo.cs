@@ -2,6 +2,7 @@ using GiamSat.Models;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,6 +10,16 @@ namespace GiamSat.API.Services
 {
     public class PdfExportRevo
     {
+        private static bool IsAutoRolling(FT09_RevoDatalog row)
+        {
+            var revo = row.RevoName ?? string.Empty;
+            var work = row.Work ?? string.Empty;
+            return revo.Contains("auto rolling", StringComparison.OrdinalIgnoreCase)
+                || work.Contains("auto rolling", StringComparison.OrdinalIgnoreCase)
+                || revo.Replace(" ", string.Empty).Contains("autorolling", StringComparison.OrdinalIgnoreCase)
+                || work.Replace(" ", string.Empty).Contains("autorolling", StringComparison.OrdinalIgnoreCase);
+        }
+
         public byte[] GeneratePdfFile(List<FT09_RevoDatalog> data, string dateQuery)
         {
             QuestPDF.Settings.License = LicenseType.Community;
@@ -109,8 +120,16 @@ namespace GiamSat.API.Services
                                     // Data rows
                                     foreach (var item in data)
                                     {
+                                        var isAutoRolling = IsAutoRolling(item);
                                         var durationText = "N/A";
-                                        if (item.StartedAt.HasValue && item.EndedAt.HasValue)
+                                        if (isAutoRolling)
+                                        {
+                                            var total = item.TotalTime ?? 0;
+                                            durationText = total > 0
+                                                ? TimeSpan.FromSeconds(total).ToString(@"hh\:mm\:ss")
+                                                : "N/A";
+                                        }
+                                        else if (item.StartedAt.HasValue && item.EndedAt.HasValue)
                                         {
                                             var duration = item.EndedAt.Value - item.StartedAt.Value;
                                             durationText = duration.ToString(@"hh\:mm\:ss");
@@ -128,8 +147,8 @@ namespace GiamSat.API.Services
                                         table.Cell().Element(CellStyle).Text(item.ColorCode ?? "N/A");
                                         table.Cell().Element(CellStyle).Text(item.Mandrel ?? "N/A");
                                         table.Cell().Element(CellStyle).Text(item.StepName ?? "N/A");
-                                        table.Cell().Element(CellStyle).Text(item.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A");
-                                        table.Cell().Element(CellStyle).Text(item.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A");
+                                        table.Cell().Element(CellStyle).Text(isAutoRolling ? "N/A" : item.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A");
+                                        table.Cell().Element(CellStyle).Text(isAutoRolling ? "N/A" : item.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A");
                                         table.Cell().Element(CellStyle).Text(durationText);
                                         table.Cell().Element(CellStyle).Text(item.Work ?? "N/A");
 
