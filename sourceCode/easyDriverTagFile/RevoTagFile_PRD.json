@@ -1,5 +1,5 @@
 {
-  "ProjectPath": "D:\\MyCompany\\8.SourceCode\\3.Projects\\20240219_CtyAldila_GiamSatLoOven\\sourceCode\\easyDriverTagFile\\RevoTagFile.json",
+  "ProjectPath": "D:\\MyCompany\\8.SourceCode\\3.Projects\\20240219_CtyAldila_GiamSatLoOven\\sourceCode\\easyDriverTagFile\\RevoTagFile_PRD.json",
   "Username": null,
   "Password": null,
   "ParameterContainer": null,
@@ -11,7 +11,7 @@
   "IsReadOnly": true,
   "Enabled": true,
   "CreatedDate": "2026-01-25T10:38:22.5925922+07:00",
-  "ModifiedDate": "2026-04-09T07:13:47.627057+07:00",
+  "ModifiedDate": "2026-04-09T07:17:07.6654804+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -31,7 +31,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-01-11T13:39:10.08618+07:00",
-  "ModifiedDate": "2026-04-09T07:13:47.627057+07:00",
+  "ModifiedDate": "2026-04-09T07:17:07.6654804+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -51,7 +51,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-01-11T13:39:22.309004+07:00",
-  "ModifiedDate": "2026-04-09T07:13:47.627057+07:00",
+  "ModifiedDate": "2026-04-09T07:36:10.7412946+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -328,306 +328,6 @@
   }
 },
   "Address": "4107",
-  "DataTypeName": "Bool",
-  "RefreshRate": 100,
-  "ByteOrder": 0,
-  "AccessPermission": "ReadAndWrite",
-  "Offset": 0.0,
-  "Gain": 1.0,
-  "IsInternalTag": false,
-  "GUID": null,
-  "Retain": false,
-  "Childs": [],
-  "HaveTags": true,
-  "Tags": []
-},
-    {
-  "Name": "SIMULATOR_LEFT_FINGER_SEN",
-  "Description": "M11 - X0",
-  "ItemType": "Tag",
-  "IsReadOnly": false,
-  "Enabled": true,
-  "CreatedDate": "2026-01-11T21:00:35.337962+07:00",
-  "ModifiedDate": "2026-01-11T21:00:35.337962+07:00",
-  "ParameterContainer": {
-  "DisplayName": null,
-  "DisplayParameters": null,
-  "Parameters": {
-    "DataType": "Bool",
-    "Address": "4108"
-  }
-},
-  "Address": "4108",
-  "DataTypeName": "Bool",
-  "RefreshRate": 100,
-  "ByteOrder": 0,
-  "AccessPermission": "ReadAndWrite",
-  "Offset": 0.0,
-  "Gain": 1.0,
-  "IsInternalTag": false,
-  "GUID": null,
-  "Retain": false,
-  "Childs": [],
-  "HaveTags": true,
-  "Tags": []
-},
-    {
-  "Name": "SIMULATOR_RIGHT_FINGER_SEN",
-  "Description": "M12 - X1",
-  "ItemType": "Tag",
-  "IsReadOnly": false,
-  "Enabled": true,
-  "CreatedDate": "2026-01-11T21:00:35.337962+07:00",
-  "ModifiedDate": "2026-01-11T21:00:35.337962+07:00",
-  "ParameterContainer": {
-  "DisplayName": null,
-  "DisplayParameters": null,
-  "Parameters": {
-    "DataType": "Bool",
-    "Address": "4109"
-  }
-},
-  "Address": "4109",
-  "DataTypeName": "Bool",
-  "RefreshRate": 100,
-  "ByteOrder": 0,
-  "AccessPermission": "ReadAndWrite",
-  "Offset": 0.0,
-  "Gain": 1.0,
-  "IsInternalTag": false,
-  "GUID": null,
-  "Retain": false,
-  "Childs": [],
-  "HaveTags": true,
-  "Tags": []
-},
-    {
-  "Name": "SIMULATOR_LEFT_CLAMPED_CLOSE_SEN",
-  "Description": "M13 - X2",
-  "ItemType": "Tag",
-  "IsReadOnly": false,
-  "Enabled": true,
-  "CreatedDate": "2026-01-11T21:00:35.337962+07:00",
-  "ModifiedDate": "2026-01-11T21:00:35.337962+07:00",
-  "ParameterContainer": {
-  "DisplayName": null,
-  "DisplayParameters": null,
-  "Parameters": {
-    "DataType": "Bool",
-    "Address": "4110"
-  }
-},
-  "Address": "4110",
-  "DataTypeName": "Bool",
-  "RefreshRate": 100,
-  "ByteOrder": 0,
-  "AccessPermission": "ReadAndWrite",
-  "Offset": 0.0,
-  "Gain": 1.0,
-  "IsInternalTag": false,
-  "GUID": null,
-  "Retain": false,
-  "Childs": [],
-  "HaveTags": true,
-  "Tags": []
-},
-    {
-  "Name": "SIMULATOR_RIGHT_CLAMPED_CLOSE_SEN",
-  "Description": "M14 - X3",
-  "ItemType": "Tag",
-  "IsReadOnly": false,
-  "Enabled": true,
-  "CreatedDate": "2026-01-11T21:00:35.337962+07:00",
-  "ModifiedDate": "2026-01-11T21:00:35.337962+07:00",
-  "ParameterContainer": {
-  "DisplayName": null,
-  "DisplayParameters": null,
-  "Parameters": {
-    "DataType": "Bool",
-    "Address": "4111"
-  }
-},
-  "Address": "4111",
-  "DataTypeName": "Bool",
-  "RefreshRate": 100,
-  "ByteOrder": 0,
-  "AccessPermission": "ReadAndWrite",
-  "Offset": 0.0,
-  "Gain": 1.0,
-  "IsInternalTag": false,
-  "GUID": null,
-  "Retain": false,
-  "Childs": [],
-  "HaveTags": true,
-  "Tags": []
-},
-    {
-  "Name": "SIMULATOR_LEFT_CLAMPED_OPEN_SEN",
-  "Description": "M15 - X4",
-  "ItemType": "Tag",
-  "IsReadOnly": false,
-  "Enabled": true,
-  "CreatedDate": "2026-01-11T21:00:35.337962+07:00",
-  "ModifiedDate": "2026-01-11T21:00:35.337962+07:00",
-  "ParameterContainer": {
-  "DisplayName": null,
-  "DisplayParameters": null,
-  "Parameters": {
-    "DataType": "Bool",
-    "Address": "4112"
-  }
-},
-  "Address": "4112",
-  "DataTypeName": "Bool",
-  "RefreshRate": 100,
-  "ByteOrder": 0,
-  "AccessPermission": "ReadAndWrite",
-  "Offset": 0.0,
-  "Gain": 1.0,
-  "IsInternalTag": false,
-  "GUID": null,
-  "Retain": false,
-  "Childs": [],
-  "HaveTags": true,
-  "Tags": []
-},
-    {
-  "Name": "SIMULATOR_RIGHT_CLAMPED_OPEN_SEN",
-  "Description": "M16 - X5",
-  "ItemType": "Tag",
-  "IsReadOnly": false,
-  "Enabled": true,
-  "CreatedDate": "2026-01-11T21:00:35.337962+07:00",
-  "ModifiedDate": "2026-01-11T21:00:35.337962+07:00",
-  "ParameterContainer": {
-  "DisplayName": null,
-  "DisplayParameters": null,
-  "Parameters": {
-    "DataType": "Bool",
-    "Address": "4113"
-  }
-},
-  "Address": "4113",
-  "DataTypeName": "Bool",
-  "RefreshRate": 100,
-  "ByteOrder": 0,
-  "AccessPermission": "ReadAndWrite",
-  "Offset": 0.0,
-  "Gain": 1.0,
-  "IsInternalTag": false,
-  "GUID": null,
-  "Retain": false,
-  "Childs": [],
-  "HaveTags": true,
-  "Tags": []
-},
-    {
-  "Name": "SIMULATOR_LEFT_BELT_UP_SEN",
-  "Description": "M17 - X6",
-  "ItemType": "Tag",
-  "IsReadOnly": false,
-  "Enabled": true,
-  "CreatedDate": "2026-01-11T21:00:35.337962+07:00",
-  "ModifiedDate": "2026-01-11T21:00:35.337962+07:00",
-  "ParameterContainer": {
-  "DisplayName": null,
-  "DisplayParameters": null,
-  "Parameters": {
-    "DataType": "Bool",
-    "Address": "4114"
-  }
-},
-  "Address": "4114",
-  "DataTypeName": "Bool",
-  "RefreshRate": 100,
-  "ByteOrder": 0,
-  "AccessPermission": "ReadAndWrite",
-  "Offset": 0.0,
-  "Gain": 1.0,
-  "IsInternalTag": false,
-  "GUID": null,
-  "Retain": false,
-  "Childs": [],
-  "HaveTags": true,
-  "Tags": []
-},
-    {
-  "Name": "SIMULATOR_RIGHT_BELT_UP_SEN",
-  "Description": "M18 - X7",
-  "ItemType": "Tag",
-  "IsReadOnly": false,
-  "Enabled": true,
-  "CreatedDate": "2026-01-11T21:00:35.337962+07:00",
-  "ModifiedDate": "2026-01-11T21:00:35.337962+07:00",
-  "ParameterContainer": {
-  "DisplayName": null,
-  "DisplayParameters": null,
-  "Parameters": {
-    "DataType": "Bool",
-    "Address": "4115"
-  }
-},
-  "Address": "4115",
-  "DataTypeName": "Bool",
-  "RefreshRate": 100,
-  "ByteOrder": 0,
-  "AccessPermission": "ReadAndWrite",
-  "Offset": 0.0,
-  "Gain": 1.0,
-  "IsInternalTag": false,
-  "GUID": null,
-  "Retain": false,
-  "Childs": [],
-  "HaveTags": true,
-  "Tags": []
-},
-    {
-  "Name": "SIMULATOR_LEFT_BELT_DOWN_SEN",
-  "Description": "M19 - X10",
-  "ItemType": "Tag",
-  "IsReadOnly": false,
-  "Enabled": true,
-  "CreatedDate": "2026-01-11T21:00:35.337962+07:00",
-  "ModifiedDate": "2026-01-11T21:00:35.337962+07:00",
-  "ParameterContainer": {
-  "DisplayName": null,
-  "DisplayParameters": null,
-  "Parameters": {
-    "DataType": "Bool",
-    "Address": "4116"
-  }
-},
-  "Address": "4116",
-  "DataTypeName": "Bool",
-  "RefreshRate": 100,
-  "ByteOrder": 0,
-  "AccessPermission": "ReadAndWrite",
-  "Offset": 0.0,
-  "Gain": 1.0,
-  "IsInternalTag": false,
-  "GUID": null,
-  "Retain": false,
-  "Childs": [],
-  "HaveTags": true,
-  "Tags": []
-},
-    {
-  "Name": "SIMULATOR_RIGHT_BELT_DOWN_SEN",
-  "Description": "M20 - X11",
-  "ItemType": "Tag",
-  "IsReadOnly": false,
-  "Enabled": true,
-  "CreatedDate": "2026-01-24T20:27:53.2552902+07:00",
-  "ModifiedDate": "2026-01-24T20:27:53.2552902+07:00",
-  "ParameterContainer": {
-  "DisplayName": null,
-  "DisplayParameters": null,
-  "Parameters": {
-    "DataType": "Bool",
-    "Address": "4117"
-  }
-},
-  "Address": "4117",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -1213,7 +913,7 @@
 },
     {
   "Name": "SENT",
-  "Description": "M8. Kkhi chuyen buoc, thi pc se set bit nay len 1 de bao cho PLC biet la da set xung xong. PLC co the bat dau chay",
+  "Description": "M8. Kkhi chuyen buoc, thi pc se set bit nay len 1 de bao cho PLC biet la da set xung xong. PLC co the bat dau chay, khi chay xong buoc PLC reset 0",
   "ItemType": "Tag",
   "IsReadOnly": false,
   "Enabled": true,
@@ -1273,7 +973,7 @@
 },
     {
   "Name": "ALLOWED_RUN",
-  "Description": "M0. khi nao m10=0 and m8=0 thi PLC set bit nay len 1 cho phep chay.",
+  "Description": "M0. khi nao m10=0 and m8=0 thi PLC set bit nay len 1 cho phep chay. Khi chay xong buoc PLC se reset ve 0",
   "ItemType": "Tag",
   "IsReadOnly": false,
   "Enabled": true,
@@ -1288,186 +988,6 @@
   }
 },
   "Address": "4097",
-  "DataTypeName": "Bool",
-  "RefreshRate": 100,
-  "ByteOrder": 0,
-  "AccessPermission": "ReadAndWrite",
-  "Offset": 0.0,
-  "Gain": 1.0,
-  "IsInternalTag": false,
-  "GUID": null,
-  "Retain": false,
-  "Childs": [],
-  "HaveTags": true,
-  "Tags": []
-},
-    {
-  "Name": "IP1",
-  "Description": "SD2680. The 1st byte of IP address.",
-  "ItemType": "Tag",
-  "IsReadOnly": false,
-  "Enabled": true,
-  "CreatedDate": "2026-01-25T10:05:59.1057419+07:00",
-  "ModifiedDate": "2026-01-25T10:05:59.1057419+07:00",
-  "ParameterContainer": {
-  "DisplayName": null,
-  "DisplayParameters": null,
-  "Parameters": {
-    "DataType": "Word",
-    "Address": "423161"
-  }
-},
-  "Address": "423161",
-  "DataTypeName": "Word",
-  "RefreshRate": 100,
-  "ByteOrder": 0,
-  "AccessPermission": "ReadAndWrite",
-  "Offset": 0.0,
-  "Gain": 1.0,
-  "IsInternalTag": false,
-  "GUID": null,
-  "Retain": false,
-  "Childs": [],
-  "HaveTags": true,
-  "Tags": []
-},
-    {
-  "Name": "IP2",
-  "Description": null,
-  "ItemType": "Tag",
-  "IsReadOnly": false,
-  "Enabled": true,
-  "CreatedDate": "2026-01-25T10:05:59.1057419+07:00",
-  "ModifiedDate": "2026-01-25T10:05:59.1057419+07:00",
-  "ParameterContainer": {
-  "DisplayName": null,
-  "DisplayParameters": null,
-  "Parameters": {
-    "DataType": "Word",
-    "Address": "423162"
-  }
-},
-  "Address": "423162",
-  "DataTypeName": "Word",
-  "RefreshRate": 100,
-  "ByteOrder": 0,
-  "AccessPermission": "ReadAndWrite",
-  "Offset": 0.0,
-  "Gain": 1.0,
-  "IsInternalTag": false,
-  "GUID": null,
-  "Retain": false,
-  "Childs": [],
-  "HaveTags": true,
-  "Tags": []
-},
-    {
-  "Name": "IP3",
-  "Description": null,
-  "ItemType": "Tag",
-  "IsReadOnly": false,
-  "Enabled": true,
-  "CreatedDate": "2026-01-25T10:05:59.1057419+07:00",
-  "ModifiedDate": "2026-01-25T10:05:59.1057419+07:00",
-  "ParameterContainer": {
-  "DisplayName": null,
-  "DisplayParameters": null,
-  "Parameters": {
-    "DataType": "Word",
-    "Address": "423163"
-  }
-},
-  "Address": "423163",
-  "DataTypeName": "Word",
-  "RefreshRate": 100,
-  "ByteOrder": 0,
-  "AccessPermission": "ReadAndWrite",
-  "Offset": 0.0,
-  "Gain": 1.0,
-  "IsInternalTag": false,
-  "GUID": null,
-  "Retain": false,
-  "Childs": [],
-  "HaveTags": true,
-  "Tags": []
-},
-    {
-  "Name": "IP4",
-  "Description": null,
-  "ItemType": "Tag",
-  "IsReadOnly": false,
-  "Enabled": true,
-  "CreatedDate": "2026-01-25T10:05:59.1057419+07:00",
-  "ModifiedDate": "2026-01-25T10:05:59.1057419+07:00",
-  "ParameterContainer": {
-  "DisplayName": null,
-  "DisplayParameters": null,
-  "Parameters": {
-    "DataType": "Word",
-    "Address": "423164"
-  }
-},
-  "Address": "423164",
-  "DataTypeName": "Word",
-  "RefreshRate": 100,
-  "ByteOrder": 0,
-  "AccessPermission": "ReadAndWrite",
-  "Offset": 0.0,
-  "Gain": 1.0,
-  "IsInternalTag": false,
-  "GUID": null,
-  "Retain": false,
-  "Childs": [],
-  "HaveTags": true,
-  "Tags": []
-},
-    {
-  "Name": "SM2680",
-  "Description": "Static set IP switch. ON: Static set. OFF: Automatically configurate IP address by router DHCP, and could not be modify IP. When STOP->RUN takes effect.",
-  "ItemType": "Tag",
-  "IsReadOnly": false,
-  "Enabled": true,
-  "CreatedDate": "2026-01-25T10:15:27.0910008+07:00",
-  "ModifiedDate": "2026-01-25T10:15:27.0910008+07:00",
-  "ParameterContainer": {
-  "DisplayName": null,
-  "DisplayParameters": null,
-  "Parameters": {
-    "DataType": "Bool",
-    "Address": "23161"
-  }
-},
-  "Address": "23161",
-  "DataTypeName": "Bool",
-  "RefreshRate": 100,
-  "ByteOrder": 0,
-  "AccessPermission": "ReadAndWrite",
-  "Offset": 0.0,
-  "Gain": 1.0,
-  "IsInternalTag": false,
-  "GUID": null,
-  "Retain": false,
-  "Childs": [],
-  "HaveTags": true,
-  "Tags": []
-},
-    {
-  "Name": "SM2683",
-  "Description": "The modification flag of IP, subnet mask and gateway.ON: Modifiable,OFF: Unmodifiable. (After setting to ON, modify when stop->run, and automatically turn OFF after the modification)",
-  "ItemType": "Tag",
-  "IsReadOnly": false,
-  "Enabled": true,
-  "CreatedDate": "2026-01-25T10:17:22.0538847+07:00",
-  "ModifiedDate": "2026-01-25T10:17:22.0538847+07:00",
-  "ParameterContainer": {
-  "DisplayName": null,
-  "DisplayParameters": null,
-  "Parameters": {
-    "DataType": "Bool",
-    "Address": "23163"
-  }
-},
-  "Address": "23163",
   "DataTypeName": "Bool",
   "RefreshRate": 100,
   "ByteOrder": 0,
@@ -1512,37 +1032,7 @@
   "Tags": []
 },
     {
-  "Name": "SIMULATOR_EMERGENCY",
-  "Description": null,
-  "ItemType": "Tag",
-  "IsReadOnly": false,
-  "Enabled": true,
-  "CreatedDate": "2026-01-26T20:51:10.8402428+07:00",
-  "ModifiedDate": "2026-01-26T20:51:10.8402428+07:00",
-  "ParameterContainer": {
-  "DisplayName": null,
-  "DisplayParameters": null,
-  "Parameters": {
-    "DataType": "Bool",
-    "Address": "4129"
-  }
-},
-  "Address": "4129",
-  "DataTypeName": "Bool",
-  "RefreshRate": 100,
-  "ByteOrder": 0,
-  "AccessPermission": "ReadAndWrite",
-  "Offset": 0.0,
-  "Gain": 1.0,
-  "IsInternalTag": false,
-  "GUID": null,
-  "Retain": false,
-  "Childs": [],
-  "HaveTags": true,
-  "Tags": []
-},
-    {
-  "Name": "Check_Clamped_Close1",
+  "Name": "Check_Clamped_Close",
   "Description": null,
   "ItemType": "Tag",
   "IsReadOnly": false,

@@ -4,6 +4,7 @@ using GiamSat.Models;
 using Newtonsoft.Json;
 using Serilog;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -33,6 +34,9 @@ namespace Scada.TrackingTime_AutoRolling1
         private CancellationTokenSource _resetShaftCts;
         private readonly AsyncAutoResetEvent _triggerResetShaft = new AsyncAutoResetEvent();
 
+        private CancellationTokenSource _resetPartCts;
+        private readonly AsyncAutoResetEvent _triggerResetPart = new AsyncAutoResetEvent();
+
         private List<PartModel> _parts = new List<PartModel>();
         private List<MandrelModel> _mandrels = new List<MandrelModel>();
         private List<ColorModel> _colors = new List<ColorModel>();
@@ -46,7 +50,15 @@ namespace Scada.TrackingTime_AutoRolling1
 
         private List<AutoRollingTagChangedModel> _tagsValueRealtime = new List<AutoRollingTagChangedModel>();
 
-
+        //// Giả sử bạn muốn truyền thông tin Device hoặc Path
+        //public class ResetArgs
+        //{
+        //    public string Path { get; set; }
+        //    public int StepValue { get; set; }
+        //}
+        //private readonly ConcurrentQueue<ResetArgs> _resetQueue = new ConcurrentQueue<ResetArgs>();
+        private readonly ConcurrentQueue<string> _resetShaftQueue = new ConcurrentQueue<string>();
+        private readonly ConcurrentQueue<string> _resetPartQueue = new ConcurrentQueue<string>();
 
         public Form1()
         {
@@ -69,6 +81,7 @@ namespace Scada.TrackingTime_AutoRolling1
 
                 _checkingTimeStepCts.Cancel();
                 _resetShaftCts.Cancel();
+                _resetPartCts.Cancel();
             }
             catch
             {
@@ -81,6 +94,7 @@ namespace Scada.TrackingTime_AutoRolling1
 
                 _checkingTimeStepCts?.Dispose();
                 _resetShaftCts?.Dispose();
+                _resetPartCts?.Dispose();
             }
         }
 
@@ -163,6 +177,9 @@ namespace Scada.TrackingTime_AutoRolling1
                 _resetShaftCts = new CancellationTokenSource();
                 _ = TaskResetShaftAsync(_resetShaftCts.Token);
 
+                _resetPartCts = new CancellationTokenSource();
+                _ = TaskResetPartAsync(_resetPartCts.Token);
+
                 _btnMaintenance.Click += (s, o) =>
                 {
                     using (var nf = new frmConfig())
@@ -173,98 +190,12 @@ namespace Scada.TrackingTime_AutoRolling1
             }
         }
 
-        private async void _txtPart_KeyDown(object sender, KeyEventArgs e)
-        {
-            //try
-            //{
-            //    if (e.KeyCode == Keys.Enter)
-            //    {
-            //        var part = _parts.FirstOrDefault(p => p.PN == _txtPart.Text.Trim());
-
-            //        if (part == null)
-            //        {
-            //            MessageBox.Show("Không tìm thấy mã hàng trong database. Vui lòng kiểm tra lại.", "CẢNH BÁO",
-            //                MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-            //            return;
-            //        }
-
-            //        //Luu path va part vao bien toan cuc de su dung sau nay
-            //        if (GlobalVariable.Part != part.PN)
-            //        {
-            //            GlobalVariable.Part = part.PN;
-            //        }
-
-            //        var steps = GlobalVariable.BuildSteps(part);
-
-            //        GlobalVariable.RevoRealtimeModels = new RevoRealtimeModel()
-            //        {
-            //            RevoId = item.Id.Value,
-            //            RevoName = item.Name,
-            //            Path = item.Path,
-            //            Part = part.PN,
-            //            Rev = part.Blank_Rev,
-            //            ColorCode = part.Flex_Color,
-            //            Mandrel = _mandrels.FirstOrDefault(x => x.ID == part.Mandrel)?.PN,
-            //            MandrelStart = part.Mandrel_Start.ToString(),
-            //            Steps = steps,
-            //            ShaftNum = Guid.NewGuid()
-            //        };
-
-            //        //taojj ui step lan dau tien
-            //        LoadStepsToFlowPanel();
-
-            //        LogDb(isNew: true);
-
-            //        //ghi step đầu tiên xuống plc
-            //        var currentStep = GlobalVariable.RevoRealtimeModels.Steps
-            //       .FirstOrDefault(s =>
-            //           s.Enable == true &&
-            //           !s.StartAt.HasValue
-            //       );
-
-            //        if (currentStep == null)
-            //        {
-            //            MessageBox.Show($"Part {GlobalVariable.Part} khong co thong tin step.");
-            //            Log.WA($"Part {GlobalVariable.Part} khong co thong tin step.");
-            //            return;
-            //        }
-
-            //    Loop1:
-            //        await _easyDriverConnector.WriteTagAsync($"{item.Path}/PC_ALLOW_RUN_TO_PLC"
-            //                                                     , "1"
-            //                                                      , WritePiority.High);
-            //        if (!PC_ALLOW_RUN_TO_PLC)
-            //        {
-            //            goto Loop1;
-            //        }
-
-            //        await _easyDriverConnector.WriteTagAsync($"{item.Path}/TOC_DO_HZ"
-            //                                                , currentStep?.Speed_Hz.ToString() ?? "0"
-            //                                                 , WritePiority.High);
-
-            //        await _easyDriverConnector.WriteTagAsync($"{item.Path}/SO_LUONG_XUNG"
-            //                                               , currentStep.SoLuongXung.Value.ToString() ?? "0"
-            //                                                , WritePiority.High);
-
-            //    Loop2:
-            //        await _easyDriverConnector.WriteTagAsync($"{item.Path}/SENT"
-            //                                               , "1"
-            //                                                , WritePiority.High);
-
-            //        if (!SENT)
-            //        {
-            //            goto Loop2;
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log.Error($"Lỗi khi nhập mã hàng: {ex.Message}");
-            //}
-        }
-
         #region Tasks
+        /// <summary>
+        /// Task dùng để chạy vòng lặp check để luu data vào DB và update UI. Task này chạy liên tục với khoảng delay 0.1s, mỗi lần chạy sẽ thực hiện các công việc sau: show UI, Log data vào DB.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         private async Task TaskTimerAsync(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
@@ -280,19 +211,20 @@ namespace Scada.TrackingTime_AutoRolling1
                     {
                         _labTime.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
 
-
                         _labStatus.Text = $"Easy Driver: {_easyStatus} - PLC: {_tagsValueRealtime.FirstOrDefault().PlcConnected} " +
                         $"- DB Server: - Save type: {GlobalVariable.RevoConfigs.FirstOrDefault().SaveMode.ToString()}";
                     });
 
-
+                    #region Log data vào DB
+                    LogDb();
+                    #endregion
                 }
                 catch (Exception ex)
                 {
                     // Log lỗi nếu cần
                     //Log.Error($"Lỗi trong TaskTimerAsync: {ex.Message}");
                 }
-                await Task.Delay(100, token); // Chờ 1 giây trước khi lặp lại
+                await Task.Delay(200, token); // Chờ 1 giây trước khi lặp lại
             }
         }
 
@@ -314,6 +246,13 @@ namespace Scada.TrackingTime_AutoRolling1
             catch (OperationCanceledException) { /* thoát êm */ }
         }
 
+        /// <summary>
+        /// Task xử lý khi có sự kiện reset trục (Shaft) được kích hoạt. Mỗi khi có sự kiện này.
+        /// task sẽ thực hiện các công việc cần thiết để reset trạng thái của trục, cập nhật UI và ghi log vào database.
+        /// Sau khi hoàn thành công việc, task sẽ quay lại trạng thái chờ để đợi sự kiện tiếp theo mà không cần phải sử dụng Sleep hay polling, giúp tiết kiệm tài nguyên CPU.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         private async Task TaskResetShaftAsync(CancellationToken token)
         {
             try
@@ -326,15 +265,79 @@ namespace Scada.TrackingTime_AutoRolling1
                     // === xử lý 1 lần duy nhất mỗi lần được kích ===
                     Debug.WriteLine($"TaskCheckTimeStepAsync triggered {START_STOP_STEP}");
 
+                    // Lấy tất cả các Path đang có trong hàng đợi ra xử lý (đề phòng kích hoạt dồn dập)
+                    while (_resetShaftQueue.TryDequeue(out string currentPath))
+                    {
+                        // Tìm item trong list của bạn dựa trên Path
+                        var targetItem = _tagsValueRealtime.FirstOrDefault(x => x.Path == currentPath);
 
+                        if (targetItem != null)
+                        {
+                            Debug.WriteLine($"Processing reset for Path: {currentPath}");
 
-                    UpdateStepUI(new RevoStep(), 1);
+                            var realtimeItem = GlobalVariable.RevoRealtimeModels.FirstOrDefault(x => x.Path == currentPath);
 
-                    LogDb(isNew: true);
+                            realtimeItem.Steps.ForEach(s => s.TotalRunTime = 0);
+                            realtimeItem.ShaftNum = Guid.NewGuid();
+
+                            LogDb(isNew: true);
+
+                            // Ví dụ: cập nhật một thuộc tính nào đó của targetItem
+                            // targetItem.IsResetting = true; 
+                        }
+                    }
                     // xong việc → quay lại vòng chờ (không cần Delay hay poll)
                 }
             }
             catch (OperationCanceledException) { /* thoát êm */ }
+        }
+
+        /// <summary>
+        /// Task xử lý khi có sự kiện reset part được kích hoạt. Mỗi khi có sự kiện này.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        private async Task TaskResetPartAsync(CancellationToken token)
+        {
+            try
+            {
+                while (true)
+                {
+                    // chờ sự kiện → không tốn CPU, không Sleep
+                    await _triggerResetShaft.WaitAsync(token);
+
+                    // === xử lý 1 lần duy nhất mỗi lần được kích ===
+                    Debug.WriteLine($"TaskCheckTimeStepAsync triggered {START_STOP_STEP}");
+
+                    // Lấy tất cả các Path đang có trong hàng đợi ra xử lý (đề phòng kích hoạt dồn dập)
+                    while (_resetPartQueue.TryDequeue(out string currentPath))
+                    {
+                        // Tìm item trong list của bạn dựa trên Path
+                        var targetItem = _tagsValueRealtime.FirstOrDefault(x => x.Path == currentPath);
+
+                        if (targetItem != null)
+                        {
+                            Debug.WriteLine($"Processing reset for Path: {currentPath}");
+
+                            var steps = GlobalVariable.BuildSteps(targetItem);
+
+                            var realtimeItem = GlobalVariable.RevoRealtimeModels.FirstOrDefault(x => x.Path == currentPath);
+
+                            realtimeItem.Part = targetItem.Part_Name;
+                            realtimeItem.Steps = steps;
+                            realtimeItem.ShaftNum = Guid.NewGuid();
+
+                            LogDb(isNew: true);
+
+                            // Ví dụ: cập nhật một thuộc tính nào đó của targetItem
+                            // targetItem.IsResetting = true; 
+                        }
+                    }
+                    // xong việc → quay lại vòng chờ (không cần Delay hay poll)
+                }
+            }
+            catch (OperationCanceledException) { /* thoát êm */ }
+            catch (Exception ex) { Log.Error(ex, "Error in Reset Task"); }
         }
         #endregion
 
@@ -342,12 +345,6 @@ namespace Scada.TrackingTime_AutoRolling1
         private void _easyDriverConnector_ConnectionStatusChaged(object sender, ConnectionStatusChangedEventArgs e)
         {
             _easyStatus = e.NewStatus;
-
-            //GlobalVariable.InvokeIfRequired(this, () =>
-            //{
-            //    _labSriverStatus.BackColor = GetConnectionStatusColor(e.NewStatus);
-            //    _labSriverStatus.Text = $"TT kết nối easy driver: {_easyDriverConnector.ConnectionStatus.ToString()}";
-            //});
         }
 
         private void _easyDriverConnector_Started(object sender, EventArgs e)
@@ -401,7 +398,7 @@ namespace Scada.TrackingTime_AutoRolling1
 
                 for (int i = 1; i <= 15; i++)
                 {
-                    if (i<=8)
+                    if (i <= 8)
                     {
                         TimeRunStep_ValueChanged(_easyDriverConnector.GetTag($"{item.Path}/TimeRunStep{i}")
                            , new TagValueChangedEventArgs(_easyDriverConnector.GetTag($"{item.Path}/TimeRunStep{i}")
@@ -478,7 +475,11 @@ namespace Scada.TrackingTime_AutoRolling1
                     if (item.Path == path)
                     {
                         item.Recipe_Settings = int.TryParse(e.NewValue, out int value) ? value : 0;
+                        item.StepsIsRun = ConvertWordToBitArray((ushort)item.Recipe_Settings);
 
+                        // Đưa Path vào hàng đợi để Task lấy ra dùng
+                        _resetShaftQueue.Enqueue(item.Path);
+                        _triggerResetShaft.Set(); // kích hoạt _triggerResetShaft chạy
                         return;
                     }
                 }
@@ -499,6 +500,13 @@ namespace Scada.TrackingTime_AutoRolling1
                     if (item.Path == path)
                     {
                         item.StepRun = int.TryParse(e.NewValue, out int value) ? value : 0;
+
+                        if (item.StepRun == 0)
+                        {
+                            // Đưa Path vào hàng đợi để Task lấy ra dùng
+                            _resetShaftQueue.Enqueue(item.Path);
+                            _triggerResetShaft.Set(); // kích hoạt _triggerResetShaft chạy
+                        }
 
                         return;
                     }
@@ -624,6 +632,11 @@ namespace Scada.TrackingTime_AutoRolling1
                         }
 
                         GetCharFromInt(item.RevoId);
+
+                        // Đưa Path vào hàng đợi để Task lấy ra dùng
+                        _resetPartQueue.Enqueue(item.Path);
+                        _triggerResetPart.Set(); // kích hoạt _triggerResetPart chạy
+
                         return;
                     }
                 }
@@ -633,6 +646,37 @@ namespace Scada.TrackingTime_AutoRolling1
         #endregion
 
         #region Method helper
+        /// <summary>
+        /// Hàm chuyển đổi giá trị kiểu ushort (16 bit) thành một mảng bool có 16 phần tử, mỗi phần tử đại diện cho trạng thái của một bit trong giá trị đó.
+        /// </summary>
+        /// <param name="wordValue"></param>
+        /// <returns></returns>
+        public bool[] ConvertWordToBitArray(ushort wordValue)
+        {
+            // Tạo mảng 16 phần tử (tương ứng 16 bit từ 0-15)
+            bool[] bits = new bool[16];
+
+            // 1. Gán bit đầu tiên (bit 0) luôn bằng false (0) theo yêu cầu
+            bits[0] = false;
+
+            // 2. Vòng lặp lấy giá trị từ bit 1 đến bit 15
+            for (int i = 1; i < 16; i++)
+            {
+                // Sử dụng phép toán AND với mặt nạ bit (mask) được dịch chuyển
+                // Kiểm tra xem bit tại vị trí i có đang bật (1) hay không
+                bits[i] = (wordValue & (1 << i)) != 0;
+            }
+
+            return bits;
+        }
+
+        /// <summary>
+        /// Chuyển đổi sữ liệu dec đọc từ các tag của HMI về thành chuỗi, rồi lưu vào biến Part_Name của model để hiển thị lên UI và lưu vào database.
+        /// Vì PLC lưu dữ liệu kiểu int nên mỗi ký tự sẽ được mã hóa thành 2 byte (16 bit),
+        /// Do đó cần phải tách int thành 2 byte rồi chuyển đổi sang ký tự tương ứng theo bảng mã ASCII.
+        /// Sau đó ghép các ký tự lại với nhau để tạo thành chuỗi hoàn chỉnh.
+        /// </summary>
+        /// <param name="revoId"></param>
         private void GetCharFromInt(int revoId)
         {
             var machine = _tagsValueRealtime.FirstOrDefault(t => t.RevoId == revoId);
@@ -745,37 +789,62 @@ namespace Scada.TrackingTime_AutoRolling1
         {
             using (var dbContext = new ApplicationDbContext())
             {
-                #region Data log
                 var createdAt = DateTime.Now;
                 var createdMachine = Environment.MachineName;
 
+                #region realtime log  
+                var listIds = GlobalVariable.RevoConfigs.Select(x => x.Id).Distinct().ToList();
+                var dbRecords = await dbContext.FT08_RevoRealtimes
+                    .Where(x => listIds.Contains(x.C000_RevoId.Value))
+                    .ToListAsync();
+
+                foreach (var item in GlobalVariable.RevoRealtimeModels)
+                {
+                    var dbRecord = dbRecords.FirstOrDefault(x => x.C000_RevoId == item.RevoId);
+                    if (dbRecord != null)
+                    {
+                        dbRecord.C001_Data = JsonConvert.SerializeObject(item);
+                    }
+                    else
+                    {
+                        var nl = new FT08_RevoRealtime()
+                        {
+                            Id = Guid.NewGuid(),
+                            C000_RevoId = item.RevoId,
+                            C001_Data = JsonConvert.SerializeObject(item)
+                        };
+                        dbContext.FT08_RevoRealtimes.Add(nl);
+                    }
+                }
+                #endregion
+
+                #region Data log
                 if (isNew)
                 {
                     var dataLogs = new List<FT09_RevoDatalog>();
 
+                    foreach (var item in GlobalVariable.RevoRealtimeModels.Steps.Where(x => x.Enable == true))
+                    {
+                        var nl = new FT09_RevoDatalog()
+                        {
+                            Id = Guid.NewGuid(),
+                            CreatedAt = createdAt,
+                            CreatedMachine = createdMachine,
+                            //RevoId = GlobalVariable.RevoRealtimeModels.RevoId,
+                            //RevoName = GlobalVariable.RevoRealtimeModels.RevoName,
+                            //Work = GlobalVariable.RevoRealtimeModels.Work,
+                            //Part = GlobalVariable.RevoRealtimeModels.Part,
+                            //Rev = GlobalVariable.RevoRealtimeModels.Rev,
+                            //ColorCode = GlobalVariable.RevoRealtimeModels.ColorCode,
+                            //Mandrel = GlobalVariable.RevoRealtimeModels.Mandrel,
+                            //MandrelStart = GlobalVariable.RevoRealtimeModels.MandrelStart,
+                            //ShaftNum = GlobalVariable.RevoRealtimeModels.ShaftNum,
+                            StepId = item.StepIndex,
+                            StepName = item.StepName,
+                        };
 
-                    //foreach (var item in GlobalVariable.RevoRealtimeModels.Steps.Where(x => x.Enable == true))
-                    //{
-                    //    var nl = new FT09_RevoDatalog()
-                    //    {
-                    //        Id = Guid.NewGuid(),
-                    //        CreatedAt = createdAt,
-                    //        CreatedMachine = createdMachine,
-                    //        //RevoId = GlobalVariable.RevoRealtimeModels.RevoId,
-                    //        //RevoName = GlobalVariable.RevoRealtimeModels.RevoName,
-                    //        //Work = GlobalVariable.RevoRealtimeModels.Work,
-                    //        //Part = GlobalVariable.RevoRealtimeModels.Part,
-                    //        //Rev = GlobalVariable.RevoRealtimeModels.Rev,
-                    //        //ColorCode = GlobalVariable.RevoRealtimeModels.ColorCode,
-                    //        //Mandrel = GlobalVariable.RevoRealtimeModels.Mandrel,
-                    //        //MandrelStart = GlobalVariable.RevoRealtimeModels.MandrelStart,
-                    //        //ShaftNum = GlobalVariable.RevoRealtimeModels.ShaftNum,
-                    //        StepId = item.StepIndex,
-                    //        StepName = item.StepName,
-                    //    };
-
-                    //    dataLogs.Add(nl);
-                    //}
+                        dataLogs.Add(nl);
+                    }
 
                     dbContext.FT09_RevoDatalogs.AddRange(dataLogs);
                     await dbContext.SaveChangesAsync();
@@ -820,26 +889,6 @@ namespace Scada.TrackingTime_AutoRolling1
                 }
                 #endregion
 
-                #region realtime log  
-                var rl = await dbContext.FT08_RevoRealtimes.FirstOrDefaultAsync(x => x.C000_RevoId == GlobalVariable.RevoId);
-
-                if (rl != null)
-                {
-                    rl.C001_Data = JsonConvert.SerializeObject(GlobalVariable.RevoRealtimeModels);
-                }
-                else
-                {
-                    var nl = new FT08_RevoRealtime()
-                    {
-                        Id = Guid.NewGuid(),
-                        C000_RevoId = GlobalVariable.RevoId,
-                        C001_Data = JsonConvert.SerializeObject(GlobalVariable.RevoRealtimeModels)
-                    };
-
-                    dbContext.FT08_RevoRealtimes.Add(nl);
-                }
-                #endregion
-
                 await dbContext.SaveChangesAsync();
             }
         }
@@ -867,27 +916,6 @@ namespace Scada.TrackingTime_AutoRolling1
             var nextHour = currentHour.AddHours(1);
             var lastHour = currentHour.AddHours(-1);
 
-
-            //// 3. Đếm ShaftNum giờ hiện tại
-            //var currentCount = dbContext.FT09_RevoDatalogs
-            //    .Where(x => x.CreatedAt >= currentHour
-            //             && x.CreatedAt < nextHour
-            //             && x.ShaftNum != null)
-            //    .Select(x => x.ShaftNum)
-            //    .Distinct()
-            //    .Count();
-
-
-            //// 4. Đếm ShaftNum giờ trước
-            //var lastCount = dbContext.FT09_RevoDatalogs
-            //    .Where(x => x.CreatedAt >= lastHour
-            //             && x.CreatedAt < currentHour
-            //             && x.ShaftNum != null)
-            //    .Select(x => x.ShaftNum)
-            //    .Distinct()
-            //    .Count();
-
-
             // 3) Đếm theo giờ hiện tại:
             //    Group theo ShaftNum trong window giờ hiện tại
             //    và CHỈ giữ group mà TẤT CẢ các dòng đều có StartedAt & EndedAt khác null
@@ -905,8 +933,6 @@ namespace Scada.TrackingTime_AutoRolling1
                 .Where(g => g.All(r => r.StartedAt != null && r.EndedAt != null))
                 .Select(g => g.Key)
                 .CountAsync();
-
-
 
             // 5. Kết quả
             var result = new GroupShaftModel

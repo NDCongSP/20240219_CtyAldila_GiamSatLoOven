@@ -16,7 +16,7 @@ namespace Scada.TrackingTime_AutoRolling1
 
         public string Part_Name { get; set; } = string.Empty;
 
-       
+        public bool[] StepsIsRun { get; set; } = new bool[16];
 
         //---------------------------------------------------------------------------------
         //các biến dưới này là sẽ đọc giá trị từ các tag lên và lưu vao database, để phục vụ cho việc truy xuất thông tin cấu hình theo part, và hiển thị thông tin part đang chạy trên giao diện.

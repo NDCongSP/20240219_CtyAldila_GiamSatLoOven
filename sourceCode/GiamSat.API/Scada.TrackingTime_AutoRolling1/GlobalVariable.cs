@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -100,40 +101,19 @@ namespace Scada.TrackingTime_AutoRolling1
                     })
                     .ToArray();
 
-        public static List<RevoStep> BuildSteps(PartModel part)
+        public static List<RevoStep> BuildSteps(AutoRollingTagChangedModel part)
         {
             var result = new List<RevoStep>();
-            int index = 1;
 
-            foreach (var prop in StepProps)
+            for (int i = 1; i < part.StepsIsRun.Length; i++)
             {
-                var value = prop.GetValue(part)?.ToString();
-                if (string.IsNullOrWhiteSpace(value))
-                    continue;
-
-                var stepSplit = value.Split('|');
-
-                var gocQuay = stepSplit.Length > 1 ?
-                    int.Parse(stepSplit[1]) :
-                    0;
-
-                var tocDo = stepSplit.Length > 2 ?
-                   int.Parse(stepSplit[2]) :
-                   0;
-
-                //var soXung = (int)(gocQuay * GlobalVariable.RevoConfigs.Pulse_Rev / 360.0);
-                //var speed_PulsePerSec = (int)(tocDo * GlobalVariable.RevoConfigs.Pulse_Rev / 360);
-
-                //result.Add(new RevoStep
-                //{
-                //    StepIndex = int.Parse(prop.Name.Substring(1)),
-                //    StepName = stepSplit[0],
-                //    StepConfig = value,
-                //    Visible = true,
-                //    Enable = gocQuay == 0 && tocDo == 0 ? false : true,
-                //    SoLuongXung = soXung,
-                //    Speed_Hz = speed_PulsePerSec,
-                //});
+                result.Add(new RevoStep
+                {
+                    StepIndex = i,
+                    StepName = $"Step {1}",
+                    Enable = part.StepsIsRun[i],
+                    TotalRunTime = 0
+                });
             }
 
             return result.OrderBy(x => x.StepIndex).ToList();
