@@ -32,5 +32,10 @@ namespace GiamSat.Models
         /// Tùy chọn để lưu thời gian của 1 cây shaft, hay là lưu chi tiết từng bước.
         /// </summary>
         public EnumSaveMode SaveMode { get; set; } = EnumSaveMode.Save;
+
+        /// <summary>
+        /// Offset số xung/1 vòng, dùng để tính toán cho phần tốc độ truyền xuống PLC.
+        /// </summary>
+        public int Pulse_rev_Offset { get; set; } = 0;
     }
 }
