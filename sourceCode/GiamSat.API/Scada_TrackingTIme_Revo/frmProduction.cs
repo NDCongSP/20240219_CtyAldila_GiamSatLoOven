@@ -90,6 +90,7 @@ namespace Scada_TrackingTIme_Revo
         private async void frmProduction_Load(object sender, EventArgs e)
         {
             GlobalVariable.RevoId = Properties.Settings.Default.RevoId;
+            GlobalVariable.Part = Properties.Settings.Default.Part;
             //ddocj gias trij config
             using (var dbContext = new ApplicationDbContext())
             {
