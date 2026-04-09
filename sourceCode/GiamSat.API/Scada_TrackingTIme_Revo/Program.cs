@@ -1,7 +1,9 @@
 ﻿using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -15,6 +17,18 @@ namespace Scada_TrackingTIme_Revo
         [STAThread]
         static void Main()
         {
+            var culture = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+            culture.NumberFormat.NumberDecimalSeparator = ".";
+            culture.NumberFormat.NumberGroupSeparator = ",";
+
+            // Áp dụng cho thread hiện tại
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
+
+            // Áp dụng cho tất cả thread mới (form, background task...)
+            CultureInfo.DefaultThreadCurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
+
             Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
             .WriteTo.File(

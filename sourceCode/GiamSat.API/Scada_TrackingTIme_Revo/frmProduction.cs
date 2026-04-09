@@ -47,6 +47,8 @@ namespace Scada_TrackingTIme_Revo
 
         private int _totalCurrentHour = 0, _totalLastHour = 0;
 
+        private RevoGetTotalShaftCountDto _currentShaftCount = new RevoGetTotalShaftCountDto();
+
         public frmProduction()
         {
             InitializeComponent();
@@ -234,6 +236,8 @@ namespace Scada_TrackingTIme_Revo
         private void _btnStart_Click(object sender, EventArgs e)
         {
             _txtPart_KeyDown(this, new KeyEventArgs(Keys.Enter));
+
+            _txtWork.Focus();
         }
 
         private async void frmProduction_KeyDown(object sender, KeyEventArgs e)
@@ -403,8 +407,8 @@ namespace Scada_TrackingTIme_Revo
                 try
                 {
                     var totalShaft = await GetTotalShaftAsync();
-                    _totalCurrentHour = totalShaft?.CurrentHour ?? 0;
-                    _totalLastHour = totalShaft?.LastHour ?? 0;
+                    _totalCurrentHour = totalShaft?.TotalShaftFinishCurrentHour ?? 0;
+                    _totalLastHour = totalShaft?.TotalShaftFinshLastHour ?? 0;
 
                     //var ping = PingServer(GlobalVariable.IpDbServer);
                     GlobalVariable.InvokeIfRequired(this, () =>
@@ -901,78 +905,15 @@ namespace Scada_TrackingTIme_Revo
             }
         }
 
-        private async Task<GroupShaftModel> GetTotalShaftAsync()
+        private async Task<RevoGetTotalShaftCountDto> GetTotalShaftAsync()
         {
             using var dbContext = new ApplicationDbContext();
 
-            // 1. Lấy giờ mới nhất
-            var maxCreatedAt = dbContext.FT09_RevoDatalogs
-                .Where(x => x.CreatedAt != null)
-                .Max(x => x.CreatedAt);
+            var data =await dbContext.Database
+                .SqlQuery<RevoGetTotalShaftCountDto>($"EXEC sp_GetTotalShaft @RevoId = {GlobalVariable.RevoConfig.Id}")
+                .FirstOrDefaultAsync();
 
-            if (maxCreatedAt == null)
-                return null;
-
-            // 2. Chuẩn hóa giờ chẵn
-            var currentHour = new DateTime(
-                maxCreatedAt.Value.Year,
-                maxCreatedAt.Value.Month,
-                maxCreatedAt.Value.Day,
-                maxCreatedAt.Value.Hour,
-                0, 0);
-
-            var nextHour = currentHour.AddHours(1);
-            var lastHour = currentHour.AddHours(-1);
-
-
-            //// 3. Đếm ShaftNum giờ hiện tại
-            //var currentCount = dbContext.FT09_RevoDatalogs
-            //    .Where(x => x.CreatedAt >= currentHour
-            //             && x.CreatedAt < nextHour
-            //             && x.ShaftNum != null)
-            //    .Select(x => x.ShaftNum)
-            //    .Distinct()
-            //    .Count();
-
-
-            //// 4. Đếm ShaftNum giờ trước
-            //var lastCount = dbContext.FT09_RevoDatalogs
-            //    .Where(x => x.CreatedAt >= lastHour
-            //             && x.CreatedAt < currentHour
-            //             && x.ShaftNum != null)
-            //    .Select(x => x.ShaftNum)
-            //    .Distinct()
-            //    .Count();
-
-
-            // 3) Đếm theo giờ hiện tại:
-            //    Group theo ShaftNum trong window giờ hiện tại
-            //    và CHỈ giữ group mà TẤT CẢ các dòng đều có StartedAt & EndedAt khác null
-            var currentCount = await dbContext.FT09_RevoDatalogs
-                .Where(x => x.CreatedAt >= currentHour && x.CreatedAt < nextHour)
-                .GroupBy(x => x.ShaftNum!)
-                .Where(g => g.All(r => r.StartedAt != null && r.EndedAt != null))
-                .Select(g => g.Key)
-                .CountAsync();
-
-            // 4) Đếm theo giờ trước đó:
-            var lastCount = await dbContext.FT09_RevoDatalogs
-                .Where(x => x.CreatedAt >= lastHour && x.CreatedAt < currentHour)
-                .GroupBy(x => x.ShaftNum!)
-                .Where(g => g.All(r => r.StartedAt != null && r.EndedAt != null))
-                .Select(g => g.Key)
-                .CountAsync();
-
-
-
-            // 5. Kết quả
-            var result = new GroupShaftModel
-            {
-                CurrentHour = currentCount,
-                LastHour = lastCount
-            };
-
-            return result;
+            return data;
         }
         #endregion
     }

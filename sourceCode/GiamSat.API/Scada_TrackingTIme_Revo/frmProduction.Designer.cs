@@ -270,6 +270,7 @@
             this.Controls.Add(this._lab);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmProduction";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "REVO- Production";
             this.ResumeLayout(false);
             this.PerformLayout();
