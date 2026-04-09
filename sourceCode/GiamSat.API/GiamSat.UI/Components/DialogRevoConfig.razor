@@ -12,6 +12,21 @@
                     <RadzenTextBox @bind-Value="@_model.Name" Placeholder="Nhập tên REVO" Style="width: 100%;" />
                 </RadzenFormField>
 
+                <RadzenFormField Text="Loại Máy" class="rz-col-12">
+                    <RadzenDropDown @bind-Value=@_model.MachineType
+                                    Data="@(Enum.GetValues(typeof(EnumMachineType)).Cast<EnumMachineType>().Select(e => new
+                                    {
+                                        DisplayValue = e.ToString(),
+                                        Value = e
+                                    }))"
+                                    ValueProperty="Value" TextProperty="DisplayValue"
+                                    Style="width: 100%; max-width: 400px;" Name="DropDownBindValue" 
+                                    Chips=true Disabled="false"
+                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                    FilterOperator="StringFilterOperator.Contains"
+                                    AllowFiltering="true" />
+                </RadzenFormField>
+
                 <RadzenFormField Text="Đường dẫn" class="rz-col-12">
                     <RadzenTextBox @bind-Value="@_model.Path" Placeholder="Nhập đường dẫn" Style="width: 100%;" />
                 </RadzenFormField>

@@ -149,6 +149,7 @@ namespace GiamSat.UI.Pages
             {
                 Id = item.Id,
                 Name = item.Name,
+                MachineType = item.MachineType,
                 Path = item.Path,
                 ConstringAccessDb = item.ConstringAccessDb,
                 Pulse_Rev = item.Pulse_Rev,

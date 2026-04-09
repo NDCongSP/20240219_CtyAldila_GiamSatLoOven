@@ -37,5 +37,10 @@ namespace GiamSat.Models
         /// Offset số xung/1 vòng, dùng để tính toán cho phần tốc độ truyền xuống PLC.
         /// </summary>
         public int Pulse_rev_Offset { get; set; } = 0;
+
+        /// <summary>
+        /// Quy định loại máy để lấy thông tin cấu hình phù hợp, và lưu trữ data theo loại máy.
+        /// </summary>
+        public EnumMachineType MachineType { get; set; } = EnumMachineType.REVO;
     }
 }

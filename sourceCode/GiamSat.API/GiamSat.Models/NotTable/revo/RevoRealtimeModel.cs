@@ -41,6 +41,11 @@ namespace GiamSat.Models
         /// cá bước trong 1 cây shaft thì có cùng 1 ShaftNum.
         /// </summary>
         public Guid? ShaftNum { get; set; } = Guid.Empty;
+
+        /// <summary>
+        /// Quy định loại máy để lấy thông tin cấu hình phù hợp, và lưu trữ data theo loại máy.
+        /// </summary>
+        public EnumMachineType MachineType { get; set; }
     }
 
     public class RevoStep
