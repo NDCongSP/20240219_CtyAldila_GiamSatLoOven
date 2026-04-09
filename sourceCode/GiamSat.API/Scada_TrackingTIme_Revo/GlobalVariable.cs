@@ -125,7 +125,7 @@ namespace Scada_TrackingTIme_Revo
                    0;
 
                 var soXung = (int)(gocQuay * GlobalVariable.RevoConfig.Pulse_Rev / 360.0);
-                var speed_PulsePerSec = (int)(tocDo * GlobalVariable.RevoConfig.Pulse_Rev / 360);
+                var speed_PulsePerSec = (int)(tocDo * (GlobalVariable.RevoConfig.Pulse_Rev+GlobalVariable.RevoConfig.Pulse_rev_Offset) / 360);
 
                 result.Add(new RevoStep
                 {

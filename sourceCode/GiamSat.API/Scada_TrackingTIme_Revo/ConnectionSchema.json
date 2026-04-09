@@ -4,7 +4,7 @@
   "Port": 8800,
   "CommunicationMode": 0,
   "RefreshRate": 100,
-  "CreatedDate": "2026-03-26T21:05:19.1053627+07:00",
+  "CreatedDate": "2026-04-09T16:30:02.3260402+07:00",
   "Username": null,
   "Password": null,
   "Childs": [
@@ -19,17 +19,17 @@
       "Childs": [
         {
           "ItemType": 3,
-          "Name": "Channel_Revo_1",
-          "Path": "Local Station/Channel_Revo_1",
+          "Name": "Channel_Revo",
+          "Path": "Local Station/Channel_Revo",
           "Description": null,
-          "DisplayInfo": "ModbusTCP - 192.168.1.100:502",
+          "DisplayInfo": "ModbusTCP - 192.168.1.220:502",
           "Error": null,
           "ConnectionStatus": 0,
           "Childs": [
             {
               "ItemType": 4,
               "Name": "Device1",
-              "Path": "Local Station/Channel_Revo_1/Device1",
+              "Path": "Local Station/Channel_Revo/Device1",
               "Description": null,
               "DisplayInfo": "UnitId - 1",
               "Error": null,
@@ -38,7 +38,7 @@
                 {
                   "ItemType": 6,
                   "Name": "TOC_DO_HZ",
-                  "Path": "Local Station/Channel_Revo_1/Device1/TOC_DO_HZ",
+                  "Path": "Local Station/Channel_Revo/Device1/TOC_DO_HZ",
                   "Description": "D0. cong thuc= toc do/360 x so xung/1vong",
                   "DisplayInfo": null,
                   "Error": null,
@@ -52,7 +52,7 @@
                 {
                   "ItemType": 6,
                   "Name": "SO_LUONG_XUNG",
-                  "Path": "Local Station/Channel_Revo_1/Device1/SO_LUONG_XUNG",
+                  "Path": "Local Station/Channel_Revo/Device1/SO_LUONG_XUNG",
                   "Description": "D2. goc quay. = 0  chay mai. cong thuc = goc quay/360 x so xung/1vong",
                   "DisplayInfo": null,
                   "Error": null,
@@ -66,7 +66,7 @@
                 {
                   "ItemType": 6,
                   "Name": "CHO_PHEP_STEP_MOROR_CHAY",
-                  "Path": "Local Station/Channel_Revo_1/Device1/CHO_PHEP_STEP_MOROR_CHAY",
+                  "Path": "Local Station/Channel_Revo/Device1/CHO_PHEP_STEP_MOROR_CHAY",
                   "Description": "M2",
                   "DisplayInfo": null,
                   "Error": null,
@@ -80,7 +80,7 @@
                 {
                   "ItemType": 6,
                   "Name": "OUT_CLAMPED_CLOSE",
-                  "Path": "Local Station/Channel_Revo_1/Device1/OUT_CLAMPED_CLOSE",
+                  "Path": "Local Station/Channel_Revo/Device1/OUT_CLAMPED_CLOSE",
                   "Description": "M3",
                   "DisplayInfo": null,
                   "Error": null,
@@ -94,7 +94,7 @@
                 {
                   "ItemType": 6,
                   "Name": "OUT_CLAMPED_OPEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/OUT_CLAMPED_OPEN",
+                  "Path": "Local Station/Channel_Revo/Device1/OUT_CLAMPED_OPEN",
                   "Description": "M4",
                   "DisplayInfo": null,
                   "Error": null,
@@ -108,7 +108,7 @@
                 {
                   "ItemType": 6,
                   "Name": "OUT_BELT",
-                  "Path": "Local Station/Channel_Revo_1/Device1/OUT_BELT",
+                  "Path": "Local Station/Channel_Revo/Device1/OUT_BELT",
                   "Description": "M5",
                   "DisplayInfo": null,
                   "Error": null,
@@ -122,7 +122,7 @@
                 {
                   "ItemType": 6,
                   "Name": "DAO_CHIEU_OFF-T_ON-N",
-                  "Path": "Local Station/Channel_Revo_1/Device1/DAO_CHIEU_OFF-T_ON-N",
+                  "Path": "Local Station/Channel_Revo/Device1/DAO_CHIEU_OFF-T_ON-N",
                   "Description": "M6",
                   "DisplayInfo": null,
                   "Error": null,
@@ -136,7 +136,7 @@
                 {
                   "ItemType": 6,
                   "Name": "RESET_ALL",
-                  "Path": "Local Station/Channel_Revo_1/Device1/RESET_ALL",
+                  "Path": "Local Station/Channel_Revo/Device1/RESET_ALL",
                   "Description": "M7",
                   "DisplayInfo": null,
                   "Error": null,
@@ -150,7 +150,7 @@
                 {
                   "ItemType": 6,
                   "Name": "PC_ALLOW_RUN_TO_PLC",
-                  "Path": "Local Station/Channel_Revo_1/Device1/PC_ALLOW_RUN_TO_PLC",
+                  "Path": "Local Station/Channel_Revo/Device1/PC_ALLOW_RUN_TO_PLC",
                   "Description": "M10. =1 to allowed run. PLC set. khi ket noi ok, PC chon part lam viec xong thi se set bit nay len 1",
                   "DisplayInfo": null,
                   "Error": null,
@@ -163,148 +163,8 @@
                 },
                 {
                   "ItemType": 6,
-                  "Name": "SIMULATOR_LEFT_FINGER_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/SIMULATOR_LEFT_FINGER_SEN",
-                  "Description": "M11 - X0",
-                  "DisplayInfo": null,
-                  "Error": null,
-                  "ConnectionStatus": 0,
-                  "Childs": [],
-                  "Properties": {
-                    "DataType": "Bool",
-                    "Address": "4108"
-                  }
-                },
-                {
-                  "ItemType": 6,
-                  "Name": "SIMULATOR_RIGHT_FINGER_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/SIMULATOR_RIGHT_FINGER_SEN",
-                  "Description": "M12 - X1",
-                  "DisplayInfo": null,
-                  "Error": null,
-                  "ConnectionStatus": 0,
-                  "Childs": [],
-                  "Properties": {
-                    "DataType": "Bool",
-                    "Address": "4109"
-                  }
-                },
-                {
-                  "ItemType": 6,
-                  "Name": "SIMULATOR_LEFT_CLAMPED_CLOSE_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/SIMULATOR_LEFT_CLAMPED_CLOSE_SEN",
-                  "Description": "M13 - X2",
-                  "DisplayInfo": null,
-                  "Error": null,
-                  "ConnectionStatus": 0,
-                  "Childs": [],
-                  "Properties": {
-                    "DataType": "Bool",
-                    "Address": "4110"
-                  }
-                },
-                {
-                  "ItemType": 6,
-                  "Name": "SIMULATOR_RIGHT_CLAMPED_CLOSE_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/SIMULATOR_RIGHT_CLAMPED_CLOSE_SEN",
-                  "Description": "M14 - X3",
-                  "DisplayInfo": null,
-                  "Error": null,
-                  "ConnectionStatus": 0,
-                  "Childs": [],
-                  "Properties": {
-                    "DataType": "Bool",
-                    "Address": "4111"
-                  }
-                },
-                {
-                  "ItemType": 6,
-                  "Name": "SIMULATOR_LEFT_CLAMPED_OPEN_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/SIMULATOR_LEFT_CLAMPED_OPEN_SEN",
-                  "Description": "M15 - X4",
-                  "DisplayInfo": null,
-                  "Error": null,
-                  "ConnectionStatus": 0,
-                  "Childs": [],
-                  "Properties": {
-                    "DataType": "Bool",
-                    "Address": "4112"
-                  }
-                },
-                {
-                  "ItemType": 6,
-                  "Name": "SIMULATOR_RIGHT_CLAMPED_OPEN_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/SIMULATOR_RIGHT_CLAMPED_OPEN_SEN",
-                  "Description": "M16 - X5",
-                  "DisplayInfo": null,
-                  "Error": null,
-                  "ConnectionStatus": 0,
-                  "Childs": [],
-                  "Properties": {
-                    "DataType": "Bool",
-                    "Address": "4113"
-                  }
-                },
-                {
-                  "ItemType": 6,
-                  "Name": "SIMULATOR_LEFT_BELT_UP_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/SIMULATOR_LEFT_BELT_UP_SEN",
-                  "Description": "M17 - X6",
-                  "DisplayInfo": null,
-                  "Error": null,
-                  "ConnectionStatus": 0,
-                  "Childs": [],
-                  "Properties": {
-                    "DataType": "Bool",
-                    "Address": "4114"
-                  }
-                },
-                {
-                  "ItemType": 6,
-                  "Name": "SIMULATOR_RIGHT_BELT_UP_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/SIMULATOR_RIGHT_BELT_UP_SEN",
-                  "Description": "M18 - X7",
-                  "DisplayInfo": null,
-                  "Error": null,
-                  "ConnectionStatus": 0,
-                  "Childs": [],
-                  "Properties": {
-                    "DataType": "Bool",
-                    "Address": "4115"
-                  }
-                },
-                {
-                  "ItemType": 6,
-                  "Name": "SIMULATOR_LEFT_BELT_DOWN_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/SIMULATOR_LEFT_BELT_DOWN_SEN",
-                  "Description": "M19 - X10",
-                  "DisplayInfo": null,
-                  "Error": null,
-                  "ConnectionStatus": 0,
-                  "Childs": [],
-                  "Properties": {
-                    "DataType": "Bool",
-                    "Address": "4116"
-                  }
-                },
-                {
-                  "ItemType": 6,
-                  "Name": "SIMULATOR_RIGHT_BELT_DOWN_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/SIMULATOR_RIGHT_BELT_DOWN_SEN",
-                  "Description": "M20 - X11",
-                  "DisplayInfo": null,
-                  "Error": null,
-                  "ConnectionStatus": 0,
-                  "Childs": [],
-                  "Properties": {
-                    "DataType": "Bool",
-                    "Address": "4117"
-                  }
-                },
-                {
-                  "ItemType": 6,
                   "Name": "LEFT_FINGER_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/LEFT_FINGER_SEN",
+                  "Path": "Local Station/Channel_Revo/Device1/LEFT_FINGER_SEN",
                   "Description": "M21 -  X0",
                   "DisplayInfo": null,
                   "Error": null,
@@ -318,7 +178,7 @@
                 {
                   "ItemType": 6,
                   "Name": "RIGHT_FINGER_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/RIGHT_FINGER_SEN",
+                  "Path": "Local Station/Channel_Revo/Device1/RIGHT_FINGER_SEN",
                   "Description": "M22 - X1",
                   "DisplayInfo": null,
                   "Error": null,
@@ -332,7 +192,7 @@
                 {
                   "ItemType": 6,
                   "Name": "LEFT_CLAMPED_CLOSE_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/LEFT_CLAMPED_CLOSE_SEN",
+                  "Path": "Local Station/Channel_Revo/Device1/LEFT_CLAMPED_CLOSE_SEN",
                   "Description": "M23 - X2",
                   "DisplayInfo": null,
                   "Error": null,
@@ -346,7 +206,7 @@
                 {
                   "ItemType": 6,
                   "Name": "RIGHT_CLAMPED_CLOSE_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/RIGHT_CLAMPED_CLOSE_SEN",
+                  "Path": "Local Station/Channel_Revo/Device1/RIGHT_CLAMPED_CLOSE_SEN",
                   "Description": "M24 - X3",
                   "DisplayInfo": null,
                   "Error": null,
@@ -360,7 +220,7 @@
                 {
                   "ItemType": 6,
                   "Name": "LEFT_CLAMPED_OPEN_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/LEFT_CLAMPED_OPEN_SEN",
+                  "Path": "Local Station/Channel_Revo/Device1/LEFT_CLAMPED_OPEN_SEN",
                   "Description": "M25 - X4",
                   "DisplayInfo": null,
                   "Error": null,
@@ -374,7 +234,7 @@
                 {
                   "ItemType": 6,
                   "Name": "RIGHT_CLAMPED_OPEN_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/RIGHT_CLAMPED_OPEN_SEN",
+                  "Path": "Local Station/Channel_Revo/Device1/RIGHT_CLAMPED_OPEN_SEN",
                   "Description": "M26 - X5",
                   "DisplayInfo": null,
                   "Error": null,
@@ -388,7 +248,7 @@
                 {
                   "ItemType": 6,
                   "Name": "LEFT_BELT_UP_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/LEFT_BELT_UP_SEN",
+                  "Path": "Local Station/Channel_Revo/Device1/LEFT_BELT_UP_SEN",
                   "Description": "M27 - X6",
                   "DisplayInfo": null,
                   "Error": null,
@@ -402,7 +262,7 @@
                 {
                   "ItemType": 6,
                   "Name": "RIGHT_BELT_UP_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/RIGHT_BELT_UP_SEN",
+                  "Path": "Local Station/Channel_Revo/Device1/RIGHT_BELT_UP_SEN",
                   "Description": "M28 - X7",
                   "DisplayInfo": null,
                   "Error": null,
@@ -416,7 +276,7 @@
                 {
                   "ItemType": 6,
                   "Name": "LEFT_BELT_DOWN_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/LEFT_BELT_DOWN_SEN",
+                  "Path": "Local Station/Channel_Revo/Device1/LEFT_BELT_DOWN_SEN",
                   "Description": "M29 - X10",
                   "DisplayInfo": null,
                   "Error": null,
@@ -430,7 +290,7 @@
                 {
                   "ItemType": 6,
                   "Name": "RIGHT_BELT_DOWN_SEN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/RIGHT_BELT_DOWN_SEN",
+                  "Path": "Local Station/Channel_Revo/Device1/RIGHT_BELT_DOWN_SEN",
                   "Description": "M30 - X11",
                   "DisplayInfo": null,
                   "Error": null,
@@ -444,7 +304,7 @@
                 {
                   "ItemType": 6,
                   "Name": "TIME_MOTOR_RUN_MS",
-                  "Path": "Local Station/Channel_Revo_1/Device1/TIME_MOTOR_RUN_MS",
+                  "Path": "Local Station/Channel_Revo/Device1/TIME_MOTOR_RUN_MS",
                   "Description": "D4. Thoi gian chay cua dong co = toc do/goc quay . d2/d0",
                   "DisplayInfo": null,
                   "Error": null,
@@ -458,7 +318,7 @@
                 {
                   "ItemType": 6,
                   "Name": "Y0_PUL_DRIVER",
-                  "Path": "Local Station/Channel_Revo_1/Device1/Y0_PUL_DRIVER",
+                  "Path": "Local Station/Channel_Revo/Device1/Y0_PUL_DRIVER",
                   "Description": "xuat xung dieu khien dong co",
                   "DisplayInfo": null,
                   "Error": null,
@@ -472,7 +332,7 @@
                 {
                   "ItemType": 6,
                   "Name": "Y1_DIR_DRIVER",
-                  "Path": "Local Station/Channel_Revo_1/Device1/Y1_DIR_DRIVER",
+                  "Path": "Local Station/Channel_Revo/Device1/Y1_DIR_DRIVER",
                   "Description": "Chieu quay cho step motor. 0 thuan, 1 nghich",
                   "DisplayInfo": null,
                   "Error": null,
@@ -486,7 +346,7 @@
                 {
                   "ItemType": 6,
                   "Name": "Y2_CLAMPED_SOLENOID_VALVE",
-                  "Path": "Local Station/Channel_Revo_1/Device1/Y2_CLAMPED_SOLENOID_VALVE",
+                  "Path": "Local Station/Channel_Revo/Device1/Y2_CLAMPED_SOLENOID_VALVE",
                   "Description": "Bat cho thanh kep",
                   "DisplayInfo": null,
                   "Error": null,
@@ -500,7 +360,7 @@
                 {
                   "ItemType": 6,
                   "Name": "Y3_OPEN_SOLENOID_VALVE",
-                  "Path": "Local Station/Channel_Revo_1/Device1/Y3_OPEN_SOLENOID_VALVE",
+                  "Path": "Local Station/Channel_Revo/Device1/Y3_OPEN_SOLENOID_VALVE",
                   "Description": null,
                   "DisplayInfo": null,
                   "Error": null,
@@ -514,7 +374,7 @@
                 {
                   "ItemType": 6,
                   "Name": "Y4_BELT_UP_DOWN_SOLENOID_VALVE",
-                  "Path": "Local Station/Channel_Revo_1/Device1/Y4_BELT_UP_DOWN_SOLENOID_VALVE",
+                  "Path": "Local Station/Channel_Revo/Device1/Y4_BELT_UP_DOWN_SOLENOID_VALVE",
                   "Description": "Bat belt chay xuong. 1 chay xuong, 0 chay len",
                   "DisplayInfo": null,
                   "Error": null,
@@ -528,7 +388,7 @@
                 {
                   "ItemType": 6,
                   "Name": "Y5_ENA_DRIVER",
-                  "Path": "Local Station/Channel_Revo_1/Device1/Y5_ENA_DRIVER",
+                  "Path": "Local Station/Channel_Revo/Device1/Y5_ENA_DRIVER",
                   "Description": "ON_OFF driver, hien tai khong dung",
                   "DisplayInfo": null,
                   "Error": null,
@@ -542,7 +402,7 @@
                 {
                   "ItemType": 6,
                   "Name": "Y6_STEP_DONE",
-                  "Path": "Local Station/Channel_Revo_1/Device1/Y6_STEP_DONE",
+                  "Path": "Local Station/Channel_Revo/Device1/Y6_STEP_DONE",
                   "Description": "Bao step motor chay xong hanh trinh.",
                   "DisplayInfo": null,
                   "Error": null,
@@ -556,7 +416,7 @@
                 {
                   "ItemType": 6,
                   "Name": "Y7_CLIENT_CONNECTED",
-                  "Path": "Local Station/Channel_Revo_1/Device1/Y7_CLIENT_CONNECTED",
+                  "Path": "Local Station/Channel_Revo/Device1/Y7_CLIENT_CONNECTED",
                   "Description": "Bao co client ket noi den modbus tcp server OK",
                   "DisplayInfo": null,
                   "Error": null,
@@ -570,8 +430,8 @@
                 {
                   "ItemType": 6,
                   "Name": "SENT",
-                  "Path": "Local Station/Channel_Revo_1/Device1/SENT",
-                  "Description": "M8. Kkhi chuyen buoc, thi pc se set bit nay len 1 de bao cho PLC biet la da set xung xong. PLC co the bat dau chay",
+                  "Path": "Local Station/Channel_Revo/Device1/SENT",
+                  "Description": "M8. Kkhi chuyen buoc, thi pc se set bit nay len 1 de bao cho PLC biet la da set xung xong. PLC co the bat dau chay, khi chay xong buoc PLC reset 0",
                   "DisplayInfo": null,
                   "Error": null,
                   "ConnectionStatus": 0,
@@ -584,7 +444,7 @@
                 {
                   "ItemType": 6,
                   "Name": "START_STOP_STEP",
-                  "Path": "Local Station/Channel_Revo_1/Device1/START_STOP_STEP",
+                  "Path": "Local Station/Channel_Revo/Device1/START_STOP_STEP",
                   "Description": "M9. khi bat dau chay, PLC set len 1 de bao cho PC biet la bat dau chay buoc. chay xong PLC set 0 bao cho PC biet da hoan thanh buoc.",
                   "DisplayInfo": null,
                   "Error": null,
@@ -598,8 +458,8 @@
                 {
                   "ItemType": 6,
                   "Name": "ALLOWED_RUN",
-                  "Path": "Local Station/Channel_Revo_1/Device1/ALLOWED_RUN",
-                  "Description": "M0. khi nao m10=0 and m8=0 thi PLC set bit nay len 1 cho phep chay.",
+                  "Path": "Local Station/Channel_Revo/Device1/ALLOWED_RUN",
+                  "Description": "M0. khi nao m10=0 and m8=0 thi PLC set bit nay len 1 cho phep chay. Khi chay xong buoc PLC se reset ve 0",
                   "DisplayInfo": null,
                   "Error": null,
                   "ConnectionStatus": 0,
@@ -611,92 +471,8 @@
                 },
                 {
                   "ItemType": 6,
-                  "Name": "IP1",
-                  "Path": "Local Station/Channel_Revo_1/Device1/IP1",
-                  "Description": "SD2680. The 1st byte of IP address.",
-                  "DisplayInfo": null,
-                  "Error": null,
-                  "ConnectionStatus": 0,
-                  "Childs": [],
-                  "Properties": {
-                    "DataType": "Word",
-                    "Address": "423161"
-                  }
-                },
-                {
-                  "ItemType": 6,
-                  "Name": "IP2",
-                  "Path": "Local Station/Channel_Revo_1/Device1/IP2",
-                  "Description": null,
-                  "DisplayInfo": null,
-                  "Error": null,
-                  "ConnectionStatus": 0,
-                  "Childs": [],
-                  "Properties": {
-                    "DataType": "Word",
-                    "Address": "423162"
-                  }
-                },
-                {
-                  "ItemType": 6,
-                  "Name": "IP3",
-                  "Path": "Local Station/Channel_Revo_1/Device1/IP3",
-                  "Description": null,
-                  "DisplayInfo": null,
-                  "Error": null,
-                  "ConnectionStatus": 0,
-                  "Childs": [],
-                  "Properties": {
-                    "DataType": "Word",
-                    "Address": "423163"
-                  }
-                },
-                {
-                  "ItemType": 6,
-                  "Name": "IP4",
-                  "Path": "Local Station/Channel_Revo_1/Device1/IP4",
-                  "Description": null,
-                  "DisplayInfo": null,
-                  "Error": null,
-                  "ConnectionStatus": 0,
-                  "Childs": [],
-                  "Properties": {
-                    "DataType": "Word",
-                    "Address": "423164"
-                  }
-                },
-                {
-                  "ItemType": 6,
-                  "Name": "SM2680",
-                  "Path": "Local Station/Channel_Revo_1/Device1/SM2680",
-                  "Description": "Static set IP switch. ON: Static set. OFF: Automatically configurate IP address by router DHCP, and could not be modify IP. When STOP->RUN takes effect.",
-                  "DisplayInfo": null,
-                  "Error": null,
-                  "ConnectionStatus": 0,
-                  "Childs": [],
-                  "Properties": {
-                    "DataType": "Bool",
-                    "Address": "23161"
-                  }
-                },
-                {
-                  "ItemType": 6,
-                  "Name": "SM2683",
-                  "Path": "Local Station/Channel_Revo_1/Device1/SM2683",
-                  "Description": "The modification flag of IP, subnet mask and gateway.ON: Modifiable,OFF: Unmodifiable. (After setting to ON, modify when stop->run, and automatically turn OFF after the modification)",
-                  "DisplayInfo": null,
-                  "Error": null,
-                  "ConnectionStatus": 0,
-                  "Childs": [],
-                  "Properties": {
-                    "DataType": "Bool",
-                    "Address": "23163"
-                  }
-                },
-                {
-                  "ItemType": 6,
                   "Name": "EMERGENCY",
-                  "Path": "Local Station/Channel_Revo_1/Device1/EMERGENCY",
+                  "Path": "Local Station/Channel_Revo/Device1/EMERGENCY",
                   "Description": null,
                   "DisplayInfo": null,
                   "Error": null,
@@ -709,8 +485,8 @@
                 },
                 {
                   "ItemType": 6,
-                  "Name": "SIMULATOR_EMERGENCY",
-                  "Path": "Local Station/Channel_Revo_1/Device1/SIMULATOR_EMERGENCY",
+                  "Name": "Check_Clamped_Close",
+                  "Path": "Local Station/Channel_Revo/Device1/Check_Clamped_Close",
                   "Description": null,
                   "DisplayInfo": null,
                   "Error": null,
@@ -718,7 +494,35 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4129"
+                    "Address": "4137"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Check_Clamped_Open",
+                  "Path": "Local Station/Channel_Revo/Device1/Check_Clamped_Open",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Bool",
+                    "Address": "4138"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Check_Belt",
+                  "Path": "Local Station/Channel_Revo/Device1/Check_Belt",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Bool",
+                    "Address": "4139"
                   }
                 }
               ],
@@ -728,7 +532,7 @@
                 "TryReadWriteTimes": "3",
                 "ReadMode": "Block",
                 "InputContactReadBlockSettings": "[]",
-                "OutputCoilsReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 0,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"4097\",\r\n    \"EndAddress\": \"4128\"\r\n  },\r\n  {\r\n    \"AddressType\": 0,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"23161\",\r\n    \"EndAddress\": \"23162\"\r\n  },\r\n  {\r\n    \"AddressType\": 0,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"61441\",\r\n    \"EndAddress\": \"61447\"\r\n  }\r\n]",
+                "OutputCoilsReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 0,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"4097\",\r\n    \"EndAddress\": \"4138\"\r\n  },\r\n  {\r\n    \"AddressType\": 0,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"23161\",\r\n    \"EndAddress\": \"23162\"\r\n  },\r\n  {\r\n    \"AddressType\": 0,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"61441\",\r\n    \"EndAddress\": \"61447\"\r\n  }\r\n]",
                 "InputRegisterReadBlockSettings": "[]",
                 "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404097\",\r\n    \"EndAddress\": \"404101\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"423161\",\r\n    \"EndAddress\": \"423164\"\r\n  }\r\n]",
                 "MaxWritesCount": "10"
@@ -736,7 +540,7 @@
             }
           ],
           "Properties": {
-            "IpAddress": "192.168.1.100",
+            "IpAddress": "192.168.1.220",
             "Port": "502",
             "DelayBetweenPool": "5",
             "ScanRate": "100"

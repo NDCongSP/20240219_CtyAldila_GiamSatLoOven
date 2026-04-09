@@ -235,6 +235,7 @@
             // 
             // _btnStart
             // 
+            this._btnStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this._btnStart.Location = new System.Drawing.Point(330, 16);
             this._btnStart.Name = "_btnStart";
             this._btnStart.Size = new System.Drawing.Size(103, 38);

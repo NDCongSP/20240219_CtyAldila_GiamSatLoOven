@@ -188,8 +188,9 @@ namespace Scada_TrackingTIme_Revo
                     _patterns = GlobalVariable.ToModels<PatternModel>(dt);
                 }
 
-                _txtPart.KeyDown += _txtPart_KeyDown;
+                //_txtPart.KeyDown += _txtPart_KeyDown;
 
+                _btnStart.Click += _btnStart_Click;
 
                 if (!string.IsNullOrEmpty(GlobalVariable.Part))
                 {
@@ -228,6 +229,11 @@ namespace Scada_TrackingTIme_Revo
             this.KeyPreview = true;
 
             this.KeyDown += frmProduction_KeyDown;
+        }
+
+        private void _btnStart_Click(object sender, EventArgs e)
+        {
+            _txtPart_KeyDown(this, new KeyEventArgs(Keys.Enter));
         }
 
         private async void frmProduction_KeyDown(object sender, KeyEventArgs e)
@@ -754,7 +760,8 @@ namespace Scada_TrackingTIme_Revo
 
                     lblStep.Text = $"{step.StepName} - {startAtText} -> {endAtText}: {step.TotalRunTime}s" +
                         $"{Environment.NewLine}" +
-                        $"Pul={step.SoLuongXung} - Speed = {step.Speed_Hz}";
+                        $"Pul={step.SoLuongXung}({step.SoLuongXung/GlobalVariable.RevoConfig.Pulse_Rev} v) " +
+                        $"- Speed = {step.Speed_Hz} ({step.Speed_Hz/GlobalVariable.RevoConfig.Pulse_Rev}v/s)";
 
                     if ((step.StartAt.HasValue && !step.EndAt.HasValue) || isFirst == 1)
                     {
