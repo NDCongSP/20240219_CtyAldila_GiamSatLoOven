@@ -16,6 +16,16 @@ namespace GiamSat.UI
 
         public static ConfigModel ConfigSystem { get; set; }
 
+        /// <summary>
+        /// Timer refresh trang REVO (RevoHome, DialogRevoDetail). Đơn vị ms. Đọc từ appsettings.json.
+        /// </summary>
+        public static int RevoRefreshInterval { get; set; } = 10000;
+
+        /// <summary>
+        /// Timer refresh biểu đồ realtime (RealtimeTrend). Đơn vị ms. Đọc từ appsettings.json.
+        /// </summary>
+        public static int RealtimeTrendInterval { get; set; } = 1000;
+
         public static Guid UserId { get; set; }
         public static string UserName { get; set; } = "user";
         public static List<BreadCrumbModel> BreadCrumbData { get; set; }=new List<BreadCrumbModel>();

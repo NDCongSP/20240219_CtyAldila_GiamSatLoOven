@@ -2384,6 +2384,48 @@
         }
       }
     },
+    "/api/FT09/GetTotalShaft": {
+      "get": {
+        "tags": [
+          "FT09"
+        ],
+        "operationId": "FT09_GetTotalShaft",
+        "parameters": [
+          {
+            "name": "revoId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevoGetTotalShaftCountDtoListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevoGetTotalShaftCountDtoListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevoGetTotalShaftCountDtoListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/FT09/GetFilter": {
       "post": {
         "tags": [
@@ -3853,6 +3895,10 @@
             "type": "number",
             "format": "double",
             "nullable": true
+          },
+          "shaftNo": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -4098,6 +4144,74 @@
         },
         "additionalProperties": false
       },
+      "RevoGetTotalShaftCountDto": {
+        "type": "object",
+        "properties": {
+          "revoId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalShaftCurrentHour": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalShaftFinishCurrentHour": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalShaftLastHour": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalShaftFinshLastHour": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RevoGetTotalShaftCountDtoResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/RevoGetTotalShaftCountDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RevoGetTotalShaftCountDtoListResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RevoGetTotalShaftCountDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "SandboxedRemoveCommand": {
         "type": "object",
         "properties": {
@@ -4218,10 +4332,7 @@
         "additionalProperties": false
       },
       "SortDirection": {
-        "enum": [
-          0,
-          1
-        ],
+        "enum": [ 0, 1 ],
         "type": "integer",
         "format": "int32"
       },

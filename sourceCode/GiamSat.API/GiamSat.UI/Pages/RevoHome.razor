@@ -24,10 +24,12 @@
     {
         @foreach (var revo in _revoData.OrderBy(x => x.RevoId))
         {
-            var stats = _shaftStats.TryGetValue(revo.RevoId, out var s) ? s : (Current: 0, Prev: 0);
+            var dto = _shaftStats.TryGetValue(revo.RevoId, out var s) ? s : new APIClient.RevoGetTotalShaftCountDto { RevoId = revo.RevoId };
             <RadzenColumn Size="12" SizeMD="6" SizeLG="4" SizeXL="3">
                 <RevoCard RevoData="@revo"
-                          ShaftCurrentCount="@stats.Current"
+                          ShaftTotalCount="@dto.TotalShaftCurrentHour"
+                          ShaftCurrentCount="@dto.TotalShaftFinishCurrentHour"
+                          ShaftLastHourCount="@dto.TotalShaftFinshLastHour"
                           OnDetailClick="@(() => OnShowDetail(revo))" />
             </RadzenColumn>
         }

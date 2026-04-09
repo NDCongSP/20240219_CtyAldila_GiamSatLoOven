@@ -9,5 +9,8 @@ namespace GiamSat.Models
     public interface ISFT09 : IRepository<Guid, FT09_RevoDatalog>
     {
         Task<Result<List<FT09_RevoDatalog>>> GetFilter([Body] RevoFilterModel model);
+
+        [Get("GetTotalShaft")]
+        Task<Result<List<RevoGetTotalShaftCountDto>>> GetTotalShaft([Query] int? revoId = null);
     }
 }

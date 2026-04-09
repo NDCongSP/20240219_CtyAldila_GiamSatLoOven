@@ -12,15 +12,14 @@ namespace GiamSat.UI.Pages
         private bool _isLoading = true;
         private System.Timers.Timer? _refreshTimer;
 
-        // Key = RevoId, Value = (currentHourShafts, prevHourShafts)
-        private Dictionary<int, (int Current, int Prev)> _shaftStats = new();
+        // Key = RevoId, Value = shaft count DTO from sp_GetTotalShaft
+        private Dictionary<int, APIClient.RevoGetTotalShaftCountDto> _shaftStats = new();
 
         protected override async Task OnInitializedAsync()
         {
             await LoadData();
             
-            // Setup timer to refresh every 10 seconds
-            _refreshTimer = new System.Timers.Timer(10000); // 10 seconds
+            _refreshTimer = new System.Timers.Timer(GlobalVariable.RevoRefreshInterval);
             _refreshTimer.Elapsed += OnTimerElapsed;
             _refreshTimer.AutoReset = true;
             _refreshTimer.Start();
@@ -82,7 +81,8 @@ namespace GiamSat.UI.Pages
                                 var config = revoConfigs.FirstOrDefault(x => x.Id == revo.RevoId);
                                 if (config != null)
                                 {
-                                    revo.RevoName = config.Name ?? $"REVO {revo.RevoId}";
+                                    revo.RevoName    = config.Name ?? $"REVO {revo.RevoId}";
+                                    revo.MachineType = config.MachineType;
                                 }
                                 else
                                 {
@@ -111,52 +111,17 @@ namespace GiamSat.UI.Pages
         {
             try
             {
-                var now = DateTime.Now;
-                var currentHourStart = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0);
-                var currentHourEnd   = currentHourStart.AddHours(1);
-                var prevHourStart    = currentHourStart.AddHours(-1);
+                var result = await _fT09Client.GetTotalShaftAsync(null);
 
-                // Query toàn bộ trong 2 giờ (current + prev) theo tất cả REVO
-                var filter = new APIClient.RevoFilterModel
-                {
-                    GetAll  = true,
-                    FromDate = prevHourStart,
-                    ToDate   = currentHourEnd
-                };
-                var result = await _fT09Client.GetFilterAsync(filter);
+                var newStats = new Dictionary<int, APIClient.RevoGetTotalShaftCountDto>();
                 if (result.Succeeded && result.Data != null)
                 {
-                    // Group by RevoId, then split by hour bucket
-                    var newStats = new Dictionary<int, (int Current, int Prev)>();
-                    var grouped = result.Data
-                        .Where(x => x.RevoId.HasValue)
-                        .GroupBy(x => x.RevoId!.Value);
-
-                    foreach (var g in grouped)
-                    {
-                        var revoId = g.Key;
-                        var currentShafts = g
-                            .Where(x => x.CreatedAt.HasValue
-                                     && x.CreatedAt.Value >= currentHourStart
-                                     && x.CreatedAt.Value < currentHourEnd
-                                     && x.ShaftNum.HasValue)
-                            .Select(x => x.ShaftNum!.Value)
-                            .Distinct().Count();
-
-                        var prevShafts = g
-                            .Where(x => x.CreatedAt.HasValue
-                                     && x.CreatedAt.Value >= prevHourStart
-                                     && x.CreatedAt.Value < currentHourStart
-                                     && x.ShaftNum.HasValue)
-                            .Select(x => x.ShaftNum!.Value)
-                            .Distinct().Count();
-
-                        newStats[revoId] = (currentShafts, prevShafts);
-                    }
-
-                    _shaftStats = newStats;
-                    StateHasChanged();
+                    foreach (var item in result.Data)
+                        newStats[item.RevoId] = item;
                 }
+
+                _shaftStats = newStats;
+                StateHasChanged();
             }
             catch
             {
@@ -173,13 +138,15 @@ namespace GiamSat.UI.Pages
             var prevHour = now.AddHours(-1).Hour;
 
             _shaftStats.TryGetValue(revo.RevoId, out var stats);
+            var dto = stats ?? new APIClient.RevoGetTotalShaftCountDto { RevoId = revo.RevoId };
 
             await _dialogService.OpenAsync<DialogRevoDetail>("Chi tiết REVO",
                 new Dictionary<string, object>
                 {
                     { "RevoData",          revo },
-                    { "ShaftCurrentCount", stats.Current },
-                    { "ShaftPrevCount",    stats.Prev },
+                    { "ShaftCurrentCount", dto.TotalShaftFinishCurrentHour },
+                    { "ShaftPrevCount",    dto.TotalShaftFinshLastHour },
+                    { "ShaftTotalCount",   dto.TotalShaftCurrentHour },
                     { "PrevHour",          prevHour }
                 },
                 new DialogOptions { Width = dialogWidth, Height = dialogHeight, Resizable = true, Draggable = true });

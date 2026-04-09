@@ -177,10 +177,10 @@
 }
 
 .step-running {
-    background-color: #66bb6a;
-    /* Green - đang chạy */
+    background-color: #e53935;
+    /* Red - đang chạy */
     color: #ffffff;
-    border: 1px solid #43a047;
+    border: 1px solid #c62828;
 }
 
 .step-running .step-number {
@@ -214,18 +214,80 @@
     width: 100%;
 }
 
-/* Total Shaft Current badge bên trong card */
-.shaft-current-item {
-    justify-content: space-between;
-    background-color: rgba(0, 0, 0, 0.05);
-    border-radius: 4px;
-    padding: 0.25rem 0.5rem;
+/* Shaft stats row - Total + Finished */
+.shaft-stats-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    border-radius: 6px;
+    overflow: hidden;
     margin-top: 0.15rem;
-    width: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-.shaft-current-badge {
+.shaft-stat-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.3rem 0.5rem;
+    gap: 0.1rem;
+    background-color: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(2px);
+}
+
+/* dark mode */
+@media (prefers-color-scheme: dark) {
+    .shaft-stat-item {
+        background-color: rgba(0, 0, 0, 0.25);
+    }
+}
+
+.shaft-stat-divider {
+    width: 1px;
+    background-color: rgba(0, 0, 0, 0.12);
+    align-self: stretch;
+}
+
+.shaft-stat-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: rgba(0, 0, 0, 0.55);
+}
+
+@media (prefers-color-scheme: dark) {
+    .shaft-stat-label {
+        color: rgba(255, 255, 255, 0.6);
+    }
+}
+
+.shaft-stat-badge {
     font-weight: 700;
-    font-size: 1rem;
-    color: #d32f2f;
+    font-size: 1.1rem;
+    line-height: 1;
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    min-width: 2rem;
+    text-align: center;
+}
+
+/* Total Shaft - blue-gray pill */
+.shaft-total-badge {
+    background-color: #455a64;
+    color: #ffffff;
+}
+
+/* Total Shaft Finished - green pill */
+.shaft-finished-badge {
+    background-color: #2e7d32;
+    color: #ffffff;
+}
+
+/* Total Shaft Last Hour - amber pill */
+.shaft-lasthour-badge {
+    background-color: #e65100;
+    color: #ffffff;
 }

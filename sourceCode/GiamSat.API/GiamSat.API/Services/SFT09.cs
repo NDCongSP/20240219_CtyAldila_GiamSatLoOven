@@ -119,6 +119,33 @@ namespace GiamSat.API
             }
         }
 
+        public async Task<Result<List<RevoGetTotalShaftCountDto>>> GetTotalShaft([Query] int? revoId = null)
+        {
+            try
+            {
+                List<RevoGetTotalShaftCountDto> list;
+                if (revoId.HasValue)
+                {
+                    list = await _context.RevoTotalShaftCounts
+                        .FromSqlRaw("EXEC sp_GetTotalShaft @RevoId = {0}", revoId.Value)
+                        .AsNoTracking()
+                        .ToListAsync();
+                }
+                else
+                {
+                    list = await _context.RevoTotalShaftCounts
+                        .FromSqlRaw("EXEC sp_GetTotalShaft")
+                        .AsNoTracking()
+                        .ToListAsync();
+                }
+                return await Result<List<RevoGetTotalShaftCountDto>>.SuccessAsync(list);
+            }
+            catch (Exception ex)
+            {
+                return await Result<List<RevoGetTotalShaftCountDto>>.FailAsync(ex.Message);
+            }
+        }
+
         public async Task<Result<bool>> Delete([Path] Guid id)
         {
             try

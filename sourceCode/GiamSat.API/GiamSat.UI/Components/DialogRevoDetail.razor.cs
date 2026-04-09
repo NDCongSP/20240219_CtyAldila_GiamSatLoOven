@@ -17,6 +17,9 @@ namespace GiamSat.UI.Components
         [Parameter]
         public int ShaftPrevCount { get; set; } = 0;
 
+        [Parameter]
+        public int ShaftTotalCount { get; set; } = 0;
+
         /// <summary>Giờ trước (number), vd 13 thì hiển thị "Total Shaft At 13h"</summary>
         [Parameter]
         public int PrevHour { get; set; } = DateTime.Now.AddHours(-1).Hour;
@@ -24,7 +27,8 @@ namespace GiamSat.UI.Components
         private RevoRealtimeModel _revoData = new RevoRealtimeModel();
         private System.Timers.Timer? _refreshTimer;
 
-        // Live shaft counts (refreshed every timer tick from FT09)
+        // Live shaft counts (refreshed every timer tick from SP)
+        private int _liveShaftTotal = 0;
         private int _liveShaftCurrent = 0;
         private int _liveShaftPrev = 0;
         private int _livePrevHour = DateTime.Now.AddHours(-1).Hour;
@@ -32,6 +36,7 @@ namespace GiamSat.UI.Components
         protected override void OnParametersSet()
         {
             _revoData = RevoData;
+            _liveShaftTotal = ShaftTotalCount;
             _liveShaftCurrent = ShaftCurrentCount;
             _liveShaftPrev = ShaftPrevCount;
             _livePrevHour = PrevHour;
@@ -41,7 +46,7 @@ namespace GiamSat.UI.Components
         {
             await LoadRevoData();
 
-            _refreshTimer = new System.Timers.Timer(10000);
+            _refreshTimer = new System.Timers.Timer(GlobalVariable.RevoRefreshInterval);
             _refreshTimer.Elapsed += OnTimerElapsed;
             _refreshTimer.AutoReset = true;
             _refreshTimer.Start();
@@ -59,41 +64,17 @@ namespace GiamSat.UI.Components
         {
             try
             {
-                var now = DateTime.Now;
-                var currentHourStart = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0);
-                var currentHourEnd   = currentHourStart.AddHours(1);
-                var prevHourStart    = currentHourStart.AddHours(-1);
-
-                var filter = new APIClient.RevoFilterModel
-                {
-                    GetAll   = true,
-                    FromDate = prevHourStart,
-                    ToDate   = currentHourEnd
-                };
-
-                var result = await _fT09Client.GetFilterAsync(filter);
+                var result = await _fT09Client.GetTotalShaftAsync(_revoData.RevoId);
                 if (result.Succeeded && result.Data != null)
                 {
-                    var revoId = _revoData.RevoId;
-                    var records = result.Data.Where(x => x.RevoId == revoId).ToList();
-
-                    _liveShaftCurrent = records
-                        .Where(x => x.CreatedAt.HasValue
-                                 && x.CreatedAt.Value >= currentHourStart
-                                 && x.CreatedAt.Value < currentHourEnd
-                                 && x.ShaftNum.HasValue)
-                        .Select(x => x.ShaftNum!.Value)
-                        .Distinct().Count();
-
-                    _liveShaftPrev = records
-                        .Where(x => x.CreatedAt.HasValue
-                                 && x.CreatedAt.Value >= prevHourStart
-                                 && x.CreatedAt.Value < currentHourStart
-                                 && x.ShaftNum.HasValue)
-                        .Select(x => x.ShaftNum!.Value)
-                        .Distinct().Count();
-
-                    _livePrevHour = prevHourStart.Hour;
+                    var dto = result.Data.FirstOrDefault(x => x.RevoId == _revoData.RevoId);
+                    if (dto != null)
+                    {
+                        _liveShaftTotal   = dto.TotalShaftCurrentHour;
+                        _liveShaftCurrent = dto.TotalShaftFinishCurrentHour;
+                        _liveShaftPrev    = dto.TotalShaftFinshLastHour;
+                        _livePrevHour     = DateTime.Now.AddHours(-1).Hour;
+                    }
                 }
             }
             catch
@@ -133,7 +114,8 @@ namespace GiamSat.UI.Components
                                         var config = revoConfigs.FirstOrDefault(x => x.Id == revoId);
                                         if (config != null)
                                         {
-                                            revoRealtime.RevoName = config.Name ?? $"REVO {revoId}";
+                                            revoRealtime.RevoName    = config.Name ?? $"REVO {revoId}";
+                                            revoRealtime.MachineType = config.MachineType;
                                         }
                                         else
                                         {
@@ -166,44 +148,31 @@ namespace GiamSat.UI.Components
         private string FormatRunTime(double totalSeconds)
         {
             if (totalSeconds <= 0) return "0s";
-            if (totalSeconds < 60) return $"{totalSeconds:F2}s";
+            if (totalSeconds < 60) return $"{totalSeconds.ToString("0.##")}s";
             var ts = TimeSpan.FromSeconds(totalSeconds);
             if (ts.TotalHours >= 1) return $"{(int)ts.TotalHours}h{ts.Minutes:D2}m{ts.Seconds:D2}s";
             return $"{ts.Minutes}m{ts.Seconds:D2}s";
         }
 
-        private bool IsAutoRollingMode()
-        {
-            var revo = _revoData.RevoName ?? string.Empty;
-            var work = _revoData.Work ?? string.Empty;
-            return revo.Contains("auto rolling", StringComparison.OrdinalIgnoreCase)
-                || work.Contains("auto rolling", StringComparison.OrdinalIgnoreCase)
-                || revo.Replace(" ", string.Empty).Contains("autorolling", StringComparison.OrdinalIgnoreCase)
-                || work.Replace(" ", string.Empty).Contains("autorolling", StringComparison.OrdinalIgnoreCase);
-        }
+        private bool IsAutoRollingMode() =>
+            _revoData.MachineType == EnumMachineType.AUTO_ROLLING;
 
-        private string GetStepClass(RevoStep step)
+        private string GetStepClass(RevoStep step, bool isRunning)
         {
             if (!step.Visible.HasValue || step.Visible.Value == false)
                 return "";
 
             // Enable = false → Black
             if (step.Enable.HasValue && step.Enable.Value == false)
-            {
                 return "step-disabled";
-            }
 
-            // Đã chạy xong (có StartAt + EndAt) → Gray
-            if (step.StartAt.HasValue && step.EndAt.HasValue)
-            {
-                return "step-completed";
-            }
-
-            // Đang chạy (có StartAt, chưa có EndAt) → Green
-            if (step.StartAt.HasValue && !step.EndAt.HasValue)
-            {
+            // Đang chạy (StepIndex nhỏ nhất, TotalRunTime == 0) → Red
+            if (isRunning)
                 return "step-running";
-            }
+
+            // Đã xong (TotalRunTime > 0) → Gray
+            if (step.TotalRunTime.HasValue && step.TotalRunTime.Value > 0)
+                return "step-completed";
 
             // Chưa chạy → Cyan Blue
             return "step-pending";

@@ -5,53 +5,48 @@
 
     <!-- Part Information + Shaft Stats -->
     <RadzenFieldset Text="Thông tin Part">
-        <RadzenStack Gap="0.75rem">
-
-            <!-- Row 1: Part + Rev + Mandrel + [Total Shaft At PrevHour - big red box] -->
-            <div class="detail-info-row">
-                <div class="detail-info-fields">
-                    <div class="detail-field-row">
-                        <div class="detail-field">
-                            <span class="detail-label">Part:</span>
-                            <span class="detail-value">@(_revoData.Part ?? "N/A")</span>
-                        </div>
-                        <div class="detail-field">
-                            <span class="detail-label">Rev:</span>
-                            <span class="detail-value rev-value">@(_revoData.Rev ?? "NC")</span>
-                        </div>
-                        <div class="detail-field">
-                            <span class="detail-label">Mandrel:</span>
-                            <span class="detail-value">@(_revoData.Mandrel ?? "N/A")</span>
-                        </div>
-                    </div>
-                    <!-- Row 2: Work + Total Shaft Current + Mandrel Start -->
-                    <div class="detail-field-row">
-                        <div class="detail-field">
-                            <span class="detail-label">Work:</span>
-                            <span class="detail-value">@(_revoData.Work ?? "N/A")</span>
-                        </div>
-                        <div class="detail-field">
-                            <span class="detail-label">Total Shaft Current:</span>
-                            <span class="detail-value shaft-current-inline">@_liveShaftCurrent</span>
-                        </div>
-                        @if (!string.IsNullOrEmpty(_revoData.MandrelStart))
-                        {
-                            <div class="detail-field">
-                                <span class="detail-label">Mandrel Start:</span>
-                                <span class="detail-value">@_revoData.MandrelStart</span>
-                            </div>
-                        }
-                    </div>
-                </div>
-
-                <!-- Big red box: Total Shaft At PrevHour -->
-                <div class="shaft-prev-box">
-                    <div class="shaft-prev-label">Total Shaft At @(_livePrevHour)h</div>
-                    <div class="shaft-prev-value">@_liveShaftPrev</div>
-                </div>
+        <!-- Fields: 3 cột col-4 -->
+        <div class="row g-2 mb-2">
+            <div class="col-4 detail-field">
+                <span class="detail-label">Part:</span>
+                <span class="detail-value">@(_revoData.Part ?? "N/A")</span>
             </div>
+            <div class="col-4 detail-field">
+                <span class="detail-label">Rev:</span>
+                <span class="detail-value rev-value">@(_revoData.Rev ?? "NC")</span>
+            </div>
+            <div class="col-4 detail-field">
+                <span class="detail-label">Mandrel:</span>
+                <span class="detail-value">@(_revoData.Mandrel ?? "N/A")</span>
+            </div>
+            <div class="col-4 detail-field">
+                <span class="detail-label">Work:</span>
+                <span class="detail-value">@(_revoData.Work ?? "N/A")</span>
+            </div>
+            <div class="col-4 detail-field">
+                <span class="detail-label">Mandrel Start:</span>
+                <span class="detail-value">@(_revoData.MandrelStart ?? "-")</span>
+            </div>
+            <div class="col-4"></div>
+        </div>
 
-        </RadzenStack>
+        <!-- Shaft stats: 3 con số -->
+        <div class="shaft-stats-row-detail">
+            <div class="shaft-stat-detail-item">
+                <span class="shaft-stat-detail-label">Total Shaft</span>
+                <span class="shaft-stat-detail-badge shaft-total-badge-detail">@_liveShaftTotal</span>
+            </div>
+            <div class="shaft-stat-detail-divider"></div>
+            <div class="shaft-stat-detail-item">
+                <span class="shaft-stat-detail-label">Finished</span>
+                <span class="shaft-stat-detail-badge shaft-finished-badge-detail">@_liveShaftCurrent</span>
+            </div>
+            <div class="shaft-stat-detail-divider"></div>
+            <div class="shaft-stat-detail-item">
+                <span class="shaft-stat-detail-label">Last Hr (@(_livePrevHour)h)</span>
+                <span class="shaft-stat-detail-badge shaft-lasthour-badge-detail">@_liveShaftPrev</span>
+            </div>
+        </div>
     </RadzenFieldset>
 
     <!-- Steps List - 4 columns layout -->
@@ -59,11 +54,16 @@
         @if (_revoData.Steps != null && _revoData.Steps.Any(s => s.Visible.HasValue && s.Visible.Value == true))
         {
             var visibleSteps = _revoData.Steps.Where(s => s.Visible.HasValue && s.Visible.Value == true).OrderBy(s => s.StepIndex).ToList();
+            var runningStepIdx = visibleSteps
+                .Where(s => !(s.Enable.HasValue && s.Enable.Value == false)
+                         && (s.TotalRunTime == null || s.TotalRunTime <= 0))
+                .OrderBy(s => s.StepIndex)
+                .FirstOrDefault()?.StepIndex ?? -1;
             var stepNumber = 1;
             <div class="steps-grid">
                 @foreach (var step in visibleSteps)
                 {
-                    <div class="step-item-detail @GetStepClass(step)">
+                    <div class="step-item-detail @GetStepClass(step, step.StepIndex == runningStepIdx)">
                         <div class="step-header">
                             <div class="step-number-detail">@stepNumber</div>
                             <div class="step-header-info">
@@ -74,7 +74,7 @@
                                 }
                                 else if (step.StartAt.HasValue && step.EndAt.HasValue)
                                 {
-                                    <span class="step-time-detail">@step.StartAt.Value.ToString("mm:ss") → @step.EndAt.Value.ToString("mm:ss") · @($"{(step.TotalRunTime ?? 0):F0}s")</span>
+                                    <span class="step-time-detail">@step.StartAt.Value.ToString("mm:ss") → @step.EndAt.Value.ToString("mm:ss") · @($"{(step.TotalRunTime ?? 0).ToString("0.##")}s")</span>
                                 }
                                 else if (step.StartAt.HasValue)
                                 {
