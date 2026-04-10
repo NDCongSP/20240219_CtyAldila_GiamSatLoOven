@@ -42,10 +42,22 @@
             <span class="info-value">@(RevoData.ColorCode ?? "none")</span>
         </div> *@
 
-        <!-- Total Shaft Current - bên trong card -->
-        <div class="info-item shaft-current-item">
-            <span class="info-label">Total Shaft Current:</span>
-            <span class="info-value shaft-current-badge">@ShaftCurrentCount</span>
+        <!-- Shaft stats row: 3 numbers -->
+        <div class="shaft-stats-row">
+            <div class="shaft-stat-item">
+                <span class="shaft-stat-label">Total</span>
+                <span class="shaft-stat-badge shaft-total-badge">@ShaftTotalCount</span>
+            </div>
+            <div class="shaft-stat-divider"></div>
+            <div class="shaft-stat-item">
+                <span class="shaft-stat-label">Finished</span>
+                <span class="shaft-stat-badge shaft-finished-badge">@ShaftCurrentCount</span>
+            </div>
+            <div class="shaft-stat-divider"></div>
+            <div class="shaft-stat-item">
+                <span class="shaft-stat-label">Last Hr</span>
+                <span class="shaft-stat-badge shaft-lasthour-badge">@ShaftLastHourCount</span>
+            </div>
         </div>
 
         <!-- Steps List (all steps with scroll, default showing 3.5 steps) -->
@@ -54,29 +66,24 @@
             <div class="steps-container" @ref="stepsContainerRef">
                 @{
                     var visibleSteps = RevoData.Steps.Where(s => s.Visible.HasValue && s.Visible.Value == true).OrderBy(s => s.StepIndex).ToList();
-                    var now = DateTime.Now;
-                    
-                    // Find the running step (startAt != null, endAt == null) or the first step
-                    var runningStepIndex = -1;
-                    for (int i = 0; i < visibleSteps.Count; i++)
-                    {
-                        var step = visibleSteps[i];
-                        if (step.StartAt.HasValue && !step.EndAt.HasValue)
-                        {
-                            runningStepIndex = i;
-                            break;
-                        }
-                    }
-                    
-                    // If no running step found, start from first step
-                    var startIndex = runningStepIndex >= 0 ? runningStepIndex : 0;
+
+                    // Running = step enabled có StepIndex nhỏ nhất với TotalRunTime == 0
+                    var runningStepIdx = visibleSteps
+                        .Where(s => !(s.Enable.HasValue && s.Enable.Value == false)
+                                 && (s.TotalRunTime == null || s.TotalRunTime <= 0))
+                        .OrderBy(s => s.StepIndex)
+                        .FirstOrDefault()?.StepIndex ?? -1;
+
+                    var runningListIndex = visibleSteps.FindIndex(s => s.StepIndex == runningStepIdx);
+                    var startIndex = runningListIndex >= 0 ? runningListIndex : 0;
                 }
                 @for (int i = 0; i < visibleSteps.Count; i++)
                 {
                     var step = visibleSteps[i];
                     var stepNumber = i + 1;
-                    
-                    <div class="step-item @GetStepClass(step)" data-step-index="@i">
+                    var isRunning = step.StepIndex == runningStepIdx;
+
+                    <div class="step-item @GetStepClass(step, isRunning)" data-step-index="@i">
                         <div class="step-number">@stepNumber</div>
                         <div class="step-content">
                             <div class="step-name">@(step.StepName ?? $"REVO-STEP-{step.StepIndex}")</div>
@@ -86,7 +93,7 @@
                             }
                             else if (step.StartAt.HasValue && step.EndAt.HasValue && step.TotalRunTime.HasValue && step.TotalRunTime.Value > 0)
                             {
-                                <div class="step-runtime">@step.StartAt.Value.ToString("mm:ss") → @step.EndAt.Value.ToString("mm:ss") · @($"{step.TotalRunTime.Value:F0}s")</div>
+                                <div class="step-runtime">@step.StartAt.Value.ToString("mm:ss") → @step.EndAt.Value.ToString("mm:ss") · @($"{step.TotalRunTime.Value.ToString("0.##")}s")</div>
                             }
                             else if (step.StartAt.HasValue && step.EndAt.HasValue)
                             {
@@ -112,6 +119,12 @@
     public int ShaftCurrentCount { get; set; } = 0;
 
     [Parameter]
+    public int ShaftTotalCount { get; set; } = 0;
+
+    [Parameter]
+    public int ShaftLastHourCount { get; set; } = 0;
+
+    [Parameter]
     public EventCallback OnDetailClick { get; set; }
 
     private ElementReference stepsContainerRef;
@@ -121,25 +134,18 @@
         if (firstRender && RevoData.Steps != null)
         {
             var visibleSteps = RevoData.Steps.Where(s => s.Visible.HasValue && s.Visible.Value == true).OrderBy(s => s.StepIndex).ToList();
-            
-            // Find the running step index
-            var runningStepIndex = -1;
-            for (int i = 0; i < visibleSteps.Count; i++)
-            {
-                var step = visibleSteps[i];
-                if (step.StartAt.HasValue && !step.EndAt.HasValue)
-                {
-                    runningStepIndex = i;
-                    break;
-                }
-            }
-            
-            // Scroll to show 3.5 steps starting from running step (or first step)
-            if (runningStepIndex >= 0 || visibleSteps.Count > 0)
-            {
-                var startIndex = runningStepIndex >= 0 ? runningStepIndex : 0;
+
+            var runningStepIdx = visibleSteps
+                .Where(s => !(s.Enable.HasValue && s.Enable.Value == false)
+                         && (s.TotalRunTime == null || s.TotalRunTime <= 0))
+                .OrderBy(s => s.StepIndex)
+                .FirstOrDefault()?.StepIndex ?? -1;
+
+            var runningListIndex = visibleSteps.FindIndex(s => s.StepIndex == runningStepIdx);
+            var startIndex = runningListIndex >= 0 ? runningListIndex : 0;
+
+            if (visibleSteps.Count > 0)
                 await ScrollToStep(startIndex);
-            }
         }
     }
 
@@ -179,28 +185,22 @@
         }
     }
 
-    private string GetStepClass(RevoStep step)
+    private string GetStepClass(RevoStep step, bool isRunning)
     {
         if (!step.Visible.HasValue || step.Visible.Value == false)
             return "";
 
         // Enable = false → Black
         if (step.Enable.HasValue && step.Enable.Value == false)
-        {
             return "step-disabled";
-        }
 
-        // Đã chạy xong (có StartAt + EndAt) → Gray
-        if (step.StartAt.HasValue && step.EndAt.HasValue)
-        {
-            return "step-completed";
-        }
-
-        // Đang chạy (có StartAt, chưa có EndAt) → Green
-        if (step.StartAt.HasValue && !step.EndAt.HasValue)
-        {
+        // Đang chạy (StepIndex nhỏ nhất, TotalRunTime == 0) → Red
+        if (isRunning)
             return "step-running";
-        }
+
+        // Đã xong (TotalRunTime > 0) → Gray
+        if (step.TotalRunTime.HasValue && step.TotalRunTime.Value > 0)
+            return "step-completed";
 
         // Chưa chạy → Cyan Blue
         return "step-pending";
@@ -209,20 +209,13 @@
     private string FormatRunTime(double totalSeconds)
     {
         if (totalSeconds <= 0) return "0s";
-        if (totalSeconds < 60) return $"{totalSeconds:F0}s";
+        if (totalSeconds < 60) return $"{totalSeconds.ToString("0.##")}s";
         var ts = System.TimeSpan.FromSeconds(totalSeconds);
         if (ts.TotalHours >= 1) return $"{(int)ts.TotalHours}h{ts.Minutes:D2}m";
         return $"{ts.Minutes}m{ts.Seconds:D2}s";
     }
 
-    private bool IsAutoRollingMode()
-    {
-        var revo = RevoData.RevoName ?? string.Empty;
-        var work = RevoData.Work ?? string.Empty;
-        return revo.Contains("auto rolling", global::System.StringComparison.OrdinalIgnoreCase)
-            || work.Contains("auto rolling", global::System.StringComparison.OrdinalIgnoreCase)
-            || revo.Replace(" ", string.Empty).Contains("autorolling", global::System.StringComparison.OrdinalIgnoreCase)
-            || work.Replace(" ", string.Empty).Contains("autorolling", global::System.StringComparison.OrdinalIgnoreCase);
-    }
+    private bool IsAutoRollingMode() =>
+        RevoData.MachineType == EnumMachineType.AUTO_ROLLING;
 }
 

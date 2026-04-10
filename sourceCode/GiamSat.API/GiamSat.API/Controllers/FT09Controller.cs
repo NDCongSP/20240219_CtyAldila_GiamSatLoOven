@@ -20,6 +20,12 @@ namespace GiamSat.API.Controllers
             _sCommon = sCommon;
         }
 
+        [HttpGet("GetTotalShaft")]
+        public Task<Result<List<RevoGetTotalShaftCountDto>>> GetTotalShaft([FromQuery] int? revoId = null)
+        {
+            return _sCommon.SFT09.GetTotalShaft(revoId);
+        }
+
         [HttpPost("GetFilter")]
         public Task<Result<List<FT09_RevoDatalog>>> GetFilter([FromBody] RevoFilterModel model)
         {
