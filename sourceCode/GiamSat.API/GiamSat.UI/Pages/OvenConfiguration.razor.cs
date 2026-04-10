@@ -133,7 +133,7 @@ namespace GiamSat.UI.Pages
 
             var result = await _dialogService.OpenAsync<DialogRevoConfig>("Thêm REVO mới",
                 new Dictionary<string, object> { { "Model", newRevo }, { "IsEdit", false } },
-                new DialogOptions { Width = "500px", Resizable = true, Draggable = true });
+                new DialogOptions { Width = "800px", Resizable = true, Draggable = true });
 
             if (result is RevoConfigModel savedRevo)
             {
@@ -160,7 +160,7 @@ namespace GiamSat.UI.Pages
 
             var result = await _dialogService.OpenAsync<DialogRevoConfig>("Chỉnh sửa REVO",
                 new Dictionary<string, object> { { "Model", editItem }, { "IsEdit", true } },
-                new DialogOptions { Width = "500px", Resizable = true, Draggable = true });
+                new DialogOptions { Width = "800px", Resizable = true, Draggable = true });
 
             if (result is RevoConfigModel savedRevo)
             {

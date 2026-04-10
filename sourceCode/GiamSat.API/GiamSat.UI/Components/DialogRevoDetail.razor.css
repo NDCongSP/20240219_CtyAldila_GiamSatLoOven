@@ -26,75 +26,78 @@
     font-weight: 600;
 }
 
-/* Total Shaft Current - inline bold */
-/* Shaft stats row 3 numbers - detail dialog */
-.shaft-stats-row-detail {
-    display: flex;
-    align-items: stretch;
-    border-radius: 6px;
-    overflow: hidden;
+/* ── Shaft Count section ── */
+.shaft-zone {
     border: 1px solid rgba(0, 0, 0, 0.12);
-    margin-top: 0.25rem;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 100%;
 }
 
-.shaft-stat-detail-item {
+.shaft-zone-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--rz-text-secondary-color);
+    padding: 0.35rem 0.75rem;
+    background-color: rgba(0, 0, 0, 0.04);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+    .shaft-zone-title {
+        background-color: rgba(255, 255, 255, 0.06);
+        border-bottom-color: rgba(255, 255, 255, 0.08);
+    }
+}
+
+.shaft-zone-numbers {
+    display: flex;
+    align-items: stretch;
+}
+
+.shaft-zone-item {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0.4rem 0.75rem;
-    gap: 0.15rem;
-    background-color: rgba(255, 255, 255, 0.55);
+    padding: 0.6rem 0.5rem;
+    gap: 0.2rem;
 }
 
-@media (prefers-color-scheme: dark) {
-    .shaft-stat-detail-item {
-        background-color: rgba(0, 0, 0, 0.25);
-    }
-}
-
-.shaft-stat-detail-divider {
+.shaft-zone-divider {
     width: 1px;
-    background-color: rgba(0, 0, 0, 0.12);
+    background-color: rgba(0, 0, 0, 0.1);
     align-self: stretch;
 }
 
-.shaft-stat-detail-label {
-    font-size: 0.7rem;
+.shaft-zone-label {
+    font-size: 0.68rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: rgba(0, 0, 0, 0.55);
-    white-space: nowrap;
+    color: rgba(0, 0, 0, 0.5);
 }
 
 @media (prefers-color-scheme: dark) {
-    .shaft-stat-detail-label {
-        color: rgba(255, 255, 255, 0.6);
-    }
+    .shaft-zone-label { color: rgba(255, 255, 255, 0.55); }
 }
 
-.shaft-stat-detail-badge {
+.shaft-zone-badge {
     font-weight: 700;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     line-height: 1;
-    padding: 0.1rem 0.6rem;
-    border-radius: 4px;
-    min-width: 2rem;
+    padding: 0.15rem 0.6rem;
+    border-radius: 5px;
+    min-width: 2.5rem;
     text-align: center;
 }
 
-.shaft-total-badge-detail    { background-color: #455a64; color: #ffffff; }
-.shaft-finished-badge-detail { background-color: #2e7d32; color: #ffffff; }
-.shaft-lasthour-badge-detail { background-color: #e65100; color: #ffffff; }
-
-.shaft-prev-value {
-    font-size: 2.5rem;
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -1px;
-}
+.shaft-zone-total    { background-color: #455a64; color: #ffffff; }
+.shaft-zone-finished { background-color: #2e7d32; color: #ffffff; }
+.shaft-zone-lasthour { background-color: #e65100; color: #ffffff; }
 
 .steps-grid {
 
