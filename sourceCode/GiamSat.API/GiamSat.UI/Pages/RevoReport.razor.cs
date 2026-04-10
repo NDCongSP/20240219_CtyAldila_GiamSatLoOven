@@ -6,6 +6,7 @@ using Radzen;
 using Radzen.Blazor;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using ApiClient = GiamSat.APIClient;
 
 namespace GiamSat.UI.Pages
@@ -31,6 +32,12 @@ namespace GiamSat.UI.Pages
         private List<RevoHourRow> _hourRows = new();
         private bool _gridInitialized = false;
         private int _shaftCount = 0;
+        private bool _reportGridsFromDatabase = false;
+
+        private static readonly JsonSerializerOptions _jsonReadOptions = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
 
         private RevoReportMode _reportMode = RevoReportMode.ByStep;
         private List<ReportModeOption> _reportModes = new()
@@ -144,10 +151,10 @@ namespace GiamSat.UI.Pages
                         .ThenBy(x => x.StartedAt ?? x.CreatedAt ?? DateTime.MinValue)
                         .ToList();
 
-                    RebuildView();
+                    await TryPopulateReportGridsFromDatabaseAsync(filterModel);
                     _hasData = _rawData.Any();
-                    // Đếm theo số shaft thực sự hiển thị trong view (đã có StartedAt hợp lệ)
-                    _shaftCount = _shaftRows.Select(x => x.ShaftNum).Distinct().Count();
+                    // Đếm shaft từ nguồn gốc FT09 (không phụ thuộc mode — tránh _shaftRows rỗng khi chỉ load 1 view)
+                    _shaftCount = _rawData.Where(x => x.ShaftNum.HasValue).Select(x => x.ShaftNum!.Value).Distinct().Count();
                     _gridInitialized = false; // Reset to apply grouping on next render (step mode)
                 }
                 else
@@ -156,6 +163,7 @@ namespace GiamSat.UI.Pages
                     _stepRows = new();
                     _shaftRows = new();
                     _hourRows = new();
+                    _reportGridsFromDatabase = false;
                     _hasData = false;
                     if (result.Messages != null && result.Messages.Count > 0)
                     {
@@ -187,6 +195,7 @@ namespace GiamSat.UI.Pages
             _stepRows.Clear();
             _shaftRows.Clear();
             _hourRows.Clear();
+            _reportGridsFromDatabase = false;
             StateHasChanged();
         }
 
@@ -194,11 +203,153 @@ namespace GiamSat.UI.Pages
         {
             // Radzen passes selected value (enum)
             _gridInitialized = false;
-            if (_rawData.Count > 0)
+            if (_rawData.Count > 0 && !_reportGridsFromDatabase)
             {
                 RebuildView();
             }
             StateHasChanged();
+        }
+
+        private async Task TryPopulateReportGridsFromDatabaseAsync(ApiClient.RevoFilterModel filterModel)
+        {
+            _reportGridsFromDatabase = false;
+            _stepRows.Clear();
+            _shaftRows.Clear();
+            _hourRows.Clear();
+
+            try
+            {
+                var http = HttpClientFactory.CreateClient("GiamSatAPI");
+                var ok = _reportMode switch
+                {
+                    RevoReportMode.ByStep => await TryLoadStepViewAsync(http, filterModel),
+                    RevoReportMode.ByShaft => await TryLoadShaftViewAsync(http, filterModel),
+                    RevoReportMode.ByHour => await TryLoadHourViewAsync(http, filterModel),
+                    _ => false
+                };
+
+                if (ok)
+                {
+                    _reportGridsFromDatabase = true;
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                _notificationService.Notify(NotificationSeverity.Warning, "Báo cáo", $"Lỗi gọi view SQL: {ex.Message}. Hiển thị theo tổng hợp trên client.");
+            }
+
+            RebuildView();
+        }
+
+        private void NotifyReportViewFallback(string? detail = null)
+        {
+            var err = string.IsNullOrWhiteSpace(detail) ? "Không tải được view báo cáo từ SQL" : detail;
+            _notificationService.Notify(NotificationSeverity.Warning, "Báo cáo", $"{err}. Hiển thị theo tổng hợp trên client.");
+        }
+
+        private async Task<bool> TryLoadStepViewAsync(HttpClient http, ApiClient.RevoFilterModel filterModel)
+        {
+            var res = await PostReportResultAsync<List<RevoReportStepVm>>(http, "api/FT09/GetReportStepView", filterModel);
+            if (res?.Succeeded == true && res.Data != null)
+            {
+                _stepRows = MapStepRows(res.Data);
+                return true;
+            }
+
+            NotifyReportViewFallback(res?.Messages?.FirstOrDefault());
+            return false;
+        }
+
+        private async Task<bool> TryLoadShaftViewAsync(HttpClient http, ApiClient.RevoFilterModel filterModel)
+        {
+            var res = await PostReportResultAsync<List<RevoReportShaftVm>>(http, "api/FT09/GetReportShaftView", filterModel);
+            if (res?.Succeeded == true && res.Data != null)
+            {
+                _shaftRows = MapShaftRows(res.Data);
+                return true;
+            }
+
+            NotifyReportViewFallback(res?.Messages?.FirstOrDefault());
+            return false;
+        }
+
+        private async Task<bool> TryLoadHourViewAsync(HttpClient http, ApiClient.RevoFilterModel filterModel)
+        {
+            var res = await PostReportResultAsync<List<RevoReportHourVm>>(http, "api/FT09/GetReportHourView", filterModel);
+            if (res?.Succeeded == true && res.Data != null)
+            {
+                _hourRows = MapHourRows(res.Data);
+                return true;
+            }
+
+            NotifyReportViewFallback(res?.Messages?.FirstOrDefault());
+            return false;
+        }
+
+        private static async Task<Result<T>?> PostReportResultAsync<T>(HttpClient http, string relativeUrl, ApiClient.RevoFilterModel body)
+        {
+            var response = await http.PostAsJsonAsync(relativeUrl, body);
+            if (!response.IsSuccessStatusCode)
+                return null;
+            return await response.Content.ReadFromJsonAsync<Result<T>>(_jsonReadOptions);
+        }
+
+        private static List<RevoStepRow> MapStepRows(IList<RevoReportStepVm> data)
+        {
+            return data.Select(v => new RevoStepRow
+            {
+                RevoName = v.RevoName,
+                Hour = v.Hour,
+                HourBucket = v.HourBucketDisplay ?? string.Empty,
+                ShaftNo = (int)v.ShaftNo,
+                ShaftKey = v.ShaftKey ?? string.Empty,
+                Stt = (int)v.Stt,
+                ShaftNum = v.ShaftNum,
+                Part = v.Part,
+                Work = v.Work,
+                Rev = v.Rev,
+                Mandrel = v.Mandrel,
+                StepDisplay = v.StepDisplay ?? string.Empty,
+                StartedAt = v.DisplayStartedAt,
+                EndedAt = v.DisplayEndedAt,
+                DurationText = v.DurationText ?? "N/A",
+                IsAutoRolling = v.IsAutoRolling != 0
+            }).ToList();
+        }
+
+        private static List<RevoShaftRow> MapShaftRows(IList<RevoReportShaftVm> data)
+        {
+            return data.Select(v => new RevoShaftRow
+            {
+                ShaftLabel = v.ShaftLabel ?? string.Empty,
+                RevoName = v.RevoName,
+                Hour = v.Hour,
+                HourBucket = v.HourBucket ?? string.Empty,
+                ShaftNo = (int)v.ShaftNo,
+                Stt = (int)v.Stt,
+                ShaftNum = v.ShaftNum,
+                Part = v.Part,
+                Work = v.Work,
+                Mandrel = v.Mandrel,
+                StepCount = (int)Math.Min(int.MaxValue, v.StepCount),
+                StartedAt = v.StartedAt,
+                EndedAt = v.EndedAt,
+                TotalTime = TimeSpan.FromSeconds(Math.Max(0, v.TotalTimeSeconds))
+            }).ToList();
+        }
+
+        private static List<RevoHourRow> MapHourRows(IList<RevoReportHourVm> data)
+        {
+            return data.Select(v => new RevoHourRow
+            {
+                Hour = v.Hour,
+                HourRange = v.HourRange ?? string.Empty,
+                ShaftCount = v.ShaftCount,
+                StartedAt = v.StartedAt,
+                EndedAt = v.EndedAt,
+                TotalTime = TimeSpan.FromSeconds(Math.Max(0, v.TotalTimeSeconds))
+            }).ToList();
         }
 
         private async Task OnExportExcel()

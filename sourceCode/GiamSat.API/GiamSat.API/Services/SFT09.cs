@@ -47,6 +47,70 @@ namespace GiamSat.API
             }
         }
 
+        static (DateTime from, DateTime toExclusive, int? revoId) ResolveRevoReportRange(RevoFilterModel model)
+        {
+            var toExclusive = model.ToDate.AddTicks(1);
+            var revoId = (!model.GetAll && model.RevoId.HasValue) ? model.RevoId : null;
+            return (model.FromDate, toExclusive, revoId);
+        }
+
+        public async Task<Result<List<RevoReportStepVm>>> GetReportStepView(RevoFilterModel model)
+        {
+            try
+            {
+                var p = ResolveRevoReportRange(model);
+                var list = await _context.Set<RevoReportStepVm>()
+                    .FromSqlRaw(
+                        "SELECT * FROM dbo.fn_RevoReport_Step({0}, {1}, {2})",
+                        p.from, p.toExclusive, p.revoId)
+                    .AsNoTracking()
+                    .ToListAsync();
+                return await Result<List<RevoReportStepVm>>.SuccessAsync(list);
+            }
+            catch (Exception ex)
+            {
+                return await Result<List<RevoReportStepVm>>.FailAsync(ex.Message);
+            }
+        }
+
+        public async Task<Result<List<RevoReportShaftVm>>> GetReportShaftView(RevoFilterModel model)
+        {
+            try
+            {
+                var p = ResolveRevoReportRange(model);
+                var list = await _context.Set<RevoReportShaftVm>()
+                    .FromSqlRaw(
+                        "SELECT * FROM dbo.fn_RevoReport_Shaft({0}, {1}, {2})",
+                        p.from, p.toExclusive, p.revoId)
+                    .AsNoTracking()
+                    .ToListAsync();
+                return await Result<List<RevoReportShaftVm>>.SuccessAsync(list);
+            }
+            catch (Exception ex)
+            {
+                return await Result<List<RevoReportShaftVm>>.FailAsync(ex.Message);
+            }
+        }
+
+        public async Task<Result<List<RevoReportHourVm>>> GetReportHourView(RevoFilterModel model)
+        {
+            try
+            {
+                var p = ResolveRevoReportRange(model);
+                var list = await _context.Set<RevoReportHourVm>()
+                    .FromSqlRaw(
+                        "SELECT * FROM dbo.fn_RevoReport_Hour({0}, {1}, {2})",
+                        p.from, p.toExclusive, p.revoId)
+                    .AsNoTracking()
+                    .ToListAsync();
+                return await Result<List<RevoReportHourVm>>.SuccessAsync(list);
+            }
+            catch (Exception ex)
+            {
+                return await Result<List<RevoReportHourVm>>.FailAsync(ex.Message);
+            }
+        }
+
         public async Task<Result<List<FT09_RevoDatalog>>> GetFilter([Body] RevoFilterModel model)
         {
             try
