@@ -32,6 +32,24 @@ namespace GiamSat.API.Controllers
             return _sCommon.SFT09.GetFilter(model);
         }
 
+        [HttpPost("GetReportStepView")]
+        public Task<Result<List<RevoReportStepVm>>> GetReportStepView([FromBody] RevoFilterModel model)
+        {
+            return _sCommon.SFT09.GetReportStepView(model);
+        }
+
+        [HttpPost("GetReportShaftView")]
+        public Task<Result<List<RevoReportShaftVm>>> GetReportShaftView([FromBody] RevoFilterModel model)
+        {
+            return _sCommon.SFT09.GetReportShaftView(model);
+        }
+
+        [HttpPost("GetReportHourView")]
+        public Task<Result<List<RevoReportHourVm>>> GetReportHourView([FromBody] RevoFilterModel model)
+        {
+            return _sCommon.SFT09.GetReportHourView(model);
+        }
+
         [HttpPost("ExportPdf")]
         public async Task<IActionResult> ExportPdf([FromBody] RevoFilterModel model)
         {

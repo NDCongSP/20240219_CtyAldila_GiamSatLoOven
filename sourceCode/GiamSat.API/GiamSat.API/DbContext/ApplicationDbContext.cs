@@ -28,6 +28,9 @@ namespace GiamSat.API
             builder.Entity<FT08_RevoRealtime>();
             builder.Entity<FT09_RevoDatalog>();
             builder.Entity<RevoGetTotalShaftCountDto>().HasNoKey().ToView(null);
+            builder.Entity<RevoReportStepVm>().HasNoKey();
+            builder.Entity<RevoReportShaftVm>().HasNoKey();
+            builder.Entity<RevoReportHourVm>().HasNoKey();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
