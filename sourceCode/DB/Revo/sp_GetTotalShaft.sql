@@ -1,14 +1,14 @@
 USE [oven]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_GetTotalShaft]    Script Date: 09/04/2026 9:43:47 CH ******/
+/****** Object:  StoredProcedure [dbo].[sp_GetTotalShaft]    Script Date: 10/04/2026 11:49:41 SA ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE PROCEDURE [dbo].[sp_GetTotalShaft]
+ALTER PROCEDURE [dbo].[sp_GetTotalShaft]
     @RevoId INT = NULL
 AS
 BEGIN
@@ -19,24 +19,17 @@ BEGIN
     DECLARE @nextHour DATETIME;
     DECLARE @lastHour DATETIME;
 
-    -- 1. max time
-    SELECT @maxCreatedAt = MAX(CreatedAt)
-    FROM FT09
-    WHERE CreatedAt IS NOT NULL
-      AND (@RevoId IS NULL OR RevoId = @RevoId);
+    -- Lấy mốc thời gian mới nhất của TOÀN HỆ THỐNG
+    SELECT @maxCreatedAt = MAX(CreatedAt) FROM FT09;
 
-    IF @maxCreatedAt IS NULL
-    BEGIN
-        SELECT 0 RevoId, 0 TotalShaftCurrentHour, 0 TotalShaftFinishCurrentHour, 0 TotalShaftLastHour, 0 TotalShaftFinshLastHour;
-        RETURN;
-    END
+    IF @maxCreatedAt IS NULL RETURN;
 
-    -- 2. time window
+    -- Thiết lập khung giờ cố định
     SET @currentHour = DATEADD(HOUR, DATEDIFF(HOUR, 0, @maxCreatedAt), 0);
     SET @nextHour = DATEADD(HOUR, 1, @currentHour);
     SET @lastHour = DATEADD(HOUR, -1, @currentHour);
 
-    -- 3. CTE: Shaft hoàn thành giờ hiện tại
+    -- Các CTE giữ nguyên logic lọc @RevoId
     WITH FinishedCurrent AS (
         SELECT RevoId, ShaftNum
         FROM FT09
@@ -46,8 +39,6 @@ BEGIN
         GROUP BY RevoId, ShaftNum
         HAVING COUNT(*) = COUNT(CASE WHEN TotalTime > 0 THEN 1 END)
     ),
-
-    -- 4. CTE: Shaft hoàn thành giờ trước
     FinishedLast AS (
         SELECT RevoId, ShaftNum
         FROM FT09
@@ -57,40 +48,21 @@ BEGIN
         GROUP BY RevoId, ShaftNum
         HAVING COUNT(*) = COUNT(CASE WHEN TotalTime > 0 THEN 1 END)
     )
-
-    -- 5. Query chính
+    -- Query chính...
     SELECT 
         t.RevoId,
-
-        -- Tổng shaft giờ hiện tại
-        COUNT(DISTINCT CASE 
-            WHEN t.CreatedAt >= @currentHour AND t.CreatedAt < @nextHour 
-            THEN t.ShaftNum END) AS TotalShaftCurrentHour,
-
-        -- Shaft hoàn thành giờ hiện tại
+        COUNT(DISTINCT CASE WHEN t.CreatedAt >= @currentHour AND t.CreatedAt < @nextHour THEN t.ShaftNum END) AS TotalShaftCurrentHour,
         COUNT(DISTINCT fc.ShaftNum) AS TotalShaftFinishCurrentHour,
-
-        -- Tổng shaft giờ trước
-        COUNT(DISTINCT CASE 
-            WHEN t.CreatedAt >= @lastHour AND t.CreatedAt < @currentHour 
-            THEN t.ShaftNum END) AS TotalShaftLastHour,
-
-        -- Shaft hoàn thành giờ trước
+        COUNT(DISTINCT CASE WHEN t.CreatedAt >= @lastHour AND t.CreatedAt < @currentHour THEN t.ShaftNum END) AS TotalShaftLastHour,
         COUNT(DISTINCT fl.ShaftNum) AS TotalShaftFinshLastHour
-
     FROM FT09 t
-    LEFT JOIN FinishedCurrent fc 
-        ON t.RevoId = fc.RevoId AND t.ShaftNum = fc.ShaftNum
-
-    LEFT JOIN FinishedLast fl 
-        ON t.RevoId = fl.RevoId AND t.ShaftNum = fl.ShaftNum
-
+    LEFT JOIN FinishedCurrent fc ON t.RevoId = fc.RevoId AND t.ShaftNum = fc.ShaftNum
+    LEFT JOIN FinishedLast fl ON t.RevoId = fl.RevoId AND t.ShaftNum = fl.ShaftNum
     WHERE t.ShaftNum IS NOT NULL
       AND (@RevoId IS NULL OR t.RevoId = @RevoId)
-
-    GROUP BY t.RevoId
-    ORDER BY t.RevoId;
-
+      -- Quan trọng: Chỉ lấy dữ liệu trong 2 khung giờ đang xét để tránh quét toàn bộ bảng gây sai số
+      AND t.CreatedAt >= @lastHour AND t.CreatedAt < @nextHour 
+    GROUP BY t.RevoId;
 END
 GO
 
