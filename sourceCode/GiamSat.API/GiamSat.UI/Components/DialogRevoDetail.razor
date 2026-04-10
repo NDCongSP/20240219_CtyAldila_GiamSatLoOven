@@ -30,21 +30,44 @@
             <div class="col-4"></div>
         </div>
 
-        <!-- Shaft stats: 3 con số -->
-        <div class="shaft-stats-row-detail">
-            <div class="shaft-stat-detail-item">
-                <span class="shaft-stat-detail-label">Total Shaft</span>
-                <span class="shaft-stat-detail-badge shaft-total-badge-detail">@_liveShaftTotal</span>
+    </RadzenFieldset>
+
+    <!-- Shaft Count -->
+    <RadzenFieldset Text="Shaft Count">
+        <div class="row g-3">
+            <!-- Current Hour -->
+            <div class="col-6">
+                <div class="shaft-zone">
+                    <div class="shaft-zone-title">Current Hour</div>
+                    <div class="shaft-zone-numbers">
+                        <div class="shaft-zone-item">
+                            <span class="shaft-zone-label">Total</span>
+                            <span class="shaft-zone-badge shaft-zone-total">@_liveShaftTotal</span>
+                        </div>
+                        <div class="shaft-zone-divider"></div>
+                        <div class="shaft-zone-item">
+                            <span class="shaft-zone-label">Finished</span>
+                            <span class="shaft-zone-badge shaft-zone-finished">@_liveShaftCurrent</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="shaft-stat-detail-divider"></div>
-            <div class="shaft-stat-detail-item">
-                <span class="shaft-stat-detail-label">Finished</span>
-                <span class="shaft-stat-detail-badge shaft-finished-badge-detail">@_liveShaftCurrent</span>
-            </div>
-            <div class="shaft-stat-detail-divider"></div>
-            <div class="shaft-stat-detail-item">
-                <span class="shaft-stat-detail-label">Last Hr (@(_livePrevHour)h)</span>
-                <span class="shaft-stat-detail-badge shaft-lasthour-badge-detail">@_liveShaftPrev</span>
+            <!-- Last Hour -->
+            <div class="col-6">
+                <div class="shaft-zone">
+                    <div class="shaft-zone-title">Last Hour (@(_livePrevHour)h)</div>
+                    <div class="shaft-zone-numbers">
+                        <div class="shaft-zone-item">
+                            <span class="shaft-zone-label">Total</span>
+                            <span class="shaft-zone-badge shaft-zone-total">@_liveShaftLastHourTotal</span>
+                        </div>
+                        <div class="shaft-zone-divider"></div>
+                        <div class="shaft-zone-item">
+                            <span class="shaft-zone-label">Finished</span>
+                            <span class="shaft-zone-badge shaft-zone-lasthour">@_liveShaftPrev</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </RadzenFieldset>

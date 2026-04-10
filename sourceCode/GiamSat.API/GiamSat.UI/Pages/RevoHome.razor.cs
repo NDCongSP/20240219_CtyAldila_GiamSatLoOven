@@ -144,9 +144,10 @@ namespace GiamSat.UI.Pages
                 new Dictionary<string, object>
                 {
                     { "RevoData",          revo },
-                    { "ShaftCurrentCount", dto.TotalShaftFinishCurrentHour },
-                    { "ShaftPrevCount",    dto.TotalShaftFinshLastHour },
-                    { "ShaftTotalCount",   dto.TotalShaftCurrentHour },
+                    { "ShaftCurrentCount",        dto.TotalShaftFinishCurrentHour },
+                    { "ShaftPrevCount",           dto.TotalShaftFinshLastHour },
+                    { "ShaftTotalCount",          dto.TotalShaftCurrentHour },
+                    { "ShaftLastHourTotalCount",  dto.TotalShaftLastHour },
                     { "PrevHour",          prevHour }
                 },
                 new DialogOptions { Width = dialogWidth, Height = dialogHeight, Resizable = true, Draggable = true });

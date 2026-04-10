@@ -20,26 +20,32 @@ namespace GiamSat.UI.Components
         [Parameter]
         public int ShaftTotalCount { get; set; } = 0;
 
-        /// <summary>Giờ trước (number), vd 13 thì hiển thị "Total Shaft At 13h"</summary>
+        [Parameter]
+        public int ShaftLastHourTotalCount { get; set; } = 0;
+
+        /// <summary>Giờ trước (number), vd 13 thì hiển thị "Last Hour (13h)"</summary>
         [Parameter]
         public int PrevHour { get; set; } = DateTime.Now.AddHours(-1).Hour;
 
         private RevoRealtimeModel _revoData = new RevoRealtimeModel();
         private System.Timers.Timer? _refreshTimer;
 
-        // Live shaft counts (refreshed every timer tick from SP)
-        private int _liveShaftTotal = 0;
-        private int _liveShaftCurrent = 0;
-        private int _liveShaftPrev = 0;
+        // Live shaft counts — Current Hour
+        private int _liveShaftTotal   = 0; // TotalShaftCurrentHour
+        private int _liveShaftCurrent = 0; // TotalShaftFinishCurrentHour
+        // Live shaft counts — Last Hour
+        private int _liveShaftLastHourTotal = 0; // TotalShaftLastHour
+        private int _liveShaftPrev          = 0; // TotalShaftFinshLastHour
         private int _livePrevHour = DateTime.Now.AddHours(-1).Hour;
 
         protected override void OnParametersSet()
         {
-            _revoData = RevoData;
-            _liveShaftTotal = ShaftTotalCount;
-            _liveShaftCurrent = ShaftCurrentCount;
-            _liveShaftPrev = ShaftPrevCount;
-            _livePrevHour = PrevHour;
+            _revoData               = RevoData;
+            _liveShaftTotal         = ShaftTotalCount;
+            _liveShaftCurrent       = ShaftCurrentCount;
+            _liveShaftLastHourTotal = ShaftLastHourTotalCount;
+            _liveShaftPrev          = ShaftPrevCount;
+            _livePrevHour           = PrevHour;
         }
 
         protected override async Task OnInitializedAsync()
@@ -70,10 +76,11 @@ namespace GiamSat.UI.Components
                     var dto = result.Data.FirstOrDefault(x => x.RevoId == _revoData.RevoId);
                     if (dto != null)
                     {
-                        _liveShaftTotal   = dto.TotalShaftCurrentHour;
-                        _liveShaftCurrent = dto.TotalShaftFinishCurrentHour;
-                        _liveShaftPrev    = dto.TotalShaftFinshLastHour;
-                        _livePrevHour     = DateTime.Now.AddHours(-1).Hour;
+                        _liveShaftTotal         = dto.TotalShaftCurrentHour;
+                        _liveShaftCurrent       = dto.TotalShaftFinishCurrentHour;
+                        _liveShaftLastHourTotal = dto.TotalShaftLastHour;
+                        _liveShaftPrev          = dto.TotalShaftFinshLastHour;
+                        _livePrevHour           = DateTime.Now.AddHours(-1).Hour;
                     }
                 }
             }
