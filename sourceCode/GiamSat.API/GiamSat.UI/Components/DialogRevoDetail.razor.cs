@@ -74,14 +74,11 @@ namespace GiamSat.UI.Components
                 if (result.Succeeded && result.Data != null)
                 {
                     var dto = result.Data.FirstOrDefault(x => x.RevoId == _revoData.RevoId);
-                    if (dto != null)
-                    {
-                        _liveShaftTotal         = dto.TotalShaftCurrentHour;
-                        _liveShaftCurrent       = dto.TotalShaftFinishCurrentHour;
-                        _liveShaftLastHourTotal = dto.TotalShaftLastHour;
-                        _liveShaftPrev          = dto.TotalShaftFinshLastHour;
-                        _livePrevHour           = DateTime.Now.AddHours(-1).Hour;
-                    }
+                    _liveShaftTotal         = dto?.TotalShaftCurrentHour      ?? 0;
+                    _liveShaftCurrent       = dto?.TotalShaftFinishCurrentHour ?? 0;
+                    _liveShaftLastHourTotal = dto?.TotalShaftLastHour           ?? 0;
+                    _liveShaftPrev          = dto?.TotalShaftFinshLastHour      ?? 0;
+                    _livePrevHour           = DateTime.Now.AddHours(-1).Hour;
                 }
             }
             catch
