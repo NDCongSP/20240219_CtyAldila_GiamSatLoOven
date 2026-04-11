@@ -26,7 +26,7 @@ namespace GiamSat.UI.Pages
             if (firstRender)
             {
                 //await RadzenChart.Resize(width:100, height: 200);
-                _timer.Interval = 1000;
+                _timer.Interval = GlobalVariable.RealtimeTrendInterval;
                 _timer.Elapsed += Refresh;
 
                 _timer.Enabled = true;

@@ -8,48 +8,72 @@
 
 <RadzenLayout Style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body' 'rz-sidebar rz-footer' position: relative">
     <RadzenHeader>
-        <RadzenRow>
-            <RadzenColumn Size="5">
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
-                    <RadzenSidebarToggle Click="@(() => _sidebarExpanded = !_sidebarExpanded)" />
-                    <RadzenImage Path="images/logoAldila.ico" style="width: 40px; height: 40px;"></RadzenImage>
-                    <RadzenTabs />
-                    <RadzenLabel Text="Giám Sát Lò Oven" />
-                </RadzenStack>
-            </RadzenColumn>
-            <RadzenColumn Size="7">
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
-                    <RadzenLabel>@GlobalVariable.UserName</RadzenLabel>
-                    <RadzenAppearanceToggle />
-                    <RadzenProfileMenu>
-                        <Template>
-                            <RadzenIcon Icon="account_circle" />
-                        </Template>
-                        <ChildContent>
-                            <RadzenProfileMenuItem Visible="@_changePass" Text="User info" Path="/dialogcardpageuserinfo" Icon="manage_accounts"></RadzenProfileMenuItem>
-                            <RadzenProfileMenuItem Visible="@_usersManager" Text="Users manager" Path="/usersmanager" Icon="people_alt"></RadzenProfileMenuItem>
-                            <RadzenProfileMenuItem Text="Logout" Path="/login" Icon="logout"></RadzenProfileMenuItem>
-                        </ChildContent>
-                    </RadzenProfileMenu>
-                </RadzenStack>
-            </RadzenColumn>
-        </RadzenRow>
+        <div class="container-fluid header-container">
+            <div class="row g-0 align-items-center h-100">
+                
+                <!-- LEFT Section: Menu + Logo + Name -->
+                <div class="col-auto header-left">
+                    <div class="d-flex align-items-center gap-2">
+                        <RadzenSidebarToggle Click="@(() => _sidebarExpanded = !_sidebarExpanded)" class="header-toggle" />
+                        <RadzenImage Path="images/logoAldila.ico" class="header-logo" />
+                        <RadzenLabel Text="Hệ Thống Giám Sát Nhà Máy" class="header-title" />
+                    </div>
+                </div>
+
+                <!-- CENTER Section: Breadcrumb -->
+                <div class="col header-center">
+                    <div class="header-breadcrumb">
+                        <RadzenBreadCrumb>
+                            @if (GlobalVariable.BreadCrumbData != null && GlobalVariable.BreadCrumbData.Count > 0)
+                            {
+                                @foreach (var item in GlobalVariable.BreadCrumbData)
+                                {
+                                    <RadzenBreadCrumbItem Path="@item.Path" Text="@item.Text" />
+                                }
+                            }
+                        </RadzenBreadCrumb>
+                    </div>
+                </div>
+
+                <!-- RIGHT Section: Action Icons -->
+                <div class="col-auto header-right">
+                    <div class="d-flex align-items-center gap-2">
+                        <RadzenLabel Text="@GlobalVariable.UserName" class="header-username d-none d-xl-block" />
+                        <RadzenButton Icon="account_circle" 
+                                    ButtonStyle="ButtonStyle.Light" 
+                                    Variant="Variant.Text"
+                                    Size="ButtonSize.Medium"
+                                    Visible="@_changePass"
+                                    Click="@(() => _navigationManager.NavigateTo("/dialogcardpageuserinfo"))"
+                                    title="Thông tin người dùng"
+                                    class="header-icon-btn" />
+                        <RadzenButton Icon="people_alt" 
+                                    ButtonStyle="ButtonStyle.Light" 
+                                    Variant="Variant.Text"
+                                    Size="ButtonSize.Medium"
+                                    Visible="@_usersManager"
+                                    Click="@(() => _navigationManager.NavigateTo("/usersmanager"))"
+                                    title="Quản lý người dùng"
+                                    class="header-icon-btn" />
+                        <RadzenAppearanceToggle class="header-icon-btn" />
+                        <RadzenButton Icon="logout" 
+                                    ButtonStyle="ButtonStyle.Light" 
+                                    Variant="Variant.Text"
+                                    Size="ButtonSize.Medium"
+                                    Click="@OnClickLogout"
+                                    title="Đăng xuất"
+                                    class="header-icon-btn" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </RadzenHeader>
     <RadzenSidebar Responsive="false" @bind-Expanded="@_sidebarExpanded">
         <NavMenu />
     </RadzenSidebar>
     <RadzenBody>
-        <RadzenBreadCrumb>
-            @if (GlobalVariable.BreadCrumbData != null && GlobalVariable.BreadCrumbData.Count > 0)
-            {
-                @foreach (var item in GlobalVariable.BreadCrumbData)
-                {
-                    <RadzenBreadCrumbItem Path="@item.Path" Text="@item.Text" />
-                }
-
-            }
-        </RadzenBreadCrumb>
-        <div class="rz-p-4">
+        <div class="page-content-wrapper">
             @Body
         </div>
     </RadzenBody>

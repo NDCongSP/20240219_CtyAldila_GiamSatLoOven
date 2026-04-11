@@ -1,0 +1,263 @@
+@page "/oven/report"
+
+<RadzenRow Gap="1rem">
+    <RadzenColumn Size="12">
+        <RadzenCard class="rz-shadow-3">
+            <!-- Filter Section -->
+            <RadzenStack Gap="1rem">
+                <RadzenText TextStyle="TextStyle.Subtitle1">Bộ lọc</RadzenText>
+                
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.End" Gap="1rem" Wrap="FlexWrap.Wrap">
+                    <RadzenStack Gap="0.2rem" Style="min-width: 200px;">
+                        <RadzenLabel Text="Chọn lò" />
+                        <RadzenDropDown @bind-Value="@_selectedOvenId" 
+                                      Data="@_ovenList" 
+                                      TextProperty="Name" 
+                                      ValueProperty="Id"
+                                      Style="width: 100%;" 
+                                      Placeholder="Tất cả" />
+                    </RadzenStack>
+                    
+                    <RadzenStack Gap="0.2rem" Style="min-width: 200px;">
+                        <RadzenLabel Text="Từ ngày" />
+                        <RadzenDatePicker @bind-Value="@_fromDate" 
+                                        ShowTime="true" 
+                                        DateFormat="dd/MM/yyyy HH:mm"
+                                        Style="width: 100%;" />
+                    </RadzenStack>
+                    
+                    <RadzenStack Gap="0.2rem" Style="min-width: 200px;">
+                        <RadzenLabel Text="Đến ngày" />
+                        <RadzenDatePicker @bind-Value="@_toDate" 
+                                        ShowTime="true" 
+                                        DateFormat="dd/MM/yyyy HH:mm"
+                                        Style="width: 100%;" />
+                    </RadzenStack>
+                    
+                    <div class="button-actions-right">
+                        <RadzenButton Icon="search" 
+                                    Text="Truy vấn" 
+                                    ButtonStyle="ButtonStyle.Primary" 
+                                    Click="@OnSearch" />
+                        <RadzenButton Icon="refresh" 
+                                    ButtonStyle="ButtonStyle.Light" 
+                                    Click="@OnReset" />
+                    </div>
+                </RadzenStack>
+                
+                <div class="button-actions-right rz-mt-2">
+                    <RadzenButton Icon="file_download" 
+                                Text="Xuất Excel" 
+                                ButtonStyle="ButtonStyle.Success" 
+                                Click="@OnExportExcel"
+                                Disabled="@(!_hasData)" />
+                    <RadzenButton Icon="picture_as_pdf" 
+                                Text="Xuất PDF" 
+                                ButtonStyle="ButtonStyle.Danger" 
+                                Click="@OnExportPDF"
+                                Disabled="@(!_hasData)" />
+                </div>
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+</RadzenRow>
+
+<RadzenRow Gap="1rem" class="rz-mt-4">
+    <RadzenColumn Size="12">
+        <RadzenCard class="rz-shadow-3">
+            <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-3">Dữ liệu báo cáo</RadzenText>
+            
+            @if (_isLoading)
+            {
+                <div style="text-align: center; padding: 3rem;">
+                    <RadzenProgressBarCircular ProgressBarStyle="ProgressBarStyle.Primary" 
+                                             Value="100" 
+                                             ShowValue="false" 
+                                             Mode="ProgressBarMode.Indeterminate" />
+                    <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">Đang tải dữ liệu...</RadzenText>
+                </div>
+            }
+            else if (!_hasData)
+            {
+                <div style="text-align: center; padding: 3rem; background: var(--rz-grid-cell-background-color); border-radius: 4px;">
+                    <RadzenIcon Icon="description" Style="font-size: 4rem; color: var(--rz-text-disabled-color);" />
+                    <RadzenText TextStyle="TextStyle.Body1" class="rz-mt-2" Style="color: var(--rz-text-secondary-color);">
+                        Chọn khoảng thời gian và nhấn Truy vấn để xem báo cáo
+                    </RadzenText>
+                </div>
+            }
+            else
+            {
+                <RadzenDataGrid @ref="_dataGrid" 
+                              Data="@_reportData" 
+                              TItem="ReportModel" 
+                              AllowPaging="true" 
+                              PageSize="15"
+                              AllowSorting="true"
+                              PagerHorizontalAlign="HorizontalAlign.Right"
+                              ShowPagingSummary="true"
+                              PagingSummaryFormat="Hiển thị {0} - {1} / {2} mục">
+                    <Columns>
+                        <RadzenDataGridColumn TItem="ReportModel" Property="OvenName" Title="Tên lò" Width="200px" />
+                        <RadzenDataGridColumn TItem="ReportModel" Property="ProfileName" Title="Profile" Width="180px" />
+                        <RadzenDataGridColumn TItem="ReportModel" Property="StartTime" Title="Thời gian bắt đầu" Width="180px">
+                            <Template Context="data">
+                                @data.StartTime.ToString("dd/MM/yyyy HH:mm")
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="ReportModel" Property="EndTime" Title="Thời gian kết thúc" Width="180px">
+                            <Template Context="data">
+                                @data.EndTime?.ToString("dd/MM/yyyy HH:mm")
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="ReportModel" Property="Duration" Title="Thời lượng" Width="120px" TextAlign="TextAlign.Center">
+                            <Template Context="data">
+                                @data.Duration.ToString(@"hh\:mm\:ss")
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="ReportModel" Property="AvgTemp" Title="Nhiệt độ TB" Width="130px" TextAlign="TextAlign.Center">
+                            <Template Context="data">
+                                @data.AvgTemp.ToString("F1")°C
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="ReportModel" Property="Status" Title="Trạng thái" Width="130px" TextAlign="TextAlign.Center">
+                            <Template Context="data">
+                                <RadzenBadge BadgeStyle="@GetStatusBadgeStyle(data.Status)" Text="@data.Status" />
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="ReportModel" Title="Hành động" Width="120px" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+                            <Template Context="data">
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" JustifyContent="JustifyContent.Center">
+                                    <RadzenButton Icon="visibility" 
+                                                ButtonStyle="ButtonStyle.Info" 
+                                                Size="ButtonSize.Small" 
+                                                Variant="Variant.Flat"
+                                                Click="@(() => OnViewDetail(data))"
+                                                title="Xem chi tiết" />
+                                    <RadzenButton Icon="download" 
+                                                ButtonStyle="ButtonStyle.Success" 
+                                                Size="ButtonSize.Small" 
+                                                Variant="Variant.Flat"
+                                                Click="@(() => OnDownload(data))"
+                                                title="Tải về" />
+                                </RadzenStack>
+                            </Template>
+                        </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
+            }
+        </RadzenCard>
+    </RadzenColumn>
+</RadzenRow>
+
+@code {
+    [Parameter]
+    public int OvenId { get; set; }
+
+    [Inject] private NotificationService NotificationService { get; set; } = default!;
+
+    private RadzenDataGrid<ReportModel> _dataGrid = default!;
+    private DateTime _fromDate = DateTime.Now.AddDays(-7);
+    private DateTime _toDate = DateTime.Now;
+    private int? _selectedOvenId = null;
+    private bool _isLoading = false;
+    private bool _hasData = false;
+
+    private List<OvenDropdownModel> _ovenList = new();
+    private List<ReportModel> _reportData = new();
+
+    protected override void OnInitialized()
+    {
+        LoadOvenList();
+    }
+
+    private void LoadOvenList()
+    {
+        // TODO: Load from API
+        _ovenList = Enumerable.Range(1, 13).Select(i => new OvenDropdownModel
+        {
+            Id = i,
+            Name = $"Lò {i}"
+        }).ToList();
+    }
+
+    private async Task OnSearch()
+    {
+        _isLoading = true;
+        StateHasChanged();
+
+        await Task.Delay(500); // Simulate API call
+
+        // TODO: Call API to load data
+        // var data = await _reportClient.GetReportDataAsync(OvenId, _fromDate, _toDate, _selectedOvenId);
+
+        // Fake data
+        _reportData = Enumerable.Range(1, 20).Select(i => new ReportModel
+        {
+            OvenName = $"Lò {i % 13 + 1}",
+            ProfileName = $"Profile {i % 3 + 1}",
+            StartTime = _fromDate.AddHours(i * 2),
+            EndTime = _fromDate.AddHours(i * 2 + 1.5),
+            Duration = System.TimeSpan.FromMinutes(90),
+            AvgTemp = 160 + i * 3,
+            Status = i % 4 == 0 ? "Hoàn thành" : i % 4 == 1 ? "Đang chạy" : i % 4 == 2 ? "Lỗi" : "Dừng"
+        }).ToList();
+
+        _hasData = _reportData.Any();
+        _isLoading = false;
+    }
+
+    private void OnReset()
+    {
+        _fromDate = DateTime.Now.AddDays(-7);
+        _toDate = DateTime.Now;
+        _selectedOvenId = null;
+        _hasData = false;
+        _reportData.Clear();
+    }
+
+    private void OnExportExcel()
+    {
+        NotificationService.Notify(NotificationSeverity.Success, "Xuất Excel", "Đang xuất file Excel...");
+    }
+
+    private void OnExportPDF()
+    {
+        NotificationService.Notify(NotificationSeverity.Success, "Xuất PDF", "Đang xuất file PDF...");
+    }
+
+    private void OnViewDetail(ReportModel data)
+    {
+        NotificationService.Notify(NotificationSeverity.Info, "Xem chi tiết", $"Xem chi tiết báo cáo {data.OvenName}");
+    }
+
+    private void OnDownload(ReportModel data)
+    {
+        NotificationService.Notify(NotificationSeverity.Success, "Tải về", $"Đang tải báo cáo {data.OvenName}...");
+    }
+
+    private BadgeStyle GetStatusBadgeStyle(string status) => status switch
+    {
+        "Hoàn thành" => BadgeStyle.Success,
+        "Đang chạy" => BadgeStyle.Primary,
+        "Lỗi" => BadgeStyle.Danger,
+        _ => BadgeStyle.Secondary
+    };
+
+    public class OvenDropdownModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+    }
+
+    public class ReportModel
+    {
+        public string OvenName { get; set; } = string.Empty;
+        public string ProfileName { get; set; } = string.Empty;
+        public DateTime StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
+        public System.TimeSpan Duration { get; set; }
+        public double AvgTemp { get; set; }
+        public string Status { get; set; } = string.Empty;
+    }
+}

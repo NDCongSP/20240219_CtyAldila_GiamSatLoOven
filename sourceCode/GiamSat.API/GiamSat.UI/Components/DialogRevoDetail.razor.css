@@ -1,0 +1,238 @@
+/* ── Part info layout: bootstrap col-4 grid ── */
+.detail-field {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    min-width: 0;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: var(--rz-text-secondary-color);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.detail-value {
+    color: var(--rz-text-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rev-value {
+    color: #1565c0;
+    font-weight: 600;
+}
+
+/* ── Shaft Count section ── */
+.shaft-zone {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+    overflow: hidden;
+    height: 100%;
+}
+
+.shaft-zone-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--rz-text-secondary-color);
+    padding: 0.35rem 0.75rem;
+    background-color: rgba(0, 0, 0, 0.04);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+    .shaft-zone-title {
+        background-color: rgba(255, 255, 255, 0.06);
+        border-bottom-color: rgba(255, 255, 255, 0.08);
+    }
+}
+
+.shaft-zone-numbers {
+    display: flex;
+    align-items: stretch;
+}
+
+.shaft-zone-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 0.5rem;
+    gap: 0.2rem;
+}
+
+.shaft-zone-divider {
+    width: 1px;
+    background-color: rgba(0, 0, 0, 0.1);
+    align-self: stretch;
+}
+
+.shaft-zone-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+    .shaft-zone-label { color: rgba(255, 255, 255, 0.55); }
+}
+
+.shaft-zone-badge {
+    font-weight: 700;
+    font-size: 1.6rem;
+    line-height: 1;
+    padding: 0.15rem 0.6rem;
+    border-radius: 5px;
+    min-width: 2.5rem;
+    text-align: center;
+}
+
+.shaft-zone-total    { background-color: #455a64; color: #ffffff; }
+.shaft-zone-finished { background-color: #2e7d32; color: #ffffff; }
+.shaft-zone-lasthour { background-color: #e65100; color: #ffffff; }
+
+.steps-grid {
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.step-item-detail {
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    min-height: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.step-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.step-header-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.step-name-detail {
+    font-weight: 500;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.step-time-detail {
+    font-size: 0.75rem;
+    opacity: 0.85;
+    white-space: nowrap;
+}
+
+.step-number-detail {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+    color: var(--rz-text-color);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.step-detail-values {
+    font-size: 0.8rem;
+    opacity: 0.85;
+    margin-top: 0.15rem;
+    padding-left: calc(32px + 0.75rem);
+    /* Align with text after step-number */
+}
+
+/* Step status colors - same as RevoCard */
+.step-disabled {
+    background-color: #212121;
+    /* Black - Enabled=false */
+    color: #ffffff;
+}
+
+.step-disabled .step-number-detail {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+}
+
+.step-completed {
+    background-color: #b0bec5;
+    /* Gray - đã chạy xong */
+    color: #212121;
+}
+
+.step-completed .step-number-detail {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.15);
+    color: #212121;
+}
+
+.step-running {
+    background-color: #e53935;
+    /* Red - đang chạy */
+    color: #ffffff;
+    border: 1px solid #c62828;
+}
+
+.step-running .step-number-detail {
+    background-color: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+}
+
+.step-pending {
+    background-color: #80deea;
+    /* Cyan Blue - chưa chạy */
+    color: #004d40;
+}
+
+.step-pending .step-number-detail {
+    background-color: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.12);
+    color: #004d40;
+}
+
+/* Responsive: smaller screens use fewer columns */
+@media (max-width: 1200px) {
+    .steps-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .steps-grid {
+        grid-template-columns: 1fr;
+    }
+}

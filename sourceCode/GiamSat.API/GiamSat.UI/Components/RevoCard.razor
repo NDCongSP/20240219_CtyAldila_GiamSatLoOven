@@ -1,0 +1,221 @@
+@using GiamSat.Models
+
+<RadzenCard class="@($"revo-card rz-shadow-3 {GetCardConnectionClass()}")" Style="@GetCardStyle()">
+    <RadzenStack Gap="0.5rem">
+        <!-- REVO Name and Detail Button -->
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+            <RadzenText TextStyle="TextStyle.H6" Style="font-weight: 600;">@RevoData.RevoName</RadzenText>
+            <RadzenButton Icon="info" 
+                        Text="Chi tiết" 
+                        ButtonStyle="ButtonStyle.Info" 
+                        Size="ButtonSize.Small"
+                        Click="@OnDetailClick" />
+        </RadzenStack>
+
+        <!-- Part Info: Row 1 = PART | REV -->
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">PART:</span>
+                <span class="info-value">@(RevoData.Part ?? "N/A")</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">REV:</span>
+                <span class="info-value">@(RevoData.Rev ?? "NC")</span>
+            </div>
+        </div>
+
+        <!-- Row 2 = MANDREL | SIZE -->
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">MANDREL:</span>
+                <span class="info-value">@(RevoData.Mandrel ?? "N/A")</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">SIZE:</span>
+                <span class="info-value">@(RevoData.MandrelStart ?? "-")</span>
+            </div>
+        </div>
+
+        <!-- Row 3 = COLOR (1 dòng riêng) -->
+       @*  <div class="info-item info-color-row">
+            <span class="info-label">COLOR:</span>
+            <span class="info-value">@(RevoData.ColorCode ?? "none")</span>
+        </div> *@
+
+        <!-- Shaft stats row: 3 numbers -->
+        <div class="shaft-stats-row">
+            <div class="shaft-stat-item">
+                <span class="shaft-stat-label">Total</span>
+                <span class="shaft-stat-badge shaft-total-badge">@ShaftTotalCount</span>
+            </div>
+            <div class="shaft-stat-divider"></div>
+            <div class="shaft-stat-item">
+                <span class="shaft-stat-label">Finished</span>
+                <span class="shaft-stat-badge shaft-finished-badge">@ShaftCurrentCount</span>
+            </div>
+            <div class="shaft-stat-divider"></div>
+            <div class="shaft-stat-item">
+                <span class="shaft-stat-label">Last Hr</span>
+                <span class="shaft-stat-badge shaft-lasthour-badge">@ShaftLastHourCount</span>
+            </div>
+        </div>
+
+        <!-- Steps List (all steps with scroll, default showing 3.5 steps) -->
+        @if (RevoData.Steps != null && RevoData.Steps.Any(s => s.Visible.HasValue && s.Visible.Value == true))
+        {
+            <div class="steps-container" @ref="stepsContainerRef">
+                @{
+                    var visibleSteps = RevoData.Steps.Where(s => s.Visible.HasValue && s.Visible.Value == true).OrderBy(s => s.StepIndex).ToList();
+
+                    // Running = step enabled có StepIndex nhỏ nhất với TotalRunTime == 0
+                    var runningStepIdx = visibleSteps
+                        .Where(s => !(s.Enable.HasValue && s.Enable.Value == false)
+                                 && (s.TotalRunTime == null || s.TotalRunTime <= 0))
+                        .OrderBy(s => s.StepIndex)
+                        .FirstOrDefault()?.StepIndex ?? -1;
+
+                    var runningListIndex = visibleSteps.FindIndex(s => s.StepIndex == runningStepIdx);
+                    var startIndex = runningListIndex >= 0 ? runningListIndex : 0;
+                }
+                @for (int i = 0; i < visibleSteps.Count; i++)
+                {
+                    var step = visibleSteps[i];
+                    var stepNumber = i + 1;
+                    var isRunning = step.StepIndex == runningStepIdx;
+
+                    <div class="step-item @GetStepClass(step, isRunning)" data-step-index="@i">
+                        <div class="step-number">@stepNumber</div>
+                        <div class="step-content">
+                            <div class="step-name">@(step.StepName ?? $"REVO-STEP-{step.StepIndex}")</div>
+                            @if (IsAutoRollingMode())
+                            {
+                                <div class="step-runtime">@FormatRunTime(step.TotalRunTime ?? 0)</div>
+                            }
+                            else if (step.StartAt.HasValue && step.EndAt.HasValue && step.TotalRunTime.HasValue && step.TotalRunTime.Value > 0)
+                            {
+                                <div class="step-runtime">@step.StartAt.Value.ToString("mm:ss") → @step.EndAt.Value.ToString("mm:ss") · @($"{step.TotalRunTime.Value.ToString("0.##")}s")</div>
+                            }
+                            else if (step.StartAt.HasValue && step.EndAt.HasValue)
+                            {
+                                <div class="step-runtime">@step.StartAt.Value.ToString("mm:ss") → @step.EndAt.Value.ToString("mm:ss")</div>
+                            }
+                            else if (step.StartAt.HasValue)
+                            {
+                                <div class="step-runtime step-runtime-running">@step.StartAt.Value.ToString("mm:ss") → ...</div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </RadzenStack>
+</RadzenCard>
+
+@code {
+    [Parameter]
+    public RevoRealtimeModel RevoData { get; set; } = new RevoRealtimeModel();
+
+    [Parameter]
+    public int ShaftCurrentCount { get; set; } = 0;
+
+    [Parameter]
+    public int ShaftTotalCount { get; set; } = 0;
+
+    [Parameter]
+    public int ShaftLastHourCount { get; set; } = 0;
+
+    [Parameter]
+    public EventCallback OnDetailClick { get; set; }
+
+    private ElementReference stepsContainerRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && RevoData.Steps != null)
+        {
+            var visibleSteps = RevoData.Steps.Where(s => s.Visible.HasValue && s.Visible.Value == true).OrderBy(s => s.StepIndex).ToList();
+
+            var runningStepIdx = visibleSteps
+                .Where(s => !(s.Enable.HasValue && s.Enable.Value == false)
+                         && (s.TotalRunTime == null || s.TotalRunTime <= 0))
+                .OrderBy(s => s.StepIndex)
+                .FirstOrDefault()?.StepIndex ?? -1;
+
+            var runningListIndex = visibleSteps.FindIndex(s => s.StepIndex == runningStepIdx);
+            var startIndex = runningListIndex >= 0 ? runningListIndex : 0;
+
+            if (visibleSteps.Count > 0)
+                await ScrollToStep(startIndex);
+        }
+    }
+
+    private async Task ScrollToStep(int stepIndex)
+    {
+        // Calculate scroll position to show 3.5 steps
+        // Each step is approximately 50px (min-height) + 8px (gap) = 58px
+        // 3.5 steps = 3.5 * 58px = 203px
+        try
+        {
+            // Use JavaScript to scroll
+            var stepHeight = 58; // 50px min-height + 8px gap
+            var scrollPosition = stepIndex * stepHeight;
+            
+            await _js.InvokeVoidAsync("scrollStepsContainer", stepsContainerRef, scrollPosition);
+        }
+        catch
+        {
+            // Ignore JS errors - scroll will happen naturally or user can scroll manually
+        }
+    }
+
+    private string GetCardConnectionClass()
+    {
+        return RevoData.PlcConnected == true ? "card-connected" : "card-disconnected";
+    }
+
+    private string GetCardStyle()
+    {
+        if (RevoData.PlcConnected == true)
+        {
+            return "background-color: #e8f5e9 !important; border: 2px solid #4caf50 !important;";
+        }
+        else
+        {
+            return "background-color: #f6695e !important; border: 2px solid #f44336 !important;";
+        }
+    }
+
+    private string GetStepClass(RevoStep step, bool isRunning)
+    {
+        if (!step.Visible.HasValue || step.Visible.Value == false)
+            return "";
+
+        // Enable = false → Black
+        if (step.Enable.HasValue && step.Enable.Value == false)
+            return "step-disabled";
+
+        // Đang chạy (StepIndex nhỏ nhất, TotalRunTime == 0) → Red
+        if (isRunning)
+            return "step-running";
+
+        // Đã xong (TotalRunTime > 0) → Gray
+        if (step.TotalRunTime.HasValue && step.TotalRunTime.Value > 0)
+            return "step-completed";
+
+        // Chưa chạy → Cyan Blue
+        return "step-pending";
+    }
+
+    private string FormatRunTime(double totalSeconds)
+    {
+        if (totalSeconds <= 0) return "0s";
+        if (totalSeconds < 60) return $"{totalSeconds.ToString("0.##")}s";
+        var ts = System.TimeSpan.FromSeconds(totalSeconds);
+        if (ts.TotalHours >= 1) return $"{(int)ts.TotalHours}h{ts.Minutes:D2}m";
+        return $"{ts.Minutes}m{ts.Seconds:D2}s";
+    }
+
+    private bool IsAutoRollingMode() =>
+        RevoData.MachineType == EnumMachineType.AUTO_ROLLING;
+}
+

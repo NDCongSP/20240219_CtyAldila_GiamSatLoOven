@@ -1,0 +1,22 @@
+USE [oven]
+GO
+
+/****** Object:  Table [dbo].[FT07]    Script Date: 2/10/2026 2:50:14 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[FT07](
+	[Id] [uniqueidentifier] NOT NULL,
+	[C000] [nvarchar](max) NULL,
+	[Actived] [bit] NULL,
+	[CreatedAt] [datetime2](7) NULL,
+ CONSTRAINT [PK_FT07] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+

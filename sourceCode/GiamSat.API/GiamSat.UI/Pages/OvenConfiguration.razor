@@ -1,0 +1,77 @@
+@page "/revo/config"
+@using GiamSat.Models
+@attribute [Authorize(Roles = "Admin,User")]
+
+<RadzenRow Gap="1rem">
+    <RadzenColumn Size="12">
+        <RadzenCard class="rz-shadow-3">
+            <RadzenStack Gap="1rem">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenText TextStyle="TextStyle.H5">Cấu hình REVO</RadzenText>
+                    <RadzenButton Icon="add_circle" 
+                                Text="Thêm REVO" 
+                                ButtonStyle="ButtonStyle.Success" 
+                                Click="@OnAddRevo" />
+                </RadzenStack>
+
+                @if (_isLoading)
+                {
+                    <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+                    <RadzenText>Đang tải dữ liệu...</RadzenText>
+                }
+                else if (_revoConfigs == null || _revoConfigs.Count == 0)
+                {
+                    <RadzenText TextStyle="TextStyle.Body2" Style="color: var(--rz-text-muted-color);">
+                        Chưa có dữ liệu. Vui lòng thêm REVO mới.
+                    </RadzenText>
+                }
+                else
+                {
+                    <!-- DataGrid -->
+                    <RadzenDataGrid @ref="_dataGrid" 
+                                  Data="@_revoConfigs" 
+                                  TItem="RevoConfigModel" 
+                                  AllowPaging="true" 
+                                  PageSize="10"
+                                  AllowSorting="true"
+                                  PagerHorizontalAlign="HorizontalAlign.Right"
+                                  ShowPagingSummary="true"
+                                  PagingSummaryFormat="Hiển thị {0} - {1} / {2} mục"
+                                  class="rz-mt-3">
+                        <Columns>
+                            <RadzenDataGridColumn TItem="RevoConfigModel" Property="Id" Title="ID" Width="100px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn TItem="RevoConfigModel" Property="Name" Title="Tên REVO" Width="250px" />
+                            <RadzenDataGridColumn TItem="RevoConfigModel" Property="Path" Title="Đường dẫn" Width="300px" />
+                            <RadzenDataGridColumn TItem="RevoConfigModel" Property="ConstringAccessDb" Title="Chuỗi kết nối Access DB" Width="350px" />
+                            <RadzenDataGridColumn TItem="RevoConfigModel" Property="Pulse_Rev" Title="Pulse/Rev" Width="120px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn TItem="RevoConfigModel" Property="IntervalResetShaft" Title="Interval Reset Shaft (ms)" Width="200px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn TItem="RevoConfigModel" Title="Lưu chi tiết (SaveAll)" Width="150px" TextAlign="TextAlign.Center">
+                                <Template Context="item">
+                                    <RadzenSwitch Value="@(item.SaveMode == EnumSaveMode.SaveAll)" Disabled="true" />
+                                </Template>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="RevoConfigModel" Title="Hành động" Width="200px" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+                                <Template Context="item">
+                                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" JustifyContent="JustifyContent.Center">
+                                        <RadzenButton Icon="edit" 
+                                                    ButtonStyle="ButtonStyle.Primary" 
+                                                    Size="ButtonSize.Small" 
+                                                    Variant="Variant.Flat"
+                                                    Click="@(() => OnEdit(item))"
+                                                    title="Chỉnh sửa" />
+                                        <RadzenButton Icon="delete" 
+                                                    ButtonStyle="ButtonStyle.Danger" 
+                                                    Size="ButtonSize.Small" 
+                                                    Variant="Variant.Flat"
+                                                    Click="@(() => OnDelete(item))"
+                                                    title="Xóa" />
+                                    </RadzenStack>
+                                </Template>
+                            </RadzenDataGridColumn>
+                        </Columns>
+                    </RadzenDataGrid>
+                }
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+</RadzenRow>

@@ -1,4 +1,4 @@
-﻿@using System.Net.Http
+@using System.Net.Http
 @using System.Net.Http.Json
 @using GiamSat.APIClient
 @using Microsoft.AspNetCore.Components.Forms
@@ -10,6 +10,7 @@
 @using Microsoft.JSInterop
 @using GiamSat.UI
 @using GiamSat.UI.Shared
+@using GiamSat.UI.Components
 @using Microsoft.AspNetCore.Components.Authorization
 @using Radzen
 @using Radzen.Blazor
@@ -31,6 +32,11 @@
 @inject IFT04Client _ft04Client
 @inject IFT05Client _ft05Client
 @inject IFT06Client _ft06Client
+@inject IHttpClientFactory _httpClientFactory
+
+@inject IFT07Client _fT07Client
+@inject IFT08Client _fT08Client
+@inject IFT09Client _fT09Client
 
 @*xuat excel *@
 @inject IJSRuntime _js

@@ -1,4 +1,4 @@
-﻿using GiamSat.Models;
+using GiamSat.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -165,6 +165,7 @@ namespace GiamSat.API
             //var dd = JsonConvert.SerializeObject(ft02);
 
 
+
             #endregion
 
             // For Identity
@@ -222,6 +223,9 @@ namespace GiamSat.API
             services.AddScoped<ISFT04, SFT04>();
             services.AddScoped<ISFT05, SFT05>();
             services.AddScoped<ISFT06, SFT06>();
+            services.AddScoped<ISFT07, SFT07>();
+            services.AddScoped<ISFT08, SFT08>();
+            services.AddScoped<ISFT09, SFT09>();
             services.AddScoped<SCommon>();
 
             services.AddSwaggerGen(c =>
@@ -269,14 +273,21 @@ namespace GiamSat.API
 
             // Allow arbitrary client browser apps to access the API.
             // In a production environment, make sure to allow only origins you trust.
-            services.AddCors(cors => cors.AddDefaultPolicy(policy => policy//.WithOrigins("http://*:5001/")
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowAnyOrigin()
-                .WithExposedHeaders("Content-Disposition")));
+            //services.AddCors(cors => cors.AddDefaultPolicy(policy => policy//.WithOrigins("http://*:5001/")
+            //    .AllowAnyHeader()
+            //    .AllowAnyMethod()
+            //    .AllowAnyOrigin()
+            //    .WithExposedHeaders("Content-Disposition")));
 
-            //services.AddCors();
-
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()                           
+                           .AllowAnyHeader();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -289,10 +300,12 @@ namespace GiamSat.API
             ////create DB
             //scope.ServiceProvider.GetService<ApplicationDbContext>().Database.EnsureCreated();
             ////create table
-            scope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
+            //scope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
 
             SeedingData(scope).Wait();
             #endregion
+
+            app.UseCors("AllowAll");
 
             if (env.IsDevelopment() || env.IsProduction())
             {
@@ -300,15 +313,7 @@ namespace GiamSat.API
             }
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GiamSat.API v1"));
-
-            app.UseCors();
-            //app.UseCors(o =>
-            //{
-            //    o.AllowAnyOrigin();
-            //    o.AllowAnyHeader();
-            //    o.AllowAnyMethod();
-            //});
-
+           
             app.UseRouting();
 
             //them
@@ -404,6 +409,42 @@ namespace GiamSat.API
             #region Control PLC
 
             #endregion
+
+            var revoConfigs = new RevoConfigs();
+            for (int i = 1; i <= 9; i++)
+            {
+                revoConfigs.Add(new RevoConfigModel()
+                {
+                    Id = i,
+                    Name = $"Revo {i}",
+                    Path = $"Local Station/Channel_Revo_{i}/Device1",
+                    ConstringAccessDb= "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=D:\\MyCompany\\8.SourceCode\\3.Projects\\20240219_CtyAldila_GiamSatLoOven\\info\\RevoGoft\\Roll3.mdb;"
+                });
+            }
+
+            var existing = scope.ServiceProvider.GetService<ApplicationDbContext>()
+                .FT07_RevoConfigs
+                .FirstOrDefault();
+            if (existing == null)
+            {
+                await scope.ServiceProvider.GetService<ApplicationDbContext>()
+                    .FT07_RevoConfigs
+                    .AddAsync(new FT07_RevoConfig()
+                    {
+                        Id = Guid.NewGuid(),
+                        C000 = JsonConvert.SerializeObject(revoConfigs),
+                        Actived = true,
+                        CreatedAt = DateTime.Now
+                    });
+
+                await scope.ServiceProvider.GetService<ApplicationDbContext>()
+                    .SaveChangesAsync();
+
+                 existing = scope.ServiceProvider.GetService<ApplicationDbContext>()
+                .FT07_RevoConfigs
+                .FirstOrDefault();
+            }
+
         }
     }
 }

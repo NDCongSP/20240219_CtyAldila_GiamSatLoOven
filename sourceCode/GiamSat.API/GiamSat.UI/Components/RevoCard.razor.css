@@ -1,0 +1,293 @@
+.revo-card {
+    min-height: 300px;
+    height: 100%;
+    border-radius: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.revo-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Header container with title and button */
+::deep .revo-card>.rz-stack>.rz-stack:first-child {
+    min-height: auto;
+    align-items: flex-start !important;
+    width: 100%;
+}
+
+/* Title text - allow 2 lines with ellipsis */
+::deep .revo-card>.rz-stack>.rz-stack:first-child>.rz-text {
+    flex: 1;
+    min-width: 0;
+    margin-right: 0.5rem;
+    word-wrap: break-word;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.4;
+    max-height: calc(1.4em * 2);
+    /* 2 lines */
+    text-overflow: ellipsis;
+}
+
+/* Button "Chi tiết" - always visible, no shrink */
+::deep .revo-card>.rz-stack>.rz-stack:first-child>.rz-button {
+    flex-shrink: 0 !important;
+    min-width: fit-content !important;
+    white-space: nowrap !important;
+    margin-left: auto;
+    height: fit-content;
+}
+
+/* Card connection status */
+::deep .card-connected,
+::deep .card-connected.rz-card {
+    background-color: var(--rz-base-background-color, #ffffff) !important;
+    border-left: 4px solid #4caf50 !important;
+}
+
+::deep .card-disconnected,
+::deep .card-disconnected.rz-card {
+    background-color: #fff3f0 !important;
+    border-left: 4px solid #f44336 !important;
+    opacity: 0.85;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.info-item {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.info-label {
+    font-weight: 600;
+    color: var(--rz-text-secondary-color);
+}
+
+.info-value {
+    color: var(--rz-text-color);
+}
+
+.steps-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 203px;
+    /* 3.5 steps: 3.5 * 58px (50px step + 8px gap) = 203px */
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-top: 0.5rem;
+    position: relative;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    min-height: 50px;
+    justify-content: space-between;
+}
+
+.step-number {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+    color: var(--rz-text-color);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.step-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.step-name {
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+/* Step runtime text */
+.step-runtime {
+    font-size: 0.7rem;
+    opacity: 0.85;
+    white-space: nowrap;
+}
+
+.step-runtime-running {
+    font-weight: 600;
+}
+
+/* Pull & Speed - right side */
+.step-pull-speed {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: auto;
+    opacity: 0.85;
+    line-height: 1.3;
+}
+
+/* Step status colors */
+.step-disabled {
+    background-color: #212121;
+    /* Black - Enabled=false */
+    color: #ffffff;
+}
+
+.step-disabled .step-number {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+}
+
+.step-completed {
+    background-color: #b0bec5;
+    /* Gray - đã chạy xong */
+    color: #212121;
+}
+
+.step-completed .step-number {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.15);
+    color: #212121;
+}
+
+.step-running {
+    background-color: #e53935;
+    /* Red - đang chạy */
+    color: #ffffff;
+    border: 1px solid #c62828;
+}
+
+.step-running .step-number {
+    background-color: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+}
+
+.step-pending {
+    background-color: #80deea;
+    /* Cyan Blue - chưa chạy */
+    color: #004d40;
+}
+
+.step-pending .step-number {
+    background-color: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.12);
+    color: #004d40;
+}
+
+.rz-button.rz-info.rz-shade-default {
+    background-color: #8DD7E2 !important;
+    color: white !important;
+}
+
+/* Row COLOR riêng - dòng thứ 3, full width, có border trên nhẹ */
+.info-color-row {
+    border-top: 1px dashed rgba(0, 0, 0, 0.12);
+    padding-top: 0.3rem;
+    margin-top: 0.1rem;
+    width: 100%;
+}
+
+/* Shaft stats row - Total + Finished */
+.shaft-stats-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 0.15rem;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.shaft-stat-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.3rem 0.5rem;
+    gap: 0.1rem;
+    background-color: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(2px);
+}
+
+/* dark mode */
+@media (prefers-color-scheme: dark) {
+    .shaft-stat-item {
+        background-color: rgba(0, 0, 0, 0.25);
+    }
+}
+
+.shaft-stat-divider {
+    width: 1px;
+    background-color: rgba(0, 0, 0, 0.12);
+    align-self: stretch;
+}
+
+.shaft-stat-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: rgba(0, 0, 0, 0.55);
+}
+
+@media (prefers-color-scheme: dark) {
+    .shaft-stat-label {
+        color: rgba(255, 255, 255, 0.6);
+    }
+}
+
+.shaft-stat-badge {
+    font-weight: 700;
+    font-size: 1.1rem;
+    line-height: 1;
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    min-width: 2rem;
+    text-align: center;
+}
+
+/* Total Shaft - blue-gray pill */
+.shaft-total-badge {
+    background-color: #455a64;
+    color: #ffffff;
+}
+
+/* Total Shaft Finished - green pill */
+.shaft-finished-badge {
+    background-color: #2e7d32;
+    color: #ffffff;
+}
+
+/* Total Shaft Last Hour - amber pill */
+.shaft-lasthour-badge {
+    background-color: #e65100;
+    color: #ffffff;
+}

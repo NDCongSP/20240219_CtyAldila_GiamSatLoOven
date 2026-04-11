@@ -1,0 +1,128 @@
+@using GiamSat.Models
+
+<RadzenStack Gap="1rem">
+    <RadzenText TextStyle="TextStyle.H5" Style="font-weight: 600;">@_revoData.RevoName</RadzenText>
+
+    <!-- Part Information + Shaft Stats -->
+    <RadzenFieldset Text="Thông tin Part">
+        <!-- Fields: 3 cột col-4 -->
+        <div class="row g-2 mb-2">
+            <div class="col-4 detail-field">
+                <span class="detail-label">Part:</span>
+                <span class="detail-value">@(_revoData.Part ?? "N/A")</span>
+            </div>
+            <div class="col-4 detail-field">
+                <span class="detail-label">Rev:</span>
+                <span class="detail-value rev-value">@(_revoData.Rev ?? "NC")</span>
+            </div>
+            <div class="col-4 detail-field">
+                <span class="detail-label">Mandrel:</span>
+                <span class="detail-value">@(_revoData.Mandrel ?? "N/A")</span>
+            </div>
+            <div class="col-4 detail-field">
+                <span class="detail-label">Work:</span>
+                <span class="detail-value">@(_revoData.Work ?? "N/A")</span>
+            </div>
+            <div class="col-4 detail-field">
+                <span class="detail-label">Mandrel Start:</span>
+                <span class="detail-value">@(_revoData.MandrelStart ?? "-")</span>
+            </div>
+            <div class="col-4"></div>
+        </div>
+
+    </RadzenFieldset>
+
+    <!-- Shaft Count -->
+    <RadzenFieldset Text="Shaft Count">
+        <div class="row g-3">
+            <!-- Current Hour -->
+            <div class="col-6">
+                <div class="shaft-zone">
+                    <div class="shaft-zone-title">Current Hour</div>
+                    <div class="shaft-zone-numbers">
+                        <div class="shaft-zone-item">
+                            <span class="shaft-zone-label">Total</span>
+                            <span class="shaft-zone-badge shaft-zone-total">@_liveShaftTotal</span>
+                        </div>
+                        <div class="shaft-zone-divider"></div>
+                        <div class="shaft-zone-item">
+                            <span class="shaft-zone-label">Finished</span>
+                            <span class="shaft-zone-badge shaft-zone-finished">@_liveShaftCurrent</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Last Hour -->
+            <div class="col-6">
+                <div class="shaft-zone">
+                    <div class="shaft-zone-title">Last Hour (@(_livePrevHour)h)</div>
+                    <div class="shaft-zone-numbers">
+                        <div class="shaft-zone-item">
+                            <span class="shaft-zone-label">Total</span>
+                            <span class="shaft-zone-badge shaft-zone-total">@_liveShaftLastHourTotal</span>
+                        </div>
+                        <div class="shaft-zone-divider"></div>
+                        <div class="shaft-zone-item">
+                            <span class="shaft-zone-label">Finished</span>
+                            <span class="shaft-zone-badge shaft-zone-lasthour">@_liveShaftPrev</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </RadzenFieldset>
+
+    <!-- Steps List - 4 columns layout -->
+    <RadzenFieldset Text="Danh sách Steps">
+        @if (_revoData.Steps != null && _revoData.Steps.Any(s => s.Visible.HasValue && s.Visible.Value == true))
+        {
+            var visibleSteps = _revoData.Steps.Where(s => s.Visible.HasValue && s.Visible.Value == true).OrderBy(s => s.StepIndex).ToList();
+            var runningStepIdx = visibleSteps
+                .Where(s => !(s.Enable.HasValue && s.Enable.Value == false)
+                         && (s.TotalRunTime == null || s.TotalRunTime <= 0))
+                .OrderBy(s => s.StepIndex)
+                .FirstOrDefault()?.StepIndex ?? -1;
+            var stepNumber = 1;
+            <div class="steps-grid">
+                @foreach (var step in visibleSteps)
+                {
+                    <div class="step-item-detail @GetStepClass(step, step.StepIndex == runningStepIdx)">
+                        <div class="step-header">
+                            <div class="step-number-detail">@stepNumber</div>
+                            <div class="step-header-info">
+                                <span class="step-name-detail">@(step.StepName ?? $"REVO-STEP-{step.StepIndex}")</span>
+                                @if (IsAutoRollingMode())
+                                {
+                                    <span class="step-time-detail">@FormatRunTime(step.TotalRunTime ?? 0)</span>
+                                }
+                                else if (step.StartAt.HasValue && step.EndAt.HasValue)
+                                {
+                                    <span class="step-time-detail">@step.StartAt.Value.ToString("mm:ss") → @step.EndAt.Value.ToString("mm:ss") · @($"{(step.TotalRunTime ?? 0).ToString("0.##")}s")</span>
+                                }
+                                else if (step.StartAt.HasValue)
+                                {
+                                    <span class="step-time-detail">@step.StartAt.Value.ToString("mm:ss") → ...</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="step-detail-values">
+                            <span>Pul=@(step.SoLuongXung?.ToString("0") ?? "0") - Speed = @(step.Speed_Hz?.ToString("0") ?? "0")</span>
+                        </div>
+                    </div>
+                    stepNumber++;
+                }
+            </div>
+        }
+        else
+        {
+            <RadzenText TextStyle="TextStyle.Body2" Style="color: var(--rz-text-muted-color);">
+                Không có step nào được hiển thị.
+            </RadzenText>
+        }
+    </RadzenFieldset>
+
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem">
+        <RadzenButton Text="Đóng" ButtonStyle="ButtonStyle.Light" Click="@(() => _dialogService.Close())" />
+    </RadzenStack>
+</RadzenStack>
+

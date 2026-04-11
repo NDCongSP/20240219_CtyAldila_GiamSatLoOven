@@ -1,0 +1,80 @@
+@using GiamSat.Models
+
+<RadzenTemplateForm Data="@_model" Submit="@((RevoConfigModel args) => { Submit(args); })">
+    <RadzenStack Gap="0.75rem">
+        <RadzenFieldset Text="@(_isEdit ? "Chỉnh sửa REVO" : "Thêm REVO mới")">
+            <div class="row g-3">
+
+                <!-- Row 1: ID + Tên REVO -->
+                <div class="col-3">
+                    <RadzenFormField Text="ID" Style="width:100%;">
+                        <RadzenNumeric @bind-Value="@_model.Id" Disabled="true" Style="width:100%;" />
+                    </RadzenFormField>
+                </div>
+                <div class="col-5">
+                    <RadzenFormField Text="Tên REVO" Style="width:100%;">
+                        <RadzenTextBox @bind-Value="@_model.Name" Placeholder="Nhập tên REVO" Style="width:100%;" />
+                    </RadzenFormField>
+                </div>
+                <div class="col-4">
+                    <RadzenFormField Text="Loại Máy" Style="width:100%;">
+                        <RadzenDropDown @bind-Value="@_model.MachineType"
+                                        Data="@(Enum.GetValues(typeof(EnumMachineType)).Cast<EnumMachineType>().Select(e => new { Label = e.ToString(), Val = e }))"
+                                        ValueProperty="Val" TextProperty="Label"
+                                        Style="width:100%;" />
+                    </RadzenFormField>
+                </div>
+
+                <!-- Row 2: Đường dẫn (full width) -->
+                <div class="col-12">
+                    <RadzenFormField Text="Đường dẫn" Style="width:100%;">
+                        <RadzenTextBox @bind-Value="@_model.Path" Placeholder="Nhập đường dẫn" Style="width:100%;" />
+                    </RadzenFormField>
+                </div>
+
+                <!-- Row 3: Chuỗi kết nối (full width) -->
+                <div class="col-12">
+                    <RadzenFormField Text="Chuỗi kết nối Access DB" Style="width:100%;">
+                        <RadzenTextBox @bind-Value="@_model.ConstringAccessDb"
+                                       Placeholder="Provider=Microsoft.Jet.OLEDB.4.0;Data Source=..."
+                                       Style="width:100%;" />
+                    </RadzenFormField>
+                </div>
+
+                <!-- Row 4: Pulse/Rev + Offset + Interval -->
+                <div class="col-4">
+                    <RadzenFormField Text="Pulse/Rev" Style="width:100%;">
+                        <RadzenNumeric @bind-Value="@_model.Pulse_Rev" Min="1" Style="width:100%;" />
+                    </RadzenFormField>
+                </div>
+                <div class="col-4">
+                    <RadzenFormField Text="Pulse/Rev Offset" Style="width:100%;">
+                        <RadzenNumeric @bind-Value="@_model.Pulse_rev_Offset" Style="width:100%;" Placeholder="0" />
+                    </RadzenFormField>
+                </div>
+                <div class="col-4">
+                    <RadzenFormField Text="Interval Reset Shaft (ms)" Style="width:100%;">
+                        <RadzenNumeric @bind-Value="@_model.IntervalResetShaft" Min="0" Style="width:100%;" Placeholder="3000" />
+                    </RadzenFormField>
+                </div>
+
+                <!-- Row 5: Save Mode -->
+                <div class="col-12">
+                    <RadzenText TextStyle="TextStyle.Caption" Style="color: var(--rz-text-secondary-color);">Chế độ lưu dữ liệu</RadzenText>
+                    <RadzenRadioButtonList @bind-Value="@_model.SaveMode" TValue="EnumSaveMode" Orientation="Orientation.Horizontal">
+                        <Items>
+                            <RadzenRadioButtonListItem Text="Save (shaft)" Value="EnumSaveMode.Save" />
+                            <RadzenRadioButtonListItem Text="Save all (shaft+step)" Value="EnumSaveMode.SaveAll" />
+                        </Items>
+                    </RadzenRadioButtonList>
+                </div>
+
+            </div>
+        </RadzenFieldset>
+
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem">
+            <RadzenButton Text="Hủy" ButtonStyle="ButtonStyle.Light" Click="@(() => DialogService.Close())" />
+            <RadzenButton Text="@(_isEdit ? "Cập nhật" : "Thêm")" ButtonStyle="ButtonStyle.Primary" Type="Submit" />
+        </RadzenStack>
+    </RadzenStack>
+</RadzenTemplateForm>

@@ -24,6 +24,13 @@ namespace GiamSat.API
             builder.Entity<FT04>();
             builder.Entity<FT05>();
             builder.Entity<FT06>();
+            builder.Entity<FT07_RevoConfig>();
+            builder.Entity<FT08_RevoRealtime>();
+            builder.Entity<FT09_RevoDatalog>();
+            builder.Entity<RevoGetTotalShaftCountDto>().HasNoKey().ToView(null);
+            builder.Entity<RevoReportStepVm>().HasNoKey();
+            builder.Entity<RevoReportShaftVm>().HasNoKey();
+            builder.Entity<RevoReportHourVm>().HasNoKey();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -40,6 +47,10 @@ namespace GiamSat.API
         public DbSet<GiamSat.Models.FT04> FT04 { get; set; }
         public DbSet<GiamSat.Models.FT05> FT05 { get; set; }
         public DbSet<GiamSat.Models.FT06> FT06 { get; set; }
+        public DbSet<GiamSat.Models.FT07_RevoConfig> FT07_RevoConfigs { get; set; }
+        public DbSet<GiamSat.Models.FT08_RevoRealtime> FT08_RevoRealtimes { get; set; }
+        public DbSet<GiamSat.Models.FT09_RevoDatalog> FT09_RevoDatalogs { get; set; }
+        public DbSet<GiamSat.Models.RevoGetTotalShaftCountDto> RevoTotalShaftCounts { get; set; }
 
         //private static DbContextOptions<ApplicationDbContext> GetOptions(string connection)
         //{

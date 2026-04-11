@@ -1,0 +1,311 @@
+@page "/oven/{OvenId:int}"
+@using GiamSat.Models
+
+<!-- Header với Legend và View Mode Buttons -->
+<RadzenRow class="rz-mb-3">
+    <RadzenColumn Size="12">
+        <div class="header-controls">
+            <!-- Legend -->
+            <div class="status-legend">
+                <RadzenText TextStyle="TextStyle.Body2" Style="margin-right: 1rem; font-weight: 600; color: var(--rz-text-color);">
+                    Trạng thái:
+                </RadzenText>
+                <div class="legend-item">
+                    <div class="legend-color legend-running"></div>
+                    <RadzenText TextStyle="TextStyle.Body2" Style="font-weight: 500;">Đang chạy</RadzenText>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color legend-error"></div>
+                    <RadzenText TextStyle="TextStyle.Body2" Style="font-weight: 500;">Lỗi</RadzenText>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color legend-stopped"></div>
+                    <RadzenText TextStyle="TextStyle.Body2" Style="font-weight: 500;">Dừng</RadzenText>
+                </div>
+            </div>
+
+            <!-- View Mode Toggle -->
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                <RadzenButton Icon="view_compact" 
+                            ButtonStyle="@(_viewMode == ViewMode.Compact ? ButtonStyle.Primary : ButtonStyle.Light)"
+                            Click="@(() => SetViewMode(ViewMode.Compact))"
+                            Size="ButtonSize.Small"
+                            title="Thu gọn"
+                            class="view-mode-btn" />
+                <RadzenButton Icon="view_list" 
+                            ButtonStyle="@(_viewMode == ViewMode.Full ? ButtonStyle.Primary : ButtonStyle.Light)"
+                            Click="@(() => SetViewMode(ViewMode.Full))"
+                            Size="ButtonSize.Small"
+                            title="Xem chung"
+                            class="view-mode-btn" />
+            </RadzenStack>
+        </div>
+    </RadzenColumn>
+</RadzenRow>
+
+<RadzenRow Gap="1rem">
+    @foreach (var oven in _ovenData)
+    {
+        var cardClass = $"oven-card rz-shadow-3 {GetNoteColorClass(oven.NoteColor)} {(_viewMode == ViewMode.Full ? "card-full-mode" : "card-compact-mode")}";
+        
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="4" SizeXL="3">
+            <RadzenCard class="@cardClass">
+                <RadzenStack Gap="0.5rem">
+                    <!-- Row 1: Part + Rev -->
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Part:</span>
+                            <span class="info-value">@oven.Part</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Rev:</span>
+                            <span class="info-value">@oven.Rev</span>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Color Code + Mandrel + Mandrel Size -->
+                    <div class="info-grid-full">
+                        <div class="info-item-small">
+                            <span class="info-label">Color:</span>
+                            <span class="info-value-small">@oven.ColorCode</span>
+                        </div>
+                        <div class="info-item-small">
+                            <span class="info-label">Mandrel:</span>
+                            <span class="info-value-small">@oven.Mandrel</span>
+                        </div>
+                        <div class="info-item-small">
+                            <span class="info-label">Size:</span>
+                            <span class="info-value-small">@oven.MandrelSize</span>
+                        </div>
+                    </div>
+
+                    <!-- Step Progress -->
+                    <div class="@GetStepContainerClass()">
+                        @if (_viewMode == ViewMode.Compact)
+                        {
+                            @* Hiển thị tất cả steps trong mode compact với scroll *@
+                            @for (int i = 0; i < oven.Steps.Count; i++)
+                            {
+                                var step = oven.Steps[i];
+                                var stepClass = GetStepClass(step.Status);
+                                
+                                <div class="step-item @stepClass">
+                                    <div class="step-number">@(i + 1)</div>
+                                    <div class="step-label">@step.Name</div>
+                                    <div class="step-date">@step.FromDate.ToString("HH:mm")→@step.ToDate.ToString("HH:mm")</div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            @* Hiển thị tất cả steps trong mode full không scroll *@
+                            @for (int i = 0; i < oven.Steps.Count; i++)
+                            {
+                                var step = oven.Steps[i];
+                                var stepClass = GetStepClass(step.Status);
+                                
+                                <div class="step-item @stepClass">
+                                    <div class="step-number">@(i + 1)</div>
+                                    <div class="step-label">@step.Name</div>
+                                    <div class="step-date">@step.FromDate.ToString("HH:mm")→@step.ToDate.ToString("HH:mm")</div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </RadzenStack>
+            </RadzenCard>
+        </RadzenColumn>
+    }
+</RadzenRow>
+
+@code {
+    [Parameter]
+    public int OvenId { get; set; }
+
+    private List<OvenDataModel> _ovenData = new();
+    private ViewMode _viewMode = ViewMode.Compact;
+
+    protected override void OnInitialized()
+    {
+        LoadOvenData();
+    }
+
+    protected override void OnParametersSet()
+    {
+        LoadOvenData();
+    }
+
+    private void SetViewMode(ViewMode mode)
+    {
+        _viewMode = mode;
+        StateHasChanged();
+    }
+
+    private string GetStepContainerClass()
+    {
+        return _viewMode == ViewMode.Compact 
+            ? "step-progress-container step-progress-compact" 
+            : "step-progress-container step-progress-full";
+    }
+
+    private void LoadOvenData()
+    {
+        // TODO: Load from API
+        // var data = await _ovenClient.GetOvenDataAsync(OvenId);
+        
+        // Fake data với random trạng thái
+        _ovenData = new List<OvenDataModel>();
+        var random = new Random();
+        
+        for (int i = 1; i <= 13; i++)
+        {
+            // Random status để test màu sắc
+            var randomStatus = random.Next(0, 3);
+            OvenStatus status = randomStatus == 0 ? OvenStatus.Running : 
+                               randomStatus == 1 ? OvenStatus.Error : 
+                               OvenStatus.Stopped;
+            
+            // Random note color cho card background
+            NoteColor noteColor = (NoteColor)random.Next(0, 3);
+            
+            var oven = new OvenDataModel
+            {
+                OvenNumber = i,
+                Part = $"CW183-IR-{i}",
+                Rev = i % 2 == 0 ? "NC" : "R1",
+                ColorCode = i % 3 == 0 ? "RED-BLU-GRN" : "none",
+                Mandrel = $"M{440 + i}",
+                MandrelSize = i % 2 == 0 ? "3/8" : "1/2",
+                Status = status, // Random status
+                NoteColor = noteColor, // Random card color
+                Steps = GenerateSteps(i, status)
+            };
+            
+            _ovenData.Add(oven);
+        }
+    }
+
+    private List<StepModel> GenerateSteps(int ovenNumber, OvenStatus ovenStatus)
+    {
+        var steps = new List<StepModel>();
+        int totalSteps = 7;
+        var random = new Random(ovenNumber); // Seed with oven number for consistency
+        
+        for (int i = 1; i <= totalSteps; i++)
+        {
+            StepStatus status;
+            
+            // Generate steps based on oven status
+            if (ovenStatus == OvenStatus.Error)
+            {
+                // Oven có lỗi - một số step completed, 1 step error, còn lại inactive
+                int errorStep = random.Next(2, 5);
+                status = i < errorStep ? StepStatus.Completed : 
+                        i == errorStep ? StepStatus.Error : 
+                        StepStatus.Inactive;
+            }
+            else if (ovenStatus == OvenStatus.Running)
+            {
+                // Oven đang chạy - một số completed, 1 active, còn lại inactive
+                int activeStep = random.Next(3, 6);
+                status = i < activeStep ? StepStatus.Completed : 
+                        i == activeStep ? StepStatus.Active : 
+                        StepStatus.Inactive;
+            }
+            else // Stopped
+            {
+                // Oven dừng - tất cả inactive hoặc một vài completed
+                int completedSteps = random.Next(0, 4);
+                status = i <= completedSteps ? StepStatus.Completed : StepStatus.Inactive;
+            }
+            
+            // Random time ranges
+            var baseTime = DateTime.Now.AddHours(-5);
+            var fromDate = baseTime.AddMinutes((i - 1) * 30 + random.Next(0, 10));
+            var toDate = fromDate.AddMinutes(random.Next(20, 45));
+            
+            steps.Add(new StepModel
+            {
+                Name = $"REVO-STEP-{i}",
+                Status = status,
+                FromDate = fromDate,
+                ToDate = toDate
+            });
+        }
+        
+        return steps;
+    }
+
+    private string GetStepClass(StepStatus status) => status switch
+    {
+        StepStatus.Active => "step-active",
+        StepStatus.Completed => "step-completed",
+        StepStatus.Error => "step-error",
+        _ => "step-inactive"
+    };
+
+    private string GetCardStatusClass(OvenStatus status) => status switch
+    {
+        OvenStatus.Running => "card-status-running",
+        OvenStatus.Error => "card-status-error",
+        OvenStatus.Stopped => "card-status-stopped",
+        _ => ""
+    };
+
+    private string GetNoteColorClass(NoteColor color) => color switch
+    {
+        NoteColor.Green => "note-green",
+        NoteColor.Red => "note-red",
+        NoteColor.Gray => "note-gray",
+        _ => ""
+    };
+
+    public class OvenDataModel
+    {
+        public int OvenNumber { get; set; }
+        public string Part { get; set; } = string.Empty;
+        public string Rev { get; set; } = string.Empty;
+        public string ColorCode { get; set; } = string.Empty;
+        public string Mandrel { get; set; } = string.Empty;
+        public string MandrelSize { get; set; } = string.Empty;
+        public OvenStatus Status { get; set; }
+        public NoteColor NoteColor { get; set; }
+        public List<StepModel> Steps { get; set; } = new();
+    }
+
+    public class StepModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public StepStatus Status { get; set; }
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+    }
+
+    public enum StepStatus
+    {
+        Inactive,
+        Active,
+        Completed,
+        Error
+    }
+
+    public enum OvenStatus
+    {
+        Stopped,
+        Running,
+        Error
+    }
+
+    public enum ViewMode
+    {
+        Compact,
+        Full
+    }
+
+    public enum NoteColor
+    {
+        Green,
+        Red,
+        Gray
+    }
+}

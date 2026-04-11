@@ -23,6 +23,9 @@ var config = builder.Configuration;
 //GlobalVariable.ChartRefreshInterval = int.TryParse(config["AppSettings:ChartRefreshInterval"].ToString(), out value) ? value : 1000;
 //GlobalVariable.ChartPointNum = int.TryParse(config["AppSettings:ChartPointNum"].ToString(), out value) ? value : 10;
 
+GlobalVariable.RevoRefreshInterval = int.TryParse(config["AppSettings:RevoRefreshInterval"], out int revoInterval) ? revoInterval : 10000;
+GlobalVariable.RealtimeTrendInterval = int.TryParse(config["AppSettings:RealtimeTrendInterval"], out int trendInterval) ? trendInterval : 1000;
+
 
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AutoRegisterInterfaces<IApiService>();
@@ -107,4 +110,12 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 //});
 #endregion
 
-await builder.Build().RunAsync();
+var app = builder.Build();
+
+var culture = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+culture.NumberFormat.NumberDecimalSeparator = ".";
+culture.NumberFormat.NumberGroupSeparator = ",";
+CultureInfo.DefaultThreadCurrentCulture = culture;
+CultureInfo.DefaultThreadCurrentUICulture = culture;
+
+await app.RunAsync();

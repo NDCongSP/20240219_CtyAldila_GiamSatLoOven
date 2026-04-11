@@ -1,0 +1,1234 @@
+{
+  "ItemType": 0,
+  "ServerAddress": "192.168.1.100",
+  "Port": 8800,
+  "CommunicationMode": 0,
+  "RefreshRate": 100,
+  "CreatedDate": "2026-03-26T18:27:25.8628056+07:00",
+  "Username": null,
+  "Password": null,
+  "Childs": [
+    {
+      "ItemType": 1,
+      "Name": "Local Station",
+      "Path": "Local Station",
+      "Description": null,
+      "DisplayInfo": null,
+      "Error": null,
+      "ConnectionStatus": 1,
+      "Childs": [
+        {
+          "ItemType": 3,
+          "Name": "Channel_Auto_Rolling_1",
+          "Path": "Local Station/Channel_Auto_Rolling_1",
+          "Description": null,
+          "DisplayInfo": "ModbusTCP - 192.168.1.100:502",
+          "Error": null,
+          "ConnectionStatus": 0,
+          "Childs": [
+            {
+              "ItemType": 4,
+              "Name": "Device1",
+              "Path": "Local Station/Channel_Auto_Rolling_1/Device1",
+              "Description": null,
+              "DisplayInfo": "UnitId - 1",
+              "Error": null,
+              "ConnectionStatus": 0,
+              "Childs": [
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Code",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Part_Code",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Recipe_Settings",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Recipe_Settings",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Step_Run",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Step_Run",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400003"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep1",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/TimeRunStep1",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400004"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep2",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/TimeRunStep2",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400005"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep3",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/TimeRunStep3",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400006"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep4",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/TimeRunStep4",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400007"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep5",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/TimeRunStep5",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400008"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep6",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/TimeRunStep6",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400009"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep7",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/TimeRunStep7",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400010"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep8",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/TimeRunStep8",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep9",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/TimeRunStep9",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep10",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/TimeRunStep10",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep11",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/TimeRunStep11",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400014"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep12",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/TimeRunStep12",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400015"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep13",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/TimeRunStep13",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400016"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep14",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/TimeRunStep14",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400017"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep15",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/TimeRunStep15",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400018"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name1",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Part_Name1",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400019"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name2",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Part_Name2",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400020"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name3",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Part_Name3",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400021"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name4",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Part_Name4",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400022"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name5",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Part_Name5",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400023"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name6",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Part_Name6",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400024"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name7",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Part_Name7",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400025"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name8",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Part_Name8",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400026"
+                  }
+                }
+              ],
+              "Properties": {
+                "UnitId": "1",
+                "Timeout": "1000",
+                "TryReadWriteTimes": "3",
+                "ReadMode": "Block",
+                "InputContactReadBlockSettings": "[]",
+                "OutputCoilsReadBlockSettings": "[]",
+                "InputRegisterReadBlockSettings": "[]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400026\"\r\n  }\r\n]",
+                "MaxWritesCount": "10"
+              }
+            }
+          ],
+          "Properties": {
+            "IpAddress": "192.168.1.100",
+            "Port": "502",
+            "DelayBetweenPool": "5",
+            "ScanRate": "100"
+          }
+        },
+        {
+          "ItemType": 3,
+          "Name": "Channel_Auto_Rolling_2",
+          "Path": "Local Station/Channel_Auto_Rolling_2",
+          "Description": null,
+          "DisplayInfo": "ModbusTCP - 192.168.11.12:502",
+          "Error": null,
+          "ConnectionStatus": 0,
+          "Childs": [
+            {
+              "ItemType": 4,
+              "Name": "Device1",
+              "Path": "Local Station/Channel_Auto_Rolling_2/Device1",
+              "Description": null,
+              "DisplayInfo": "UnitId - 1",
+              "Error": null,
+              "ConnectionStatus": 0,
+              "Childs": [
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Code",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Part_Code",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Recipe_Settings",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Recipe_Settings",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Step_Run",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Step_Run",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400003"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep1",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/TimeRunStep1",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400004"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep2",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/TimeRunStep2",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400005"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep3",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/TimeRunStep3",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400006"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep4",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/TimeRunStep4",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400007"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep5",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/TimeRunStep5",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400008"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep6",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/TimeRunStep6",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400009"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep7",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/TimeRunStep7",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400010"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep8",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/TimeRunStep8",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep9",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/TimeRunStep9",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep10",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/TimeRunStep10",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep11",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/TimeRunStep11",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400014"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep12",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/TimeRunStep12",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400015"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep13",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/TimeRunStep13",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400016"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep14",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/TimeRunStep14",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400017"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep15",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/TimeRunStep15",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400018"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name1",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Part_Name1",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400019"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name2",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Part_Name2",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400020"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name3",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Part_Name3",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400021"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name4",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Part_Name4",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400022"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name5",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Part_Name5",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400023"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name6",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Part_Name6",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400024"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name7",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Part_Name7",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400025"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name8",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Part_Name8",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400026"
+                  }
+                }
+              ],
+              "Properties": {
+                "UnitId": "1",
+                "Timeout": "1000",
+                "TryReadWriteTimes": "3",
+                "ReadMode": "Block",
+                "InputContactReadBlockSettings": "[]",
+                "OutputCoilsReadBlockSettings": "[]",
+                "InputRegisterReadBlockSettings": "[]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400026\"\r\n  }\r\n]",
+                "MaxWritesCount": "10"
+              }
+            }
+          ],
+          "Properties": {
+            "IpAddress": "192.168.11.12",
+            "Port": "502",
+            "DelayBetweenPool": "5",
+            "ScanRate": "100"
+          }
+        },
+        {
+          "ItemType": 3,
+          "Name": "Channel_Auto_Rolling_3",
+          "Path": "Local Station/Channel_Auto_Rolling_3",
+          "Description": null,
+          "DisplayInfo": "ModbusTCP - 192.168.11.13:502",
+          "Error": null,
+          "ConnectionStatus": 0,
+          "Childs": [
+            {
+              "ItemType": 4,
+              "Name": "Device1",
+              "Path": "Local Station/Channel_Auto_Rolling_3/Device1",
+              "Description": null,
+              "DisplayInfo": "UnitId - 1",
+              "Error": null,
+              "ConnectionStatus": 0,
+              "Childs": [
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Code",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Part_Code",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Recipe_Settings",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Recipe_Settings",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Step_Run",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Step_Run",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400003"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep1",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/TimeRunStep1",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400004"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep2",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/TimeRunStep2",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400005"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep3",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/TimeRunStep3",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400006"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep4",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/TimeRunStep4",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400007"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep5",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/TimeRunStep5",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400008"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep6",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/TimeRunStep6",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400009"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep7",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/TimeRunStep7",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400010"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep8",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/TimeRunStep8",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep9",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/TimeRunStep9",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep10",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/TimeRunStep10",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep11",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/TimeRunStep11",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400014"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep12",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/TimeRunStep12",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400015"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep13",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/TimeRunStep13",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400016"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep14",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/TimeRunStep14",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400017"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TimeRunStep15",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/TimeRunStep15",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400018"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name1",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Part_Name1",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400019"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name2",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Part_Name2",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400020"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name3",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Part_Name3",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400021"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name4",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Part_Name4",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400022"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name5",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Part_Name5",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400023"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name6",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Part_Name6",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400024"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name7",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Part_Name7",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400025"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Part_Name8",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Part_Name8",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400026"
+                  }
+                }
+              ],
+              "Properties": {
+                "UnitId": "1",
+                "Timeout": "1000",
+                "TryReadWriteTimes": "3",
+                "ReadMode": "Block",
+                "InputContactReadBlockSettings": "[]",
+                "OutputCoilsReadBlockSettings": "[]",
+                "InputRegisterReadBlockSettings": "[]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400026\"\r\n  }\r\n]",
+                "MaxWritesCount": "10"
+              }
+            }
+          ],
+          "Properties": {
+            "IpAddress": "192.168.11.13",
+            "Port": "502",
+            "DelayBetweenPool": "5",
+            "ScanRate": "100"
+          }
+        }
+      ],
+      "Properties": {}
+    }
+  ],
+  "Properties": {}
+}
