@@ -8,7 +8,7 @@
 
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 
-		<PackageReference Include="System.Text.Json" Version="7.0.4" />
+		<PackageReference Include="System.Text.Json" Version="10.0.5" />
 
 	</ItemGroup>
 
@@ -51,10 +51,8 @@
 
 	<Target Name="NSwag" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">
 		<Message Text="NSwag exe: $(NSwagExe_Net70)" Importance="high" />
-		<Exec WorkingDirectory="$(ProjectDir)\ApiClient"
-			  EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development"
+		<Exec WorkingDirectory="$(ProjectDir)\ApiClient" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" 
 			  Command="$(NSwagExe_Net70) run nswag.json /variables:Configuration=$(Configuration)" />
 	</Target>
-
 
 </Project>

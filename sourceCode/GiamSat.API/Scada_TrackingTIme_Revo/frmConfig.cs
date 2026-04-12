@@ -1,4 +1,5 @@
-﻿using GiamSat.Models;
+﻿using EasyScada.Winforms.Controls;
+using GiamSat.Models;
 using Newtonsoft.Json;
 using System;
 using System.Data.Entity;
@@ -9,6 +10,7 @@ namespace Scada_TrackingTIme_Revo
 {
     public partial class frmConfig : Form
     {
+        public EasyDriverConnector EasyDriverConnector { get; set; }
 
         EnumSaveMode _saveMode;
 
@@ -96,6 +98,21 @@ namespace Scada_TrackingTIme_Revo
                     GlobalVariable.RevoConfig.SaveMode = _saveMode;
                 }
             }
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox3_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label14_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
