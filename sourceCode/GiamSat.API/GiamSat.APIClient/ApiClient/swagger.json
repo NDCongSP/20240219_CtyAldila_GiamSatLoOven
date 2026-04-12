@@ -4140,6 +4140,11 @@
           "toDate": {
             "type": "string",
             "format": "date-time"
+          },
+          "shaftScope": {
+            "type": "string",
+            "nullable": true,
+            "description": "total | finished"
           }
         },
         "additionalProperties": false

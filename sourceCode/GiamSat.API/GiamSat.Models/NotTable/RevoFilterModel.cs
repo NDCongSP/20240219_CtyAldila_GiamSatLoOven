@@ -14,5 +14,8 @@ namespace GiamSat.Models
         /// </summary>
         public DateTime FromDate { get; set; } = DateTime.Now;
         public DateTime ToDate { get; set; } = DateTime.Now;
+
+        /// <summary>Phạm vi shaft báo cáo: "total" (tất cả) hoặc "finished" (chỉ shaft đã hoàn thành — mọi dòng TotalTime lớn hơn 0).</summary>
+        public string? ShaftScope { get; set; } = "total";
     }
 }

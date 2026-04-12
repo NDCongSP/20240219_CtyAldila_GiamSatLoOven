@@ -263,7 +263,8 @@ GO
 CREATE FUNCTION dbo.fn_RevoReport_Step (
     @FromDate DATETIME2(7),
     @ToDate DATETIME2(7),
-    @RevoId INT NULL
+    @RevoId INT NULL,
+    @ShaftScope NVARCHAR(12) = N'total'
 )
 RETURNS TABLE
 AS
@@ -275,6 +276,14 @@ RETURN
         WHERE b.Started >= @FromDate
           AND b.Started < @ToDate
           AND (@RevoId IS NULL OR b.RevoId = @RevoId)
+    ),
+    shaft_finish AS (
+        SELECT f.ShaftNum
+        FROM filtered AS f
+        WHERE f.ShaftNum IS NOT NULL
+        GROUP BY f.ShaftNum
+        HAVING COUNT_BIG(*) > 0
+           AND COUNT_BIG(*) = COUNT_BIG(CASE WHEN ISNULL(f.TotalTime, 0) > 0 THEN 1 END)
     ),
     shaft_first AS (
         SELECT f.ShaftNum, MIN(f.Started) AS MinStarted
@@ -330,9 +339,14 @@ RETURN
         Stt = ROW_NUMBER() OVER (
             PARTITION BY ISNULL(sr.GlobalShaftNo, 0)
             ORDER BY b.Started
-        )
+        ),
+        IsShaftFinished = CAST(CASE WHEN b.ShaftNum IS NULL THEN NULL WHEN sf.ShaftNum IS NOT NULL THEN 1 ELSE 0 END AS BIT),
+        HighlightIncomplete = CAST(CASE
+            WHEN @ShaftScope = N'total' AND b.ShaftNum IS NOT NULL AND sf.ShaftNum IS NULL THEN 1 ELSE 0 END AS BIT)
     FROM filtered AS b
     LEFT JOIN shaft_rank AS sr ON b.ShaftNum = sr.ShaftNum
+    LEFT JOIN shaft_finish AS sf ON b.ShaftNum = sf.ShaftNum
+    WHERE @ShaftScope <> N'finished' OR b.ShaftNum IS NULL OR sf.ShaftNum IS NOT NULL
 );
 GO
 
@@ -343,7 +357,8 @@ GO
 CREATE FUNCTION dbo.fn_RevoReport_Shaft (
     @FromDate DATETIME2(7),
     @ToDate DATETIME2(7),
-    @RevoId INT NULL
+    @RevoId INT NULL,
+    @ShaftScope NVARCHAR(12) = N'total'
 )
 RETURNS TABLE
 AS
@@ -370,7 +385,10 @@ RETURN
             RevoName = MAX(CASE WHEN rn = 1 THEN b.RevoName END),
             Part = MAX(CASE WHEN rn = 1 THEN b.Part END),
             Work = MAX(CASE WHEN rn = 1 THEN b.Work END),
-            Mandrel = MAX(CASE WHEN rn = 1 THEN b.Mandrel END)
+            Mandrel = MAX(CASE WHEN rn = 1 THEN b.Mandrel END),
+            IsShaftFinished = CAST(CASE
+                WHEN COUNT_BIG(*) = COUNT_BIG(CASE WHEN ISNULL(b.TotalTime, 0) > 0 THEN 1 END) AND COUNT_BIG(*) > 0 THEN 1
+                ELSE 0 END AS BIT)
         FROM (
             SELECT *,
                 rn = ROW_NUMBER() OVER (PARTITION BY ShaftNum ORDER BY Started)
@@ -409,8 +427,11 @@ RETURN
             THEN dbo.fn_Revo_SecondsToHhMmSs(CAST(ROUND(o.TotalSeconds, 0) AS INT))
             ELSE N'00:00:00' END,
         o.StepCount,
-        o.HasAutoRolling AS IsAutoRollingShaft
+        o.HasAutoRolling AS IsAutoRollingShaft,
+        o.IsShaftFinished,
+        HighlightIncomplete = CAST(CASE WHEN @ShaftScope = N'total' AND o.IsShaftFinished = 0 THEN 1 ELSE 0 END AS BIT)
     FROM ordered AS o
+    WHERE @ShaftScope <> N'finished' OR o.IsShaftFinished = 1
 );
 GO
 
@@ -421,13 +442,29 @@ GO
 CREATE FUNCTION dbo.fn_RevoReport_Hour (
     @FromDate DATETIME2(7),
     @ToDate DATETIME2(7),
-    @RevoId INT NULL
+    @RevoId INT NULL,
+    @ShaftScope NVARCHAR(12) = N'total'
 )
 RETURNS TABLE
 AS
 RETURN
 (
-    WITH g AS (
+    WITH filtered AS (
+        SELECT b.*
+        FROM dbo.vw_RevoReport_Base AS b
+        WHERE b.Started >= @FromDate
+          AND b.Started < @ToDate
+          AND (@RevoId IS NULL OR b.RevoId = @RevoId)
+    ),
+    shaft_finish AS (
+        SELECT f.ShaftNum
+        FROM filtered AS f
+        WHERE f.ShaftNum IS NOT NULL
+        GROUP BY f.ShaftNum
+        HAVING COUNT_BIG(*) > 0
+           AND COUNT_BIG(*) = COUNT_BIG(CASE WHEN ISNULL(f.TotalTime, 0) > 0 THEN 1 END)
+    ),
+    g AS (
         SELECT
             b.HourBucket,
             b.IsAutoRolling,
@@ -436,10 +473,16 @@ RETURN
             b.StartedAt,
             b.EndedAt,
             b.Started
-        FROM dbo.vw_RevoReport_Base AS b
-        WHERE b.Started >= @FromDate
-          AND b.Started < @ToDate
-          AND (@RevoId IS NULL OR b.RevoId = @RevoId)
+        FROM filtered AS b
+        LEFT JOIN shaft_finish AS sf ON b.ShaftNum = sf.ShaftNum
+        WHERE @ShaftScope <> N'finished' OR b.ShaftNum IS NULL OR sf.ShaftNum IS NOT NULL
+    ),
+    hour_shaft_finished AS (
+        SELECT HourBucket, ShaftNum
+        FROM g
+        WHERE ShaftNum IS NOT NULL
+        GROUP BY HourBucket, ShaftNum
+        HAVING COUNT_BIG(*) = COUNT_BIG(CASE WHEN ISNULL(TotalTime, 0) > 0 THEN 1 END)
     ),
     agg AS (
         SELECT
@@ -461,6 +504,12 @@ RETURN
             FORMAT(DATEADD(HOUR, 1, a.HourBucket), N'HH'), N':00'
         ),
         a.ShaftCount,
+        ShaftCountFinishedInHour = ISNULL((
+            SELECT COUNT_BIG(DISTINCT h.ShaftNum) FROM hour_shaft_finished h WHERE h.HourBucket = a.HourBucket), 0),
+        IncompleteShaftCountInHour = a.ShaftCount - ISNULL((
+            SELECT COUNT_BIG(DISTINCT h.ShaftNum) FROM hour_shaft_finished h WHERE h.HourBucket = a.HourBucket), 0),
+        HighlightIncomplete = CAST(CASE WHEN @ShaftScope = N'total' AND a.ShaftCount > ISNULL((
+            SELECT COUNT_BIG(DISTINCT h.ShaftNum) FROM hour_shaft_finished h WHERE h.HourBucket = a.HourBucket), 0) THEN 1 ELSE 0 END AS BIT),
         StartedAt = CASE WHEN a.NonAutoCnt = 0 AND a.AutoCnt > 0 THEN NULL
             ELSE COALESCE(a.MinStartedNonAuto, a.MinStartedFallback) END,
         EndedAt = CASE WHEN a.NonAutoCnt = 0 AND a.AutoCnt > 0 THEN NULL
@@ -475,7 +524,7 @@ GO
 
 /*
   Tích hợp API / EF Core (gợi ý):
-  - SELECT * FROM dbo.fn_RevoReport_Step(@from, @to, @revoId);
-  - FromSqlRaw: "SELECT * FROM dbo.fn_RevoReport_Step({0},{1},{2})", ... dùng SqlParameter cho NULL RevoId.
+  - SELECT * FROM dbo.fn_RevoReport_Step(@from, @to, @revoId, @shaftScope);  @shaftScope = N'total' | N'finished'
+  - FromSqlRaw: "SELECT * FROM dbo.fn_RevoReport_Step({0},{1},{2},{3})", ... tham số 4: total/finished
   - Keyless entity: modelBuilder.Entity<RevoReportStepRowVm>().HasNoKey();
 */

@@ -54,15 +54,23 @@ namespace GiamSat.API
             return (model.FromDate, toExclusive, revoId);
         }
 
+        /// <summary>Chuẩn hóa tham số TVF: chỉ "total" hoặc "finished".</summary>
+        static string NormalizeShaftScope(string? scope)
+        {
+            var s = (scope ?? "total").Trim().ToLowerInvariant();
+            return s == "finished" ? "finished" : "total";
+        }
+
         public async Task<Result<List<RevoReportStepVm>>> GetReportStepView(RevoFilterModel model)
         {
             try
             {
                 var p = ResolveRevoReportRange(model);
+                var shaftScope = NormalizeShaftScope(model.ShaftScope);
                 var list = await _context.Set<RevoReportStepVm>()
                     .FromSqlRaw(
-                        "SELECT * FROM dbo.fn_RevoReport_Step({0}, {1}, {2})",
-                        p.from, p.toExclusive, p.revoId)
+                        "SELECT * FROM dbo.fn_RevoReport_Step({0}, {1}, {2}, {3})",
+                        p.from, p.toExclusive, p.revoId, shaftScope)
                     .AsNoTracking()
                     .ToListAsync();
                 return await Result<List<RevoReportStepVm>>.SuccessAsync(list);
@@ -78,10 +86,11 @@ namespace GiamSat.API
             try
             {
                 var p = ResolveRevoReportRange(model);
+                var shaftScope = NormalizeShaftScope(model.ShaftScope);
                 var list = await _context.Set<RevoReportShaftVm>()
                     .FromSqlRaw(
-                        "SELECT * FROM dbo.fn_RevoReport_Shaft({0}, {1}, {2})",
-                        p.from, p.toExclusive, p.revoId)
+                        "SELECT * FROM dbo.fn_RevoReport_Shaft({0}, {1}, {2}, {3})",
+                        p.from, p.toExclusive, p.revoId, shaftScope)
                     .AsNoTracking()
                     .ToListAsync();
                 return await Result<List<RevoReportShaftVm>>.SuccessAsync(list);
@@ -97,10 +106,11 @@ namespace GiamSat.API
             try
             {
                 var p = ResolveRevoReportRange(model);
+                var shaftScope = NormalizeShaftScope(model.ShaftScope);
                 var list = await _context.Set<RevoReportHourVm>()
                     .FromSqlRaw(
-                        "SELECT * FROM dbo.fn_RevoReport_Hour({0}, {1}, {2})",
-                        p.from, p.toExclusive, p.revoId)
+                        "SELECT * FROM dbo.fn_RevoReport_Hour({0}, {1}, {2}, {3})",
+                        p.from, p.toExclusive, p.revoId, shaftScope)
                     .AsNoTracking()
                     .ToListAsync();
                 return await Result<List<RevoReportHourVm>>.SuccessAsync(list);
@@ -115,23 +125,34 @@ namespace GiamSat.API
         {
             try
             {
-                var query = _context.FT09_RevoDatalogs.AsQueryable();
+                var p = ResolveRevoReportRange(model);
+                var shaftScope = NormalizeShaftScope(model.ShaftScope);
 
-                // Filter by date range based on StartedAt and EndedAt
-                if (model.FromDate != null && model.ToDate != null)
+                // Đồng bộ logic với các TVF báo cáo:
+                // - thời gian theo Started = COALESCE(StartedAt, CreatedAt)
+                // - finished: chỉ giữ shaft mà mọi dòng đều có TotalTime > 0
+                var query = _context.FT09_RevoDatalogs
+                    .AsQueryable()
+                    .Where(x => (x.StartedAt ?? x.CreatedAt).HasValue)
+                    .Where(x => (x.StartedAt ?? x.CreatedAt) >= p.from && (x.StartedAt ?? x.CreatedAt) < p.toExclusive);
+
+                if (p.revoId.HasValue)
                 {
-                    query = query.Where(x => 
-                        (x.StartedAt.HasValue && x.StartedAt.Value >= model.FromDate && x.StartedAt.Value <= model.ToDate) ||
-                        (x.EndedAt.HasValue && x.EndedAt.Value >= model.FromDate && x.EndedAt.Value <= model.ToDate) ||
-                        (x.StartedAt.HasValue && x.EndedAt.HasValue && 
-                         x.StartedAt.Value <= model.ToDate && x.EndedAt.Value >= model.FromDate)
-                    );
+                    query = query.Where(x => x.RevoId == p.revoId.Value);
                 }
 
-                // Filter by RevoId if specified
-                if (!model.GetAll && model.RevoId.HasValue)
+                if (shaftScope == "finished")
                 {
-                    query = query.Where(x => x.RevoId == model.RevoId);
+                    var finishedShafts = _context.FT09_RevoDatalogs
+                        .Where(x => (x.StartedAt ?? x.CreatedAt).HasValue)
+                        .Where(x => (x.StartedAt ?? x.CreatedAt) >= p.from && (x.StartedAt ?? x.CreatedAt) < p.toExclusive)
+                        .Where(x => !p.revoId.HasValue || x.RevoId == p.revoId.Value)
+                        .Where(x => x.ShaftNum.HasValue)
+                        .GroupBy(x => x.ShaftNum!.Value)
+                        .Where(g => g.Count() > 0 && g.Count(r => (r.TotalTime ?? 0) > 0) == g.Count())
+                        .Select(g => g.Key);
+
+                    query = query.Where(x => !x.ShaftNum.HasValue || finishedShafts.Contains(x.ShaftNum.Value));
                 }
 
                 var result = await query

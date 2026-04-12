@@ -486,6 +486,14 @@ a,
     min-height: 40px !important;
 }
 
+/* REVO báo cáo: shaft chưa hoàn thành — Radzen tô nền lên td (.rz-cell-data), cần !important */
+table.rz-grid-table tbody tr.revo-shaft-warn-row > td,
+table.rz-grid-table tbody tr.revo-shaft-warn-row > td .rz-cell-data,
+.rz-datatable tbody tr.revo-shaft-warn-row > td,
+.rz-datatable tbody tr.revo-shaft-warn-row > td .rz-cell-data {
+    background-color: #FFF3E0 !important;
+}
+
 /* Print styles */
 @media print {
 
