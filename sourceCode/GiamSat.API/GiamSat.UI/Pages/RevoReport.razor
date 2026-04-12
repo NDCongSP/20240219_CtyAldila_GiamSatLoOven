@@ -44,6 +44,17 @@
                                         DateFormat="dd/MM/yyyy HH:mm:ss"
                                         Style="width: 100%;" />
                     </RadzenStack>
+
+                    @* Phạm vi shaft: RadzenSwitch (dự án dùng Radzen Grid, không phải Mud) *@
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.75rem" Style="min-width: 220px;">
+                        <RadzenText TextStyle="TextStyle.Body2" Style="white-space: nowrap;">Phạm vi shaft</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Body1" Style="font-weight: 600; min-width: 7.5rem;">
+                            @(_shaftFinishedSwitch ? "Đã hoàn thành" : "Tất cả")
+                        </RadzenText>
+                        @* @bind-Value + Change: đúng chuẩn Radzen; Value/ValueChanged thủ công dễ không kích hoạt / lệch trạng thái *@
+                        <RadzenSwitch @bind-Value="_shaftFinishedSwitch"
+                                      Change="@OnShaftScopeSwitchChange" />
+                    </RadzenStack>
                     
                     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
                         <RadzenSplitButton Icon="search" 
@@ -109,7 +120,13 @@
             else
             {
                 <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" AllowClose="false" class="rz-mb-3">
-                    Tổng số Shaft: <strong>@_shaftCount</strong> &nbsp;|&nbsp; Tổng số bản ghi: <strong>@_rawData.Count</strong>
+                    Phạm vi: <strong>@(_shaftFinishedSwitch ? "Đã hoàn thành" : "Tất cả")</strong>
+                    &nbsp;|&nbsp; Tổng số Shaft (theo phạm vi): <strong>@_shaftCount</strong>
+                    &nbsp;|&nbsp; Số bản ghi (theo phạm vi): <strong>@_scopeRecordCount</strong>
+                    @if (_shaftFinishedSwitch && _scopeRecordCount < _rawData.Count)
+                    {
+                        <span class="rz-text-secondary-color" style="font-size: 0.9em;">&nbsp;(trong kỳ có @_rawData.Count bản ghi FT09)</span>
+                    }
                 </RadzenAlert>
 
                 @if (_reportMode == RevoReportMode.ByStep)
@@ -122,6 +139,7 @@
                                     AllowSorting="true"
                                     AllowGrouping="true"
                                     GroupRowRender="@OnGroupRowRender"
+                                    RowRender="@OnStepRowRender"
                                     Render="@OnStepGridRender"
                                     PagerHorizontalAlign="HorizontalAlign.Right"
                                     ShowPagingSummary="true"
@@ -157,6 +175,7 @@
                                     AllowPaging="true"
                                     PageSize="50"
                                     AllowSorting="true"
+                                    RowRender="@OnShaftRowRender"
                                     PagerHorizontalAlign="HorizontalAlign.Right"
                                     ShowPagingSummary="true"
                                     PagingSummaryFormat="Hiển thị {0} - {1} / {2} mục">
@@ -189,12 +208,15 @@
                                     AllowPaging="true"
                                     PageSize="50"
                                     AllowSorting="true"
+                                    RowRender="@OnHourRowRender"
                                     PagerHorizontalAlign="HorizontalAlign.Right"
                                     ShowPagingSummary="true"
                                     PagingSummaryFormat="Hiển thị {0} - {1} / {2} mục">
                         <Columns>
                             <RadzenDataGridColumn TItem="RevoHourRow" Property="HourRange" Title="Giờ" Width="160px" />
-                            <RadzenDataGridColumn TItem="RevoHourRow" Property="ShaftCount" Title="Tổng số Shaft" Width="130px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn TItem="RevoHourRow" Property="ShaftCount" Title="Tổng số Shaft" Width="110px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn TItem="RevoHourRow" Property="ShaftCountFinishedInHour" Title="Hoàn thành (trong giờ)" Width="130px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn TItem="RevoHourRow" Property="IncompleteShaftCountInHour" Title="Chưa xong (giờ)" Width="120px" TextAlign="TextAlign.Center" />
                             <RadzenDataGridColumn TItem="RevoHourRow" Property="StartedAt" Title="Bắt đầu" Width="180px">
                                 <Template Context="data">
                                     @(data.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A")

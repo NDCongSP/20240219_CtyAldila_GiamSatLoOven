@@ -9623,6 +9623,13 @@ namespace GiamSat.APIClient
         [System.Text.Json.Serialization.JsonPropertyName("toDate")]
         public System.DateTime ToDate { get; set; } = default!;
 
+        /// <summary>
+        /// total | finished
+        /// </summary>
+
+        [System.Text.Json.Serialization.JsonPropertyName("shaftScope")]
+        public string? ShaftScope { get; set; } = default!;
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]

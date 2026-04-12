@@ -12,5 +12,9 @@ namespace GiamSat.Models
         public DateTime? EndedAt { get; set; }
         public double TotalTimeSeconds { get; set; }
         public string? TotalTimeText { get; set; }
+        /* COUNT_BIG trong SQL trả bigint — dùng long tránh lỗi cast Int64 → Int32 */
+        public long ShaftCountFinishedInHour { get; set; }
+        public long IncompleteShaftCountInHour { get; set; }
+        public bool HighlightIncomplete { get; set; }
     }
 }
