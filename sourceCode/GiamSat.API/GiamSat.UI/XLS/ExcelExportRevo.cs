@@ -374,6 +374,11 @@ namespace GiamSat.UI
             ws.Cell(currentRow, 7).Value = "Thời lượng";
             StyleHeader(ws, currentRow, hourCols);
 
+            var firstHourByShaft = normalized
+                .Where(x => x.Row.ShaftNum.HasValue)
+                .GroupBy(x => x.Row.ShaftNum!.Value)
+                .ToDictionary(h => h.Key, h => h.Min(x => x.Hour));
+
             var hourRows = normalized
                 .GroupBy(x => x.Hour)
                 .Select(g =>
@@ -392,17 +397,20 @@ namespace GiamSat.UI
                     var shaftCnt = g.Select(x => x.Row.ShaftNum).Where(x => x.HasValue).Select(x => x!.Value).Distinct().Count();
                     var distinctInHour = g.Where(x => x.Row.ShaftNum.HasValue).Select(x => x.Row.ShaftNum!.Value).Distinct().ToList();
                     var finishedInHour = distinctInHour.Count(sn =>
-                        g.Where(x => x.Row.ShaftNum == sn).All(x => (x.Row.TotalTime ?? 0) > 0));
+                        finishedShafts.Contains(sn)
+                        && firstHourByShaft.TryGetValue(sn, out var fh)
+                        && fh == g.Key);
+                    var incompleteInHour = distinctInHour.Count(sn => !finishedShafts.Contains(sn));
                     return new
                     {
                         HourRange = $"{g.Key:dd/MM/yyyy HH}:00-{g.Key.AddHours(1):HH}:00",
                         ShaftCount = shaftCnt,
                         FinishedInHour = finishedInHour,
-                        Incomplete = shaftCnt - finishedInHour,
+                        Incomplete = incompleteInHour,
                         StartedAt = start,
                         EndedAt = end,
                         TotalTime = totalTime,
-                        Warn = shaftScope == Pages.RevoReport.RevoShaftScopeKind.Total && finishedInHour < shaftCnt
+                        Warn = shaftScope == Pages.RevoReport.RevoShaftScopeKind.Total && incompleteInHour > 0
                     };
                 })
                 .OrderBy(x => x.StartedAt)

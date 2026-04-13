@@ -464,6 +464,16 @@ RETURN
         HAVING COUNT_BIG(*) > 0
            AND COUNT_BIG(*) = COUNT_BIG(CASE WHEN ISNULL(f.TotalTime, 0) > 0 THEN 1 END)
     ),
+    /* Hoàn thành shaft: chỉ gán 1 lần vào giờ bắt đầu (MIN(Started)), tránh đếm trùng khi các step
+       nằm ở hai khung giờ (StartedAt/EndedAt kéo dài qua giờ). Không tách logic auto rolling riêng. */
+    shaft_first_hour AS (
+        SELECT
+            f.ShaftNum,
+            FirstHourBucket = DATEADD(HOUR, DATEDIFF(HOUR, 0, MIN(f.Started)), 0)
+        FROM filtered AS f
+        WHERE f.ShaftNum IS NOT NULL
+        GROUP BY f.ShaftNum
+    ),
     g AS (
         SELECT
             b.HourBucket,
@@ -478,11 +488,9 @@ RETURN
         WHERE @ShaftScope <> N'finished' OR b.ShaftNum IS NULL OR sf.ShaftNum IS NOT NULL
     ),
     hour_shaft_finished AS (
-        SELECT HourBucket, ShaftNum
-        FROM g
-        WHERE ShaftNum IS NOT NULL
-        GROUP BY HourBucket, ShaftNum
-        HAVING COUNT_BIG(*) = COUNT_BIG(CASE WHEN ISNULL(TotalTime, 0) > 0 THEN 1 END)
+        SELECT s.FirstHourBucket AS HourBucket, s.ShaftNum
+        FROM shaft_first_hour AS s
+        INNER JOIN shaft_finish AS sf ON sf.ShaftNum = s.ShaftNum
     ),
     agg AS (
         SELECT
@@ -506,10 +514,21 @@ RETURN
         a.ShaftCount,
         ShaftCountFinishedInHour = ISNULL((
             SELECT COUNT_BIG(DISTINCT h.ShaftNum) FROM hour_shaft_finished h WHERE h.HourBucket = a.HourBucket), 0),
-        IncompleteShaftCountInHour = a.ShaftCount - ISNULL((
-            SELECT COUNT_BIG(DISTINCT h.ShaftNum) FROM hour_shaft_finished h WHERE h.HourBucket = a.HourBucket), 0),
-        HighlightIncomplete = CAST(CASE WHEN @ShaftScope = N'total' AND a.ShaftCount > ISNULL((
-            SELECT COUNT_BIG(DISTINCT h.ShaftNum) FROM hour_shaft_finished h WHERE h.HourBucket = a.HourBucket), 0) THEN 1 ELSE 0 END AS BIT),
+        IncompleteShaftCountInHour = ISNULL((
+            SELECT COUNT_BIG(DISTINCT x.ShaftNum)
+            FROM g x
+            WHERE x.HourBucket = a.HourBucket
+              AND x.ShaftNum IS NOT NULL
+              AND NOT EXISTS (SELECT 1 FROM shaft_finish sf WHERE sf.ShaftNum = x.ShaftNum)
+        ), 0),
+        HighlightIncomplete = CAST(CASE
+            WHEN @ShaftScope = N'total' AND EXISTS (
+                SELECT 1
+                FROM g x
+                WHERE x.HourBucket = a.HourBucket
+                  AND x.ShaftNum IS NOT NULL
+                  AND NOT EXISTS (SELECT 1 FROM shaft_finish sf WHERE sf.ShaftNum = x.ShaftNum)
+            ) THEN 1 ELSE 0 END AS BIT),
         StartedAt = CASE WHEN a.NonAutoCnt = 0 AND a.AutoCnt > 0 THEN NULL
             ELSE COALESCE(a.MinStartedNonAuto, a.MinStartedFallback) END,
         EndedAt = CASE WHEN a.NonAutoCnt = 0 AND a.AutoCnt > 0 THEN NULL
