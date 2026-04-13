@@ -729,7 +729,12 @@ namespace GiamSat.UI.Pages
                 });
             }
 
-            // By hour
+            // By hour — hoàn thành shaft chỉ tính 1 lần tại giờ bắt đầu (MIN Started), khớp fn_RevoReport_Hour
+            var firstHourByShaft = normalized
+                .Where(x => x.Row.ShaftNum.HasValue)
+                .GroupBy(x => x.Row.ShaftNum!.Value)
+                .ToDictionary(h => h.Key, h => h.Min(x => x.Hour));
+
             _hourRows = normalized
                 .GroupBy(x => x.Hour)
                 .Select(g =>
@@ -753,7 +758,10 @@ namespace GiamSat.UI.Pages
                     var shaftCount = g.Select(x => x.Row.ShaftNum).Where(x => x.HasValue).Select(x => x!.Value).Distinct().Count();
                     var distinctInHour = g.Where(x => x.Row.ShaftNum.HasValue).Select(x => x.Row.ShaftNum!.Value).Distinct().ToList();
                     var finishedInHour = distinctInHour.Count(sn =>
-                        g.Where(x => x.Row.ShaftNum == sn).All(x => (x.Row.TotalTime ?? 0) > 0));
+                        finishedShafts.Contains(sn)
+                        && firstHourByShaft.TryGetValue(sn, out var fh)
+                        && fh == g.Key);
+                    var incompleteInHour = distinctInHour.Count(sn => !finishedShafts.Contains(sn));
 
                     return new RevoHourRow
                     {
@@ -761,11 +769,11 @@ namespace GiamSat.UI.Pages
                         HourRange = $"{g.Key:dd/MM/yyyy HH}:00-{g.Key.AddHours(1):HH}:00",
                         ShaftCount = shaftCount,
                         ShaftCountFinishedInHour = finishedInHour,
-                        IncompleteShaftCountInHour = shaftCount - finishedInHour,
+                        IncompleteShaftCountInHour = incompleteInHour,
                         StartedAt = start,
                         EndedAt = end,
                         TotalTime = totalTime,
-                        HighlightIncomplete = _shaftScope == RevoShaftScopeKind.Total && finishedInHour < shaftCount
+                        HighlightIncomplete = _shaftScope == RevoShaftScopeKind.Total && incompleteInHour > 0
                     };
                 })
                 .OrderBy(x => x.StartedAt ?? DateTime.MinValue)
