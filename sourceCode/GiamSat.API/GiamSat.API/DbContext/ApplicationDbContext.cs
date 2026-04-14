@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace GiamSat.API
 {
@@ -27,10 +28,35 @@ namespace GiamSat.API
             builder.Entity<FT07_RevoConfig>();
             builder.Entity<FT08_RevoRealtime>();
             builder.Entity<FT09_RevoDatalog>();
+            builder.Entity<FT10_TemperatureConfig>();
+            builder.Entity<FT11_TemperatureRealtime>();
+            builder.Entity<FT12_TemperatureDatalog>();
+            builder.Entity<FT13_TemperatureAlarmLog>();
+
             builder.Entity<RevoGetTotalShaftCountDto>().HasNoKey().ToView(null);
             builder.Entity<RevoReportStepVm>().HasNoKey();
             builder.Entity<RevoReportShaftVm>().HasNoKey();
             builder.Entity<RevoReportHourVm>().HasNoKey();
+
+            // Cấu hình cho RevoReportHourVm
+            builder.Entity<RevoGetTotalShaftCountDto>(entity =>
+            {
+                entity.HasNoKey(); // View thường không có Primary Key
+                entity.ToView("RevoReportHourVm"); // Tên chính xác của View trong SQL
+            });
+
+            // Tương tự cho các View khác
+            builder.Entity<RevoReportShaftVm>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToView("RevoReportShaftVm");
+            });
+
+            builder.Entity<RevoReportStepVm>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToView("RevoReportStepVm");
+            });
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -51,6 +77,10 @@ namespace GiamSat.API
         public DbSet<GiamSat.Models.FT08_RevoRealtime> FT08_RevoRealtimes { get; set; }
         public DbSet<GiamSat.Models.FT09_RevoDatalog> FT09_RevoDatalogs { get; set; }
         public DbSet<GiamSat.Models.RevoGetTotalShaftCountDto> RevoTotalShaftCounts { get; set; }
+        public DbSet<GiamSat.Models.FT10_TemperatureConfig> FT10_TemperatureConfigs { get; set; }
+        public DbSet<GiamSat.Models.FT11_TemperatureRealtime> FT11_TemperatureRealtimes { get; set; }
+        public DbSet<GiamSat.Models.FT12_TemperatureDatalog> FT12_TemperatureDatalogs { get; set; }
+        public DbSet<GiamSat.Models.FT13_TemperatureAlarmLog> FT13_TemperatureAlarmLogs { get; set; }
 
         //private static DbContextOptions<ApplicationDbContext> GetOptions(string connection)
         //{
