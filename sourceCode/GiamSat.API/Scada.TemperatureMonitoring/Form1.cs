@@ -33,19 +33,19 @@ namespace Scada.TemperatureMonitoring
         {
             //dọc bảng cònig lên để lấy thông tin kết nối đến easy driver server    
 
-            #region Khởi tạo easy drirver connector
-            _easyDriverConnector = new EasyDriverConnector();
-            _easyDriverConnector.ConnectionStatusChaged += _easyDriverConnector_ConnectionStatusChaged;
-            _easyDriverConnector.BeginInit();
-            _easyDriverConnector.EndInit();
-            //_easyStatus = _easyDriverConnector.ConnectionStatus;
+            //#region Khởi tạo easy drirver connector
+            //_easyDriverConnector = new EasyDriverConnector();
+            //_easyDriverConnector.ConnectionStatusChaged += _easyDriverConnector_ConnectionStatusChaged;
+            //_easyDriverConnector.BeginInit();
+            //_easyDriverConnector.EndInit();
+            ////_easyStatus = _easyDriverConnector.ConnectionStatus;
 
-            _easyDriverConnector.Started += _easyDriverConnector_Started;
-            if (_easyDriverConnector.IsStarted)
-            {
-                _easyDriverConnector_Started(null, null);
-            }
-            #endregion
+            //_easyDriverConnector.Started += _easyDriverConnector_Started;
+            //if (_easyDriverConnector.IsStarted)
+            //{
+            //    _easyDriverConnector_Started(null, null);
+            //}
+            //#endregion
         }
     }
 }
