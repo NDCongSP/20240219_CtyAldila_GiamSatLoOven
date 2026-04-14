@@ -25,5 +25,7 @@ namespace GiamSat.Models
         public int IsAutoRolling { get; set; }
         public DateTime Started { get; set; }
         public long Stt { get; set; }
+        public bool? IsShaftFinished { get; set; }
+        public bool HighlightIncomplete { get; set; }
     }
 }

@@ -2394,11 +2394,9 @@
           {
             "name": "revoId",
             "in": "query",
-            "required": false,
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "nullable": true
+              "format": "int32"
             }
           }
         ],
@@ -2468,6 +2466,153 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/FT09_RevoDatalogListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT09/GetReportStepView": {
+      "post": {
+        "tags": [
+          "FT09"
+        ],
+        "operationId": "FT09_GetReportStepView",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevoFilterModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevoFilterModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevoFilterModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevoReportStepVmListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevoReportStepVmListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevoReportStepVmListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT09/GetReportShaftView": {
+      "post": {
+        "tags": [
+          "FT09"
+        ],
+        "operationId": "FT09_GetReportShaftView",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevoFilterModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevoFilterModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevoFilterModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevoReportShaftVmListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevoReportShaftVmListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevoReportShaftVmListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT09/GetReportHourView": {
+      "post": {
+        "tags": [
+          "FT09"
+        ],
+        "operationId": "FT09_GetReportHourView",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevoFilterModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevoFilterModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevoFilterModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevoReportHourVmListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevoReportHourVmListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevoReportHourVmListResult"
                 }
               }
             }
@@ -4140,6 +4285,10 @@
           "toDate": {
             "type": "string",
             "format": "date-time"
+          },
+          "shaftScope": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -4170,25 +4319,6 @@
         },
         "additionalProperties": false
       },
-      "RevoGetTotalShaftCountDtoResult": {
-        "type": "object",
-        "properties": {
-          "messages": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "succeeded": {
-            "type": "boolean"
-          },
-          "data": {
-            "$ref": "#/components/schemas/RevoGetTotalShaftCountDto"
-          }
-        },
-        "additionalProperties": false
-      },
       "RevoGetTotalShaftCountDtoListResult": {
         "type": "object",
         "properties": {
@@ -4206,6 +4336,298 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/RevoGetTotalShaftCountDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RevoReportHourVm": {
+        "type": "object",
+        "properties": {
+          "hour": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hourRange": {
+            "type": "string",
+            "nullable": true
+          },
+          "shaftCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "endedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "totalTimeSeconds": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalTimeText": {
+            "type": "string",
+            "nullable": true
+          },
+          "shaftCountFinishedInHour": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "incompleteShaftCountInHour": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "highlightIncomplete": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RevoReportHourVmListResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RevoReportHourVm"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RevoReportShaftVm": {
+        "type": "object",
+        "properties": {
+          "shaftLabel": {
+            "type": "string",
+            "nullable": true
+          },
+          "revoId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "revoName": {
+            "type": "string",
+            "nullable": true
+          },
+          "hour": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hourBucket": {
+            "type": "string",
+            "nullable": true
+          },
+          "shaftNo": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "stt": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "shaftNum": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "part": {
+            "type": "string",
+            "nullable": true
+          },
+          "work": {
+            "type": "string",
+            "nullable": true
+          },
+          "mandrel": {
+            "type": "string",
+            "nullable": true
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "endedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "totalTimeSeconds": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalTimeText": {
+            "type": "string",
+            "nullable": true
+          },
+          "stepCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isAutoRollingShaft": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isShaftFinished": {
+            "type": "boolean"
+          },
+          "highlightIncomplete": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RevoReportShaftVmListResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RevoReportShaftVm"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RevoReportStepVm": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "revoId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "revoName": {
+            "type": "string",
+            "nullable": true
+          },
+          "hour": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hourBucketDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "shaftNo": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "shaftKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "shaftNum": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "part": {
+            "type": "string",
+            "nullable": true
+          },
+          "work": {
+            "type": "string",
+            "nullable": true
+          },
+          "rev": {
+            "type": "string",
+            "nullable": true
+          },
+          "mandrel": {
+            "type": "string",
+            "nullable": true
+          },
+          "stepDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "displayStartedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "displayEndedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "durationText": {
+            "type": "string",
+            "nullable": true
+          },
+          "isAutoRolling": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "started": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stt": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isShaftFinished": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "highlightIncomplete": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RevoReportStepVmListResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RevoReportStepVm"
             },
             "nullable": true
           }
@@ -4332,7 +4754,10 @@
         "additionalProperties": false
       },
       "SortDirection": {
-        "enum": [ 0, 1 ],
+        "enum": [
+          0,
+          1
+        ],
         "type": "integer",
         "format": "int32"
       },

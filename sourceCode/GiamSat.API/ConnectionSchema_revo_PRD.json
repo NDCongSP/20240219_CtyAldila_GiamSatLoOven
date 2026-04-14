@@ -4,7 +4,7 @@
   "Port": 8800,
   "CommunicationMode": 0,
   "RefreshRate": 100,
-  "CreatedDate": "2026-04-09T16:30:02.3260402+07:00",
+  "CreatedDate": "2026-04-12T15:48:38.7305983+07:00",
   "Username": null,
   "Password": null,
   "Childs": [
@@ -22,7 +22,7 @@
           "Name": "Channel_Revo",
           "Path": "Local Station/Channel_Revo",
           "Description": null,
-          "DisplayInfo": "ModbusTCP - 192.168.1.220:502",
+          "DisplayInfo": "ModbusTCP - 192.168.1.100:502",
           "Error": null,
           "ConnectionStatus": 0,
           "Childs": [
@@ -46,7 +46,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "DWord",
-                    "Address": "404097"
+                    "Address": "400001"
                   }
                 },
                 {
@@ -60,7 +60,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "DWord",
-                    "Address": "404099"
+                    "Address": "400003"
                   }
                 },
                 {
@@ -74,7 +74,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4099"
+                    "Address": "1"
                   }
                 },
                 {
@@ -88,7 +88,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4100"
+                    "Address": "2"
                   }
                 },
                 {
@@ -102,7 +102,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4101"
+                    "Address": "3"
                   }
                 },
                 {
@@ -116,7 +116,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4102"
+                    "Address": "4"
                   }
                 },
                 {
@@ -130,7 +130,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4103"
+                    "Address": "5"
                   }
                 },
                 {
@@ -144,7 +144,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4104"
+                    "Address": "6"
                   }
                 },
                 {
@@ -158,7 +158,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4107"
+                    "Address": "7"
                   }
                 },
                 {
@@ -172,7 +172,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4118"
+                    "Address": "8"
                   }
                 },
                 {
@@ -186,7 +186,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4119"
+                    "Address": "9"
                   }
                 },
                 {
@@ -200,7 +200,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4120"
+                    "Address": "10"
                   }
                 },
                 {
@@ -214,7 +214,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4121"
+                    "Address": "11"
                   }
                 },
                 {
@@ -228,7 +228,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4122"
+                    "Address": "12"
                   }
                 },
                 {
@@ -242,7 +242,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4123"
+                    "Address": "13"
                   }
                 },
                 {
@@ -256,7 +256,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4124"
+                    "Address": "14"
                   }
                 },
                 {
@@ -270,7 +270,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4125"
+                    "Address": "15"
                   }
                 },
                 {
@@ -284,7 +284,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4126"
+                    "Address": "16"
                   }
                 },
                 {
@@ -298,7 +298,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4127"
+                    "Address": "17"
                   }
                 },
                 {
@@ -312,7 +312,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404101"
+                    "Address": "400005"
                   }
                 },
                 {
@@ -326,7 +326,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "61441"
+                    "Address": "18"
                   }
                 },
                 {
@@ -340,7 +340,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "61442"
+                    "Address": "19"
                   }
                 },
                 {
@@ -354,7 +354,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "61443"
+                    "Address": "20"
                   }
                 },
                 {
@@ -368,7 +368,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "61444"
+                    "Address": "21"
                   }
                 },
                 {
@@ -382,7 +382,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "61445"
+                    "Address": "22"
                   }
                 },
                 {
@@ -396,7 +396,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "61446"
+                    "Address": "23"
                   }
                 },
                 {
@@ -410,7 +410,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "61447"
+                    "Address": "24"
                   }
                 },
                 {
@@ -424,7 +424,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "61448"
+                    "Address": "25"
                   }
                 },
                 {
@@ -438,7 +438,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4105"
+                    "Address": "26"
                   }
                 },
                 {
@@ -452,7 +452,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4106"
+                    "Address": "27"
                   }
                 },
                 {
@@ -466,7 +466,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4097"
+                    "Address": "28"
                   }
                 },
                 {
@@ -480,7 +480,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4128"
+                    "Address": "29"
                   }
                 },
                 {
@@ -494,7 +494,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4137"
+                    "Address": "30"
                   }
                 },
                 {
@@ -508,7 +508,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4138"
+                    "Address": "31"
                   }
                 },
                 {
@@ -522,7 +522,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Bool",
-                    "Address": "4139"
+                    "Address": "32"
                   }
                 }
               ],
@@ -532,15 +532,15 @@
                 "TryReadWriteTimes": "3",
                 "ReadMode": "Block",
                 "InputContactReadBlockSettings": "[]",
-                "OutputCoilsReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 0,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"4097\",\r\n    \"EndAddress\": \"4138\"\r\n  },\r\n  {\r\n    \"AddressType\": 0,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"23161\",\r\n    \"EndAddress\": \"23162\"\r\n  },\r\n  {\r\n    \"AddressType\": 0,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"61441\",\r\n    \"EndAddress\": \"61447\"\r\n  }\r\n]",
+                "OutputCoilsReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 0,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"1\",\r\n    \"EndAddress\": \"31\"\r\n  }\r\n]",
                 "InputRegisterReadBlockSettings": "[]",
-                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404097\",\r\n    \"EndAddress\": \"404101\"\r\n  },\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"423161\",\r\n    \"EndAddress\": \"423164\"\r\n  }\r\n]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400005\"\r\n  }\r\n]",
                 "MaxWritesCount": "10"
               }
             }
           ],
           "Properties": {
-            "IpAddress": "192.168.1.220",
+            "IpAddress": "192.168.1.100",
             "Port": "502",
             "DelayBetweenPool": "5",
             "ScanRate": "100"

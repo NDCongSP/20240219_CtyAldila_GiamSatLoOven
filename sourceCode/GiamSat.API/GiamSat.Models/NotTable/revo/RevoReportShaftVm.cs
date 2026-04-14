@@ -23,5 +23,7 @@ namespace GiamSat.Models
         public string? TotalTimeText { get; set; }
         public long StepCount { get; set; }
         public int IsAutoRollingShaft { get; set; }
+        public bool IsShaftFinished { get; set; }
+        public bool HighlightIncomplete { get; set; }
     }
 }

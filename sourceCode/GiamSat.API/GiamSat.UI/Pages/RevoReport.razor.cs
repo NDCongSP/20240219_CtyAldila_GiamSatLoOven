@@ -32,12 +32,27 @@ namespace GiamSat.UI.Pages
         private List<RevoHourRow> _hourRows = new();
         private bool _gridInitialized = false;
         private int _shaftCount = 0;
+        /// <summary>Số bản ghi hiển thị theo phạm vi (đã hoàn thành = chỉ dòng thuộc shaft đủ TotalTime).</summary>
+        private int _scopeRecordCount;
         private bool _reportGridsFromDatabase = false;
+        /// <summary>Chế độ shaft: tất cả hoặc chỉ shaft đã hoàn thành (mọi bản ghi TotalTime lớn hơn 0).</summary>
+        private RevoShaftScopeKind _shaftScope = RevoShaftScopeKind.Total;
+        /// <summary>Đồng bộ với RadzenSwitch — true = chỉ shaft đã hoàn thành.</summary>
+        private bool _shaftFinishedSwitch;
 
         private static readonly JsonSerializerOptions _jsonReadOptions = new()
         {
             PropertyNameCaseInsensitive = true
         };
+
+        /// <summary>Luôn theo switch — tránh lệch với _shaftScope khi chưa đồng bộ.</summary>
+        private string ShaftScopeForApi => _shaftFinishedSwitch ? "finished" : "total";
+
+        /// <summary>Đồng bộ enum với switch (gọi trước khi lọc client / gọi API).</summary>
+        private void SyncShaftScopeFromSwitch()
+        {
+            _shaftScope = _shaftFinishedSwitch ? RevoShaftScopeKind.Finished : RevoShaftScopeKind.Total;
+        }
 
         private RevoReportMode _reportMode = RevoReportMode.ByStep;
         private List<ReportModeOption> _reportModes = new()
@@ -111,6 +126,7 @@ namespace GiamSat.UI.Pages
             {
                 _isLoading = true;
                 StateHasChanged();
+                SyncShaftScopeFromSwitch();
 
                 // Use NSwag client for FT09 GetFilter
                 var filterModel = new ApiClient.RevoFilterModel
@@ -118,7 +134,8 @@ namespace GiamSat.UI.Pages
                     GetAll = !_selectedRevoId.HasValue,
                     RevoId = _selectedRevoId,
                     FromDate = _fromDate,
-                    ToDate = _toDate
+                    ToDate = _toDate,
+                    ShaftScope = ShaftScopeForApi
                 };
 
                 var result = await _fT09Client.GetFilterAsync(filterModel);
@@ -153,8 +170,8 @@ namespace GiamSat.UI.Pages
 
                     await TryPopulateReportGridsFromDatabaseAsync(filterModel);
                     _hasData = _rawData.Any();
-                    // Đếm shaft từ nguồn gốc FT09 (không phụ thuộc mode — tránh _shaftRows rỗng khi chỉ load 1 view)
-                    _shaftCount = _rawData.Where(x => x.ShaftNum.HasValue).Select(x => x.ShaftNum!.Value).Distinct().Count();
+                    // Đếm shaft + bản ghi theo phạm vi (đồng bộ switch; GetFilter không lọc theo shaft)
+                    UpdateScopeSummaryCounts();
                     _gridInitialized = false; // Reset to apply grouping on next render (step mode)
                 }
                 else
@@ -165,6 +182,8 @@ namespace GiamSat.UI.Pages
                     _hourRows = new();
                     _reportGridsFromDatabase = false;
                     _hasData = false;
+                    _shaftCount = 0;
+                    _scopeRecordCount = 0;
                     if (result.Messages != null && result.Messages.Count > 0)
                     {
                         var errorMessage = string.Join(", ", result.Messages);
@@ -176,6 +195,8 @@ namespace GiamSat.UI.Pages
             {
                 _notificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Lỗi khi tải dữ liệu: {ex.Message}");
                 _hasData = false;
+                _shaftCount = 0;
+                _scopeRecordCount = 0;
             }
             finally
             {
@@ -189,8 +210,11 @@ namespace GiamSat.UI.Pages
             _fromDate = DateTime.Now.AddDays(-7);
             _toDate = DateTime.Now;
             _selectedRevoId = null;
+            _shaftScope = RevoShaftScopeKind.Total;
+            _shaftFinishedSwitch = false;
             _hasData = false;
             _shaftCount = 0;
+            _scopeRecordCount = 0;
             _rawData.Clear();
             _stepRows.Clear();
             _shaftRows.Clear();
@@ -314,7 +338,8 @@ namespace GiamSat.UI.Pages
                 StartedAt = v.DisplayStartedAt,
                 EndedAt = v.DisplayEndedAt,
                 DurationText = v.DurationText ?? "N/A",
-                IsAutoRolling = v.IsAutoRolling != 0
+                IsAutoRolling = v.IsAutoRolling != 0,
+                HighlightIncomplete = v.HighlightIncomplete
             }).ToList();
         }
 
@@ -335,7 +360,9 @@ namespace GiamSat.UI.Pages
                 StepCount = (int)Math.Min(int.MaxValue, v.StepCount),
                 StartedAt = v.StartedAt,
                 EndedAt = v.EndedAt,
-                TotalTime = TimeSpan.FromSeconds(Math.Max(0, v.TotalTimeSeconds))
+                TotalTime = TimeSpan.FromSeconds(Math.Max(0, v.TotalTimeSeconds)),
+                HighlightIncomplete = v.HighlightIncomplete,
+                IsShaftFinished = v.IsShaftFinished
             }).ToList();
         }
 
@@ -346,9 +373,12 @@ namespace GiamSat.UI.Pages
                 Hour = v.Hour,
                 HourRange = v.HourRange ?? string.Empty,
                 ShaftCount = v.ShaftCount,
+                ShaftCountFinishedInHour = v.ShaftCountFinishedInHour,
+                IncompleteShaftCountInHour = v.IncompleteShaftCountInHour,
                 StartedAt = v.StartedAt,
                 EndedAt = v.EndedAt,
-                TotalTime = TimeSpan.FromSeconds(Math.Max(0, v.TotalTimeSeconds))
+                TotalTime = TimeSpan.FromSeconds(Math.Max(0, v.TotalTimeSeconds)),
+                HighlightIncomplete = v.HighlightIncomplete
             }).ToList();
         }
 
@@ -363,7 +393,15 @@ namespace GiamSat.UI.Pages
                 }
 
                 var excel = new ExcelExportRevo();
-                var excelBytes = excel.GenerateExcelFileAsync(_rawData, $"{_fromDate:dd/MM/yyyy} đến {_toDate:dd/MM/yyyy}", _reportMode);
+                var excelBytes = excel.GenerateExcelFileAsync(
+                    _rawData,
+                    $"{_fromDate:dd/MM/yyyy} đến {_toDate:dd/MM/yyyy}",
+                    _reportMode,
+                    _shaftFinishedSwitch ? RevoShaftScopeKind.Finished : RevoShaftScopeKind.Total,
+                    _reportGridsFromDatabase,
+                    _stepRows,
+                    _shaftRows,
+                    _hourRows);
                 var filename = $"BaoCao_REVO_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
                 
                 await _js.InvokeVoidAsync("BlazorDownloadFile", filename, excelBytes);
@@ -445,8 +483,82 @@ namespace GiamSat.UI.Pages
             args.Expanded = true;
         }
 
+        /// <summary>Class + CSS global (app.css) — Radzen ghi nền lên td nên inline style thường không thấy.</summary>
+        private const string WarningRowClass = "revo-shaft-warn-row";
+
+        private static void AppendRowWarningClass(IDictionary<string, object> attrs)
+        {
+            if (attrs.TryGetValue("class", out var c) && c is string s && !string.IsNullOrEmpty(s))
+                attrs["class"] = $"{s} {WarningRowClass}".Trim();
+            else
+                attrs["class"] = WarningRowClass;
+        }
+
+        private void OnStepRowRender(RowRenderEventArgs<RevoStepRow> args)
+        {
+            if (args.Data is { HighlightIncomplete: true })
+                AppendRowWarningClass(args.Attributes);
+        }
+
+        private void OnShaftRowRender(RowRenderEventArgs<RevoShaftRow> args)
+        {
+            if (args.Data is { HighlightIncomplete: true })
+                AppendRowWarningClass(args.Attributes);
+        }
+
+        private void OnHourRowRender(RowRenderEventArgs<RevoHourRow> args)
+        {
+            if (args.Data is { HighlightIncomplete: true })
+                AppendRowWarningClass(args.Attributes);
+        }
+
+        /// <summary>Sau @bind-Value Radzen đã cập nhật _shaftFinishedSwitch; chỉ đồng bộ enum và tải lại.</summary>
+        private async Task OnShaftScopeSwitchChange(bool _)
+        {
+            SyncShaftScopeFromSwitch();
+            if (_hasData)
+                await ExecuteSearch();
+        }
+
+        /// <summary>Tập shaft "hoàn thành" trong phạm vi dữ liệu đã tải (mọi dòng có TotalTime lớn hơn 0).</summary>
+        private static HashSet<Guid> BuildFinishedShaftSet(IEnumerable<FT09_RevoDatalog> rows)
+        {
+            var set = new HashSet<Guid>();
+            foreach (var g in rows.Where(r => r != null && r.ShaftNum.HasValue).GroupBy(r => r.ShaftNum!.Value))
+            {
+                if (g.All(r => (r.TotalTime ?? 0) > 0))
+                    set.Add(g.Key);
+            }
+            return set;
+        }
+
+        private static int CountFinishedShafts(IEnumerable<FT09_RevoDatalog> rows) => BuildFinishedShaftSet(rows).Count;
+
+        /// <summary>Số dòng FT09 thuộc phạm vi "đã hoàn thành" (khớp WHERE TVF: không shaft hoặc shaft finished).</summary>
+        private static int CountRecordsInFinishedShaftScope(IReadOnlyList<FT09_RevoDatalog> raw)
+        {
+            if (raw.Count == 0) return 0;
+            var finished = BuildFinishedShaftSet(raw);
+            return raw.Count(r => r.ShaftNum is null || finished.Contains(r.ShaftNum.Value));
+        }
+
+        /// <summary>Cập nhật _shaftCount và _scopeRecordCount sau khi có _rawData (phụ thuộc switch phạm vi).</summary>
+        private void UpdateScopeSummaryCounts()
+        {
+            var finishedMode = _shaftFinishedSwitch;
+            _shaftCount = finishedMode
+                ? CountFinishedShafts(_rawData)
+                : _rawData.Where(x => x.ShaftNum.HasValue).Select(x => x.ShaftNum!.Value).Distinct().Count();
+            _scopeRecordCount = finishedMode
+                ? CountRecordsInFinishedShaftScope(_rawData)
+                : _rawData.Count;
+        }
+
         private void RebuildView()
         {
+            SyncShaftScopeFromSwitch();
+            var finishedShafts = BuildFinishedShaftSet(_rawData);
+
             // Normalize
             var normalized = _rawData
                 .Where(x => x != null)
@@ -458,6 +570,13 @@ namespace GiamSat.UI.Pages
                 })
                 .Where(x => x.Started != DateTime.MinValue)
                 .ToList();
+
+            if (_shaftScope == RevoShaftScopeKind.Finished)
+            {
+                normalized = normalized
+                    .Where(x => !x.Row.ShaftNum.HasValue || finishedShafts.Contains(x.Row.ShaftNum.Value))
+                    .ToList();
+            }
 
             // Build GLOBAL shaft sequential index (unique per physical shaft Guid, ordered by first StartedAt globally)
             var globalShaftMap = normalized
@@ -499,6 +618,10 @@ namespace GiamSat.UI.Pages
                     var stepIdText = x.Row.StepId.HasValue ? x.Row.StepId.Value.ToString() : "N/A";
                     var globalNo = ResolveGlobalShaftNo(x.Row.ShaftNum);
 
+                    var inc = _shaftScope == RevoShaftScopeKind.Total
+                        && x.Row.ShaftNum.HasValue
+                        && !finishedShafts.Contains(x.Row.ShaftNum.Value);
+
                     return new RevoStepRow
                     {
                         RevoName = x.Row.RevoName,
@@ -516,7 +639,8 @@ namespace GiamSat.UI.Pages
                         EndedAt = isAutoRolling ? null : x.Row.EndedAt,
                         DurationText = durationText,
                         IsAutoRolling = isAutoRolling,
-                        Stt = 0
+                        Stt = 0,
+                        HighlightIncomplete = inc
                     };
                 })
                 .ToList();
@@ -583,6 +707,7 @@ namespace GiamSat.UI.Pages
             {
                 shaftIndex++;
                 var hourForBucket = g.StartedAt ?? g.OrderKey;
+                var shaftFinished = finishedShafts.Contains(g.ShaftNum);
                 _shaftRows.Add(new RevoShaftRow
                 {
                     ShaftLabel = $"Shaft {shaftIndex}",
@@ -598,11 +723,18 @@ namespace GiamSat.UI.Pages
                     StartedAt = g.StartedAt,
                     EndedAt = g.EndedAt,
                     StepCount = g.StepCount,
-                    TotalTime = g.TotalTime
+                    TotalTime = g.TotalTime,
+                    IsShaftFinished = shaftFinished,
+                    HighlightIncomplete = _shaftScope == RevoShaftScopeKind.Total && !shaftFinished
                 });
             }
 
-            // By hour
+            // By hour — hoàn thành shaft chỉ tính 1 lần tại giờ bắt đầu (MIN Started), khớp fn_RevoReport_Hour
+            var firstHourByShaft = normalized
+                .Where(x => x.Row.ShaftNum.HasValue)
+                .GroupBy(x => x.Row.ShaftNum!.Value)
+                .ToDictionary(h => h.Key, h => h.Min(x => x.Hour));
+
             _hourRows = normalized
                 .GroupBy(x => x.Hour)
                 .Select(g =>
@@ -624,15 +756,24 @@ namespace GiamSat.UI.Pages
                         ? TimeSpan.FromSeconds(totalSeconds)
                         : TimeSpan.Zero;
                     var shaftCount = g.Select(x => x.Row.ShaftNum).Where(x => x.HasValue).Select(x => x!.Value).Distinct().Count();
+                    var distinctInHour = g.Where(x => x.Row.ShaftNum.HasValue).Select(x => x.Row.ShaftNum!.Value).Distinct().ToList();
+                    var finishedInHour = distinctInHour.Count(sn =>
+                        finishedShafts.Contains(sn)
+                        && firstHourByShaft.TryGetValue(sn, out var fh)
+                        && fh == g.Key);
+                    var incompleteInHour = distinctInHour.Count(sn => !finishedShafts.Contains(sn));
 
                     return new RevoHourRow
                     {
                         Hour = g.Key,
                         HourRange = $"{g.Key:dd/MM/yyyy HH}:00-{g.Key.AddHours(1):HH}:00",
                         ShaftCount = shaftCount,
+                        ShaftCountFinishedInHour = finishedInHour,
+                        IncompleteShaftCountInHour = incompleteInHour,
                         StartedAt = start,
                         EndedAt = end,
-                        TotalTime = totalTime
+                        TotalTime = totalTime,
+                        HighlightIncomplete = _shaftScope == RevoShaftScopeKind.Total && incompleteInHour > 0
                     };
                 })
                 .OrderBy(x => x.StartedAt ?? DateTime.MinValue)
@@ -659,6 +800,13 @@ namespace GiamSat.UI.Pages
             ByHour = 2
         }
 
+        /// <summary>Tổng hợp tất cả shaft trong kỳ vs chỉ shaft đã hoàn thành (TVF / API).</summary>
+        public enum RevoShaftScopeKind
+        {
+            Total = 0,
+            Finished = 1
+        }
+
         public class ReportModeOption
         {
             public string Name { get; set; } = string.Empty;
@@ -683,6 +831,8 @@ namespace GiamSat.UI.Pages
             public DateTime? EndedAt { get; set; }
             public string DurationText { get; set; } = string.Empty;
             public bool IsAutoRolling { get; set; }
+            /// <summary>True khi chế độ "Tất cả shaft" và shaft chưa đủ TotalTime — tô nền cảnh báo.</summary>
+            public bool HighlightIncomplete { get; set; }
         }
 
         public class RevoShaftRow
@@ -702,6 +852,8 @@ namespace GiamSat.UI.Pages
             public DateTime? EndedAt { get; set; }
             public TimeSpan TotalTime { get; set; }
             public string TotalTimeText => $"{(int)TotalTime.TotalHours:D2}:{TotalTime.Minutes:D2}:{TotalTime.Seconds:D2}";
+            public bool IsShaftFinished { get; set; }
+            public bool HighlightIncomplete { get; set; }
         }
 
         public class RevoHourRow
@@ -709,10 +861,13 @@ namespace GiamSat.UI.Pages
             public DateTime Hour { get; set; }
             public string HourRange { get; set; } = string.Empty;
             public int ShaftCount { get; set; }
+            public long ShaftCountFinishedInHour { get; set; }
+            public long IncompleteShaftCountInHour { get; set; }
             public DateTime? StartedAt { get; set; }
             public DateTime? EndedAt { get; set; }
             public TimeSpan TotalTime { get; set; }
             public string TotalHoursText => $"{(int)TotalTime.TotalHours:D2}:{TotalTime.Minutes:D2}:{TotalTime.Seconds:D2}";
+            public bool HighlightIncomplete { get; set; }
         }
 
         public class RevoDropdownModel

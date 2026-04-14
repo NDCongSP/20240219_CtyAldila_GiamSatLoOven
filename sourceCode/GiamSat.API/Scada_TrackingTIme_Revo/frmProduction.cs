@@ -224,6 +224,7 @@ namespace Scada_TrackingTIme_Revo
                 {
                     using (var nf = new frmConfig())
                     {
+                        nf.EasyDriverConnector=_easyDriverConnector;
                         nf.ShowDialog();
                     }
                 };
