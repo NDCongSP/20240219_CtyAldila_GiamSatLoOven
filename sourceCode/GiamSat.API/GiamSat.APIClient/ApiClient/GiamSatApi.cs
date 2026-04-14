@@ -6449,6 +6449,33 @@ namespace GiamSat.APIClient
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<RevoReportStepVmListResult> GetReportStepViewAsync(RevoFilterModel? body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<RevoReportStepVmListResult> GetReportStepViewAsync(RevoFilterModel? body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<RevoReportShaftVmListResult> GetReportShaftViewAsync(RevoFilterModel? body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<RevoReportShaftVmListResult> GetReportShaftViewAsync(RevoFilterModel? body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<RevoReportHourVmListResult> GetReportHourViewAsync(RevoFilterModel? body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<RevoReportHourVmListResult> GetReportHourViewAsync(RevoFilterModel? body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task ExportPdfAsync(RevoFilterModel? body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -6662,6 +6689,252 @@ namespace GiamSat.APIClient
                         if (status_ == 200)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<FT09_RevoDatalogListResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<RevoReportStepVmListResult> GetReportStepViewAsync(RevoFilterModel? body)
+        {
+            return GetReportStepViewAsync(body, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<RevoReportStepVmListResult> GetReportStepViewAsync(RevoFilterModel? body, System.Threading.CancellationToken cancellationToken)
+        {
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/FT09/GetReportStepView"
+                    urlBuilder_.Append("api/FT09/GetReportStepView");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<RevoReportStepVmListResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<RevoReportShaftVmListResult> GetReportShaftViewAsync(RevoFilterModel? body)
+        {
+            return GetReportShaftViewAsync(body, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<RevoReportShaftVmListResult> GetReportShaftViewAsync(RevoFilterModel? body, System.Threading.CancellationToken cancellationToken)
+        {
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/FT09/GetReportShaftView"
+                    urlBuilder_.Append("api/FT09/GetReportShaftView");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<RevoReportShaftVmListResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<RevoReportHourVmListResult> GetReportHourViewAsync(RevoFilterModel? body)
+        {
+            return GetReportHourViewAsync(body, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<RevoReportHourVmListResult> GetReportHourViewAsync(RevoFilterModel? body, System.Threading.CancellationToken cancellationToken)
+        {
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/FT09/GetReportHourView"
+                    urlBuilder_.Append("api/FT09/GetReportHourView");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<RevoReportHourVmListResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -9623,10 +9896,6 @@ namespace GiamSat.APIClient
         [System.Text.Json.Serialization.JsonPropertyName("toDate")]
         public System.DateTime ToDate { get; set; } = default!;
 
-        /// <summary>
-        /// total | finished
-        /// </summary>
-
         [System.Text.Json.Serialization.JsonPropertyName("shaftScope")]
         public string? ShaftScope { get; set; } = default!;
 
@@ -9654,21 +9923,6 @@ namespace GiamSat.APIClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class RevoGetTotalShaftCountDtoResult
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("messages")]
-        public System.Collections.Generic.ICollection<string>? Messages { get; set; } = default!;
-
-        [System.Text.Json.Serialization.JsonPropertyName("succeeded")]
-        public bool Succeeded { get; set; } = default!;
-
-        [System.Text.Json.Serialization.JsonPropertyName("data")]
-        public RevoGetTotalShaftCountDto Data { get; set; } = default!;
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class RevoGetTotalShaftCountDtoListResult
     {
 
@@ -9680,6 +9934,219 @@ namespace GiamSat.APIClient
 
         [System.Text.Json.Serialization.JsonPropertyName("data")]
         public System.Collections.Generic.ICollection<RevoGetTotalShaftCountDto>? Data { get; set; } = default!;
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class RevoReportHourVm
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("hour")]
+        public System.DateTime Hour { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("hourRange")]
+        public string? HourRange { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("shaftCount")]
+        public int ShaftCount { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("startedAt")]
+        public System.DateTime? StartedAt { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("endedAt")]
+        public System.DateTime? EndedAt { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("totalTimeSeconds")]
+        public double TotalTimeSeconds { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("totalTimeText")]
+        public string? TotalTimeText { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("shaftCountFinishedInHour")]
+        public long ShaftCountFinishedInHour { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("incompleteShaftCountInHour")]
+        public long IncompleteShaftCountInHour { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("highlightIncomplete")]
+        public bool HighlightIncomplete { get; set; } = default!;
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class RevoReportHourVmListResult
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("messages")]
+        public System.Collections.Generic.ICollection<string>? Messages { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("succeeded")]
+        public bool Succeeded { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("data")]
+        public System.Collections.Generic.ICollection<RevoReportHourVm>? Data { get; set; } = default!;
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class RevoReportShaftVm
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("shaftLabel")]
+        public string? ShaftLabel { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("revoId")]
+        public int? RevoId { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("revoName")]
+        public string? RevoName { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("hour")]
+        public System.DateTime Hour { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("hourBucket")]
+        public string? HourBucket { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("shaftNo")]
+        public long ShaftNo { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("stt")]
+        public long Stt { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("shaftNum")]
+        public System.Guid ShaftNum { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("part")]
+        public string? Part { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("work")]
+        public string? Work { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("mandrel")]
+        public string? Mandrel { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("startedAt")]
+        public System.DateTime? StartedAt { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("endedAt")]
+        public System.DateTime? EndedAt { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("totalTimeSeconds")]
+        public double TotalTimeSeconds { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("totalTimeText")]
+        public string? TotalTimeText { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("stepCount")]
+        public long StepCount { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("isAutoRollingShaft")]
+        public int IsAutoRollingShaft { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("isShaftFinished")]
+        public bool IsShaftFinished { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("highlightIncomplete")]
+        public bool HighlightIncomplete { get; set; } = default!;
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class RevoReportShaftVmListResult
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("messages")]
+        public System.Collections.Generic.ICollection<string>? Messages { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("succeeded")]
+        public bool Succeeded { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("data")]
+        public System.Collections.Generic.ICollection<RevoReportShaftVm>? Data { get; set; } = default!;
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class RevoReportStepVm
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("id")]
+        public System.Guid Id { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("revoId")]
+        public int? RevoId { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("revoName")]
+        public string? RevoName { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("hour")]
+        public System.DateTime Hour { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("hourBucketDisplay")]
+        public string? HourBucketDisplay { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("shaftNo")]
+        public long ShaftNo { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("shaftKey")]
+        public string? ShaftKey { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("shaftNum")]
+        public System.Guid? ShaftNum { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("part")]
+        public string? Part { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("work")]
+        public string? Work { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("rev")]
+        public string? Rev { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("mandrel")]
+        public string? Mandrel { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("stepDisplay")]
+        public string? StepDisplay { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("displayStartedAt")]
+        public System.DateTime? DisplayStartedAt { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("displayEndedAt")]
+        public System.DateTime? DisplayEndedAt { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("durationText")]
+        public string? DurationText { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("isAutoRolling")]
+        public int IsAutoRolling { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("started")]
+        public System.DateTime Started { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("stt")]
+        public long Stt { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("isShaftFinished")]
+        public bool? IsShaftFinished { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("highlightIncomplete")]
+        public bool HighlightIncomplete { get; set; } = default!;
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class RevoReportStepVmListResult
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("messages")]
+        public System.Collections.Generic.ICollection<string>? Messages { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("succeeded")]
+        public bool Succeeded { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("data")]
+        public System.Collections.Generic.ICollection<RevoReportStepVm>? Data { get; set; } = default!;
 
     }
 
