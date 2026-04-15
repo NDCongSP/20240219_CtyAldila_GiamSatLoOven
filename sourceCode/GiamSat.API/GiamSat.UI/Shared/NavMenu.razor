@@ -52,10 +52,12 @@
                                  Path="/revo"
                                  Match="NavLinkMatch.All"/>
 
-            <RadzenPanelMenuItem Text="Cấu hình"
-                                 Icon="settings_applications"
-                                 Path="/revo/config"
-                                 Match="NavLinkMatch.All"/>
+            <AuthorizeView Roles="Admin,User">
+                <RadzenPanelMenuItem Text="Cấu hình"
+                                     Icon="settings_applications"
+                                     Path="/revo/config"
+                                     Match="NavLinkMatch.All"/>
+            </AuthorizeView>
 
             <RadzenPanelMenuItem Text="Báo cáo"
                                  Icon="description"

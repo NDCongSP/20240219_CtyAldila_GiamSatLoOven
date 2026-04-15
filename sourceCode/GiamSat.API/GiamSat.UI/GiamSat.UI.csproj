@@ -13,8 +13,7 @@
 
 	  <PackageReference Include="ClosedXML" Version="0.102.2" />
 	  <PackageReference Include="ClosedXML.Report" Version="0.2.8" />
-	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.13" />
-	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.13" PrivateAssets="all" />
+
 
 	  <PackageReference Include="Blazicons" Version="1.2.20" />
 	  <PackageReference Include="Blazorise.LoadingIndicator" Version="1.3.3" />

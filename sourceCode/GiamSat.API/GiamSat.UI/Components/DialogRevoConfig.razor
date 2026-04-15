@@ -11,35 +11,41 @@
                         <RadzenNumeric @bind-Value="@_model.Id" Disabled="true" Style="width:100%;" />
                     </RadzenFormField>
                 </div>
-                <div class="col-5">
-                    <RadzenFormField Text="Tên REVO" Style="width:100%;">
-                        <RadzenTextBox @bind-Value="@_model.Name" Placeholder="Nhập tên REVO" Style="width:100%;" />
-                    </RadzenFormField>
-                </div>
-                <div class="col-4">
-                    <RadzenFormField Text="Loại Máy" Style="width:100%;">
-                        <RadzenDropDown @bind-Value="@_model.MachineType"
-                                        Data="@(Enum.GetValues(typeof(EnumMachineType)).Cast<EnumMachineType>().Select(e => new { Label = e.ToString(), Val = e }))"
-                                        ValueProperty="Val" TextProperty="Label"
-                                        Style="width:100%;" />
-                    </RadzenFormField>
-                </div>
+                <AuthorizeView Roles="Admin" Context="authContext">
+                    <div class="col-5">
+                        <RadzenFormField Text="Tên REVO" Style="width:100%;">
+                            <RadzenTextBox @bind-Value="@_model.Name" Placeholder="Nhập tên REVO" Style="width:100%;" />
+                        </RadzenFormField>
+                    </div>
+                    <div class="col-4">
+                        <RadzenFormField Text="Loại Máy" Style="width:100%;">
+                            <RadzenDropDown @bind-Value="@_model.MachineType"
+                                            Data="@(Enum.GetValues(typeof(EnumMachineType)).Cast<EnumMachineType>().Select(e => new { Label = e.ToString(), Val = e }))"
+                                            ValueProperty="Val" TextProperty="Label"
+                                            Style="width:100%;" />
+                        </RadzenFormField>
+                    </div>
+                </AuthorizeView>
 
-                <!-- Row 2: Đường dẫn (full width) -->
-                <div class="col-12">
-                    <RadzenFormField Text="Đường dẫn" Style="width:100%;">
-                        <RadzenTextBox @bind-Value="@_model.Path" Placeholder="Nhập đường dẫn" Style="width:100%;" />
-                    </RadzenFormField>
-                </div>
+                <AuthorizeView Roles="Admin" Context="authContext">
+                    <!-- Row 2: Đường dẫn (full width) -->
+                    <div class="col-12">
+                        <RadzenFormField Text="Đường dẫn" Style="width:100%;">
+                            <RadzenTextBox @bind-Value="@_model.Path" Placeholder="Nhập đường dẫn" Style="width:100%;" />
+                        </RadzenFormField>
+                    </div>
+                </AuthorizeView>
 
-                <!-- Row 3: Chuỗi kết nối (full width) -->
-                <div class="col-12">
-                    <RadzenFormField Text="Chuỗi kết nối Access DB" Style="width:100%;">
-                        <RadzenTextBox @bind-Value="@_model.ConstringAccessDb"
-                                       Placeholder="Provider=Microsoft.Jet.OLEDB.4.0;Data Source=..."
-                                       Style="width:100%;" />
-                    </RadzenFormField>
-                </div>
+                <AuthorizeView Roles="Admin" Context="authContext">
+                    <!-- Row 3: Chuỗi kết nối (full width) -->
+                    <div class="col-12">
+                        <RadzenFormField Text="Chuỗi kết nối Access DB" Style="width:100%;">
+                            <RadzenTextBox @bind-Value="@_model.ConstringAccessDb"
+                                           Placeholder="Provider=Microsoft.Jet.OLEDB.4.0;Data Source=..."
+                                           Style="width:100%;" />
+                        </RadzenFormField>
+                    </div>
+                </AuthorizeView>
 
                 <!-- Row 4: Pulse/Rev + Offset + Interval -->
                 <div class="col-4">
@@ -58,16 +64,18 @@
                     </RadzenFormField>
                 </div>
 
-                <!-- Row 5: Save Mode -->
-                <div class="col-12">
-                    <RadzenText TextStyle="TextStyle.Caption" Style="color: var(--rz-text-secondary-color);">Chế độ lưu dữ liệu</RadzenText>
-                    <RadzenRadioButtonList @bind-Value="@_model.SaveMode" TValue="EnumSaveMode" Orientation="Orientation.Horizontal">
-                        <Items>
-                            <RadzenRadioButtonListItem Text="Save (shaft)" Value="EnumSaveMode.Save" />
-                            <RadzenRadioButtonListItem Text="Save all (shaft+step)" Value="EnumSaveMode.SaveAll" />
-                        </Items>
-                    </RadzenRadioButtonList>
-                </div>
+                <AuthorizeView Roles="Admin" Context="authContext">
+                    <!-- Row 5: Save Mode -->
+                    <div class="col-12">
+                        <RadzenText TextStyle="TextStyle.Caption" Style="color: var(--rz-text-secondary-color);">Chế độ lưu dữ liệu</RadzenText>
+                        <RadzenRadioButtonList @bind-Value="@_model.SaveMode" TValue="EnumSaveMode" Orientation="Orientation.Horizontal">
+                            <Items>
+                                <RadzenRadioButtonListItem Text="Save (shaft)" Value="EnumSaveMode.Save" />
+                                <RadzenRadioButtonListItem Text="Save all (shaft+step)" Value="EnumSaveMode.SaveAll" />
+                            </Items>
+                        </RadzenRadioButtonList>
+                    </div>
+                </AuthorizeView>
 
             </div>
         </RadzenFieldset>

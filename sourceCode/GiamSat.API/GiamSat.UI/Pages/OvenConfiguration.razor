@@ -8,10 +8,12 @@
             <RadzenStack Gap="1rem">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
                     <RadzenText TextStyle="TextStyle.H5">Cấu hình REVO</RadzenText>
-                    <RadzenButton Icon="add_circle" 
-                                Text="Thêm REVO" 
-                                ButtonStyle="ButtonStyle.Success" 
-                                Click="@OnAddRevo" />
+                    <AuthorizeView Roles="Admin">
+                        <RadzenButton Icon="add_circle" 
+                                    Text="Thêm REVO" 
+                                    ButtonStyle="ButtonStyle.Success" 
+                                    Click="@OnAddRevo" />
+                    </AuthorizeView>
                 </RadzenStack>
 
                 @if (_isLoading)
@@ -59,12 +61,14 @@
                                                     Variant="Variant.Flat"
                                                     Click="@(() => OnEdit(item))"
                                                     title="Chỉnh sửa" />
-                                        <RadzenButton Icon="delete" 
-                                                    ButtonStyle="ButtonStyle.Danger" 
-                                                    Size="ButtonSize.Small" 
-                                                    Variant="Variant.Flat"
-                                                    Click="@(() => OnDelete(item))"
-                                                    title="Xóa" />
+                                        <AuthorizeView Roles="Admin">
+                                            <RadzenButton Icon="delete" 
+                                                        ButtonStyle="ButtonStyle.Danger" 
+                                                        Size="ButtonSize.Small" 
+                                                        Variant="Variant.Flat"
+                                                        Click="@(() => OnDelete(item))"
+                                                        title="Xóa" />
+                                        </AuthorizeView>
                                     </RadzenStack>
                                 </Template>
                             </RadzenDataGridColumn>
