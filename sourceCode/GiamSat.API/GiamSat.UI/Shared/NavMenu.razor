@@ -34,6 +34,15 @@
 
             <RadzenPanelMenuItem Text="Báo cáo" Icon="description" Path="/report" />
             <RadzenPanelMenuItem Text="Cài đặt" Icon="settings" Path="/settings" />
+            <AuthorizeView Roles="Admin">
+                <RadzenPanelMenuItem Text="Quản trị hệ thống" Icon="admin_panel_settings">
+                    <ChildContent>
+                        <RadzenPanelMenuItem Text="Tài khoản" Icon="person" Path="/admin/users" />
+                        <RadzenPanelMenuItem Text="Vai trò" Icon="security" Path="/admin/roles" />
+                        <RadzenPanelMenuItem Text="Permission" Icon="verified_user" Path="/admin/claims" />
+                    </ChildContent>
+                </RadzenPanelMenuItem>
+            </AuthorizeView>
         </ChildContent>
         </RadzenPanelMenuItem>
     }

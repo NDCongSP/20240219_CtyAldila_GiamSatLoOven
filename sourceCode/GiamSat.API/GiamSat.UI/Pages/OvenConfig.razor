@@ -1,6 +1,6 @@
 ﻿@page "/ovenconfig/{OvenId}"
 @using GiamSat.Models
-@attribute [Authorize(Roles = "Admin,User")]
+@attribute [Authorize(Policy = PermissionNames.Oven.Edit)]
 
 <div Class="rz-p-0 rz-p-md-12">
     @if (_ovenInfo == null)

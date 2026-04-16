@@ -1,50 +1,34 @@
-﻿using DocumentFormat.OpenXml.Drawing.Diagrams;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using DocumentFormat.OpenXml.Spreadsheet;
 using GiamSat.Models;
 using GiamSat.UI.Components;
 using Radzen;
 using Radzen.Blazor;
+using System.Net.Http.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GiamSat.UI.Pages
 {
     public partial class UsersManager
     {
-        List<UserModel> _users = new List<UserModel>();
-        UserModel _userModel = new UserModel();
+        List<APIClient.IdentityUserDto> _users = new List<APIClient.IdentityUserDto>();
+        APIClient.IdentityUserDto _userModel = new APIClient.IdentityUserDto();
 
         APIClient.RegisterModel _registerModel = new APIClient.RegisterModel();
         string _roleSelect;
         List<string> _role = new List<string>() { "User", "Operator" };
 
-        RadzenDataGrid<UserModel> _profileGrid;
+        RadzenDataGrid<APIClient.IdentityUserDto> _profileGrid;
         IEnumerable<int> _pageSizeOptions = new int[] { 5, 10, 20, 30, 100, 200 };
         bool _showPagerSummary = true;
         string _pagingSummaryFormat = "Displaying page {0} of {1} <b>(total {2} records)</b>";
 
+        private HttpClient ApiClient => _httpClientFactory.CreateClient("GiamSatAPI");
+
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-
             RefreshData();
-
-            //var res = await _authSerivce.GetAllUsers();
-
-            //foreach (var item in res)
-            //{
-            //    _users.Add(new UserModel()
-            //    {
-            //        Id = item.Id,
-            //        UserName = item.UserName,
-            //        Email = item.Email,
-            //    });
-            //}
-
-            //await InvokeAsync(async () =>
-            //{
-            //    await _profileGrid.RefreshDataAsync();
-            //});
-            //// StateHasChanged();
         }
 
         async Task DeleteItem(string id, string userName)
@@ -122,24 +106,13 @@ namespace GiamSat.UI.Pages
         {
             try
             {
-                var res = await _authSerivce.GetAllUsers();
-
-                _users = null;
-                _users = new List<UserModel>();
-
-                foreach (var item in res)
-                {                     
-                    _users.Add(new Models.UserModel()
-                    {
-                        Id = item.Id,
-                        UserName = item.UserName,
-                        Email = item.Email,
-                        Roles=item.Roles.ToList()
-                    });
+                var res = await ApiClient.GetFromJsonAsync<List<APIClient.IdentityUserDto>>("api/permissions/users");
+                if (res != null)
+                {
+                    _users = res;
+                    await _profileGrid.RefreshDataAsync();
+                    StateHasChanged();
                 }
-
-                await _profileGrid.RefreshDataAsync();
-                StateHasChanged();
             }
             catch (Exception ex)
             {

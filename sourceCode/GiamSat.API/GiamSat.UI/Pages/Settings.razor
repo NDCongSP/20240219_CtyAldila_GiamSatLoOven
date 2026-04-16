@@ -1,6 +1,6 @@
 ﻿@page "/settings"
 @using GiamSat.Models
-@attribute [Authorize(Roles = "Admin")]
+@attribute [Authorize(Policy = PermissionNames.Oven.Edit)]
 
 <div Class="rz-p-0 rz-p-md-12">
     @if (_configInfo == null)

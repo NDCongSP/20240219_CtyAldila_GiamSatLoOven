@@ -1,5 +1,6 @@
 using GiamSat.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -213,6 +214,24 @@ namespace GiamSat.API
                 };
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(PermissionNames.Revo.View, policy => policy.Requirements.Add(new PermissionRequirement(PermissionNames.Revo.View)));
+                options.AddPolicy(PermissionNames.Revo.Create, policy => policy.Requirements.Add(new PermissionRequirement(PermissionNames.Revo.Create)));
+                options.AddPolicy(PermissionNames.Revo.Edit, policy => policy.Requirements.Add(new PermissionRequirement(PermissionNames.Revo.Edit)));
+                options.AddPolicy(PermissionNames.Revo.Delete, policy => policy.Requirements.Add(new PermissionRequirement(PermissionNames.Revo.Delete)));
+                options.AddPolicy(PermissionNames.Revo.Export, policy => policy.Requirements.Add(new PermissionRequirement(PermissionNames.Revo.Export)));
+                options.AddPolicy(PermissionNames.Revo.Approve, policy => policy.Requirements.Add(new PermissionRequirement(PermissionNames.Revo.Approve)));
+
+                options.AddPolicy(PermissionNames.Oven.View, policy => policy.Requirements.Add(new PermissionRequirement(PermissionNames.Oven.View)));
+                options.AddPolicy(PermissionNames.Oven.Create, policy => policy.Requirements.Add(new PermissionRequirement(PermissionNames.Oven.Create)));
+                options.AddPolicy(PermissionNames.Oven.Edit, policy => policy.Requirements.Add(new PermissionRequirement(PermissionNames.Oven.Edit)));
+                options.AddPolicy(PermissionNames.Oven.Delete, policy => policy.Requirements.Add(new PermissionRequirement(PermissionNames.Oven.Delete)));
+                options.AddPolicy(PermissionNames.Oven.Export, policy => policy.Requirements.Add(new PermissionRequirement(PermissionNames.Oven.Export)));
+                options.AddPolicy(PermissionNames.Oven.Approve, policy => policy.Requirements.Add(new PermissionRequirement(PermissionNames.Oven.Approve)));
+            });
+
+            services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
             services.AddControllers();
 
             //AddRepoServices(services);//add transient tu dong
@@ -303,6 +322,7 @@ namespace GiamSat.API
             //scope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
 
             SeedingData(scope).Wait();
+            PermissionSeeder.SeedAsync(scope.ServiceProvider.GetService<ApplicationDbContext>(), scope.ServiceProvider.GetService<RoleManager<IdentityRole>>()).Wait();
             #endregion
 
             app.UseCors("AllowAll");

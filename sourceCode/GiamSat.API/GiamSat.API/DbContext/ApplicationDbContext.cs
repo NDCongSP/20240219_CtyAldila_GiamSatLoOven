@@ -1,4 +1,4 @@
-﻿using GiamSat.Models;
+using GiamSat.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +32,27 @@ namespace GiamSat.API
             builder.Entity<FT11_TemperatureRealtime>();
             builder.Entity<FT12_TemperatureDatalog>();
             builder.Entity<FT13_TemperatureAlarmLog>();
+
+
+
+            builder.Entity<SecurityPermission>(entity =>
+            {
+                entity.HasIndex(x => x.Code).IsUnique();
+                entity.Property(x => x.Code).IsRequired();
+            });
+
+            builder.Entity<RolePermission>(entity =>
+            {
+                entity.HasKey(x => new { x.RoleId, x.PermissionId });
+                entity.HasOne(x => x.Role)
+                    .WithMany()
+                    .HasForeignKey(x => x.RoleId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(x => x.Permission)
+                    .WithMany(x => x.RolePermissions)
+                    .HasForeignKey(x => x.PermissionId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
             builder.Entity<RevoGetTotalShaftCountDto>().HasNoKey().ToView(null);
             builder.Entity<RevoReportStepVm>().HasNoKey();
@@ -81,6 +102,9 @@ namespace GiamSat.API
         public DbSet<GiamSat.Models.FT11_TemperatureRealtime> FT11_TemperatureRealtimes { get; set; }
         public DbSet<GiamSat.Models.FT12_TemperatureDatalog> FT12_TemperatureDatalogs { get; set; }
         public DbSet<GiamSat.Models.FT13_TemperatureAlarmLog> FT13_TemperatureAlarmLogs { get; set; }
+
+        public DbSet<SecurityPermission> SecurityPermissions { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
 
         //private static DbContextOptions<ApplicationDbContext> GetOptions(string connection)
         //{

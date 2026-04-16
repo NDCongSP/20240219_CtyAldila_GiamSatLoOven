@@ -1,4 +1,6 @@
 @page "/oven/report"
+@using GiamSat.Models
+@attribute [Authorize(Policy = PermissionNames.Oven.View)]
 
 <RadzenRow Gap="1rem">
     <RadzenColumn Size="12">

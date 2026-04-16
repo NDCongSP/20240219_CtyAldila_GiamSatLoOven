@@ -1,20 +1,29 @@
-﻿using GiamSat.APIClient;
+using GiamSat.APIClient;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using Radzen;
+using System.Net.Http.Json;
 
 namespace GiamSat.UI.Components
 {
     public partial class DialogCardPageAddNewUser
     {
         private RegisterModel _model = new RegisterModel();
-        List<string> _roles = new List<string>() { "User", "Operator" };
+        List<string> _roles = new List<string>();
+
+        private HttpClient ApiClient => _httpClientFactory.CreateClient("GiamSatAPI");
 
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
 
             _model.Email = "user@gmail.com";
+
+            var roles = await ApiClient.GetFromJsonAsync<List<GiamSat.Models.IdentityRoleDto>>("api/permissions/roles");
+            if (roles != null)
+            {
+                _roles = roles.Select(x => x.Name).ToList();
+            }
         }
 
         async void Submit(RegisterModel arg)

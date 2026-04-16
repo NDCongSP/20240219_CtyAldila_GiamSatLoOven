@@ -3,8 +3,9 @@
 
 @using ApiClientModels = GiamSat.APIClient
 @using DomainModels = GiamSat.Models
+@using GiamSat.Models
 
-@attribute [Authorize(Roles = "Admin,User")]
+@attribute [Authorize(Policy = PermissionNames.Revo.View)]
 
 <RadzenRow Gap="1rem">
     <RadzenColumn Size="12">

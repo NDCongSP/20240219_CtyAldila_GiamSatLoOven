@@ -33,11 +33,23 @@ builder.Services.AutoRegisterInterfaces<IApiService>();
 
 builder.Services.AddAuthorizationCore(options =>
 {
-    options.AddPolicy(UserRoles.Admin, policy =>
-    {
-        policy.RequireRole(UserRoles.Admin);
-        //policy.RequireRole(UserRoles.User);
-    });
+    options.AddPolicy(UserRoles.Admin, policy => policy.RequireRole(UserRoles.Admin));
+    options.AddPolicy(UserRoles.User, policy => policy.RequireRole(UserRoles.User));
+    options.AddPolicy(UserRoles.Operator, policy => policy.RequireRole(UserRoles.Operator));
+
+    options.AddPolicy(PermissionNames.Revo.View, policy => policy.RequireClaim(PermissionNames.Prefix, PermissionNames.Revo.View));
+    options.AddPolicy(PermissionNames.Revo.Create, policy => policy.RequireClaim(PermissionNames.Prefix, PermissionNames.Revo.Create));
+    options.AddPolicy(PermissionNames.Revo.Edit, policy => policy.RequireClaim(PermissionNames.Prefix, PermissionNames.Revo.Edit));
+    options.AddPolicy(PermissionNames.Revo.Delete, policy => policy.RequireClaim(PermissionNames.Prefix, PermissionNames.Revo.Delete));
+    options.AddPolicy(PermissionNames.Revo.Export, policy => policy.RequireClaim(PermissionNames.Prefix, PermissionNames.Revo.Export));
+    options.AddPolicy(PermissionNames.Revo.Approve, policy => policy.RequireClaim(PermissionNames.Prefix, PermissionNames.Revo.Approve));
+
+    options.AddPolicy(PermissionNames.Oven.View, policy => policy.RequireClaim(PermissionNames.Prefix, PermissionNames.Oven.View));
+    options.AddPolicy(PermissionNames.Oven.Create, policy => policy.RequireClaim(PermissionNames.Prefix, PermissionNames.Oven.Create));
+    options.AddPolicy(PermissionNames.Oven.Edit, policy => policy.RequireClaim(PermissionNames.Prefix, PermissionNames.Oven.Edit));
+    options.AddPolicy(PermissionNames.Oven.Delete, policy => policy.RequireClaim(PermissionNames.Prefix, PermissionNames.Oven.Delete));
+    options.AddPolicy(PermissionNames.Oven.Export, policy => policy.RequireClaim(PermissionNames.Prefix, PermissionNames.Oven.Export));
+    options.AddPolicy(PermissionNames.Oven.Approve, policy => policy.RequireClaim(PermissionNames.Prefix, PermissionNames.Oven.Approve));
 });
 
 builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthenticationService>()

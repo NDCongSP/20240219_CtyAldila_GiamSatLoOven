@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -21,15 +22,18 @@ namespace GiamSat.API.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _dbContext;
         private readonly IConfiguration _configuration;
 
         public AuthenticateController(
             UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
+            ApplicationDbContext dbContext,
             IConfiguration configuration)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _dbContext = dbContext;
             _configuration = configuration;
         }
 
@@ -45,20 +49,26 @@ namespace GiamSat.API.Controllers
 
                 var authClaims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Email,user.Email),
+                    new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
+                    new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
                 foreach (var userRole in userRoles)
                 {
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-
                 }
 
-                //test add claim
-                authClaims.Add(new Claim("testabc", "10000_test"));
-                authClaims.Add(new Claim("emailTest", user.Email));
+                var permissionCodes = await GetPermissionCodesAsync(userRoles);
+                foreach (var permissionCode in permissionCodes)
+                {
+                    authClaims.Add(new Claim(PermissionNames.Prefix, permissionCode));
+                }
+
+                if (userRoles.Contains(UserRoles.Admin))
+                {
+                    authClaims.Add(new Claim(PermissionNames.Prefix, "*"));
+                }
 
                 var token = GetToken(authClaims);
 
@@ -92,18 +102,20 @@ namespace GiamSat.API.Controllers
 
                 var authClaims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
                 foreach (var userRole in userRoles)
                 {
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-
                 }
 
-                //test add claim
-                authClaims.Add(new Claim("testabc", "10000_test"));
+                var permissionCodes = await GetPermissionCodesAsync(userRoles);
+                foreach (var permissionCode in permissionCodes)
+                {
+                    authClaims.Add(new Claim(PermissionNames.Prefix, permissionCode));
+                }
 
                 var token = GetToken(authClaims);
 
@@ -174,10 +186,13 @@ namespace GiamSat.API.Controllers
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
-            if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
-            if (!await _roleManager.RoleExistsAsync(UserRoles.User))
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+            foreach (var roleName in UserRoles.DefaultRoles)
+            {
+                if (!await _roleManager.RoleExistsAsync(roleName))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
 
             if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
             {
@@ -305,6 +320,18 @@ namespace GiamSat.API.Controllers
             var res = await _userManager.DeleteAsync(user);
 
             return Ok(new Response() { Status="Success",Message="Delete user success."});
+        }
+
+        private async Task<List<string>> GetPermissionCodesAsync(IEnumerable<string> roles)
+        {
+            var roleNames = roles.ToList();
+            var permissions = await _dbContext.RolePermissions
+                .Where(x => x.Role != null && roleNames.Contains(x.Role.Name) && x.Permission != null && x.Permission.IsActive)
+                .Select(x => x.Permission!.Code)
+                .Distinct()
+                .ToListAsync();
+
+            return permissions;
         }
 
         private JwtSecurityToken GetToken(List<Claim> authClaims)

@@ -1,7 +1,7 @@
 @page "/revo"
 @using GiamSat.Models
 @using GiamSat.UI.Components
-@attribute [Authorize(Roles = "Admin,User")]
+@attribute [Authorize(Policy = PermissionNames.Revo.View)]
 
 <RadzenRow Gap="1rem">
     @if (_revoData == null || _revoData.Count == 0)
