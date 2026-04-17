@@ -10,8 +10,9 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GiamSat.UI.Pages
 {
-    public partial class UsersManager
+    public partial class UsersManager : IDisposable
     {
+        private bool _disposed;
         List<APIClient.IdentityUserDto> _users = new List<APIClient.IdentityUserDto>();
         APIClient.IdentityUserDto _userModel = new APIClient.IdentityUserDto();
 
@@ -34,6 +35,7 @@ namespace GiamSat.UI.Pages
 
         async Task DeleteItem(string id, string userName)
         {
+            if (_disposed) return;
             try
             {
                 var confirm = await _dialogService.Confirm($"Bạn chắc chắn muốn xóa user: {userName}", "Xóa tài khoản", new ConfirmOptions()
@@ -53,6 +55,7 @@ namespace GiamSat.UI.Pages
 
                 if (res.Status == "Success")
                 {
+                    if (_disposed) return;
                     _notificationService.Notify(new NotificationMessage()
                     {
                         Severity = NotificationSeverity.Success,
@@ -91,25 +94,28 @@ namespace GiamSat.UI.Pages
             }
         }
 
-        async void AddNewItem()
+        async Task AddNewItem()
         {
+            if (_disposed) return;
             var res = await _dialogService.OpenAsync<DialogCardPageAddNewUser>($"Tạo tài khoản",
                     new Dictionary<string, object>() { },
                     new DialogOptions() { Width = "500px", Height = "550px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true });
 
+            if (_disposed) return;
             if (res == "Success")
             {
                 RefreshData();
             }
         }
 
-        async void EditUserRoles(APIClient.IdentityUserDto user)
+        async Task EditUserRoles(APIClient.IdentityUserDto user)
         {
+            if (_disposed) return;
             try
             {
                 // Load available roles
                 var allRoles = await ApiClient.GetFromJsonAsync<List<GiamSat.Models.IdentityRoleDto>>("api/permissions/roles");
-                if (allRoles == null) return;
+                if (allRoles == null || _disposed) return;
 
                 var availableRoleNames = allRoles.Select(r => r.Name).ToList();
                 var currentRoles = user.Roles ?? new List<string>();
@@ -128,6 +134,7 @@ namespace GiamSat.UI.Pages
                     },
                     new DialogOptions() { Width = "420px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true });
 
+                if (_disposed) return;
                 if (result is List<string> selectedRoles)
                 {
                     var response = await ApiClient.PutAsJsonAsync($"api/permissions/users/{user.Id}/roles", selectedRoles);
@@ -156,12 +163,13 @@ namespace GiamSat.UI.Pages
             }
         }
 
-        async void RefreshData()
+        async Task RefreshData()
         {
+            if (_disposed) return;
             try
             {
                 var res = await ApiClient.GetFromJsonAsync<List<APIClient.IdentityUserDto>>("api/permissions/users");
-                if (res != null)
+                if (res != null && !_disposed)
                 {
                     _users = res;
                     await _profileGrid.RefreshDataAsync();
@@ -179,6 +187,11 @@ namespace GiamSat.UI.Pages
                 });
                 return;
             }
+        }
+
+        public void Dispose()
+        {
+            _disposed = true;
         }
     }
 }

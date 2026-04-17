@@ -81,9 +81,8 @@
         </RadzenPanelMenuItem>
     }
 
-    @* Quản trị hệ thống - Ngang cấp với Oven/Revo *@
-    <AuthorizeView Roles="Admin">
-        <RadzenPanelMenuItem Text="Quản trị hệ thống" Icon="admin_panel_settings" Expanded="true">
+    <AuthorizeView Policy="@AppPermissions.System_Config_View">
+        <RadzenPanelMenuItem Text="Quản trị hệ thống" Icon="admin_panel_settings" Expanded="false">
             <ChildContent>
                 <RadzenPanelMenuItem Text="Tài khoản" Icon="person" Path="/admin/users" />
                 <RadzenPanelMenuItem Text="Quyền & Vai trò" Icon="security" Path="/admin/roles" />

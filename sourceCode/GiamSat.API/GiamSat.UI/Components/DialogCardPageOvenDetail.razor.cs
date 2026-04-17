@@ -1,4 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.InkML;
 using GiamSat.Models;
 using Microsoft.AspNetCore.Components;
@@ -9,12 +9,13 @@ using System.Timers;
 
 namespace GiamSat.UI.Components
 {
-    public partial class DialogCardPageOvenDetail:IDisposable
+    public partial class DialogCardPageOvenDetail : IDisposable
     {
         [Parameter] public int OvenId { get; set; }
 
         RealtimeDisplayModel _ovenDisplayInfo { get; set; } = new RealtimeDisplayModel();
         private System.Timers.Timer _timer;
+        private bool _disposed = false;
 
         Radzen.Blazor.RadzenChart RadzenChart = new Radzen.Blazor.RadzenChart();
         List<DataItem> _chartDataSeriesTemp = new List<DataItem>();        
@@ -64,9 +65,13 @@ namespace GiamSat.UI.Components
 
         private async void RefreshData(object? sender, ElapsedEventArgs e)
         {
+            if (_disposed) return;
+
             try
             {
                 var res = await _ft02Client.GetAllAsync();
+
+                if (_disposed) return;
 
                 if (res.Succeeded)
                 {
@@ -102,9 +107,15 @@ namespace GiamSat.UI.Components
                     Temperature = _ovenDisplayInfo.SetPoint
                 });
 
-                await RadzenChart.Reload();
-
-                StateHasChanged(); // NOTE: MUST CALL StateHasChanged() BECAUSE THIS IS TRIGGERED BY A TIMER INSTEAD OF A USER EVENT
+                if (!_disposed)
+                {
+                    await InvokeAsync(async () =>
+                    {
+                        if (_disposed) return;
+                        await RadzenChart.Reload();
+                        StateHasChanged();
+                    });
+                }
             }
             catch { }
         }
@@ -126,7 +137,14 @@ namespace GiamSat.UI.Components
 
         public void Dispose()
         {
-            _timer.Dispose();
+            _disposed = true;
+            if (_timer != null)
+            {
+                _timer.Elapsed -= RefreshData;
+                _timer.Stop();
+                _timer.Dispose();
+            }
         }
     }
 }
+

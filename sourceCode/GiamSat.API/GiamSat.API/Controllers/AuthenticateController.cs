@@ -314,6 +314,13 @@ namespace GiamSat.API.Controllers
                 return StatusCode(StatusCodes.Status200OK, new Response() { Status = "Error", Message = "User not found!" });
             }
 
+            // Usage check: Ensure the user is not "in use" (has no roles)
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            if (currentRoles.Any())
+            {
+                return StatusCode(StatusCodes.Status200OK, new Response() { Status = "Error", Message = "Không thể xóa tài khoản đang có vai trò (Role) gán kèm. Vui lòng gỡ hết Role trước." });
+            }
+
             var res = await _userManager.DeleteAsync(user);
 
             return Ok(new Response() { Status="Success",Message="Delete user success."});

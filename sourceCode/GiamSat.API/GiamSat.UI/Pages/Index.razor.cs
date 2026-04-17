@@ -1,4 +1,4 @@
-﻿using Blazorise.Utilities;
+using Blazorise.Utilities;
 using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Office2016.Excel;
@@ -20,6 +20,7 @@ namespace GiamSat.UI.Pages
 
         private System.Timers.Timer _timer;
         private bool _isLoad = false;
+        private bool _disposed = false;
 
         string _styleCard = "rz-background-color-info-light rz-shadow-0 rz-border-radius-4 rz-m-0";
 
@@ -134,27 +135,29 @@ namespace GiamSat.UI.Pages
 
         private async void RefreshData(object? sender, ElapsedEventArgs e)
         {
+            if (_disposed) return;
+
             try
             {
-                //var authState = await _authSerivce.GetAuthenticationStateAsync();
-                //if (authState.User.Identity != null && authState.User.Identity.IsAuthenticated)
+                var res = await _ft02Client.GetAllAsync();
+
+                if (_disposed) return;
+
+                if (res.Succeeded)
                 {
-                    var res = await _ft02Client.GetAllAsync();
+                    var _dataFromDB = res.Data.ToList();
 
-                    if (res.Succeeded)
+                    if (_dataFromDB == null && _dataFromDB.Count <= 0)
                     {
-                        var _dataFromDB = res.Data.ToList();
-
-                        if (_dataFromDB == null && _dataFromDB.Count <= 0)
-                        {
-                            _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Warning", Detail = "Data empty", Duration = 2000 });
-                            return;
-                        }
-
-                        _displayRealtime = JsonConvert.DeserializeObject<RealtimeDisplays>(_dataFromDB.FirstOrDefault().C000);
+                        return;
                     }
 
-                    StateHasChanged(); // NOTE: MUST CALL StateHasChanged() BECAUSE THIS IS TRIGGERED BY A TIMER INSTEAD OF A USER EVENT
+                    _displayRealtime = JsonConvert.DeserializeObject<RealtimeDisplays>(_dataFromDB.FirstOrDefault().C000);
+                }
+
+                if (!_disposed)
+                {
+                    await InvokeAsync(StateHasChanged);
                 }
             }
             catch { }
@@ -170,7 +173,13 @@ namespace GiamSat.UI.Pages
 
         public void Dispose()
         {
-            if (_isLoad) _timer.Dispose();
+            _disposed = true;
+            if (_isLoad && _timer != null)
+            {
+                _timer.Elapsed -= RefreshData;
+                _timer.Stop();
+                _timer.Dispose();
+            }
         }
     }
 }

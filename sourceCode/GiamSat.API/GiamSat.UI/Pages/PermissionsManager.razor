@@ -20,7 +20,10 @@
                 }
                 else
                 {
-                    <RadzenDataGrid Data="@_permissions" TItem="GiamSat.Models.Permissions" AllowPaging="true" PageSize="15" AllowSorting="true" AllowFiltering="true">
+                    <RadzenDataGrid @ref="_grid" Data="@_permissions" TItem="GiamSat.Models.Permissions" AllowFiltering="false" 
+                            AllowPaging="true" PageSize="10" AllowSorting="true"
+                            PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)"
+                            PageSizeText="Bản ghi trên trang">
                         <Columns>
                             <RadzenDataGridColumn TItem="GiamSat.Models.Permissions" Property="Module" Title="Module" Width="150px" />
                             <RadzenDataGridColumn TItem="GiamSat.Models.Permissions" Property="Actions" Title="Actions" Width="150px" />
@@ -29,7 +32,7 @@
                             <RadzenDataGridColumn TItem="GiamSat.Models.Permissions" Title="Thao tác" Sortable="false" Filterable="false" Width="180px">
                                 <Template Context="perm">
                                     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-                                        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" Text="Sửa" Click="@(async _ => await OpenEditDialogAsync(perm))" />
+                                        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Info" Text="Sửa" Click="@(async _ => await OpenEditDialogAsync(perm))" />
                                         <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" Text="Xóa" Click="@(async _ => await DeletePermissionAsync(perm.Id))" />
                                     </RadzenStack>
                                 </Template>
@@ -43,6 +46,7 @@
 </RadzenRow>
 
 @code {
+    private RadzenDataGrid<GiamSat.Models.Permissions>? _grid;
     private List<GiamSat.Models.Permissions>? _permissions;
 
     protected override async Task OnInitializedAsync() => await LoadAsync();
@@ -57,14 +61,18 @@
 
     private async Task DeletePermissionAsync(Guid id)
     {
-        var confirm = await _js.InvokeAsync<bool>("confirm", "Bạn có chắc chắn muốn xóa Permission này? Những thao tác này sẽ xóa quyền này khỏi TẤT CẢ các Role đang có!");
-        if (confirm)
+        var confirm = await _dialogService.Confirm("Bạn có chắc chắn muốn xóa Permission này? Những thao tác này sẽ xóa quyền này khỏi TẤT CẢ các Role đang có!", "Xác nhận xóa", new ConfirmOptions { OkButtonText = "Xóa", CancelButtonText = "Hủy" });
+        if (confirm == true)
         {
             var res = await ApiClient.DeleteAsync($"api/permissions/permissions/{id}");
             if (res.IsSuccessStatusCode)
             {
                 _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Thành công", Detail = "Đã xóa Permission." });
                 await LoadAsync();
+            }
+            else
+            {
+                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Lỗi", Detail = "Không thể xóa Permission." });
             }
         }
     }
@@ -123,8 +131,19 @@
             }
             else
             {
-                var dict = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
-                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Lỗi", Detail = dict != null && dict.ContainsKey("message") ? dict["message"].ToString() : "Lưu thất bại" });
+                string errorMessage = "Lưu thất bại";
+                try
+                {
+                    var dict = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
+                    if (dict != null)
+                    {
+                        if (dict.ContainsKey("Message")) errorMessage = dict["Message"].ToString();
+                        else if (dict.ContainsKey("message")) errorMessage = dict["message"].ToString();
+                    }
+                }
+                catch { }
+
+                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Lỗi", Detail = errorMessage });
                 await ShowDialogAsync(title, model, isCreate);
             }
         }

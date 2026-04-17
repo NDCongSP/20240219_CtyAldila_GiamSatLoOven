@@ -1,0 +1,33 @@
+<RadzenStack Gap="1.5rem">
+    <RadzenText TextStyle="TextStyle.Body1">@Message</RadzenText>
+    <RadzenTextBox @bind-Value="@Value" Style="width: 100%" @onkeypress="@OnKeyPress" />
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem">
+        <RadzenButton Text="Hủy" Click="@OnCancel" ButtonStyle="ButtonStyle.Light" />
+        <RadzenButton Text="Xác nhận" Click="@OnSubmit" ButtonStyle="ButtonStyle.Primary" />
+    </RadzenStack>
+</RadzenStack>
+
+@code {
+    [Parameter] public string Message { get; set; } = "Nhập giá trị:";
+    [Parameter] public string Value { get; set; } = "";
+
+    [Inject] private Radzen.DialogService DialogService { get; set; } = default!;
+
+    private void OnCancel()
+    {
+        DialogService.Close(null);
+    }
+
+    private void OnSubmit()
+    {
+        DialogService.Close(Value);
+    }
+
+    private void OnKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            OnSubmit();
+        }
+    }
+}

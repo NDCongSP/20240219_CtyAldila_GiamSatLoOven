@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using System;
+using System.Linq;
 
 namespace GiamSat.API
 {
@@ -28,11 +29,20 @@ namespace GiamSat.API
             ("Revo_Config", "Edit", "Sửa cấu hình Revo"),
             ("Revo_Config", "Delete", "Xóa cấu hình Revo"),
             ("Revo_Report", "View", "Xem báo cáo Revo"),
-            ("Revo_Report", "Export", "Xuất file báo cáo Revo")
+            ("Revo_Report", "Export", "Xuất file báo cáo Revo"),
+
+            // SYSTEM MODULE
+            ("System_Config", "View", "Xem cấu hình hệ thống"),
+            ("System_Config", "Edit", "Chỉnh sửa cấu hình hệ thống")
         };
 
         public static async Task SeedAsync(ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager)
         {
+            // Only seed if both tables are empty (or one of them is missing data)
+            // As requested: "khi 2 bảng permission, roletopoermission đã có data thì ko seed nữa"
+            if (await dbContext.Permissions.AnyAsync() && await dbContext.RoleToPermissions.AnyAsync())
+                return;
+
             // 1. Ensure default roles exist
             foreach (var roleName in UserRoles.DefaultRoles)
             {
@@ -40,7 +50,7 @@ namespace GiamSat.API
                     await roleManager.CreateAsync(new IdentityRole(roleName));
             }
 
-            // 2. Seed Permissions table
+            // 2. Seed Permissions table (Additive: only add what is missing)
             foreach (var item in PermissionDefs)
             {
                 if (!await dbContext.Permissions.AnyAsync(x => x.Module == item.Module && x.Actions == item.Action))
@@ -59,15 +69,19 @@ namespace GiamSat.API
             }
             await dbContext.SaveChangesAsync();
 
-            // 3. Grant all permissions to Admin role — ONLY on first run (when Admin has zero permissions)
+            // 3. Grant missing permissions to Admin role
             var adminRole = await roleManager.FindByNameAsync(UserRoles.Admin);
             if (adminRole == null) return;
 
-            var adminHasAny = await dbContext.RoleToPermissions.AnyAsync(x => x.RoleId == adminRole.Id);
-            if (adminHasAny) return; // Admin already has permissions configured — don't override manual changes
+            var existingAdminPerms = await dbContext.RoleToPermissions
+                .Where(x => x.RoleId == adminRole.Id)
+                .Select(x => x.PermissionId)
+                .ToListAsync();
 
             var allPermissions = await dbContext.Permissions.ToListAsync();
-            foreach (var perm in allPermissions)
+            var missingForAdmin = allPermissions.Where(p => !existingAdminPerms.Contains(p.Id)).ToList();
+
+            foreach (var perm in missingForAdmin)
             {
                 dbContext.RoleToPermissions.Add(new RoleToPermission
                 {

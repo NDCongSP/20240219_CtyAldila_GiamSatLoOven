@@ -10,12 +10,15 @@
                 <RadzenFieldset Text="Danh sách users">
                     <RadzenStack Orientation=Orientation.Vertical Gap="1rem">
                         <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
-                            <RadzenButton Text="Thêm user" Icon="person_add" Click="AddNewItem" />
+                            <RadzenButton Text="Thêm user" Icon="person_add" Click="AddNewItem" ButtonStyle="ButtonStyle.Success" />
                         </RadzenStack>
-                        <RadzenDataGrid @ref="_profileGrid" AllowFiltering="true"
-                                        FilterPopupRenderMode="PopupRenderMode.OnDemand" AllowPaging="true" PageSize="5" AllowSorting="true"
+                        <RadzenDataGrid @ref="_profileGrid" AllowFiltering="false"
+                                        AllowPaging="true" PageSize="5" AllowSorting="true"
                                         Data="@_users" TItem="APIClient.IdentityUserDto"
-                                        ShowPagingSummary=@_showPagerSummary PagingSummaryFormat="@_pagingSummaryFormat" PageSizeOptions="@_pageSizeOptions">
+                                        ShowPagingSummary=@_showPagerSummary 
+                                        PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)" 
+                                        PageSizeText="Bản ghi trên trang"
+                                        PageSizeOptions="@_pageSizeOptions">
                             <Columns>
                                 <RadzenDataGridColumn TItem="APIClient.IdentityUserDto" Property="UserName" Title="Tên" />
                                 <RadzenDataGridColumn TItem="APIClient.IdentityUserDto" Property="Email" Title="Email" />
@@ -36,7 +39,7 @@
                                                           Size="ButtonSize.Small" class="my-1" Click="@(args => EditUserRoles(data))" @onclick:stopPropagation="true"
                                                           title="Đổi role" />
                                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter"
-                                                          Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteItem(data.Id, data.UserName))" @onclick:stopPropagation="true" />
+                                                          Size="ButtonSize.Small" class="my-1 ms-1" Click="@(args => DeleteItem(data.Id, data.UserName))" @onclick:stopPropagation="true" />
                                         </RadzenStack>
                                     </Template>
                                 </RadzenDataGridColumn>

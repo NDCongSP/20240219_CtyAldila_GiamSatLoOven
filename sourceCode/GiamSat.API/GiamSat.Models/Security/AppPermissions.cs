@@ -31,6 +31,10 @@ namespace GiamSat.Models
         public const string Revo_Report_View = "Revo_Report.View";
         public const string Revo_Report_Export = "Revo_Report.Export";
 
+        // SYSTEM
+        public const string System_Config_View = "System_Config.View";
+        public const string System_Config_Edit = "System_Config.Edit";
+
         /// <summary>
         /// Gets all defined permission codes automatically using reflection.
         /// </summary>

@@ -113,7 +113,10 @@
                                 <RadzenDataGrid @ref="_dataProfileGrid" Data="_dataProfile" TItem="FT04"
                                                 AllowFiltering="true" FilterPopupRenderMode="PopupRenderMode.OnDemand"
                                                 AllowPaging="true" PageSize="5" AllowSorting="true" AllowColumnResize="true" AllowColumnReorder="true"
-                                                ShowPagingSummary=@_showPagerSummary PagingSummaryFormat="@_pagingSummaryFormat" PageSizeOptions="@_pageSizeOptions">
+                                                ShowPagingSummary=@_showPagerSummary 
+                                                PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)" 
+                                                PageSizeText="Bản ghi trên trang"
+                                                PageSizeOptions="@_pageSizeOptions">
                                     <Columns>
                                         <RadzenDataGridColumn TItem="FT04" Property="OvenId" Title="Oven Id" />
                                         <RadzenDataGridColumn TItem="FT04" Property="OvenName" Title="Tên lò" />
@@ -227,7 +230,10 @@
                                 <RadzenDataGrid @ref="_dataReportGrid" Data="_dataReport" TItem="FT03"
                                                 AllowFiltering="true" FilterPopupRenderMode="PopupRenderMode.OnDemand"
                                                 AllowPaging="true" PageSize="5" AllowSorting="true"
-                                                ShowPagingSummary=@_showPagerSummary PagingSummaryFormat="@_pagingSummaryFormat" PageSizeOptions="@_pageSizeOptions">
+                                                ShowPagingSummary=@_showPagerSummary 
+                                                PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)" 
+                                                PageSizeText="Bản ghi trên trang"
+                                                PageSizeOptions="@_pageSizeOptions">
                                     <Columns>
                                         <RadzenDataGridColumn TItem="FT03" Property="OvenId" Title="Oven Id" />
                                         <RadzenDataGridColumn TItem="FT03" Property="OvenName" Title="Tên lò" />

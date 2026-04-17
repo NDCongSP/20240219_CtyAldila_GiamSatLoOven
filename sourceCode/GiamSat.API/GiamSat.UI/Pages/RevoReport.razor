@@ -144,7 +144,9 @@
                                     Render="@OnStepGridRender"
                                     PagerHorizontalAlign="HorizontalAlign.Right"
                                     ShowPagingSummary="true"
-                                    PagingSummaryFormat="Hiển thị {0} - {1} / {2} mục">
+                                    PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)"
+                                    PageSizeText="Bản ghi trên trang"
+                                    PageSizeOptions="@(new int[] { 10, 20, 50, 100 })">
                         <Columns>
                             <RadzenDataGridColumn TItem="RevoStepRow" Property="Stt" Title="STT" Width="60px" TextAlign="TextAlign.Center" />
                             <RadzenDataGridColumn TItem="RevoStepRow" Property="ShaftKey" Title="Shaft" Width="100px" TextAlign="TextAlign.Center" />
@@ -179,7 +181,9 @@
                                     RowRender="@OnShaftRowRender"
                                     PagerHorizontalAlign="HorizontalAlign.Right"
                                     ShowPagingSummary="true"
-                                    PagingSummaryFormat="Hiển thị {0} - {1} / {2} mục">
+                                    PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)"
+                                    PageSizeText="Bản ghi trên trang"
+                                    PageSizeOptions="@(new int[] { 10, 20, 50, 100 })">
                         <Columns>
                             <RadzenDataGridColumn TItem="RevoShaftRow" Property="Stt" Title="STT" Width="60px" TextAlign="TextAlign.Center" />
                             <RadzenDataGridColumn TItem="RevoShaftRow" Property="ShaftLabel" Title="Tên Shaft" Width="120px" TextAlign="TextAlign.Center" />
@@ -212,7 +216,9 @@
                                     RowRender="@OnHourRowRender"
                                     PagerHorizontalAlign="HorizontalAlign.Right"
                                     ShowPagingSummary="true"
-                                    PagingSummaryFormat="Hiển thị {0} - {1} / {2} mục">
+                                    PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)"
+                                    PageSizeText="Bản ghi trên trang"
+                                    PageSizeOptions="@(new int[] { 10, 20, 50, 100 })">
                         <Columns>
                             <RadzenDataGridColumn TItem="RevoHourRow" Property="HourRange" Title="Giờ" Width="160px" />
                             <RadzenDataGridColumn TItem="RevoHourRow" Property="ShaftCount" Title="Tổng số Shaft" Width="110px" TextAlign="TextAlign.Center" />

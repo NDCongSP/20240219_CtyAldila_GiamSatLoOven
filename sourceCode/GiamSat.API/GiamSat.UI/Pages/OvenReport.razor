@@ -93,14 +93,16 @@
             else
             {
                 <RadzenDataGrid @ref="_dataGrid" 
-                              Data="@_reportData" 
-                              TItem="ReportModel" 
-                              AllowPaging="true" 
-                              PageSize="15"
-                              AllowSorting="true"
-                              PagerHorizontalAlign="HorizontalAlign.Right"
-                              ShowPagingSummary="true"
-                              PagingSummaryFormat="Hiển thị {0} - {1} / {2} mục">
+                               Data="@_reportData" 
+                               TItem="ReportModel" 
+                               AllowPaging="true" 
+                               PageSize="15"
+                               AllowSorting="true"
+                               PagerHorizontalAlign="HorizontalAlign.Right"
+                               ShowPagingSummary="true"
+                               PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)"
+                               PageSizeText="Bản ghi trên trang"
+                               PageSizeOptions="@(new int[] { 5, 10, 15, 30, 50 })">
                     <Columns>
                         <RadzenDataGridColumn TItem="ReportModel" Property="OvenName" Title="Tên lò" Width="200px" />
                         <RadzenDataGridColumn TItem="ReportModel" Property="ProfileName" Title="Profile" Width="180px" />

@@ -38,7 +38,9 @@
                                   AllowSorting="true"
                                   PagerHorizontalAlign="HorizontalAlign.Right"
                                   ShowPagingSummary="true"
-                                  PagingSummaryFormat="Hiển thị {0} - {1} / {2} mục"
+                                  PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)"
+                                  PageSizeText="Bản ghi trên trang"
+                                  PageSizeOptions="@(new int[] { 5, 10, 20, 50 })"
                                   class="rz-mt-3">
                         <Columns>
                             <RadzenDataGridColumn TItem="RevoConfigModel" Property="Id" Title="ID" Width="100px" TextAlign="TextAlign.Center" />

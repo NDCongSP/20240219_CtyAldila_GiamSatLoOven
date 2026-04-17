@@ -113,6 +113,16 @@ namespace GiamSat.API.Controllers
 
             if (string.Equals(role.Name, UserRoles.Admin, System.StringComparison.OrdinalIgnoreCase))
                 return BadRequest(new { Message = "Cannot delete Admin role." });
+            
+            // Usage check: Ensure no users are assigned this role
+            var usersInRole = await _userManager.GetUsersInRoleAsync(role.Name);
+            if (usersInRole.Any())
+                return BadRequest(new { Message = "Không thể xóa Role đang được gán cho người dùng." });
+
+            // Usage check: Ensure no permissions are mapped to this role
+            var hasPermissions = await _dbContext.RoleToPermissions.AnyAsync(x => x.RoleId == id);
+            if (hasPermissions)
+                return BadRequest(new { Message = "Không thể xóa Role đang có các quyền liên kết." });
 
             var result = await _roleManager.DeleteAsync(role);
             if (!result.Succeeded)
@@ -196,6 +206,11 @@ namespace GiamSat.API.Controllers
         {
             var permission = await _dbContext.Permissions.FindAsync(id);
             if (permission == null) return NotFound();
+
+            // Usage check: Ensure no roles are using this permission
+            var isUsedInRoles = await _dbContext.RoleToPermissions.AnyAsync(x => x.PermissionId == id);
+            if (isUsedInRoles)
+                return BadRequest(new { Message = "Không thể xóa Quyền đang được gán cho các vai trò." });
 
             _dbContext.Permissions.Remove(permission);
 
