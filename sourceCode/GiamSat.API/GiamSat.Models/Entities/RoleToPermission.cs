@@ -10,7 +10,7 @@ namespace GiamSat.Models
     public class RoleToPermission
     {
         [Key] public Guid Id { get; set; }
-        public Guid RoleId { get; set; }
+        public string RoleId { get; set; }
         public string RoleName { get; set; }
         public Guid PermissionId { get; set; }
         public string? PermisionName { get; set; }
