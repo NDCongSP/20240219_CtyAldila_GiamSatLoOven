@@ -2,6 +2,7 @@ using DocumentFormat.OpenXml.Drawing.Diagrams;
 using DocumentFormat.OpenXml.Spreadsheet;
 using GiamSat.Models;
 using GiamSat.UI.Components;
+using GiamSat.UI.Model;
 using Radzen;
 using Radzen.Blazor;
 using System.Net.Http.Json;
@@ -99,6 +100,59 @@ namespace GiamSat.UI.Pages
             if (res == "Success")
             {
                 RefreshData();
+            }
+        }
+
+        async void EditUserRoles(APIClient.IdentityUserDto user)
+        {
+            try
+            {
+                // Load available roles
+                var allRoles = await ApiClient.GetFromJsonAsync<List<GiamSat.Models.IdentityRoleDto>>("api/permissions/roles");
+                if (allRoles == null) return;
+
+                var availableRoleNames = allRoles.Select(r => r.Name).ToList();
+                var currentRoles = user.Roles ?? new List<string>();
+
+                // Build checkbox options — list of (RoleName, IsChecked)
+                var roleSelections = availableRoleNames
+                    .Select(r => new RoleSelection { Name = r, IsSelected = currentRoles.Contains(r) })
+                    .ToList();
+
+                var result = await _dialogService.OpenAsync<DialogEditUserRoles>(
+                    $"Phân role: {user.UserName}",
+                    new Dictionary<string, object>()
+                    {
+                        { "UserName", user.UserName },
+                        { "RoleSelections", roleSelections }
+                    },
+                    new DialogOptions() { Width = "420px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true });
+
+                if (result is List<string> selectedRoles)
+                {
+                    var response = await ApiClient.PutAsJsonAsync($"api/permissions/users/{user.Id}/roles", selectedRoles);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        _notificationService.Notify(new NotificationMessage
+                        {
+                            Severity = NotificationSeverity.Success,
+                            Summary = "Thành công",
+                            Detail = $"Đã cập nhật role cho {user.UserName}",
+                            Duration = 2000
+                        });
+                        RefreshData();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _notificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Lỗi",
+                    Detail = ex.Message,
+                    Duration = 3000
+                });
             }
         }
 

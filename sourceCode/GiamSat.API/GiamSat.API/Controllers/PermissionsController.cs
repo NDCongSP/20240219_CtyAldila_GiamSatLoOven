@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace GiamSat.API.Controllers
@@ -30,6 +29,7 @@ namespace GiamSat.API.Controllers
             _roleManager = roleManager;
         }
 
+        // GET api/permissions/roles
         [HttpGet("roles")]
         public async Task<ActionResult<IEnumerable<IdentityRoleDto>>> GetRoles()
         {
@@ -40,29 +40,31 @@ namespace GiamSat.API.Controllers
                 .Select(x => new { RoleId = x.Key, Count = x.Count() })
                 .ToDictionaryAsync(x => x.RoleId, x => x.Count);
 
-            var rolePermissions = await _dbContext.RolePermissions
-                .Include(rp => rp.Permission)
-                .Where(x => x.Permission != null && x.Permission.IsActive)
+            var rolesPerms = await _dbContext.RoleToPermissions.ToListAsync();
+            var perms = await _dbContext.Permissions.Where(p => p.IsActived == true).ToDictionaryAsync(x => x.Id);
+
+            var roleClaims = rolesPerms
+                .Where(x => perms.ContainsKey(x.PermissionId))
                 .GroupBy(x => x.RoleId)
                 .Select(x => new
                 {
                     RoleId = x.Key,
-                    Claims = x.Select(y => y.Permission!.Code).Distinct().ToList()
+                    Claims = x.Select(y => perms[y.PermissionId].Module + "." + perms[y.PermissionId].Actions).Distinct().ToList()
                 })
-                .ToDictionaryAsync(x => x.RoleId, x => x.Claims);
+                .ToDictionary(x => x.RoleId, x => x.Claims);
 
             var result = roles.Select(r => new IdentityRoleDto
             {
                 Id = r.Id,
                 Name = r.Name ?? string.Empty,
-                Description = null,
                 UserCount = userRoleCounts.TryGetValue(r.Id, out var c) ? c : 0,
-                Claims = rolePermissions.TryGetValue(r.Id, out var claims) ? claims : new List<string>()
+                Claims = roleClaims.TryGetValue(r.Id, out var claims) ? claims : new List<string>()
             }).ToList();
 
             return Ok(result);
         }
 
+        // POST api/permissions/roles
         [HttpPost("roles")]
         public async Task<IActionResult> CreateRole([FromBody] IdentityRoleDto model)
         {
@@ -79,6 +81,7 @@ namespace GiamSat.API.Controllers
             return Ok();
         }
 
+        // PUT api/permissions/roles/{id}
         [HttpPut("roles/{id}")]
         public async Task<IActionResult> UpdateRole(string id, [FromBody] IdentityRoleDto model)
         {
@@ -89,43 +92,53 @@ namespace GiamSat.API.Controllers
                 return BadRequest(new { Message = "Role name is required." });
 
             role.Name = model.Name;
-            role.NormalizedName = model.Name.ToUpperInvariant();
+            // Also update redundant RoleToPermissions.RoleName
+            var maps = await _dbContext.RoleToPermissions.Where(x => x.RoleId == id).ToListAsync();
+            foreach (var map in maps) map.RoleName = role.Name;
 
             var result = await _roleManager.UpdateAsync(role);
             if (!result.Succeeded)
                 return BadRequest(new { Message = string.Join("; ", result.Errors.Select(x => x.Description)) });
 
+            await _dbContext.SaveChangesAsync();
             return Ok();
         }
 
+        // DELETE api/permissions/roles/{id}
         [HttpDelete("roles/{id}")]
         public async Task<IActionResult> DeleteRole(string id)
         {
             var role = await _roleManager.FindByIdAsync(id);
             if (role == null) return NotFound();
 
-            if (string.Equals(role.Name, UserRoles.Admin, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(role.Name, UserRoles.Admin, System.StringComparison.OrdinalIgnoreCase))
                 return BadRequest(new { Message = "Cannot delete Admin role." });
 
             var result = await _roleManager.DeleteAsync(role);
             if (!result.Succeeded)
                 return BadRequest(new { Message = string.Join("; ", result.Errors.Select(x => x.Description)) });
 
+            var redundantMaps = await _dbContext.RoleToPermissions.Where(x => x.RoleId == id).ToListAsync();
+            _dbContext.RoleToPermissions.RemoveRange(redundantMaps);
+            await _dbContext.SaveChangesAsync();
+
             return Ok();
         }
 
+        // GET api/permissions/permissions
         [HttpGet("permissions")]
-        public async Task<ActionResult<IEnumerable<SecurityPermission>>> GetPermissions()
+        public async Task<ActionResult<IEnumerable<Permissions>>> GetPermissions()
         {
-            var permissions = await _dbContext.SecurityPermissions
-                .Where(x => x.IsActive)
+            var permissions = await _dbContext.Permissions
+                .Where(x => x.IsActived == true)
                 .OrderBy(x => x.Module)
-                .ThenBy(x => x.Action)
+                .ThenBy(x => x.Actions)
                 .ToListAsync();
 
             return Ok(permissions);
         }
 
+        // PUT api/permissions/roles/{roleId}/permissions
         [HttpPut("roles/{roleId}/permissions")]
         public async Task<IActionResult> UpdateRolePermissions(string roleId, [FromBody] List<string> permissionCodes)
         {
@@ -135,59 +148,50 @@ namespace GiamSat.API.Controllers
             permissionCodes ??= new List<string>();
             permissionCodes = permissionCodes.Where(x => !string.IsNullOrWhiteSpace(x)).Distinct().ToList();
 
-            var currentRolePermissions = await _dbContext.RolePermissions
-                .Include(rp => rp.Permission)
-                .Where(x => x.RoleId == roleId)
-                .ToListAsync();
+            var currentMatches = await _dbContext.RoleToPermissions.Where(x => x.RoleId == roleId).ToListAsync();
+            _dbContext.RoleToPermissions.RemoveRange(currentMatches);
 
-            var permissionsToKeep = currentRolePermissions
-                .Where(rp => rp.Permission != null && permissionCodes.Contains(rp.Permission.Code))
-                .ToList();
+            var activePerms = await _dbContext.Permissions.Where(p => p.IsActived == true).ToListAsync();
+            var permsToAdd = activePerms.Where(p => permissionCodes.Contains(p.Module + "." + p.Actions)).ToList();
 
-            var permissionsToRemove = currentRolePermissions
-                .Except(permissionsToKeep)
-                .ToList();
-
-            _dbContext.RolePermissions.RemoveRange(permissionsToRemove);
-
-            var existingCodes = permissionsToKeep.Select(p => p.Permission!.Code).ToList();
-            var newCodes = permissionCodes.Except(existingCodes).ToList();
-
-            var permissionsToAdd = await _dbContext.SecurityPermissions
-                .Where(p => newCodes.Contains(p.Code) && p.IsActive)
-                .ToListAsync();
-
-            foreach (var perm in permissionsToAdd)
+            foreach (var perm in permsToAdd)
             {
-                _dbContext.RolePermissions.Add(new RolePermission
+                _dbContext.RoleToPermissions.Add(new RoleToPermission
                 {
+                    Id = Guid.NewGuid(),
                     RoleId = roleId,
-                    PermissionId = perm.Id
+                    RoleName = role.Name,
+                    PermissionId = perm.Id,
+                    PermisionName = perm.Name,
+                    PermisionDescription = perm.Description,
+                    IsActived = true,
+                    CreatedAt = DateTime.UtcNow
                 });
             }
 
             await _dbContext.SaveChangesAsync();
-
             return Ok();
         }
 
+        // GET api/permissions/users
         [HttpGet("users")]
         public async Task<ActionResult<IEnumerable<IdentityUserDto>>> GetUsers()
         {
             var users = await _userManager.Users.OrderBy(x => x.UserName).ToListAsync();
+            var allRoleMaps = await _dbContext.RoleToPermissions.ToListAsync();
+            var allPerms = await _dbContext.Permissions.ToDictionaryAsync(p => p.Id);
 
             var result = new List<IdentityUserDto>();
+
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
 
-                var claims = await _dbContext.RolePermissions
-                    .Include(rp => rp.Role)
-                    .Include(rp => rp.Permission)
-                    .Where(x => x.Role != null && roles.Contains(x.Role.Name) && x.Permission != null && x.Permission.IsActive)
-                    .Select(x => x.Permission!.Code)
+                var claims = allRoleMaps
+                    .Where(x => x.RoleName != null && roles.Contains(x.RoleName) && allPerms.ContainsKey(x.PermissionId) && allPerms[x.PermissionId].IsActived == true)
+                    .Select(x => allPerms[x.PermissionId].Module + "." + allPerms[x.PermissionId].Actions)
                     .Distinct()
-                    .ToListAsync();
+                    .ToList();
 
                 result.Add(new IdentityUserDto
                 {
@@ -202,6 +206,7 @@ namespace GiamSat.API.Controllers
             return Ok(result);
         }
 
+        // PUT api/permissions/users/{id}/roles
         [HttpPut("users/{id}/roles")]
         public async Task<IActionResult> UpdateUserRoles(string id, [FromBody] List<string> roles)
         {
@@ -220,35 +225,28 @@ namespace GiamSat.API.Controllers
             return Ok();
         }
 
+        // GET api/permissions/claims — summary by role
         [HttpGet("claims")]
         public async Task<ActionResult<IEnumerable<ClaimGroupDto>>> GetRoleClaims()
         {
             var roles = await _roleManager.Roles.OrderBy(x => x.Name).ToListAsync();
-            var rolePermissions = await _dbContext.RolePermissions
-                .Include(rp => rp.Permission)
-                .Where(x => x.Permission != null && x.Permission.IsActive)
-                .ToListAsync();
+            var rolePermissions = await _dbContext.RoleToPermissions.ToListAsync();
+            var perms = await _dbContext.Permissions.Where(p => p.IsActived == true).ToDictionaryAsync(x => x.Id);
 
-            var result = new List<ClaimGroupDto>();
-
-            foreach (var role in roles)
+            var result = roles.Select(role => new ClaimGroupDto
             {
-                var claims = rolePermissions
-                    .Where(rp => rp.RoleId == role.Id)
-                    .Select(rp => rp.Permission!.Code)
+                RoleName = role.Name ?? string.Empty,
+                Claims = rolePermissions
+                    .Where(rp => rp.RoleId == role.Id && perms.ContainsKey(rp.PermissionId))
+                    .Select(rp => perms[rp.PermissionId].Module + "." + perms[rp.PermissionId].Actions)
                     .Distinct()
-                    .ToList();
-
-                result.Add(new ClaimGroupDto
-                {
-                    RoleName = role.Name ?? string.Empty,
-                    Claims = claims
-                });
-            }
+                    .ToList()
+            }).ToList();
 
             return Ok(result);
         }
 
+        // POST api/permissions/seed
         [HttpPost("seed")]
         public async Task<IActionResult> Seed()
         {

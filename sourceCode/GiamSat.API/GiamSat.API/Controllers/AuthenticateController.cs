@@ -1,4 +1,4 @@
-﻿using GiamSat.Models;
+using GiamSat.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -325,13 +325,31 @@ namespace GiamSat.API.Controllers
         private async Task<List<string>> GetPermissionCodesAsync(IEnumerable<string> roles)
         {
             var roleNames = roles.ToList();
-            var permissions = await _dbContext.RolePermissions
-                .Where(x => x.Role != null && roleNames.Contains(x.Role.Name) && x.Permission != null && x.Permission.IsActive)
-                .Select(x => x.Permission!.Code)
+            if (!roleNames.Any()) return new List<string>();
+
+            // Retrieve role IDs given role names
+            var roleIds = await _roleManager.Roles
+                .Where(r => roleNames.Contains(r.Name))
+                .Select(r => r.Id)
+                .ToListAsync();
+
+            if (!roleIds.Any()) return new List<string>();
+
+            // Manual mapping because NO navigation property in RoleToPermissions
+            var roleMap = await _dbContext.RoleToPermissions
+                .Where(x => roleIds.Contains(x.RoleId))
+                .Select(x => x.PermissionId)
+                .ToListAsync();
+
+            var permIds = roleMap.Distinct().ToList();
+
+            var perms = await _dbContext.Permissions
+                .Where(p => permIds.Contains(p.Id) && p.IsActived == true)
+                .Select(p => p.Module + "." + p.Actions)
                 .Distinct()
                 .ToListAsync();
 
-            return permissions;
+            return perms;
         }
 
         private JwtSecurityToken GetToken(List<Claim> authClaims)

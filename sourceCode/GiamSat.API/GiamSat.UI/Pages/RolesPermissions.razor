@@ -62,9 +62,10 @@
                                     <RadzenStack Orientation="Orientation.Horizontal" Wrap="FlexWrap.Wrap" Gap="1rem">
                                         @foreach (var p in group)
                                         {
+                                            var pCode = p.Module + "." + p.Actions;
                                             <label style="display:flex;align-items:center;gap:.5rem;min-width:220px;" title="@p.Description">
-                                                <input type="checkbox" checked="@_selectedPermissionCodes.Contains(p.Code)" @onchange="@(e => TogglePermission(p.Code, e.Value?.ToString() == "true"))" />
-                                                <span>@p.Action</span>
+                                                <input type="checkbox" checked="@_selectedPermissionCodes.Contains(pCode)" @onchange="@(e => TogglePermission(pCode, e.Value?.ToString() == "true"))" />
+                                                <span>@p.Actions</span>
                                             </label>
                                         }
                                     </RadzenStack>
@@ -81,8 +82,8 @@
 
 @code {
     private List<APIClient.IdentityRoleDto>? _roles;
-    private List<APIClient.SecurityPermission> _permissions = new();
-    private IEnumerable<IGrouping<string, APIClient.SecurityPermission>> _permissionGroups = Array.Empty<IGrouping<string, APIClient.SecurityPermission>>();
+    private List<GiamSat.Models.Permissions> _permissions = new();
+    private IEnumerable<IGrouping<string, GiamSat.Models.Permissions>> _permissionGroups = Array.Empty<IGrouping<string, GiamSat.Models.Permissions>>();
     private APIClient.IdentityRoleDto? _selectedRole;
     private HashSet<string> _selectedPermissionCodes = new();
     private string? _newRoleName;
@@ -94,7 +95,7 @@
     private async Task LoadAsync()
     {
         _roles = await ApiClient.GetFromJsonAsync<List<APIClient.IdentityRoleDto>>("api/permissions/roles");
-        _permissions = await ApiClient.GetFromJsonAsync<List<APIClient.SecurityPermission>>("api/permissions/permissions") ?? new();
+        _permissions = await ApiClient.GetFromJsonAsync<List<GiamSat.Models.Permissions>>("api/permissions/permissions") ?? new();
         _permissionGroups = _permissions
             .GroupBy(x => x.Module)
             .OrderBy(x => x.Key);
