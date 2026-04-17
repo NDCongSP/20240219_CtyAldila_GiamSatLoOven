@@ -1,5 +1,6 @@
-﻿@page "/report"
-@* @using GiamSat.Models *@
+@page "/report"
+@using AppPermissions = GiamSat.Models.AppPermissions
+@attribute [Authorize(Policy = AppPermissions.Oven_Report_View)]
 
 <div Class="rz-p-0 rz-p-md-2">
     <RadzenTabs Change=@OnChangeTab TabPosition="TabPosition.Top" RenderMode="TabRenderMode.Client">
@@ -45,10 +46,12 @@
                                                     </RadzenButton>
                                                 </RadzenColumn>
                                                 <RadzenColumn SizeXS="12" SizeSM="6">
+                                                <AuthorizeView Policy="@AppPermissions.Oven_Report_Export">
                                                     <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Text="Tải về" Icon="file_download" ButtonStyle="ButtonStyle.Dark"
-                                                                  Click=@(async args =>await ExportProfileAsync()) Style="width:100%">
+                                                                    Click=@(async args =>await ExportProfileAsync()) Style="width:100%">
 
                                                     </RadzenButton>
+                                                </AuthorizeView>
                                                 </RadzenColumn>
                                             </RadzenRow>
                                         </RadzenColumn>
@@ -169,10 +172,12 @@
                                                     </RadzenButton>
                                                 </RadzenColumn>
                                                 <RadzenColumn SizeXS="12" SizeSM="6">
+                                                <AuthorizeView Policy="@AppPermissions.Oven_Report_Export">
                                                     <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Text="Tải về" Icon="file_download" ButtonStyle="ButtonStyle.Dark"
-                                                                  Click=@(async args =>await ExportDataLogAsync()) Style="width:100%">
+                                                                    Click=@(async args =>await ExportDataLogAsync()) Style="width:100%">
 
                                                     </RadzenButton>
+                                                </AuthorizeView>
                                                 </RadzenColumn>
                                             </RadzenRow>
                                         </RadzenColumn>

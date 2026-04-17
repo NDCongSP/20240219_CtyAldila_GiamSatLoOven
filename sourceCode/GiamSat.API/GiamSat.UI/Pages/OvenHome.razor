@@ -1,6 +1,7 @@
 @page "/oven/{OvenId:int}"
 @using GiamSat.Models
-@attribute [Authorize(Policy = PermissionNames.Oven.View)]
+@using AppPermissions = GiamSat.Models.AppPermissions
+@attribute [Authorize(Policy = AppPermissions.Oven_Home_View)]
 
 <!-- Header với Legend và View Mode Buttons -->
 <RadzenRow class="rz-mb-3">

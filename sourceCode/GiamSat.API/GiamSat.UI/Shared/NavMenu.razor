@@ -1,11 +1,12 @@
+@using GiamSat.Models
 <RadzenPanelMenu ShowArrow="true">
     @* Logo - có thể bỏ comment nếu muốn hiển thị *@
     @* <RadzenStack AlignItems="Radzen.AlignItems.Center" class="rz-p-4" Style="padding: var(--rz-panel-menu-item-padding); border-bottom: var(--rz-panel-menu-item-border);">
         <RadzenImage Path="images/logoAldila.ico" style="width: 48px; height: 48px;"></RadzenImage>
     </RadzenStack> *@
 
-    @* Hệ thống lò 1 *@
-    @if (_ovenSystems != null && _ovenSystems.Count > 0)
+    @* Hệ thống lò 1 - Ẩn nếu không có bất kỳ quyền Oven nào *@
+    @if (_ovenSystems != null && _ovenSystems.Count > 0 && _hasAnyOvenPermission)
     {
         <RadzenPanelMenuItem Text="Hệ thống lò OVEN"
                              Icon="device_thermostat"
@@ -13,42 +14,42 @@
                              Click="@(args => OnOvenClicked(_ovenSystems[0], args))"
                              @key="_ovenSystems[0].Id">
         <ChildContent>
-            <RadzenPanelMenuItem Text="Trang chủ"
-                                 Icon="dashboard"
-                                 Path="/"
-                                 Match="NavLinkMatch.All"/>
+            <AuthorizeView Policy="@AppPermissions.Oven_Home_View">
+                <RadzenPanelMenuItem Text="Trang chủ"
+                                     Icon="dashboard"
+                                     Path="/oven-home"
+                                     Match="NavLinkMatch.All"/>
+            </AuthorizeView>
 
-            <RadzenPanelMenuItem Text="Cấu hình"
-                                 Icon="settings_applications" >
-                <ChildContent>
-                    @if (_ovensInfo != null && _ovensInfo.Count > 0)
-                    {
-                        @foreach (var item in _ovensInfo)
-                        {
-                            var linkC = $"/ovenconfig/{item.Id}";
-                            <RadzenPanelMenuItem Text="@item.Name" Icon="label_important" Path="@linkC" Click="OnChildClicked" />
-                        }
-                    }
-                </ChildContent>
-            </RadzenPanelMenuItem>
-
-            <RadzenPanelMenuItem Text="Báo cáo" Icon="description" Path="/report" />
-            <RadzenPanelMenuItem Text="Cài đặt" Icon="settings" Path="/settings" />
-            <AuthorizeView Roles="Admin">
-                <RadzenPanelMenuItem Text="Quản trị hệ thống" Icon="admin_panel_settings">
+            <AuthorizeView Policy="@AppPermissions.Oven_Config_View">
+                <RadzenPanelMenuItem Text="Cấu hình"
+                                     Icon="settings_applications" >
                     <ChildContent>
-                        <RadzenPanelMenuItem Text="Tài khoản" Icon="person" Path="/admin/users" />
-                        <RadzenPanelMenuItem Text="Vai trò" Icon="security" Path="/admin/roles" />
-                        <RadzenPanelMenuItem Text="Permission" Icon="verified_user" Path="/admin/claims" />
+                        @if (_ovensInfo != null && _ovensInfo.Count > 0)
+                        {
+                            @foreach (var item in _ovensInfo)
+                            {
+                                var linkC = $"/ovenconfig/{item.Id}";
+                                <RadzenPanelMenuItem Text="@item.Name" Icon="label_important" Path="@linkC" Click="OnChildClicked" />
+                            }
+                        }
                     </ChildContent>
                 </RadzenPanelMenuItem>
+            </AuthorizeView>
+
+            <AuthorizeView Policy="@AppPermissions.Oven_Report_View">
+                <RadzenPanelMenuItem Text="Báo cáo" Icon="description" Path="/report" />
+            </AuthorizeView>
+            
+            <AuthorizeView Policy="@AppPermissions.Oven_Settings_View">
+                <RadzenPanelMenuItem Text="Cài đặt" Icon="settings" Path="/settings" />
             </AuthorizeView>
         </ChildContent>
         </RadzenPanelMenuItem>
     }
 
-    @* Hệ thống lò 2 *@
-    @if (_ovenSystems != null && _ovenSystems.Count > 1)
+    @* Hệ thống lò 2 - Ẩn nếu không có bất kỳ quyền Revo nào *@
+    @if (_ovenSystems != null && _ovenSystems.Count > 1 && _hasAnyRevoPermission)
     {
         <RadzenPanelMenuItem Text="REVO"
                              Icon="device_thermostat"
@@ -56,23 +57,39 @@
                              Click="@(args => OnOvenClicked(_ovenSystems[1], args))"
                              @key="_ovenSystems[1].Id">
         <ChildContent>
-            <RadzenPanelMenuItem Text="Trang chủ"
-                                 Icon="dashboard"
-                                 Path="/revo"
-                                 Match="NavLinkMatch.All"/>
+            <AuthorizeView Policy="@AppPermissions.Revo_Home_View">
+                <RadzenPanelMenuItem Text="Trang chủ"
+                                     Icon="dashboard"
+                                     Path="/revo"
+                                     Match="NavLinkMatch.All"/>
+            </AuthorizeView>
 
-            <AuthorizeView Roles="Admin,User">
+            <AuthorizeView Policy="@AppPermissions.Revo_Config_View">
                 <RadzenPanelMenuItem Text="Cấu hình"
                                      Icon="settings_applications"
                                      Path="/revo/config"
                                      Match="NavLinkMatch.All"/>
             </AuthorizeView>
 
-            <RadzenPanelMenuItem Text="Báo cáo"
-                                 Icon="description"
-                                 Path="/revo/report"
-                                 Match="NavLinkMatch.All"/>
+            <AuthorizeView Policy="@AppPermissions.Revo_Report_View">
+                <RadzenPanelMenuItem Text="Báo cáo"
+                                     Icon="description"
+                                     Path="/revo/report"
+                                     Match="NavLinkMatch.All"/>
+            </AuthorizeView>
         </ChildContent>
         </RadzenPanelMenuItem>
     }
+
+    @* Quản trị hệ thống - Ngang cấp với Oven/Revo *@
+    <AuthorizeView Roles="Admin">
+        <RadzenPanelMenuItem Text="Quản trị hệ thống" Icon="admin_panel_settings" Expanded="true">
+            <ChildContent>
+                <RadzenPanelMenuItem Text="Tài khoản" Icon="person" Path="/admin/users" />
+                <RadzenPanelMenuItem Text="Quyền & Vai trò" Icon="security" Path="/admin/roles" />
+                <RadzenPanelMenuItem Text="System Permissions" Icon="format_list_bulleted" Path="/admin/permissions" />
+            </ChildContent>
+        </RadzenPanelMenuItem>
+    </AuthorizeView>
 </RadzenPanelMenu>
+

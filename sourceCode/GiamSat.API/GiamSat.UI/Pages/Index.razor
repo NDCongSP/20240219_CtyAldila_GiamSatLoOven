@@ -1,5 +1,6 @@
-﻿@page "/"
-@attribute [Authorize]
+@page "/oven-home"
+@using AppPermissions = GiamSat.Models.AppPermissions
+@attribute [Authorize(Policy = AppPermissions.Oven_Home_View)]
 
 <div Class="rz-p-0 rz-p-md-6">
     @if (_displayRealtime == null || _displayRealtime.Count <= 0)

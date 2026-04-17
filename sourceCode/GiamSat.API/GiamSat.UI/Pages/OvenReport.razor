@@ -1,6 +1,6 @@
 @page "/oven/report"
 @using GiamSat.Models
-@attribute [Authorize(Policy = PermissionNames.Oven.View)]
+@attribute [Authorize(Policy = AppPermissions.Oven_Report_View)]
 
 <RadzenRow Gap="1rem">
     <RadzenColumn Size="12">
@@ -47,18 +47,20 @@
                     </div>
                 </RadzenStack>
                 
-                <div class="button-actions-right rz-mt-2">
-                    <RadzenButton Icon="file_download" 
-                                Text="Xuất Excel" 
-                                ButtonStyle="ButtonStyle.Success" 
-                                Click="@OnExportExcel"
-                                Disabled="@(!_hasData)" />
-                    <RadzenButton Icon="picture_as_pdf" 
-                                Text="Xuất PDF" 
-                                ButtonStyle="ButtonStyle.Danger" 
-                                Click="@OnExportPDF"
-                                Disabled="@(!_hasData)" />
-                </div>
+                <AuthorizeView Policy="@AppPermissions.Oven_Report_Export">
+                    <div class="button-actions-right rz-mt-2">
+                        <RadzenButton Icon="file_download" 
+                                    Text="Xuất Excel" 
+                                    ButtonStyle="ButtonStyle.Success" 
+                                    Click="@OnExportExcel"
+                                    Disabled="@(!_hasData)" />
+                        <RadzenButton Icon="picture_as_pdf" 
+                                    Text="Xuất PDF" 
+                                    ButtonStyle="ButtonStyle.Danger" 
+                                    Click="@OnExportPDF"
+                                    Disabled="@(!_hasData)" />
+                    </div>
+                </AuthorizeView>
             </RadzenStack>
         </RadzenCard>
     </RadzenColumn>

@@ -1,8 +1,10 @@
 using GiamSat.Models;
 using GiamSat.UI.Model;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Newtonsoft.Json;
 using Radzen;
+using System.Security.Claims;
 
 namespace GiamSat.UI.Shared
 {
@@ -11,8 +13,12 @@ namespace GiamSat.UI.Shared
         [Parameter]
         public bool sidebarExpanded { get; set; } = true;
 
+        [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
+
         private List<OvenSystemModel> _ovenSystems = new List<OvenSystemModel>();
         private OvensInfo _ovensInfo = new OvensInfo();
+        private bool _hasAnyOvenPermission = false;
+        private bool _hasAnyRevoPermission = false;
         protected override async Task OnInitializedAsync()
         {
             try
@@ -60,6 +66,24 @@ namespace GiamSat.UI.Shared
                 _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "error", Detail = ex.Message, Duration = 2000 });
                 return;
             }
+
+            // Check if user has any permissions per module
+            try
+            {
+                var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+                var user = authState.User;
+                if (user?.Identity?.IsAuthenticated == true)
+                {
+                    var permClaims = user.Claims
+                        .Where(c => c.Type == PermissionNames.Prefix)
+                        .Select(c => c.Value)
+                        .ToList();
+
+                    _hasAnyOvenPermission = permClaims.Any(p => p.StartsWith("Oven_"));
+                    _hasAnyRevoPermission = permClaims.Any(p => p.StartsWith("Revo_"));
+                }
+            }
+            catch { /* ignore */ }
         }
         void OnChildClicked(MenuItemEventArgs args)
         {

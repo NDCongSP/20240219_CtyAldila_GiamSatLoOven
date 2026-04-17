@@ -138,6 +138,75 @@ namespace GiamSat.API.Controllers
             return Ok(permissions);
         }
 
+        // POST api/permissions/permissions
+        [HttpPost("permissions")]
+        public async Task<IActionResult> CreatePermission([FromBody] Permissions model)
+        {
+            if (string.IsNullOrWhiteSpace(model?.Name) || string.IsNullOrWhiteSpace(model.Module) || string.IsNullOrWhiteSpace(model.Actions))
+                return BadRequest(new { Message = "Name, Module, and Actions are required." });
+
+            if (await _dbContext.Permissions.AnyAsync(x => x.Module == model.Module && x.Actions == model.Actions))
+                return BadRequest(new { Message = "This Permission (Module + Action) already exists." });
+
+            model.Id = Guid.NewGuid();
+            model.CreatedAt = DateTime.UtcNow;
+            model.IsActived ??= true;
+
+            _dbContext.Permissions.Add(model);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(model);
+        }
+
+        // PUT api/permissions/permissions/{id}
+        [HttpPut("permissions/{id}")]
+        public async Task<IActionResult> UpdatePermission(Guid id, [FromBody] Permissions model)
+        {
+            var permission = await _dbContext.Permissions.FindAsync(id);
+            if (permission == null) return NotFound();
+
+            if (string.IsNullOrWhiteSpace(model?.Name) || string.IsNullOrWhiteSpace(model.Module) || string.IsNullOrWhiteSpace(model.Actions))
+                return BadRequest(new { Message = "Name, Module, and Actions are required." });
+
+            var duplicate = await _dbContext.Permissions.FirstOrDefaultAsync(x => x.Id != id && x.Module == model.Module && x.Actions == model.Actions);
+            if (duplicate != null)
+                return BadRequest(new { Message = "Another Permission with the same Module + Action already exists." });
+
+            permission.Name = model.Name;
+            permission.Module = model.Module;
+            permission.Actions = model.Actions;
+            permission.Description = model.Description;
+            permission.IsActived = model.IsActived ?? true;
+
+            // Update redundant properties in RoleToPermissions
+            var relatedMappings = await _dbContext.RoleToPermissions.Where(x => x.PermissionId == id).ToListAsync();
+            foreach (var mapping in relatedMappings)
+            {
+                mapping.PermisionName = permission.Name;
+                mapping.PermisionDescription = permission.Description;
+            }
+
+            await _dbContext.SaveChangesAsync();
+            return Ok();
+        }
+
+        // DELETE api/permissions/permissions/{id}
+        [HttpDelete("permissions/{id}")]
+        public async Task<IActionResult> DeletePermission(Guid id)
+        {
+            var permission = await _dbContext.Permissions.FindAsync(id);
+            if (permission == null) return NotFound();
+
+            _dbContext.Permissions.Remove(permission);
+
+            // Cascade delete orphaned mappings manually
+            var relatedMappings = await _dbContext.RoleToPermissions.Where(x => x.PermissionId == id).ToListAsync();
+            _dbContext.RoleToPermissions.RemoveRange(relatedMappings);
+
+            await _dbContext.SaveChangesAsync();
+            return Ok();
+        }
+
         // PUT api/permissions/roles/{roleId}/permissions
         [HttpPut("roles/{roleId}/permissions")]
         public async Task<IActionResult> UpdateRolePermissions(string roleId, [FromBody] List<string> permissionCodes)

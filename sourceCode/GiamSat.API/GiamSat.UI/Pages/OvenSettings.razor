@@ -1,5 +1,6 @@
 @page "/oven/{OvenId:int}/settings"
 @using GiamSat.Models
+@attribute [Authorize(Policy = AppPermissions.Oven_Settings_View)]
 
 @if (_configInfo == null)
 {
@@ -144,14 +145,16 @@ else
 
         <RadzenRow Gap="1rem" class="rz-mt-4">
             <RadzenColumn Size="12">
-                <div class="button-actions-right">
-                    <RadzenButton Variant="Variant.Filled" 
-                                ButtonType="ButtonType.Submit" 
-                                Size="ButtonSize.Large" 
-                                Icon="save" 
-                                Text="Save" 
-                                ButtonStyle="ButtonStyle.Primary" />
-                </div>
+                <AuthorizeView Policy="@AppPermissions.Oven_Settings_Edit" Context="authContext">
+                    <div class="button-actions-right">
+                        <RadzenButton Variant="Variant.Filled" 
+                                    ButtonType="ButtonType.Submit" 
+                                    Size="ButtonSize.Large" 
+                                    Icon="save" 
+                                    Text="Save" 
+                                    ButtonStyle="ButtonStyle.Primary" />
+                    </div>
+                </AuthorizeView>
             </RadzenColumn>
         </RadzenRow>
     </RadzenTemplateForm>

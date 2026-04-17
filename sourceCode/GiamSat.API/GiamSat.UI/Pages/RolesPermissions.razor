@@ -39,6 +39,7 @@
                                 <Template Context="role">
                                     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
                                         <RadzenButton Size="ButtonSize.Small" Text="Chọn" Click="@(async _ => await SelectRoleAsync(role))" />
+                                        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" Text="Sửa" Click="@(async _ => await EditRoleAsync(role))" />
                                         <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" Text="Xóa" Click="@(async _ => await DeleteRoleAsync(role.Id))" />
                                     </RadzenStack>
                                 </Template>
@@ -58,17 +59,26 @@
                         <RadzenStack Gap="0.5rem" Class="rz-mt-3">
                             @foreach (var group in _permissionGroups)
                             {
-                                <RadzenFieldset Text="@group.Key">
-                                    <RadzenStack Orientation="Orientation.Horizontal" Wrap="FlexWrap.Wrap" Gap="1rem">
-                                        @foreach (var p in group)
-                                        {
-                                            var pCode = p.Module + "." + p.Actions;
-                                            <label style="display:flex;align-items:center;gap:.5rem;min-width:220px;" title="@p.Description">
-                                                <input type="checkbox" checked="@_selectedPermissionCodes.Contains(pCode)" @onchange="@(e => TogglePermission(pCode, e.Value?.ToString() == "true"))" />
-                                                <span>@p.Actions</span>
-                                            </label>
-                                        }
-                                    </RadzenStack>
+                                <RadzenFieldset>
+                                    <HeaderTemplate>
+                                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                                            <RadzenSwitch TValue="bool" Value="@IsGroupAllSelected(group)" Change="@(args => ToggleGroup(group, args))" />
+                                            <RadzenText TextStyle="TextStyle.Subtitle2" Style="margin: 0; font-weight: bold;">@group.Key (Chọn tất cả)</RadzenText>
+                                        </RadzenStack>
+                                    </HeaderTemplate>
+                                    <ChildContent>
+                                        <RadzenStack Orientation="Orientation.Horizontal" Wrap="FlexWrap.Wrap" Gap="1rem">
+                                            @foreach (var p in group)
+                                            {
+                                                var pCode = p.Module + "." + p.Actions;
+                                                <label style="display:flex;align-items:center;gap:.5rem;min-width:220px;cursor:pointer;" title="@p.Description">
+                                                    <RadzenSwitch TValue="bool" Value="@_selectedPermissionCodes.Contains(pCode)" 
+                                                                    Change="@(args => TogglePermission(pCode, args))" />
+                                                    <span>@p.Actions</span>
+                                                </label>
+                                            }
+                                        </RadzenStack>
+                                    </ChildContent>
                                 </RadzenFieldset>
                             }
                         </RadzenStack>
@@ -97,7 +107,7 @@
         _roles = await ApiClient.GetFromJsonAsync<List<APIClient.IdentityRoleDto>>("api/permissions/roles");
         _permissions = await ApiClient.GetFromJsonAsync<List<GiamSat.Models.Permissions>>("api/permissions/permissions") ?? new();
         _permissionGroups = _permissions
-            .GroupBy(x => x.Module)
+            .GroupBy(x => x.Module ?? "Khác")
             .OrderBy(x => x.Key);
         StateHasChanged();
     }
@@ -111,9 +121,19 @@
     private async Task CreateRoleAsync()
     {
         if (string.IsNullOrWhiteSpace(_newRoleName)) return;
-        await ApiClient.PostAsJsonAsync("api/permissions/roles", new APIClient.IdentityRoleDto { Name = _newRoleName! });
-        _newRoleName = string.Empty;
-        await LoadAsync();
+        var res = await ApiClient.PostAsJsonAsync("api/permissions/roles", new APIClient.IdentityRoleDto { Name = _newRoleName! });
+        
+        if (res.IsSuccessStatusCode)
+        {
+            _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Thành công", Detail = "Thêm role thành công" });
+            _newRoleName = string.Empty;
+            await LoadAsync();
+        }
+        else
+        {
+            var dict = await res.Content.ReadFromJsonAsync<Dictionary<string, object>>();
+            _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Lỗi", Detail = dict != null && dict.ContainsKey("message") ? dict["message"].ToString() : "Thêm thất bại" });
+        }
     }
 
     private async Task SelectRoleAsync(APIClient.IdentityRoleDto role)
@@ -125,14 +145,44 @@
 
     private void ClearSelectedRole() => _selectedRole = null;
 
+    private async Task EditRoleAsync(APIClient.IdentityRoleDto role)
+    {
+        var newName = await _js.InvokeAsync<string>("prompt", "Nhập tên mới cho Role:", role.Name);
+        if (!string.IsNullOrWhiteSpace(newName) && newName != role.Name)
+        {
+            var updateDto = new APIClient.IdentityRoleDto { Id = role.Id, Name = newName };
+            var response = await ApiClient.PutAsJsonAsync($"api/permissions/roles/{role.Id}", updateDto);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Thành công", Detail = "Đã cập nhật role" });
+                await LoadAsync();
+            }
+            else
+            {
+                var dict = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
+                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Lỗi", Detail = dict != null && dict.ContainsKey("message") ? dict["message"].ToString() : "Cập nhật thất bại" });
+            }
+        }
+    }
+
     private async Task DeleteRoleAsync(string roleId)
     {
-        await ApiClient.DeleteAsync($"api/permissions/roles/{roleId}");
-        if (_selectedRole?.Id == roleId)
+        var confirm = await _js.InvokeAsync<bool>("confirm", "Bạn có chắc chắn muốn xóa Role này?");
+        if (!confirm) return;
+
+        var res = await ApiClient.DeleteAsync($"api/permissions/roles/{roleId}");
+        if (res.IsSuccessStatusCode)
         {
-            ClearSelectedRole();
+            _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Thành công", Detail = "Đã xóa role" });
+            if (_selectedRole?.Id == roleId) ClearSelectedRole();
+            await LoadAsync();
         }
-        await LoadAsync();
+        else
+        {
+            var dict = await res.Content.ReadFromJsonAsync<Dictionary<string, object>>();
+            _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Lỗi", Detail = dict != null && dict.ContainsKey("message") ? dict["message"].ToString() : "Xóa thất bại" });
+        }
     }
 
     private void TogglePermission(string permissionCode, bool isChecked)
@@ -141,10 +191,34 @@
         else _selectedPermissionCodes.Remove(permissionCode);
     }
 
+    private bool IsGroupAllSelected(IGrouping<string, GiamSat.Models.Permissions> group)
+    {
+        return group.Any() && group.All(p => _selectedPermissionCodes.Contains(p.Module + "." + p.Actions));
+    }
+
+    private void ToggleGroup(IGrouping<string, GiamSat.Models.Permissions> group, bool isChecked)
+    {
+        foreach (var p in group)
+        {
+            var pCode = p.Module + "." + p.Actions;
+            if (isChecked) _selectedPermissionCodes.Add(pCode);
+            else _selectedPermissionCodes.Remove(pCode);
+        }
+    }
+
     private async Task SavePermissionsAsync()
     {
         if (_selectedRole == null) return;
-        await ApiClient.PutAsJsonAsync($"api/permissions/roles/{_selectedRole.Id}/permissions", _selectedPermissionCodes.ToList());
-        await LoadAsync();
+        var res = await ApiClient.PutAsJsonAsync($"api/permissions/roles/{_selectedRole.Id}/permissions", _selectedPermissionCodes.ToList());
+        
+        if (res.IsSuccessStatusCode)
+        {
+            _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Thành công", Detail = "Đã lưu phân quyền cho role" });
+            await LoadAsync();
+        }
+        else
+        {
+            _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Lỗi", Detail = "Lưu phân quyền thất bại" });
+        }
     }
 }

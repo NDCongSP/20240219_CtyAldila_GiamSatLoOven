@@ -65,10 +65,7 @@ namespace GiamSat.API.Controllers
                     authClaims.Add(new Claim(PermissionNames.Prefix, permissionCode));
                 }
 
-                if (userRoles.Contains(UserRoles.Admin))
-                {
-                    authClaims.Add(new Claim(PermissionNames.Prefix, "*"));
-                }
+                // Permissions are now fully managed via DB — no wildcard bypass
 
                 var token = GetToken(authClaims);
 

@@ -1,11 +1,10 @@
 @page "/revo/report"
-
+@using AppPermissions = GiamSat.Models.AppPermissions
+@attribute [Authorize(Policy = AppPermissions.Revo_Report_View)]
 
 @using ApiClientModels = GiamSat.APIClient
 @using DomainModels = GiamSat.Models
 @using GiamSat.Models
-
-@attribute [Authorize(Policy = PermissionNames.Revo.View)]
 
 <RadzenRow Gap="1rem">
     <RadzenColumn Size="12">
@@ -13,37 +12,37 @@
             <!-- Filter Section -->
             <RadzenStack Gap="1rem">
                 <RadzenText TextStyle="TextStyle.Subtitle1" Style="font-weight: 600;">Bộ lọc</RadzenText>
-                
+
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.End" Gap="1rem" Wrap="FlexWrap.Wrap">
                     <RadzenStack Gap="0.2rem" Style="min-width: 200px;">
                         <RadzenLabel Text="Chọn REVO" />
-                        <RadzenDropDown @bind-Value="@_selectedRevoId" 
-                                      Data="@_revoList" 
-                                      TextProperty="Name" 
-                                      ValueProperty="Id"
-                                      AllowClear="true"
-                                      Style="width: 100%;" 
-                                      Placeholder="Tất cả REVO" />
+                        <RadzenDropDown @bind-Value="@_selectedRevoId"
+                                        Data="@_revoList"
+                                        TextProperty="Name"
+                                        ValueProperty="Id"
+                                        AllowClear="true"
+                                        Style="width: 100%;"
+                                        Placeholder="Tất cả REVO" />
                     </RadzenStack>
-                    
+
                     @* Mode selection dropdown removed, now handled by SplitButton *@
-                    
+
                     <RadzenStack Gap="0.2rem" Style="min-width: 200px;">
                         <RadzenLabel Text="Từ ngày" />
-                        <RadzenDatePicker @bind-Value="@_fromDate" 
-                                        ShowTime="true" 
-                                        ShowSeconds="true"
-                                        DateFormat="dd/MM/yyyy HH:mm:ss"
-                                        Style="width: 100%;" />
+                        <RadzenDatePicker @bind-Value="@_fromDate"
+                                          ShowTime="true"
+                                          ShowSeconds="true"
+                                          DateFormat="dd/MM/yyyy HH:mm:ss"
+                                          Style="width: 100%;" />
                     </RadzenStack>
-                    
+
                     <RadzenStack Gap="0.2rem" Style="min-width: 200px;">
                         <RadzenLabel Text="Đến ngày" />
-                        <RadzenDatePicker @bind-Value="@_toDate" 
-                                        ShowTime="true" 
-                                        ShowSeconds="true"
-                                        DateFormat="dd/MM/yyyy HH:mm:ss"
-                                        Style="width: 100%;" />
+                        <RadzenDatePicker @bind-Value="@_toDate"
+                                          ShowTime="true"
+                                          ShowSeconds="true"
+                                          DateFormat="dd/MM/yyyy HH:mm:ss"
+                                          Style="width: 100%;" />
                     </RadzenStack>
 
                     @* Phạm vi shaft: RadzenSwitch (dự án dùng Radzen Grid, không phải Mud) *@
@@ -56,11 +55,11 @@
                         <RadzenSwitch @bind-Value="_shaftFinishedSwitch"
                                       Change="@OnShaftScopeSwitchChange" />
                     </RadzenStack>
-                    
+
                     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-                        <RadzenSplitButton Icon="search" 
-                                           Text="@($"Truy vấn ({GetModeName()})")" 
-                                           ButtonStyle="ButtonStyle.Primary" 
+                        <RadzenSplitButton Icon="search"
+                                           Text="@($"Truy vấn ({GetModeName()})")"
+                                           ButtonStyle="ButtonStyle.Primary"
                                            Click="@(args => OnSplitButtonClick(args))"
                                            Disabled="@_isLoading">
                             <ChildContent>
@@ -70,26 +69,27 @@
                                 }
                             </ChildContent>
                         </RadzenSplitButton>
-                        <RadzenButton Icon="refresh" 
-                                    Text="Làm mới" 
-                                    ButtonStyle="ButtonStyle.Light" 
-                                    Click="@OnReset" />
+                        <RadzenButton Icon="refresh"
+                                      Text="Làm mới"
+                                      ButtonStyle="ButtonStyle.Light"
+                                      Click="@OnReset" />
                     </RadzenStack>
                 </RadzenStack>
-                
-                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Style="margin-top: 0.5rem;">
-                    <RadzenButton Icon="file_download" 
-                                Text="Xuất Excel" 
-                                ButtonStyle="ButtonStyle.Success" 
-                                Click="@OnExportExcel"
-                                Disabled="@(!_hasData || _isLoading)" />
-                    @* Tạm ẩn PDF *@
-                    @* <RadzenButton Icon="picture_as_pdf" 
+                <AuthorizeView Policy="@AppPermissions.Revo_Report_Export">
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Style="margin-top: 0.5rem;">
+                        <RadzenButton Icon="file_download"
+                                      Text="Xuất Excel"
+                                      ButtonStyle="ButtonStyle.Success"
+                                      Click="@OnExportExcel"
+                                      Disabled="@(!_hasData || _isLoading)" />
+                        @* Tạm ẩn PDF *@
+                        @* <RadzenButton Icon="picture_as_pdf" 
                                   Text="Xuất PDF" 
                                   ButtonStyle="ButtonStyle.Danger" 
                                   Click="@OnExportPDF"
                                   Disabled="@(!_hasData || _isLoading)" /> *@
-                </RadzenStack>
+                    </RadzenStack>
+                </AuthorizeView>
             </RadzenStack>
         </RadzenCard>
     </RadzenColumn>
@@ -99,14 +99,14 @@
     <RadzenColumn Size="12">
         <RadzenCard class="rz-shadow-3">
             <RadzenText TextStyle="TextStyle.Subtitle1" Style="font-weight: 600;" class="rz-mb-3">Dữ liệu báo cáo</RadzenText>
-            
+
             @if (_isLoading)
             {
                 <div style="text-align: center; padding: 3rem;">
-                    <RadzenProgressBarCircular ProgressBarStyle="ProgressBarStyle.Primary" 
-                                             Value="100" 
-                                             ShowValue="false" 
-                                             Mode="ProgressBarMode.Indeterminate" />
+                    <RadzenProgressBarCircular ProgressBarStyle="ProgressBarStyle.Primary"
+                                               Value="100"
+                                               ShowValue="false"
+                                               Mode="ProgressBarMode.Indeterminate" />
                     <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">Đang tải dữ liệu...</RadzenText>
                 </div>
             }
@@ -228,7 +228,7 @@
                                     @(data.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A")
                                 </Template>
                             </RadzenDataGridColumn>
-                            <RadzenDataGridColumn TItem="RevoHourRow" Property="TotalHoursText" Title="Thời lượng" Width="120px" TextAlign="TextAlign.Center"/>
+                            <RadzenDataGridColumn TItem="RevoHourRow" Property="TotalHoursText" Title="Thời lượng" Width="120px" TextAlign="TextAlign.Center" />
                         </Columns>
                     </RadzenDataGrid>
                 }

@@ -8,20 +8,27 @@ namespace GiamSat.API
 {
     public static class PermissionSeeder
     {
-        private static readonly (string Code, string Module, string Action, string Description)[] PermissionDefs =
+        private static readonly (string Module, string Action, string Description)[] PermissionDefs =
         {
-            (PermissionNames.Revo.View,    "Revo", "View",    "View Revo data"),
-            (PermissionNames.Revo.Create,  "Revo", "Create",  "Create Revo data"),
-            (PermissionNames.Revo.Edit,    "Revo", "Edit",    "Edit Revo data"),
-            (PermissionNames.Revo.Delete,  "Revo", "Delete",  "Delete Revo data"),
-            (PermissionNames.Revo.Export,  "Revo", "Export",  "Export Revo data"),
-            (PermissionNames.Revo.Approve, "Revo", "Approve", "Approve Revo data"),
-            (PermissionNames.Oven.View,    "Oven", "View",    "View Oven data"),
-            (PermissionNames.Oven.Create,  "Oven", "Create",  "Create Oven data"),
-            (PermissionNames.Oven.Edit,    "Oven", "Edit",    "Edit Oven data"),
-            (PermissionNames.Oven.Delete,  "Oven", "Delete",  "Delete Oven data"),
-            (PermissionNames.Oven.Export,  "Oven", "Export",  "Export Oven data"),
-            (PermissionNames.Oven.Approve, "Oven", "Approve", "Approve Oven data"),
+            // OVEN MODULE
+            ("Oven_Home", "View", "Truy cập và xem Dashboard Oven"),
+            ("Oven_Config", "View", "Xem trang Cấu hình Oven"),
+            ("Oven_Config", "Create", "Thêm mới cấu hình Oven"),
+            ("Oven_Config", "Edit", "Chỉnh sửa cấu hình Oven"),
+            ("Oven_Config", "Delete", "Xóa cấu hình Oven"),
+            ("Oven_Report", "View", "Xem báo cáo Oven"),
+            ("Oven_Report", "Export", "Xuất file báo cáo Oven"),
+            ("Oven_Settings", "View", "Xem cài đặt hệ thống Oven"),
+            ("Oven_Settings", "Edit", "Chỉnh sửa cài đặt Oven"),
+
+            // REVO MODULE
+            ("Revo_Home", "View", "Truy cập và xem Dashboard Revo"),
+            ("Revo_Config", "View", "Xem trang Cấu hình Revo"),
+            ("Revo_Config", "Create", "Thêm cấu hình Revo"),
+            ("Revo_Config", "Edit", "Sửa cấu hình Revo"),
+            ("Revo_Config", "Delete", "Xóa cấu hình Revo"),
+            ("Revo_Report", "View", "Xem báo cáo Revo"),
+            ("Revo_Report", "Export", "Xuất file báo cáo Revo")
         };
 
         public static async Task SeedAsync(ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager)
@@ -52,27 +59,27 @@ namespace GiamSat.API
             }
             await dbContext.SaveChangesAsync();
 
-            // 3. Grant all permissions to Admin role
+            // 3. Grant all permissions to Admin role — ONLY on first run (when Admin has zero permissions)
             var adminRole = await roleManager.FindByNameAsync(UserRoles.Admin);
             if (adminRole == null) return;
+
+            var adminHasAny = await dbContext.RoleToPermissions.AnyAsync(x => x.RoleId == adminRole.Id);
+            if (adminHasAny) return; // Admin already has permissions configured — don't override manual changes
 
             var allPermissions = await dbContext.Permissions.ToListAsync();
             foreach (var perm in allPermissions)
             {
-                if (!await dbContext.RoleToPermissions.AnyAsync(x => x.RoleId == adminRole.Id && x.PermissionId == perm.Id))
+                dbContext.RoleToPermissions.Add(new RoleToPermission
                 {
-                    dbContext.RoleToPermissions.Add(new RoleToPermission
-                    {
-                        Id = Guid.NewGuid(),
-                        RoleId = adminRole.Id,
-                        RoleName = adminRole.Name,
-                        PermissionId = perm.Id,
-                        PermisionName = perm.Name,
-                        PermisionDescription = perm.Description,
-                        IsActived = true,
-                        CreatedAt = DateTime.UtcNow
-                    });
-                }
+                    Id = Guid.NewGuid(),
+                    RoleId = adminRole.Id,
+                    RoleName = adminRole.Name,
+                    PermissionId = perm.Id,
+                    PermisionName = perm.Name,
+                    PermisionDescription = perm.Description,
+                    IsActived = true,
+                    CreatedAt = DateTime.UtcNow
+                });
             }
             await dbContext.SaveChangesAsync();
         }

@@ -1,6 +1,6 @@
-﻿@page "/ovenconfig/{OvenId}"
+@page "/ovenconfig/{OvenId}"
 @using GiamSat.Models
-@attribute [Authorize(Policy = PermissionNames.Oven.Edit)]
+@attribute [Authorize(Policy = AppPermissions.Oven_Config_View)]
 
 <div Class="rz-p-0 rz-p-md-12">
     @if (_ovenInfo == null)
@@ -37,8 +37,10 @@
                         <RadzenFieldset Text="Profile">
                             <RadzenStack Orientation=Orientation.Vertical Gap="1rem">
                                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-mt-2">
-                                    <RadzenButton Click=@(args => AddNewItem(_ovenInfo.Id)) Variant="Variant.Flat" Shade="Shade.Dark"
-                                                  Text="Thêm profile" Icon="add_circle" ButtonStyle="ButtonStyle.Dark" />
+                                    <AuthorizeView Policy="@AppPermissions.Oven_Config_Create" Context="authContext">
+                                        <RadzenButton Click=@(args => AddNewItem(_ovenInfo.Id)) Variant="Variant.Flat" Shade="Shade.Dark"
+                                                    Text="Thêm profile" Icon="add_circle" ButtonStyle="ButtonStyle.Dark" />
+                                    </AuthorizeView>
                                 </RadzenStack>
                                 <RadzenDataGrid @ref="_profileGrid" AllowFiltering="true" FilterPopupRenderMode="PopupRenderMode.OnDemand" AllowPaging="true" PageSize="5" AllowSorting="true"
                                                 Data="@_ovenInfo.Profiles" TItem="ProfileModel"
@@ -53,10 +55,14 @@
                                         </RadzenDataGridColumn>
                                         <RadzenDataGridColumn TItem="ProfileModel" Filterable="false" Sortable="true" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
                                             <Template Context="data">
-                                                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => OpenItem(data.Id))" @onclick:stopPropagation="true">
-                                                </RadzenButton>
-                                                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteItem(data.Id))" @onclick:stopPropagation="true">
-                                                </RadzenButton>
+                                                <AuthorizeView Policy="@AppPermissions.Oven_Config_Edit" Context="authContext">
+                                                    <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => OpenItem(data.Id))" @onclick:stopPropagation="true">
+                                                    </RadzenButton>
+                                                </AuthorizeView>
+                                                <AuthorizeView Policy="@AppPermissions.Oven_Config_Delete" Context="authContext">
+                                                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteItem(data.Id))" @onclick:stopPropagation="true">
+                                                    </RadzenButton>
+                                                </AuthorizeView>
                                                 @* <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click=@(() => OpenProfile(data.Id)) Text="@data.Id.ToString()">@data.Steps.Count</RadzenButton> *@
                                             </Template>
                                         </RadzenDataGridColumn>
@@ -68,7 +74,9 @@
                 </RadzenColumn>
             </RadzenRow>
             <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
-                <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Lưu" />
+                <AuthorizeView Policy="@AppPermissions.Oven_Config_Edit" Context="authContext">
+                    <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Lưu" />
+                </AuthorizeView>
                 @* <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Large" Icon="cancel" Text="Cancel" Click="@Cancel" /> *@
             </RadzenStack>
         </RadzenTemplateForm>

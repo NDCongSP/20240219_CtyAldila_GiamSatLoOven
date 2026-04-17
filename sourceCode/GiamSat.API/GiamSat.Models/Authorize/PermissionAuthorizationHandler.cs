@@ -7,7 +7,8 @@ namespace GiamSat.Models
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
         {
-            if (context.User?.Identity?.IsAuthenticated == true && context.User.HasClaim(PermissionNames.Prefix, requirement.Permission))
+            if (context.User?.Identity?.IsAuthenticated == true && 
+               context.User.HasClaim(PermissionNames.Prefix, requirement.Permission))
             {
                 context.Succeed(requirement);
             }
