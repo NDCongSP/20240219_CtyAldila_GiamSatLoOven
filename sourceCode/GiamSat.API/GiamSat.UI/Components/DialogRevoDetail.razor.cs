@@ -29,6 +29,7 @@ namespace GiamSat.UI.Components
 
         private RevoRealtimeModel _revoData = new RevoRealtimeModel();
         private System.Timers.Timer? _refreshTimer;
+        private bool _disposed;
 
         // Live shaft counts — Current Hour
         private int _liveShaftTotal   = 0; // TotalShaftCurrentHour
@@ -60,17 +61,21 @@ namespace GiamSat.UI.Components
 
         private async void OnTimerElapsed(object? sender, ElapsedEventArgs e)
         {
+            if (_disposed) return;
             await InvokeAsync(async () =>
             {
+                if (_disposed) return;
                 await LoadRevoData();
             });
         }
 
         private async Task LoadShaftCountsAsync()
         {
+            if (_disposed) return;
             try
             {
                 var result = await _fT09Client.GetTotalShaftAsync(_revoData.RevoId);
+                if (_disposed) return;
                 if (result.Succeeded && result.Data != null)
                 {
                     var dto = result.Data.FirstOrDefault(x => x.RevoId == _revoData.RevoId);
@@ -89,12 +94,14 @@ namespace GiamSat.UI.Components
 
         private async Task LoadRevoData()
         {
+            if (_disposed) return;
             try
             {
                 var revoId = _revoData.RevoId;
 
                 // Load FT08 data via NSwag client
                 var ft08Result = await _fT08Client.GetAllAsync();
+                if (_disposed) return;
                 if (ft08Result.Succeeded && ft08Result.Data != null)
                 {
                     var ft08 = ft08Result.Data.FirstOrDefault(x => x.C000_RevoId == revoId);
@@ -107,6 +114,7 @@ namespace GiamSat.UI.Components
 
                             // Load FT07 to get REVO name via NSwag client
                             var ft07Result = await _fT07Client.GetAllAsync();
+                            if (_disposed) return;
                             if (ft07Result.Succeeded && ft07Result.Data != null && ft07Result.Data.Count > 0)
                             {
                                 var ft07 = ft07Result.Data.FirstOrDefault(x => x.Actived == true) ?? ft07Result.Data.FirstOrDefault();
@@ -148,6 +156,7 @@ namespace GiamSat.UI.Components
             }
 
             await LoadShaftCountsAsync();
+            if (_disposed) return;
             StateHasChanged();
         }
 
@@ -186,8 +195,13 @@ namespace GiamSat.UI.Components
 
         public void Dispose()
         {
-            _refreshTimer?.Stop();
-            _refreshTimer?.Dispose();
+            _disposed = true;
+            if (_refreshTimer != null)
+            {
+                _refreshTimer.Elapsed -= OnTimerElapsed;
+                _refreshTimer.Stop();
+                _refreshTimer.Dispose();
+            }
         }
     }
 }

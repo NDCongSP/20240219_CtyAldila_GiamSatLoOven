@@ -29,5 +29,12 @@
     <ProjectReference Include="..\GiamSat.APIClient\GiamSat.APIClient.csproj" />
     <ProjectReference Include="..\GiamSat.Models\GiamSat.Models.csproj" />
   </ItemGroup>
+  <Target Name="AutoVersionCss" BeforeTargets="Build;Publish">
+    <PropertyGroup>
+      <VersionValue>$([System.DateTime]::Now.Ticks)</VersionValue>
+    </PropertyGroup>
+    <Message Importance="high" Text="Cập nhật version CSS trong index.html: v=$(VersionValue)" />
+    <Exec Command="powershell -Command &quot;(Get-Content wwwroot/index.html) -replace '\?v=[0-9a-zA-Z.]+', '?v=$(VersionValue)' | Set-Content wwwroot/index.html -Encoding UTF8&quot;" />
+  </Target>
 
 </Project>
