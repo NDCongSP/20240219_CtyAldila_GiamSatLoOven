@@ -903,7 +903,10 @@ namespace Scada_TrackingTIme_Revo
             // Thanh REVO
             Label lblStep = new Label();
             lblStep.Name = "lblStep";
-            lblStep.Text = $"{step.StepName} - {step.StartAt} -> {step.EndAt}: {step.TotalRunTime}s{Environment.NewLine}Pul={step.SoLuongXung} - Speed = {step.Speed_Hz}";
+            lblStep.Text = $"{step.StepName} - {step.StartAt} -> {step.EndAt}: {step.TotalRunTime} s" +
+                      $"{Environment.NewLine}" +
+                      $"Pul={step.SoLuongXung}({step.SoLuongXung / GlobalVariable.RevoConfig.Pulse_Rev} v) " +
+                      $"- Speed = {step.Speed_Hz} ({step.Speed_Hz / GlobalVariable.RevoConfig.Pulse_Rev} v/s)";
             lblStep.Width = 610;
             lblStep.Height = 50;
             lblStep.TextAlign = ContentAlignment.MiddleCenter;
@@ -952,7 +955,7 @@ namespace Scada_TrackingTIme_Revo
                     lblStep.Text = $"{step.StepName} - {startAtText} -> {endAtText}: {step.TotalRunTime}s" +
                         $"{Environment.NewLine}" +
                         $"Pul={step.SoLuongXung}({step.SoLuongXung/GlobalVariable.RevoConfig.Pulse_Rev} v) " +
-                        $"- Speed = {step.Speed_Hz} ({step.Speed_Hz/GlobalVariable.RevoConfig.Pulse_Rev}v/s)";
+                        $"- Speed = {step.Speed_Hz} ({step.Speed_Hz/GlobalVariable.RevoConfig.Pulse_Rev} v/s)";
 
                     if ((step.StartAt.HasValue && !step.EndAt.HasValue) || isFirst == 1)
                     {
