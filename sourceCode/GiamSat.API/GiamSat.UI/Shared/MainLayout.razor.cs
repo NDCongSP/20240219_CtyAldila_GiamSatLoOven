@@ -1,4 +1,4 @@
-﻿
+
 using Blazored.LocalStorage;
 using DocumentFormat.OpenXml.InkML;
 using GiamSat.Models;
@@ -53,10 +53,8 @@ namespace GiamSat.UI.Shared
 
                 
                 GlobalVariable.UserName = authState.User.Identity.Name;
-
-                //var t = authState.User.FindFirst("testabc").Value;
-                //var email = authState.User.FindFirst("emailTest").Value;
-
+                _changePass = true;
+                
                 var claimRole = authState.User.FindAll(ClaimTypes.Role)?.ToList();
 
                 foreach (var item in claimRole)
@@ -64,7 +62,6 @@ namespace GiamSat.UI.Shared
                     if (item.Value == "Admin")
                     {
                         _usersManager = true;
-                        _changePass = true;
                         return;
                     }
                 }

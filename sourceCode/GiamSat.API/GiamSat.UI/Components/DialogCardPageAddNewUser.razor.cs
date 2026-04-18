@@ -10,6 +10,8 @@ namespace GiamSat.UI.Components
     {
         private bool _disposed;
         private RegisterModel _model = new RegisterModel();
+        private bool _showPassword;
+        private bool _showRepeatPassword;
         List<string> _roles = new List<string>();
 
         private HttpClient ApiClient => _httpClientFactory.CreateClient("GiamSatAPI");
@@ -18,13 +20,19 @@ namespace GiamSat.UI.Components
         {
             await base.OnInitializedAsync();
 
-            _model.Email = "user@gmail.com";
-
+            _model.Password = "123@456";
+            _model.RepeatPassword = "123@456";
             var roles = await ApiClient.GetFromJsonAsync<List<GiamSat.Models.IdentityRoleDto>>("api/permissions/roles");
             if (roles != null && !_disposed)
             {
                 _roles = roles.Select(x => x.Name).ToList();
             }
+        }
+
+        void HandleUserNameChange(string value)
+        {
+            _model.UserName = value;
+            _model.Email = $"{value}@gmail.com";
         }
 
         async Task Submit(RegisterModel arg)

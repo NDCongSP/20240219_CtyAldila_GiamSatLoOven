@@ -106,7 +106,10 @@
                             </div>
                         </div>
                         <div class="step-detail-values">
-                            <span>Pul=@(step.SoLuongXung?.ToString("0") ?? "0") - Speed = @(step.Speed_Hz?.ToString("0") ?? "0")</span>
+                            <span>
+                                Pul=@(step.SoLuongXung?.ToString("0") ?? "0")(@(((double)(step.SoLuongXung ?? 0) / (GlobalVariable.RevoConfig.Pulse_Rev > 0 ? GlobalVariable.RevoConfig.Pulse_Rev : 1)).ToString("0.##")) v) 
+                                - Speed = @(step.Speed_Hz?.ToString("0") ?? "0") (@(((double)(step.Speed_Hz ?? 0) / (GlobalVariable.RevoConfig.Pulse_Rev > 0 ? GlobalVariable.RevoConfig.Pulse_Rev : 1)).ToString("0.##"))v/s)
+                            </span>
                         </div>
                     </div>
                     stepNumber++;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 namespace GiamSat.Models
 {
     public class UpdateModel
-
     {
         [Required(ErrorMessage = "User Name is required")]
         public string? Username { get; set; }
@@ -25,5 +24,11 @@ namespace GiamSat.Models
 
         [Required(ErrorMessage = "Password is required")]
         public string? ReNewPassword { get; set; }
+    }
+
+    public class ResetPasswordModel
+    {
+        [Required]
+        public string? Username { get; set; }
     }
 }

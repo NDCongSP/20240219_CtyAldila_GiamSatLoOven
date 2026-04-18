@@ -1,4 +1,4 @@
-﻿@page "/dialogcardpageuserinfo"
+@page "/dialogcardpageuserinfo"
 <div Class="rz-p-0 rz-p-md-12">
     <RadzenText TextStyle="TextStyle.Subtitle2"></RadzenText>
     <RadzenTemplateForm Data="@_userModel" Submit="@((UpdateModel args) => { Submit(args); })">
@@ -19,18 +19,44 @@
                                 </RadzenColumn>
                                 <RadzenColumn SizeXS="12" SizeMD="4">
                                     <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Mật khẩu cũ</RadzenText>
-                                    <RadzenPassword Name="OldPass" @bind-Value=@_userModel.OldPassword Placeholder="Enter old password..."
-                                                    aria-label="enter password" Style="display: block;width:100%" />
+                                    <div style="position: relative; display: flex; align-items: center;">
+                                        <RadzenPassword Name="OldPass" @bind-Value=@_userModel.OldPassword Placeholder="Enter old password..."
+                                                        aria-label="enter password" Style="display: block;width:100%; padding-right: 40px;" 
+                                                        Type="@(_showOldPassword ? "text" : "password")" />
+                                        <RadzenButton Icon="@(_showOldPassword ? "visibility" : "visibility_off")" 
+                                                      ButtonStyle="ButtonStyle.Base" Variant="Variant.Text" 
+                                                      Size="ButtonSize.Small" 
+                                                      Click="@(() => _showOldPassword = !_showOldPassword)"
+                                                      Style="position: absolute; right: 8px; z-index: 10; font-weight: bold;" />
+                                    </div>
                                     <RadzenRequiredValidator Component="OldPass" Text="Nhập mk" Popup=false Style="position: absolute" />
                                 </RadzenColumn>
                                 <RadzenColumn SizeXS="12" SizeMD="4">
                                     <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Mật khẩu mới</RadzenText>
-                                    <RadzenPassword Name="NewPassword" @bind-Value=@_userModel.NewPassword Placeholder="Enter new password..." aria-label="enter password" Style="display: block;width:100%" />
+                                    <div style="position: relative; display: flex; align-items: center;">
+                                        <RadzenPassword Name="NewPassword" @bind-Value=@_userModel.NewPassword Placeholder="Enter new password..." 
+                                                        aria-label="enter password" Style="display: block;width:100%; padding-right: 40px;" 
+                                                        Type="@(_showNewPassword ? "text" : "password")" />
+                                        <RadzenButton Icon="@(_showNewPassword ? "visibility" : "visibility_off")" 
+                                                      ButtonStyle="ButtonStyle.Base" Variant="Variant.Text" 
+                                                      Size="ButtonSize.Small" 
+                                                      Click="@(() => _showNewPassword = !_showNewPassword)"
+                                                      Style="position: absolute; right: 8px; z-index: 10; font-weight: bold;" />
+                                    </div>
                                     <RadzenRequiredValidator Component="NewPassword" Text="Nhập mk mới" Popup="false" Style="position: absolute" />
                                 </RadzenColumn>
                                 <RadzenColumn SizeXS="12" SizeMD="4">
                                     <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-0 rz-mb-0">Nhập lại mật khẩu mới</RadzenText>
-                                    <RadzenPassword Name="RepeatPassword" @bind-Value=@_userModel.ReNewPassword Placeholder="Re enter new password..." aria-label="enter password" Style="display: block;width:100%" />
+                                    <div style="position: relative; display: flex; align-items: center;">
+                                        <RadzenPassword Name="RepeatPassword" @bind-Value=@_userModel.ReNewPassword Placeholder="Re enter new password..." 
+                                                        aria-label="enter password" Style="display: block;width:100%; padding-right: 40px;" 
+                                                        Type="@(_showRepeatPassword ? "text" : "password")" />
+                                        <RadzenButton Icon="@(_showRepeatPassword ? "visibility" : "visibility_off")" 
+                                                      ButtonStyle="ButtonStyle.Base" Variant="Variant.Text" 
+                                                      Size="ButtonSize.Small" 
+                                                      Click="@(() => _showRepeatPassword = !_showRepeatPassword)"
+                                                      Style="position: absolute; right: 8px; z-index: 10; font-weight: bold;" />
+                                    </div>
                                     <RadzenRequiredValidator Component="RepeatPassword" Text="Nhập lại mk mới" Popup="false" Style="position: absolute" />
                                     <RadzenCompareValidator Visible=@(!string.IsNullOrEmpty(_userModel.ReNewPassword)) Value=@_userModel.NewPassword
                                                             Component="RepeatPassword" Text="MK mới không khớp" Popup="false" Style="position: absolute" />

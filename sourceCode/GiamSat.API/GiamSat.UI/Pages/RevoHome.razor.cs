@@ -83,6 +83,7 @@ namespace GiamSat.UI.Pages
                                 {
                                     revo.RevoName    = config.Name ?? $"REVO {revo.RevoId}";
                                     revo.MachineType = config.MachineType;
+                                    revo.Pulse_Rev   = config.Pulse_Rev;
                                 }
                                 else
                                 {
@@ -139,6 +140,9 @@ namespace GiamSat.UI.Pages
 
             _shaftStats.TryGetValue(revo.RevoId, out var stats);
             var dto = stats ?? new APIClient.RevoGetTotalShaftCountDto { RevoId = revo.RevoId };
+
+            // Ensure the global config is updated before opening the dialog for immediate correct display
+            GlobalVariable.RevoConfig.Pulse_Rev = revo.Pulse_Rev;
 
             await _dialogService.OpenAsync<DialogRevoDetail>("Chi tiết REVO",
                 new Dictionary<string, object>

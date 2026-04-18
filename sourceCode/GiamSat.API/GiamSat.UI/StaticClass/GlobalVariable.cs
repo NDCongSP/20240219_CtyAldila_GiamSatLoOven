@@ -1,4 +1,4 @@
-﻿using GiamSat.APIClient;
+using GiamSat.APIClient;
 using GiamSat.Models;
 
 namespace GiamSat.UI
@@ -15,6 +15,7 @@ namespace GiamSat.UI
         //public static bool ShowMarkers = true;
 
         public static ConfigModel ConfigSystem { get; set; }
+        public static RevoConfigModel RevoConfig { get; set; } = new RevoConfigModel();
 
         /// <summary>
         /// Timer refresh trang REVO (RevoHome, DialogRevoDetail). Đơn vị ms. Đọc từ appsettings.json.
