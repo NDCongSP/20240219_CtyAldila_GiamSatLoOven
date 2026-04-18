@@ -120,6 +120,7 @@ namespace GiamSat.UI.Components
                                         {
                                             revoRealtime.RevoName    = config.Name ?? $"REVO {revoId}";
                                             revoRealtime.MachineType = config.MachineType;
+                                            revoRealtime.Pulse_Rev   = config.Pulse_Rev;
                                             GlobalVariable.RevoConfig = config;
                                         }
                                         else

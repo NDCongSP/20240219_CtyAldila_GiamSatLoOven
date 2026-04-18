@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -46,6 +46,8 @@ namespace GiamSat.Models
         /// Quy định loại máy để lấy thông tin cấu hình phù hợp, và lưu trữ data theo loại máy.
         /// </summary>
         public EnumMachineType MachineType { get; set; }
+
+        public int Pulse_Rev { get; set; } = 3200;
     }
 
     public class RevoStep
