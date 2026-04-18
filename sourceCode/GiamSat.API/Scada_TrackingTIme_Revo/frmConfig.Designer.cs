@@ -30,14 +30,13 @@
         {
             EasyScada.Winforms.Controls.WriteTagCommand writeTagCommand1 = new EasyScada.Winforms.Controls.WriteTagCommand();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmConfig));
-            this._radioSave = new System.Windows.Forms.RadioButton();
-            this._radioSaveAll = new System.Windows.Forms.RadioButton();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this._btnSave = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.easyLabel11 = new EasyScada.Winforms.Controls.EasyLabel();
+            this.easyButton1 = new EasyScada.Winforms.Controls.EasyButton();
             this.label14 = new System.Windows.Forms.Label();
             this.easyTextBox4 = new EasyScada.Winforms.Controls.EasyTextBox();
             this.label13 = new System.Windows.Forms.Label();
+            this.easyTextBox3 = new EasyScada.Winforms.Controls.EasyTextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.easyTextBox2 = new EasyScada.Winforms.Controls.EasyTextBox();
             this.label11 = new System.Windows.Forms.Label();
@@ -63,12 +62,11 @@
             this.easyLabel6 = new EasyScada.Winforms.Controls.EasyLabel();
             this.easyLabel5 = new EasyScada.Winforms.Controls.EasyLabel();
             this.label6 = new System.Windows.Forms.Label();
-            this.easyButton1 = new EasyScada.Winforms.Controls.EasyButton();
-            this.easyTextBox3 = new EasyScada.Winforms.Controls.EasyTextBox();
-            this.easyLabel11 = new EasyScada.Winforms.Controls.EasyLabel();
-            this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.easyLabel11)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.easyButton1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.easyTextBox4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.easyTextBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.easyTextBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.easyTextBox1)).BeginInit();
             this.groupBox3.SuspendLayout();
@@ -82,56 +80,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.easyLabel8)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.easyLabel6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.easyLabel5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.easyButton1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.easyTextBox3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.easyLabel11)).BeginInit();
             this.SuspendLayout();
-            // 
-            // _radioSave
-            // 
-            this._radioSave.AutoSize = true;
-            this._radioSave.Location = new System.Drawing.Point(65, 52);
-            this._radioSave.Name = "_radioSave";
-            this._radioSave.Size = new System.Drawing.Size(137, 29);
-            this._radioSave.TabIndex = 0;
-            this._radioSave.TabStop = true;
-            this._radioSave.Text = "Save (shaft)";
-            this._radioSave.UseVisualStyleBackColor = true;
-            // 
-            // _radioSaveAll
-            // 
-            this._radioSaveAll.AutoSize = true;
-            this._radioSaveAll.Location = new System.Drawing.Point(65, 93);
-            this._radioSaveAll.Name = "_radioSaveAll";
-            this._radioSaveAll.Size = new System.Drawing.Size(196, 29);
-            this._radioSaveAll.TabIndex = 1;
-            this._radioSaveAll.TabStop = true;
-            this._radioSaveAll.Text = "Save (shaft + step)";
-            this._radioSaveAll.UseVisualStyleBackColor = true;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this._btnSave);
-            this.groupBox1.Controls.Add(this._radioSave);
-            this.groupBox1.Controls.Add(this._radioSaveAll);
-            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.groupBox1.Location = new System.Drawing.Point(12, 5);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(281, 246);
-            this.groupBox1.TabIndex = 2;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Save Type";
-            // 
-            // _btnSave
-            // 
-            this._btnSave.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this._btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
-            this._btnSave.Location = new System.Drawing.Point(97, 155);
-            this._btnSave.Name = "_btnSave";
-            this._btnSave.Size = new System.Drawing.Size(164, 47);
-            this._btnSave.TabIndex = 3;
-            this._btnSave.Text = "Save";
-            this._btnSave.UseVisualStyleBackColor = false;
             // 
             // groupBox2
             // 
@@ -147,12 +96,43 @@
             this.groupBox2.Controls.Add(this.easyTextBox1);
             this.groupBox2.Controls.Add(this.groupBox3);
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.groupBox2.Location = new System.Drawing.Point(309, 12);
+            this.groupBox2.Location = new System.Drawing.Point(12, 12);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(915, 572);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Maintenance";
+            // 
+            // easyLabel11
+            // 
+            this.easyLabel11.DisplayMode = EasyScada.Winforms.Controls.DisplayMode.Value;
+            this.easyLabel11.Location = new System.Drawing.Point(249, 81);
+            this.easyLabel11.Name = "easyLabel11";
+            this.easyLabel11.Size = new System.Drawing.Size(100, 23);
+            this.easyLabel11.StringFormat = null;
+            this.easyLabel11.TabIndex = 21;
+            this.easyLabel11.TagPath = "Local Station/Channel_Revo/Device1/PC_ALLOW_RUN_TO_PLC";
+            this.easyLabel11.Text = "easyLabel11";
+            // 
+            // easyButton1
+            // 
+            this.easyButton1.BorderColor = System.Drawing.SystemColors.Control;
+            this.easyButton1.BorderThickness = 2;
+            this.easyButton1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.easyButton1.Location = new System.Drawing.Point(35, 45);
+            this.easyButton1.Name = "easyButton1";
+            this.easyButton1.Role = null;
+            this.easyButton1.Size = new System.Drawing.Size(193, 59);
+            this.easyButton1.TabIndex = 29;
+            this.easyButton1.Text = "MANUAL";
+            writeTagCommand1.AllowResetValue = false;
+            writeTagCommand1.ResetDelay = 0;
+            writeTagCommand1.ResetValue = null;
+            writeTagCommand1.TagPath = "Local Station/Channel_Revo/Device1/PC_ALLOW_RUN_TO_PLC";
+            writeTagCommand1.WriteDelay = 10;
+            writeTagCommand1.WriteValue = "0";
+            this.easyButton1.WriteTagCommands.AddRange(new EasyScada.Winforms.Controls.WriteTagCommand[] {
+            writeTagCommand1});
             // 
             // label14
             // 
@@ -191,6 +171,25 @@
             this.label13.Size = new System.Drawing.Size(294, 25);
             this.label13.TabIndex = 25;
             this.label13.Text = "Y3_OPEN_SOLENOID_VALVE";
+            // 
+            // easyTextBox3
+            // 
+            this.easyTextBox3.DropDownBackColor = System.Drawing.SystemColors.Control;
+            this.easyTextBox3.DropDownBorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.easyTextBox3.DropDownDirection = EasyScada.Winforms.Controls.DropDownDirection.None;
+            this.easyTextBox3.DropDownFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.easyTextBox3.DropDownForeColor = System.Drawing.SystemColors.ControlText;
+            this.easyTextBox3.HightLightStatusTime = 3;
+            this.easyTextBox3.Location = new System.Drawing.Point(35, 376);
+            this.easyTextBox3.Name = "easyTextBox3";
+            this.easyTextBox3.Role = null;
+            this.easyTextBox3.Size = new System.Drawing.Size(140, 30);
+            this.easyTextBox3.StringFormat = null;
+            this.easyTextBox3.TabIndex = 26;
+            this.easyTextBox3.TagPath = "Local Station/Channel_Revo/Device1/Check_Clamped_Open";
+            this.easyTextBox3.Text = "0";
+            this.easyTextBox3.WriteDelay = 200;
+            this.easyTextBox3.WriteTrigger = EasyScada.Core.WriteTrigger.OnEnter;
             // 
             // label12
             // 
@@ -479,74 +478,24 @@
             this.label6.TabIndex = 10;
             this.label6.Text = "LEFT_CLAMPED_OPEN";
             // 
-            // easyButton1
-            // 
-            this.easyButton1.BorderColor = System.Drawing.SystemColors.Control;
-            this.easyButton1.BorderThickness = 2;
-            this.easyButton1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.easyButton1.Location = new System.Drawing.Point(35, 45);
-            this.easyButton1.Name = "easyButton1";
-            this.easyButton1.Role = null;
-            this.easyButton1.Size = new System.Drawing.Size(193, 59);
-            this.easyButton1.TabIndex = 29;
-            this.easyButton1.Text = "MANUAL";
-            writeTagCommand1.AllowResetValue = false;
-            writeTagCommand1.ResetDelay = 0;
-            writeTagCommand1.ResetValue = null;
-            writeTagCommand1.TagPath = "Local Station/Channel_Revo/Device1/PC_ALLOW_RUN_TO_PLC";
-            writeTagCommand1.WriteDelay = 10;
-            writeTagCommand1.WriteValue = "0";
-            this.easyButton1.WriteTagCommands.AddRange(new EasyScada.Winforms.Controls.WriteTagCommand[] {
-            writeTagCommand1});
-            // 
-            // easyTextBox3
-            // 
-            this.easyTextBox3.DropDownBackColor = System.Drawing.SystemColors.Control;
-            this.easyTextBox3.DropDownBorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.easyTextBox3.DropDownDirection = EasyScada.Winforms.Controls.DropDownDirection.None;
-            this.easyTextBox3.DropDownFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.easyTextBox3.DropDownForeColor = System.Drawing.SystemColors.ControlText;
-            this.easyTextBox3.HightLightStatusTime = 3;
-            this.easyTextBox3.Location = new System.Drawing.Point(35, 376);
-            this.easyTextBox3.Name = "easyTextBox3";
-            this.easyTextBox3.Role = null;
-            this.easyTextBox3.Size = new System.Drawing.Size(140, 30);
-            this.easyTextBox3.StringFormat = null;
-            this.easyTextBox3.TabIndex = 26;
-            this.easyTextBox3.TagPath = "Local Station/Channel_Revo/Device1/Check_Clamped_Open";
-            this.easyTextBox3.Text = "0";
-            this.easyTextBox3.WriteDelay = 200;
-            this.easyTextBox3.WriteTrigger = EasyScada.Core.WriteTrigger.OnEnter;
-            // 
-            // easyLabel11
-            // 
-            this.easyLabel11.DisplayMode = EasyScada.Winforms.Controls.DisplayMode.Value;
-            this.easyLabel11.Location = new System.Drawing.Point(249, 81);
-            this.easyLabel11.Name = "easyLabel11";
-            this.easyLabel11.Size = new System.Drawing.Size(100, 23);
-            this.easyLabel11.StringFormat = null;
-            this.easyLabel11.TabIndex = 21;
-            this.easyLabel11.TagPath = "Local Station/Channel_Revo/Device1/PC_ALLOW_RUN_TO_PLC";
-            this.easyLabel11.Text = "easyLabel11";
-            // 
             // frmConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1236, 596);
+            this.ClientSize = new System.Drawing.Size(944, 593);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmConfig";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Config";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.easyLabel11)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.easyButton1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.easyTextBox4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.easyTextBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.easyTextBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.easyTextBox1)).EndInit();
             this.groupBox3.ResumeLayout(false);
@@ -561,19 +510,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.easyLabel8)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.easyLabel6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.easyLabel5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.easyButton1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.easyTextBox3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.easyLabel11)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.RadioButton _radioSave;
-        private System.Windows.Forms.RadioButton _radioSaveAll;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button _btnSave;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label4;
         private EasyScada.Winforms.Controls.EasyLabel easyLabel4;
