@@ -4,6 +4,7 @@
 @using AppPermissions = GiamSat.Models.AppPermissions
 @attribute [Authorize(Policy = AppPermissions.Revo_Home_View)]
 
+<div class="dashboard-page-container">
 <RadzenRow Gap="1rem">
     @if (_revoData == null || _revoData.Count == 0)
     {
@@ -36,3 +37,4 @@
         }
     }
 </RadzenRow>
+</div>

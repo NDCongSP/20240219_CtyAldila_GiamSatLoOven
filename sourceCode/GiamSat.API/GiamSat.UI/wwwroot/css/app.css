@@ -150,6 +150,44 @@ a,
     background-color: #ffffff;
 }
 
+/* Dashboard pages locked aesthetic (fixed light text ONLY for cards with custom backgrounds) */
+.dashboard-page-container {
+    padding: 1.5rem;
+    min-height: 100%;
+}
+
+.dashboard-page-container .rz-card,
+.dashboard-page-container .oven-card,
+.dashboard-page-container .revo-card {
+    --rz-text-color: #ffffff !important;
+    --rz-text-secondary-color: rgba(255, 255, 255, 0.7) !important;
+    --rz-text-muted-color: rgba(255, 255, 255, 0.5) !important;
+    --rz-text-disabled-color: rgba(255, 255, 255, 0.3) !important;
+    
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Ensure Radzen headings and text inside cards follow locked color */
+.dashboard-page-container .rz-card .rz-text,
+.dashboard-page-container .oven-card .rz-text,
+.dashboard-page-container .revo-card .rz-text {
+    color: inherit !important;
+}
+
+/* Scrollbar only inside cards or specific containers to maintain contrast */
+.dashboard-page-container .rz-card *::-webkit-scrollbar-track,
+.dashboard-page-container .oven-card *::-webkit-scrollbar-track,
+.dashboard-page-container .revo-card *::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.dashboard-page-container .rz-card *::-webkit-scrollbar-thumb,
+.dashboard-page-container .oven-card *::-webkit-scrollbar-thumb,
+.dashboard-page-container .revo-card *::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3) !important;
+}
+
 /* ============================================
    RESPONSIVE UTILITIES
    ============================================ */
