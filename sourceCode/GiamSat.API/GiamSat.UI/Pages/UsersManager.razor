@@ -38,8 +38,12 @@
                                             <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="manage_accounts" Variant="Variant.Flat" Shade="Shade.Lighter"
                                                           Size="ButtonSize.Small" class="my-1" Click="@(args => EditUserRoles(data))" @onclick:stopPropagation="true"
                                                           title="Đổi role" />
+                                            <RadzenButton ButtonStyle="ButtonStyle.Warning" Icon="lock_reset" Variant="Variant.Flat" Shade="Shade.Lighter"
+                                                          Size="ButtonSize.Small" class="my-1 ms-1" Click="@(args => ResetUserPassword(data))" @onclick:stopPropagation="true"
+                                                          title="Reset mật khẩu" />
                                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter"
-                                                          Size="ButtonSize.Small" class="my-1 ms-1" Click="@(args => DeleteItem(data.Id, data.UserName))" @onclick:stopPropagation="true" />
+                                                          Size="ButtonSize.Small" class="my-1 ms-1" Click="@(args => DeleteItem(data.Id, data.UserName))" @onclick:stopPropagation="true" 
+                                                          title="Xóa user" />
                                         </RadzenStack>
                                     </Template>
                                 </RadzenDataGridColumn>

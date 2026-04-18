@@ -10,6 +10,8 @@ namespace GiamSat.UI.Components
     {
         private bool _disposed;
         private RegisterModel _model = new RegisterModel();
+        private bool _showPassword;
+        private bool _showRepeatPassword;
         List<string> _roles = new List<string>();
 
         private HttpClient ApiClient => _httpClientFactory.CreateClient("GiamSatAPI");

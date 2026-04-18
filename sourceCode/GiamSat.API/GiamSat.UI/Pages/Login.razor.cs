@@ -1,4 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using GiamSat.APIClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
@@ -11,18 +11,17 @@ namespace GiamSat.UI.Pages
     //[AllowAnonymous]
     public partial class Login
     {
+        private LoginModel _loginModel = new();
+        private bool _showPassword;
         APIClient.LoginResult login;
         private string token;
-        async void OnLogin(LoginArgs args)
+
+        async Task OnLogin()
         {
-            Console.WriteLine($"Username: {args.Username} and password: {args.Password}");
+            Console.WriteLine($"Username: {_loginModel.Username}");
             try
             {
-                var success = await _authSerivce.LoginAsync(new LoginModel()
-                {
-                    Username = args.Username,
-                    Password = args.Password
-                });
+                var success = await _authSerivce.LoginAsync(_loginModel);
 
                 if (success != null)
                 {
@@ -32,12 +31,10 @@ namespace GiamSat.UI.Pages
                     _notificationService.Notify(new NotificationMessage
                     {
                         Severity = NotificationSeverity.Success,
-                        Summary = "Successfull",
-                        Detail = "Login OK",
+                        Summary = "Thành công",
+                        Detail = "Đăng nhập thành công",
                         Duration = 2000
                     });
-                    //await InvokeAsync(StateHasChanged);
-                    //StateHasChanged();
 
                     _navigation.NavigateTo("/");
                 }
@@ -46,8 +43,8 @@ namespace GiamSat.UI.Pages
                     _notificationService.Notify(new NotificationMessage
                     {
                         Severity = NotificationSeverity.Error,
-                        Summary = "Error",
-                        Detail = "Login fail",
+                        Summary = "Lỗi",
+                        Detail = "Đăng nhập thất bại",
                         Duration = 2000
                     });
                 }
@@ -57,8 +54,8 @@ namespace GiamSat.UI.Pages
                 _notificationService.Notify(new NotificationMessage
                 {
                     Severity = NotificationSeverity.Error,
-                    Summary = "Error",
-                    Detail = $"Login fail: {ex.Message}",
+                    Summary = "Lỗi",
+                    Detail = $"Lỗi đăng nhập: {ex.Message}",
                     Duration = 2000
                 });
             }

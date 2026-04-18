@@ -211,34 +211,50 @@ namespace GiamSat.API.Controllers
         public async Task<IActionResult> UpdatePass([FromBody] UpdateModel model)
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
-            var checkPass = await _userManager.CheckPasswordAsync(userExists, model.OldPassword);
-
             if (userExists == null)
                 return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "User not found!" });
 
-            if (checkPass == false)
-                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "Wrong old pass!" });
+            var checkPass = await _userManager.CheckPasswordAsync(userExists, model.OldPassword);
+            if (!checkPass)
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "Mật khẩu cũ không chính xác!" });
 
             if (model.NewPassword != model.ReNewPassword)
             {
-                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "New password does not match." });
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "Mật khẩu mới không khớp!" });
             }
 
             var result = await _userManager.ChangePasswordAsync(userExists, model.OldPassword, model.NewPassword);
 
             if (!result.Succeeded)
             {
-                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = $"{result.Errors}." });
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = $"Lỗi cập nhật mật khẩu: {errors}" });
             }
 
-            //update kieu ko can nhap pass cu
-            //_userManager.RemovePasswordAsync(userExists);
-            //_userManager.AddPasswordAsync(userExists, "password moi");
+            return Ok(new Response { Status = "Success", Message = "Cập nhật mật khẩu thành công!" });
+        }
 
-            //if (!result.Succeeded)
-            //    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+        [HttpPost]
+        [Route("resetpass")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Response))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(Response))]
+        public async Task<IActionResult> ResetPass([FromBody] ResetPasswordModel model)
+        {
+            var user = await _userManager.FindByNameAsync(model.Username);
+            if (user == null)
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "Người dùng không tồn tại!" });
 
-            return Ok(new Response { Status = "Success", Message = "User update successfully!" });
+            // Removing password and adding a new one is a safe way to force a reset in this context
+            await _userManager.RemovePasswordAsync(user);
+            var result = await _userManager.AddPasswordAsync(user, "123@456");
+
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = $"Lỗi reset mật khẩu: {errors}" });
+            }
+
+            return Ok(new Response { Status = "Success", Message = "Reset mật khẩu thành công. Mật khẩu mới là 123@456" });
         }
 
         [HttpPost]

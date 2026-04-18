@@ -163,6 +163,45 @@ namespace GiamSat.UI.Pages
             }
         }
 
+        async Task ResetUserPassword(APIClient.IdentityUserDto user)
+        {
+            var confirm = await _dialogService.Confirm($"Bạn chắc chắn muốn Reset mật khẩu cho user: {user.UserName} về mặc định (123@456)?", "Reset mật khẩu", new ConfirmOptions()
+            {
+                OkButtonText = "Đồng ý",
+                CancelButtonText = "Hủy",
+                AutoFocusFirstElement = true,
+            });
+
+            if (confirm == true)
+            {
+                var res = await _authSerivce.ResetPassword(new ResetPasswordModel
+                {
+                    Username = user.UserName
+                });
+
+                if (res.Status == "Success")
+                {
+                    _notificationService.Notify(new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Success,
+                        Summary = "Thành công",
+                        Detail = "Reset mật khẩu thành công. Mật khẩu mới mặc định là 123@456",
+                        Duration = 5000
+                    });
+                }
+                else
+                {
+                    _notificationService.Notify(new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Error,
+                        Summary = "Lỗi",
+                        Detail = res.Message,
+                        Duration = 5000
+                    });
+                }
+            }
+        }
+
         async Task RefreshData()
         {
             if (_disposed) return;

@@ -1,4 +1,4 @@
-﻿
+
 using Blazored.LocalStorage;
 using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -28,19 +28,31 @@ namespace GiamSat.UI
         private readonly SemaphoreSlim _semaphore = new(1, 1);
 
         private readonly ILocalStorageService _localStorage;
-        readonly HttpClient _httpClient;
-        // private readonly IPersonalClient _personalClient;
         private readonly IAuthenticateClient _tokenClient;
         private readonly NavigationManager _navigation;
+        private readonly IServiceProvider _serviceProvider;
+        private HttpClient? _httpClient;
 
         public JwtAuthenticationService(
             ILocalStorageService localStorage,
             IAuthenticateClient tokenClient,
-            NavigationManager navigation)
+            NavigationManager navigation,
+            IServiceProvider serviceProvider)
         {
             _localStorage = localStorage;
             _tokenClient = tokenClient;
             _navigation = navigation;
+            _serviceProvider = serviceProvider;
+        }
+
+        private HttpClient GetClient()
+        {
+            if (_httpClient == null)
+            {
+                var factory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
+                _httpClient = factory.CreateClient("GiamSatAPI");
+            }
+            return _httpClient;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -218,6 +230,23 @@ namespace GiamSat.UI
             catch (Exception ex)
             {
                 return new APIClient.Response() { Status = "Error Exception", Message = $"{ex.Message}" };
+            }
+        }
+
+        public async Task<APIClient.Response> ResetPassword(ResetPasswordModel model)
+        {
+            try
+            {
+                var response = await GetClient().PostAsJsonAsync("api/Authenticate/resetpass", model);
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadFromJsonAsync<APIClient.Response>();
+                }
+                return new APIClient.Response { Status = "Error", Message = "Không thể kết nối tới server." };
+            }
+            catch (Exception ex)
+            {
+                return new APIClient.Response { Status = "Error", Message = ex.Message };
             }
         }
 

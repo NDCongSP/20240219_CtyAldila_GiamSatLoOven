@@ -10,7 +10,7 @@
         @foreach (var role in RoleSelections)
         {
             <label style="display:flex; align-items:center; gap:.6rem; cursor:pointer;">
-                <RadzenCheckBox @bind-Value="role.IsSelected" Name="@role.Name" />
+                <RadzenCheckBox TValue="bool" @bind-Value="role.IsSelected" Name="@role.Name" />
                 <RadzenText style="margin:0">@role.Name</RadzenText>
             </label>
         }

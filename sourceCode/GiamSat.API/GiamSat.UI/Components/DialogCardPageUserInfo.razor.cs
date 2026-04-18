@@ -1,6 +1,7 @@
-﻿using GiamSat.APIClient;
+using GiamSat.APIClient;
 using Microsoft.AspNetCore.Components;
 using Radzen;
+using Radzen.Blazor;
 using System.Security.Claims;
 
 namespace GiamSat.UI.Components
@@ -8,8 +9,11 @@ namespace GiamSat.UI.Components
     public partial class DialogCardPageUserInfo
     {
         [Parameter] public Guid UserId { get; set; }
-
-        UpdateModel _userModel = new UpdateModel();
+        [CascadingParameter] RadzenStack? stack { get; set; }
+        private UpdateModel _userModel = new UpdateModel();
+        private bool _showOldPassword;
+        private bool _showNewPassword;
+        private bool _showRepeatPassword;
 
 
         protected override async Task OnInitializedAsync()
@@ -19,8 +23,7 @@ namespace GiamSat.UI.Components
             var authState = await _authSerivce.GetAuthenticationStateAsync();
 
             _userModel.Username = authState.User.Identity.Name;
-            _userModel.Email = authState.User.FindFirst(ClaimTypes.Email).Value;
-            var t = authState.User.FindFirst("emailTest").Value;
+            _userModel.Email = authState.User.FindFirst(ClaimTypes.Email)?.Value;
         }
 
         async void Submit(UpdateModel arg)
