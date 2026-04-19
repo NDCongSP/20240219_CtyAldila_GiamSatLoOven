@@ -78,12 +78,14 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: rgba(0, 0, 0, 0.5);
+    /*color: rgba(0, 0, 0, 0.5);*/
 }
 
-@media (prefers-color-scheme: dark) {
-    .shaft-zone-label { color: rgba(255, 255, 255, 0.55); }
-}
+/* @media (prefers-color-scheme: dark) {
+    .shaft-zone-label {
+        color: rgba(255, 255, 255, 0.55);
+    }
+} */
 
 .shaft-zone-badge {
     font-weight: 700;
@@ -95,9 +97,20 @@
     text-align: center;
 }
 
-.shaft-zone-total    { background-color: #455a64; color: #ffffff; }
-.shaft-zone-finished { background-color: #2e7d32; color: #ffffff; }
-.shaft-zone-lasthour { background-color: #e65100; color: #ffffff; }
+.shaft-zone-total {
+    background-color: #455a64;
+    color: #ffffff;
+}
+
+.shaft-zone-finished {
+    background-color: #2e7d32;
+    color: #ffffff;
+}
+
+.shaft-zone-lasthour {
+    background-color: #e65100;
+    color: #ffffff;
+}
 
 .steps-grid {
 
