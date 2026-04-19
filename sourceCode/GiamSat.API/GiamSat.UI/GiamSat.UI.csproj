@@ -13,8 +13,7 @@
 
 	  <PackageReference Include="ClosedXML" Version="0.102.2" />
 	  <PackageReference Include="ClosedXML.Report" Version="0.2.8" />
-	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.13" />
-	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.13" PrivateAssets="all" />
+
 
 	  <PackageReference Include="Blazicons" Version="1.2.20" />
 	  <PackageReference Include="Blazorise.LoadingIndicator" Version="1.3.3" />
@@ -30,5 +29,12 @@
     <ProjectReference Include="..\GiamSat.APIClient\GiamSat.APIClient.csproj" />
     <ProjectReference Include="..\GiamSat.Models\GiamSat.Models.csproj" />
   </ItemGroup>
+  <Target Name="AutoVersionCss" BeforeTargets="Build;Publish">
+    <PropertyGroup>
+      <VersionValue>$([System.DateTime]::Now.Ticks)</VersionValue>
+    </PropertyGroup>
+    <Message Importance="high" Text="Cập nhật version CSS trong index.html: v=$(VersionValue)" />
+    <Exec Command="powershell -Command &quot;(Get-Content wwwroot/index.html) -replace '\?v=[0-9a-zA-Z.]+', '?v=$(VersionValue)' | Set-Content wwwroot/index.html -Encoding UTF8&quot;" />
+  </Target>
 
 </Project>

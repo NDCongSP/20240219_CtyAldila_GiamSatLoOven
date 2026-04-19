@@ -1,0 +1,151 @@
+@page "/admin/permissions"
+@using System.Net.Http.Json
+@using GiamSat.Models
+@attribute [Authorize(Roles = UserRoles.Admin)]
+
+<PageTitle>Quản lý Permissions (CRUD)</PageTitle>
+
+<RadzenRow>
+    <RadzenColumn Size="12">
+        <RadzenCard Class="rz-p-4">
+            <RadzenStack Gap="1rem">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenText TextStyle="TextStyle.H5">Danh sách các Quyền (System Permissions)</RadzenText>
+                    <RadzenButton Text="Thêm Permission" Icon="add_circle" Click="OpenCreateDialogAsync" ButtonStyle="ButtonStyle.Success" />
+                </RadzenStack>
+
+                @if (_permissions == null)
+                {
+                    <p>Đang tải...</p>
+                }
+                else
+                {
+                    <RadzenDataGrid @ref="_grid" Data="@_permissions" TItem="GiamSat.Models.Permissions" AllowFiltering="false" 
+                            AllowPaging="true" PageSize="10" AllowSorting="true"
+                            PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)"
+                            PageSizeText="Bản ghi trên trang">
+                        <Columns>
+                            <RadzenDataGridColumn TItem="GiamSat.Models.Permissions" Property="Module" Title="Module" Width="150px" />
+                            <RadzenDataGridColumn TItem="GiamSat.Models.Permissions" Property="Actions" Title="Actions" Width="150px" />
+                            <RadzenDataGridColumn TItem="GiamSat.Models.Permissions" Property="Name" Title="Tên / Mô tả ngắn" />
+                            <RadzenDataGridColumn TItem="GiamSat.Models.Permissions" Property="Description" Title="Chi tiết" />
+                            <RadzenDataGridColumn TItem="GiamSat.Models.Permissions" Title="Thao tác" Sortable="false" Filterable="false" Width="180px">
+                                <Template Context="perm">
+                                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                                        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Info" Text="Sửa" Click="@(async _ => await OpenEditDialogAsync(perm))" />
+                                        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" Text="Xóa" Click="@(async _ => await DeletePermissionAsync(perm.Id))" />
+                                    </RadzenStack>
+                                </Template>
+                            </RadzenDataGridColumn>
+                        </Columns>
+                    </RadzenDataGrid>
+                }
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+</RadzenRow>
+
+@code {
+    private RadzenDataGrid<GiamSat.Models.Permissions>? _grid;
+    private List<GiamSat.Models.Permissions>? _permissions;
+
+    protected override async Task OnInitializedAsync() => await LoadAsync();
+
+    private HttpClient ApiClient => _httpClientFactory.CreateClient("GiamSatAPI");
+
+    private async Task LoadAsync()
+    {
+        _permissions = await ApiClient.GetFromJsonAsync<List<GiamSat.Models.Permissions>>("api/permissions/permissions") ?? new();
+        StateHasChanged();
+    }
+
+    private async Task DeletePermissionAsync(Guid id)
+    {
+        var confirm = await _dialogService.Confirm("Bạn có chắc chắn muốn xóa Permission này? Những thao tác này sẽ xóa quyền này khỏi TẤT CẢ các Role đang có!", "Xác nhận xóa", new ConfirmOptions { OkButtonText = "Xóa", CancelButtonText = "Hủy" });
+        if (confirm == true)
+        {
+            var res = await ApiClient.DeleteAsync($"api/permissions/permissions/{id}");
+            if (res.IsSuccessStatusCode)
+            {
+                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Thành công", Detail = "Đã xóa Permission." });
+                await LoadAsync();
+            }
+            else
+            {
+                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Lỗi", Detail = "Không thể xóa Permission." });
+            }
+        }
+    }
+
+    private async Task OpenCreateDialogAsync()
+    {
+        var perm = new GiamSat.Models.Permissions { IsActived = true };
+        await ShowDialogAsync("Thêm Permission mới", perm, true);
+    }
+
+    private async Task OpenEditDialogAsync(GiamSat.Models.Permissions perm)
+    {
+        var editModel = new GiamSat.Models.Permissions
+        {
+            Id = perm.Id,
+            Name = perm.Name,
+            Module = perm.Module,
+            Actions = perm.Actions,
+            Description = perm.Description,
+            IsActived = perm.IsActived
+        };
+        await ShowDialogAsync("Sửa Permission", editModel, false);
+    }
+
+    private async Task ShowDialogAsync(string title, GiamSat.Models.Permissions model, bool isCreate)
+    {
+        var result = await _dialogService.OpenAsync<PermissionDialog>(title, new Dictionary<string, object> 
+        {
+            { "Model", model },
+            { "IsCreate", isCreate }
+        });
+
+        if (result == true)
+        {
+            if (string.IsNullOrWhiteSpace(model.Name) || string.IsNullOrWhiteSpace(model.Module) || string.IsNullOrWhiteSpace(model.Actions))
+            {
+                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Thiếu thông tin", Detail = "Vui lòng nhập đủ các trường bắt buộc (*)." });
+                await ShowDialogAsync(title, model, isCreate);
+                return;
+            }
+
+            HttpResponseMessage response;
+            if (isCreate)
+            {
+                response = await ApiClient.PostAsJsonAsync("api/permissions/permissions", model);
+            }
+            else
+            {
+                response = await ApiClient.PutAsJsonAsync($"api/permissions/permissions/{model.Id}", model);
+            }
+
+            if (response.IsSuccessStatusCode)
+            {
+                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Thành công", Detail = "Đã lưu Permission." });
+                await LoadAsync();
+            }
+            else
+            {
+                string errorMessage = "Lưu thất bại";
+                try
+                {
+                    var dict = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
+                    if (dict != null)
+                    {
+                        if (dict.ContainsKey("Message")) errorMessage = dict["Message"].ToString();
+                        else if (dict.ContainsKey("message")) errorMessage = dict["message"].ToString();
+                    }
+                }
+                catch { }
+
+                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Lỗi", Detail = errorMessage });
+                await ShowDialogAsync(title, model, isCreate);
+            }
+        }
+    }
+}

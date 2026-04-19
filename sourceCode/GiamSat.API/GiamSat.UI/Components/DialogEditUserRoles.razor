@@ -1,0 +1,44 @@
+@using GiamSat.UI.Model
+@using Radzen
+
+<RadzenStack Gap="1rem" Style="padding: 1rem;">
+    <RadzenText TextStyle="TextStyle.Body1">
+        Chọn role cho user: <strong>@UserName</strong>
+    </RadzenText>
+
+    <RadzenStack Gap="0.5rem">
+        @foreach (var role in RoleSelections)
+        {
+            <label style="display:flex; align-items:center; gap:.6rem; cursor:pointer;">
+                <RadzenCheckBox TValue="bool" @bind-Value="role.IsSelected" Name="@role.Name" />
+                <RadzenText style="margin:0">@role.Name</RadzenText>
+            </label>
+        }
+    </RadzenStack>
+
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem" Style="margin-top:1rem">
+        <RadzenButton Text="Hủy" ButtonStyle="ButtonStyle.Light" Click="Cancel" />
+        <RadzenButton Text="Lưu" Icon="save" ButtonStyle="ButtonStyle.Primary" Click="Save" />
+    </RadzenStack>
+</RadzenStack>
+
+@code {
+    [Parameter] public string UserName { get; set; } = string.Empty;
+    [Parameter] public List<RoleSelection> RoleSelections { get; set; } = new();
+
+    [Inject] private DialogService DialogService { get; set; } = default!;
+
+    private void Save()
+    {
+        var selected = RoleSelections
+            .Where(r => r.IsSelected)
+            .Select(r => r.Name)
+            .ToList();
+        DialogService.Close(selected);
+    }
+
+    private void Cancel()
+    {
+        DialogService.Close(null);
+    }
+}

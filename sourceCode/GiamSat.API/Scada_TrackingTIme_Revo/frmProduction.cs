@@ -15,6 +15,7 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Contexts;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,9 +50,165 @@ namespace Scada_TrackingTIme_Revo
 
         private RevoGetTotalShaftCountDto _currentShaftCount = new RevoGetTotalShaftCountDto();
 
+        // Import để cho phép kéo form
+        [DllImport("user32.dll")]
+        public static extern bool ReleaseCapture();
+        [DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+
+        private Panel titleBar;
+        private Button btnClose;
+        private Button btnMaximize;
+        private Button btnMinimize;
+        private Button btnMaintenance;
+        private Label titleText;
+
         public frmProduction()
         {
             InitializeComponent();
+
+            #region add header
+            // Cấu hình form
+            this.Text = "Custom Title Bar";
+            this.FormBorderStyle = FormBorderStyle.None; // Bỏ header mặc định
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.Size = new Size(1350, 688);
+
+            // Tạo panel làm thanh tiêu đề
+            titleBar = new Panel();
+            titleBar.Dock = DockStyle.Top;
+            titleBar.Height = 40;
+            titleBar.BackColor = Color.Black;
+            titleBar.MouseDown += TitleBar_MouseDown;
+            this.Controls.Add(titleBar);
+
+            // Nút Close
+            btnClose = new Button();
+            btnClose.Text = "";
+            btnClose.ForeColor = Color.White;
+            btnClose.BackColor = Color.Black;
+            btnClose.FlatStyle = FlatStyle.Flat;
+            btnClose.FlatAppearance.BorderSize = 0;
+            btnClose.Size = new Size(40, 40);
+            btnClose.Location = new Point(this.Width - 40, 0);
+            btnClose.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            // 1) Gán icon từ Resources (đặt tên hình là "updateVersion" như trong Resource)
+            btnClose.Image = Properties.Resources.close_window_30_white;  // PNG từ Resources
+            btnClose.ImageAlign = ContentAlignment.MiddleCenter;  // căn giữa
+            btnClose.Padding = new Padding(0);                    // tránh lệch
+            btnClose.TextImageRelation = TextImageRelation.Overlay; // chỉ icon
+            btnClose.Click += BtnClose_Click;
+            titleBar.Controls.Add(btnClose);
+
+            // Nút Maximize
+            btnMaximize = new Button();
+            btnMaximize.Text = "";
+            btnMaximize.ForeColor = Color.White;
+            btnMaximize.BackColor = Color.Black;
+            btnMaximize.FlatStyle = FlatStyle.Flat;
+            btnMaximize.FlatAppearance.BorderSize = 0;
+            btnMaximize.Size = new Size(40, 40);
+            btnMaximize.Location = new Point(this.Width - 80, 0);
+            btnMaximize.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            // 1) Gán icon từ Resources (đặt tên hình là "updateVersion" như trong Resource)
+            btnMaximize.Image = Properties.Resources.maximize_30_white;  // PNG từ Resources
+            btnMaximize.ImageAlign = ContentAlignment.MiddleCenter;  // căn giữa
+            btnMaximize.Padding = new Padding(0);                    // tránh lệch
+            btnMaximize.TextImageRelation = TextImageRelation.Overlay; // chỉ icon
+            btnMaximize.Click += BtnMaximize_Click;
+            titleBar.Controls.Add(btnMaximize);
+
+            // Nút Minimize
+            btnMinimize = new Button();
+            btnMinimize.Text = "";
+            btnMinimize.ForeColor = Color.White;
+            btnMinimize.BackColor = Color.Black;
+            btnMinimize.FlatStyle = FlatStyle.Flat;
+            btnMinimize.FlatAppearance.BorderSize = 0;
+            btnMinimize.Size = new Size(40, 40);
+            btnMinimize.Location = new Point(this.Width - 120, 0);
+            btnMinimize.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            // 1) Gán icon từ Resources (đặt tên hình là "updateVersion" như trong Resource)
+            btnMinimize.Image = Properties.Resources.minimize_30_White;  // PNG từ Resources
+            btnMinimize.ImageAlign = ContentAlignment.MiddleCenter;  // căn giữa
+            btnMinimize.Padding = new Padding(0);                    // tránh lệch
+            btnMinimize.TextImageRelation = TextImageRelation.Overlay; // chỉ icon
+            btnMinimize.Click += BtnMinimize_Click;
+            titleBar.Controls.Add(btnMinimize);
+
+
+            // Nút update version
+            btnMaintenance = new Button();
+            btnMaintenance.Text = "";                      // Không cần chữ, chỉ hiển thị icon
+            btnMaintenance.ForeColor = Color.White;
+            btnMaintenance.BackColor = Color.Black;
+            btnMaintenance.FlatStyle = FlatStyle.Flat;
+            btnMaintenance.FlatAppearance.BorderSize = 0;
+            btnMaintenance.Size = new Size(40, 40);
+            btnMaintenance.Location = new Point(this.Width - 160, 0);
+            btnMaintenance.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnMaintenance.Cursor = Cursors.Hand;
+
+            // 1) Gán icon từ Resources (đặt tên hình là "updateVersion" như trong Resource)
+            btnMaintenance.Image = Properties.Resources.maintenance_30_white;  // PNG từ Resources
+            btnMaintenance.ImageAlign = ContentAlignment.MiddleCenter;  // căn giữa
+            btnMaintenance.Padding = new Padding(0);                    // tránh lệch
+            btnMaintenance.TextImageRelation = TextImageRelation.Overlay; // chỉ icon
+
+            // Tùy chọn: scale icon nếu quá lớn/nhỏ (WinForms Button không có ImageLayout)
+            // => bạn có thể dùng phiên bản icon 24x24 hoặc 32x32 trong file PNG để vừa với nút 40x40.
+
+            // 2) Tooltip khi hover
+            var tip = new ToolTip();
+            tip.AutoPopDelay = 5000;     // hiển thị tối đa 5 giây
+            tip.InitialDelay = 300;      // trễ 300ms
+            tip.ReshowDelay = 100;       // xuất hiện lại nhanh
+            tip.ShowAlways = true;       // luôn hiển thị tooltip
+            tip.SetToolTip(btnMaintenance, "MAINTENANCE");  // nội dung tooltip
+
+            // Tùy chọn: hiệu ứng hover (đổi nền cho dễ nhìn)
+            btnMaintenance.MouseEnter += (s, e) => btnMaintenance.BackColor = Color.FromArgb(30, 30, 30);
+            btnMaintenance.MouseLeave += (s, e) => btnMaintenance.BackColor = Color.Black;
+
+            // Sự kiện Click (giữ nguyên như bạn đã có)
+            btnMaintenance.Click += btnMaitenance_Click; ; // hoặc sự kiện update version thực tế của bạn
+            titleBar.Controls.Add(btnMaintenance);
+
+
+            // Đảm bảo tất cả có cùng Height = 30 và Y = 5
+            btnClose.Size = btnMaximize.Size = btnMinimize.Size = btnMaintenance.Size = new Size(30, 30);
+
+
+            // Anchor cho cả 3 nút
+            btnClose.Anchor = btnMaximize.Anchor = btnMinimize.Anchor = btnMaintenance.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+            // Logo
+            PictureBox logo = new PictureBox();
+            logo.Image = Properties.Resources.logoAldila; // logo từ Resources
+            logo.SizeMode = PictureBoxSizeMode.Zoom;
+            logo.Size = new Size(100, 30); // kích thước logo
+            logo.Location = new Point(0, 5); // vị trí bên trái
+            titleBar.Controls.Add(logo);
+
+            // Text
+            titleText = new Label();
+            titleText.Text = $"REVO GOFT  PRODUCTION";
+            titleText.ForeColor = Color.White;
+            titleText.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+            titleText.AutoSize = true;
+            titleText.Location = new Point(100, 10); // ngay sau logo
+            titleBar.Controls.Add(titleText);
+            #endregion
+
+            // 1. Đảm bảo Footer nằm dưới cùng
+            _labStatus.Dock = DockStyle.Bottom;
+            _labStatus.Height = 30; // Chỉnh độ cao phù hợp
+
+            // 2. Ép nó phải hiển thị lên trên (Z-Order)
+            _labStatus.BringToFront();
+
+            // 3. Nếu flowMain đang là Dock Fill, nó sẽ tự động chừa chỗ cho _labStatus
+            // flowMain.Dock = DockStyle.Fill;
 
             Load += frmProduction_Load;
             FormClosing += frmProduction_FormClosing;
@@ -114,7 +271,7 @@ namespace Scada_TrackingTIme_Revo
                         return;
                     }
 
-                    Text = $"Chương trình giám sát thời gian chạy - Máy {GlobalVariable.RevoConfig.Name}";
+                    titleText.Text = $"Chương trình giám sát thời gian chạy - Máy {GlobalVariable.RevoConfig.Name}";
                 }
                 else
                 {
@@ -219,20 +376,46 @@ namespace Scada_TrackingTIme_Revo
                 _ = TaskCheckTimeStepAsync(_checkingTimeStepCts.Token);
                 _resetShaftCts = new CancellationTokenSource();
                 _ = TaskResetShaftAsync(_resetShaftCts.Token);
-
-                _btnMaintenance.Click += (s, o) =>
-                {
-                    using (var nf = new frmConfig())
-                    {
-                        nf.EasyDriverConnector=_easyDriverConnector;
-                        nf.ShowDialog();
-                    }
-                };
             }
 
             this.KeyPreview = true;
 
             this.KeyDown += frmProduction_KeyDown;
+        }
+
+        #region Events
+        // Cho phép kéo form bằng panel
+        private void TitleBar_MouseDown(object sender, MouseEventArgs e)
+        {
+            ReleaseCapture();
+            SendMessage(this.Handle, 0x112, 0xf012, 0);
+        }
+
+        private void btnMaitenance_Click(object sender, EventArgs e)
+        {
+            using (var nf = new frmConfig())
+            {
+                nf.EasyDriverConnector = _easyDriverConnector;
+                nf.ShowDialog();
+            }
+        }
+
+        private void BtnClose_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void BtnMaximize_Click(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Normal)
+                this.WindowState = FormWindowState.Maximized;
+            else
+                this.WindowState = FormWindowState.Normal;
+        }
+
+        private void BtnMinimize_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
         }
 
         private void _btnStart_Click(object sender, EventArgs e)
@@ -400,6 +583,8 @@ namespace Scada_TrackingTIme_Revo
                 Log.Error($"Lỗi khi nhập mã hàng: {ex.Message}");
             }
         }
+        #endregion
+
 
         #region Tasks
         private async Task TaskTimerAsync(CancellationToken token)
@@ -415,7 +600,6 @@ namespace Scada_TrackingTIme_Revo
                     //var ping = PingServer(GlobalVariable.IpDbServer);
                     GlobalVariable.InvokeIfRequired(this, () =>
                     {
-                        _labTime.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
                         _labRev.Text = GlobalVariable.RevoRealtimeModel.Rev;
                         _labTotalShaftCurrentHour.Text = _totalCurrentHour.ToString();
                         _labTotalShaftLastHour.Text = _totalLastHour.ToString();
@@ -425,7 +609,7 @@ namespace Scada_TrackingTIme_Revo
 
                         //_labStatus.BackColor = GetConnectionStatusColor(_easyStatus);
 
-                        _labStatus.Text = $"Easy Driver: {_easyStatus} - PLC: {GlobalVariable.RevoRealtimeModel.PlcConnected} - DB Server: - Save type: {GlobalVariable.RevoConfig.SaveMode.ToString()}";
+                        _labStatus.Text = $"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")} - Easy Driver: {_easyStatus} - PLC: {GlobalVariable.RevoRealtimeModel.PlcConnected} - DB Server: - Save type: {GlobalVariable.RevoConfig.SaveMode.ToString()}";
                     });
 
 
@@ -699,7 +883,7 @@ namespace Scada_TrackingTIme_Revo
         {
             Panel row = new Panel();
             row.Width = 660;
-            row.Height = 58;
+            row.Height = 50;
             row.Margin = new Padding(5, 0, 5, 0);
 
             row.Tag = step.StepIndex; // ← KEY
@@ -709,24 +893,28 @@ namespace Scada_TrackingTIme_Revo
             lblIndex.Name = "lblIndex";
             lblIndex.Text = step.StepIndex.ToString();
             lblIndex.Width = 50;
-            lblIndex.Height = 58;
+            lblIndex.Height = 50;
             lblIndex.TextAlign = ContentAlignment.MiddleCenter;
-            lblIndex.Location = new Point(0, 5);
-            lblIndex.Font = new Font("Microsoft Sans Serif", 20, FontStyle.Bold);
+            lblIndex.Location = new Point(0, 3);
+            lblIndex.Font = new Font("Microsoft Sans Serif", 15, FontStyle.Bold);
             lblIndex.BackColor = (bool)step.Enable ? Color.LightBlue : Color.Black;
             lblIndex.ForeColor = (bool)step.Enable ? Color.Black : Color.White;
 
             // Thanh REVO
             Label lblStep = new Label();
             lblStep.Name = "lblStep";
-            lblStep.Text = $"{step.StepName} - {step.StartAt} -> {step.EndAt}: {step.TotalRunTime}s{Environment.NewLine}Pul={step.SoLuongXung} - Speed = {step.Speed_Hz}";
+            lblStep.Text = $"{step.StepName} - {step.StartAt} -> {step.EndAt}: {step.TotalRunTime} s" +
+                      $"{Environment.NewLine}" +
+                      $"Pul={step.SoLuongXung}({step.SoLuongXung / GlobalVariable.RevoConfig.Pulse_Rev} v) " +
+                      $"- Speed = {step.Speed_Hz} ({step.Speed_Hz / GlobalVariable.RevoConfig.Pulse_Rev} v/s)";
             lblStep.Width = 610;
-            lblStep.Height = 58;
-            lblStep.Location = new Point(60, 5);
+            lblStep.Height = 50;
+            lblStep.TextAlign = ContentAlignment.MiddleCenter;
+            lblStep.Location = new Point(60, 3);
             lblStep.BackColor = (bool)step.Enable ? Color.LightBlue : Color.Black;
             lblStep.ForeColor = (bool)step.Enable ? Color.Black : Color.White;
             lblStep.TextAlign = ContentAlignment.TopLeft;
-            lblStep.Font = new Font("Microsoft Sans Serif", 13, FontStyle.Regular);
+            lblStep.Font = new Font("Microsoft Sans Serif", 12, FontStyle.Regular);
 
             row.Controls.Add(lblIndex);
             row.Controls.Add(lblStep);
@@ -767,7 +955,7 @@ namespace Scada_TrackingTIme_Revo
                     lblStep.Text = $"{step.StepName} - {startAtText} -> {endAtText}: {step.TotalRunTime}s" +
                         $"{Environment.NewLine}" +
                         $"Pul={step.SoLuongXung}({step.SoLuongXung/GlobalVariable.RevoConfig.Pulse_Rev} v) " +
-                        $"- Speed = {step.Speed_Hz} ({step.Speed_Hz/GlobalVariable.RevoConfig.Pulse_Rev}v/s)";
+                        $"- Speed = {step.Speed_Hz} ({step.Speed_Hz/GlobalVariable.RevoConfig.Pulse_Rev} v/s)";
 
                     if ((step.StartAt.HasValue && !step.EndAt.HasValue) || isFirst == 1)
                     {

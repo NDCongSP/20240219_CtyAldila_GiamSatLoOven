@@ -1,4 +1,4 @@
-﻿@page "/login"
+@page "/login"
 @layout LoginLayout
 
 <RadzenRow Gap="0" Class="rz-my-12 rz-mx-auto rz-border-radius-6 rz-shadow-10" Style="width: 100%; max-width: 800px; overflow: hidden;" AlignItems="AlignItems.Center">
@@ -18,10 +18,33 @@
             <RadzenLogin AllowRegister="false" AllowResetPassword="false" />
             </RadzenTemplateForm> *@
 
-            <RadzenTemplateForm Data=@("SimpleLogin")>
-                <RadzenLogin AllowRegister="false" AllowResetPassword="false" Login="@OnLogin">
+            <RadzenTemplateForm TItem="APIClient.LoginModel" Data="@_loginModel" Submit="@OnLogin">
+                <RadzenStack Gap="1.5rem">
+                    <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" Class="rz-mb-2">Đăng nhập</RadzenText>
+                    
+                    <RadzenStack Gap="0.5rem">
+                        <RadzenLabel Text="Tên đăng nhập" Component="Username" />
+                        <RadzenTextBox Name="Username" @bind-Value="@_loginModel.Username" style="width: 100%" />
+                        <RadzenRequiredValidator Component="Username" Text="Nhập tên đăng nhập" />
+                    </RadzenStack>
 
-                </RadzenLogin>
+                    <RadzenStack Gap="0.5rem">
+                        <RadzenLabel Text="Mật khẩu" Component="Password" />
+                        <div style="position: relative; display: flex; align-items: center;">
+                            <RadzenPassword Name="Password" @bind-Value="@_loginModel.Password" style="width: 100%; padding-right: 40px;" 
+                                            Type="@(_showPassword ? "text" : "password")" />
+                            <RadzenButton Icon="@(_showPassword ? "visibility" : "visibility_off")" 
+                                          ButtonStyle="ButtonStyle.Base" Variant="Variant.Text" 
+                                          Size="ButtonSize.Small" 
+                                          Click="@(() => _showPassword = !_showPassword)"
+                                          Style="position: absolute; right: 8px; z-index: 10; font-weight: bold;" />
+                        </div>
+                        <RadzenRequiredValidator Component="Password" Text="Nhập mật khẩu" />
+                    </RadzenStack>
+
+                    <RadzenButton ButtonType="ButtonType.Submit" Text="Đăng nhập" ButtonStyle="ButtonStyle.Primary" 
+                                  Style="width: 100%; margin-top: 1rem;" />
+                </RadzenStack>
             </RadzenTemplateForm>
         </RadzenCard>
     </RadzenColumn>

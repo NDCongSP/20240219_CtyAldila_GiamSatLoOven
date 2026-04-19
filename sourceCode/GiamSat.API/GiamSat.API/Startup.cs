@@ -1,5 +1,6 @@
 using GiamSat.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -213,6 +214,15 @@ namespace GiamSat.API
                 };
             });
 
+            services.AddAuthorization(options =>
+            {
+                foreach (var permission in AppPermissions.GetAll())
+                {
+                    options.AddPolicy(permission, policy => policy.Requirements.Add(new PermissionRequirement(permission)));
+                }
+            });
+
+            services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
             services.AddControllers();
 
             //AddRepoServices(services);//add transient tu dong
@@ -303,6 +313,7 @@ namespace GiamSat.API
             //scope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
 
             SeedingData(scope).Wait();
+            PermissionSeeder.SeedAsync(scope.ServiceProvider.GetService<ApplicationDbContext>(), scope.ServiceProvider.GetService<RoleManager<IdentityRole>>()).Wait();
             #endregion
 
             app.UseCors("AllowAll");

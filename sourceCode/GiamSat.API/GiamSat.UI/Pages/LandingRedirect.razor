@@ -1,0 +1,53 @@
+@page "/"
+@using GiamSat.Models
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize]
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager Navigation
+
+<div class="rz-p-6" style="display:flex; align-items:center; justify-content:center; min-height:50vh;">
+    <RadzenStack AlignItems="Radzen.AlignItems.Center" Gap="1rem">
+        <div class="spinner"></div>
+        <RadzenText TextStyle="TextStyle.Body1" Style="color: var(--rz-text-secondary-color);">Đang chuyển hướng...</RadzenText>
+    </RadzenStack>
+</div>
+
+@code {
+    // Thứ tự ưu tiên redirect — khớp với thứ tự hiển thị trên NavMenu
+    private static readonly (string Permission, string Path)[] PagePriority = new[]
+    {
+        (AppPermissions.Oven_Home_View,     "/oven-home"),
+        (AppPermissions.Oven_Config_View,   "/ovenconfig/1"),
+        (AppPermissions.Oven_Report_View,   "/report"),
+        (AppPermissions.Oven_Settings_View, "/settings"),
+        (AppPermissions.Revo_Home_View,     "/revo"),
+        (AppPermissions.Revo_Config_View,   "/revo/config"),
+        (AppPermissions.Revo_Report_View,   "/revo/report"),
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user?.Identity?.IsAuthenticated != true)
+        {
+            Navigation.NavigateTo("/login", forceLoad: true);
+            return;
+        }
+
+        // Tìm trang đầu tiên mà user có quyền
+        foreach (var (permission, path) in PagePriority)
+        {
+            if (user.HasClaim(PermissionNames.Prefix, permission))
+            {
+                Navigation.NavigateTo(path);
+                return;
+            }
+        }
+
+        // Không có quyền nào → hiển thị thông báo (hoặc có thể redirect đến trang profile)
+    }
+}

@@ -1,4 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using GiamSat.Models;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
@@ -19,7 +19,6 @@ namespace GiamSat.UI.Pages
             try
             {
                 var authState = await _authSerivce.GetAuthenticationStateAsync();
-                var n = authState.User.IsInRole("Admin");
 
                 var res = await _ft01Client.GetAllAsync();
 

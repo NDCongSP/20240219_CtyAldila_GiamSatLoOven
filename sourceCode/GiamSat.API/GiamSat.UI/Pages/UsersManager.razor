@@ -1,6 +1,7 @@
-﻿@page "/usersmanager"
+@page "/admin/users"
+@page "/usersmanager"
 @using GiamSat.Models
-@attribute [Authorize(Roles = "Admin")]
+@attribute [Authorize(Roles = UserRoles.Admin)]
 
 <div Class="rz-p-0 rz-p-md-12">
     <RadzenRow Gap="2rem" Class="rz-p-0 rz-p-lg-4">
@@ -8,33 +9,42 @@
             <RadzenStack>
                 <RadzenFieldset Text="Danh sách users">
                     <RadzenStack Orientation=Orientation.Vertical Gap="1rem">
-                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center"
-                                     Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-mt-2">
-                            <RadzenButton Click=@(args => AddNewItem()) Variant="Variant.Flat" Shade="Shade.Dark"
-                                          Text="Thêm user" Icon="add_circle" ButtonStyle="ButtonStyle.Dark" />
+                        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+                            <RadzenButton Text="Thêm user" Icon="person_add" Click="AddNewItem" ButtonStyle="ButtonStyle.Success" />
                         </RadzenStack>
-                        <RadzenDataGrid @ref="_profileGrid" AllowFiltering="true" 
-                                        FilterPopupRenderMode="PopupRenderMode.OnDemand" AllowPaging="true" PageSize="5" AllowSorting="true"
-                                        Data="@_users" TItem="Models.UserModel"
-                                        ShowPagingSummary=@_showPagerSummary PagingSummaryFormat="@_pagingSummaryFormat" PageSizeOptions="@_pageSizeOptions">
+                        <RadzenDataGrid @ref="_profileGrid" AllowFiltering="false"
+                                        AllowPaging="true" PageSize="5" AllowSorting="true"
+                                        Data="@_users" TItem="APIClient.IdentityUserDto"
+                                        ShowPagingSummary=@_showPagerSummary 
+                                        PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)" 
+                                        PageSizeText="Bản ghi trên trang"
+                                        PageSizeOptions="@_pageSizeOptions">
                             <Columns>
-                                @* <RadzenDataGridColumn TItem="Models.UserModel" Property="Id" Title="Id" /> *@
-                                <RadzenDataGridColumn TItem="Models.UserModel" Property="UserName" Title="Tên" />
-                                @* <RadzenDataGridColumn TItem="Models.UserModel" Property="Roles" Title="Email" /> *@
-                                <RadzenDataGridColumn TItem="Models.UserModel" Title="Phân quyền" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                                <RadzenDataGridColumn TItem="APIClient.IdentityUserDto" Property="UserName" Title="Tên" />
+                                <RadzenDataGridColumn TItem="APIClient.IdentityUserDto" Property="Email" Title="Email" />
+                                <RadzenDataGridColumn TItem="APIClient.IdentityUserDto" Title="Role" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
                                     <Template Context="data">
-                                        @foreach (var item in data.Roles)
-                                        {
-                                            @(""+item+",")
-                                        }
+                                        @string.Join(", ", data.Roles)
                                     </Template>
                                 </RadzenDataGridColumn>
-                                <RadzenDataGridColumn TItem="Models.UserModel" Filterable="false" Sortable="true" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+                                <RadzenDataGridColumn TItem="APIClient.IdentityUserDto" Title="Permission" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
                                     <Template Context="data">
-                                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter"
-                                                      Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteItem(data.Id,data.UserName))" @onclick:stopPropagation="true">
-                                        </RadzenButton>
-                                        @* <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" class="m-1" Click=@(() => OpenProfile(data.Id)) Text="@data.Id.ToString()">@data.Steps.Count</RadzenButton> *@
+                                        @string.Join(", ", data.Claims)
+                                    </Template>
+                                </RadzenDataGridColumn>
+                                <RadzenDataGridColumn TItem="APIClient.IdentityUserDto" Title="Thao tác" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right" Width="160px">
+                                    <Template Context="data">
+                                        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.3rem">
+                                            <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="manage_accounts" Variant="Variant.Flat" Shade="Shade.Lighter"
+                                                          Size="ButtonSize.Small" class="my-1" Click="@(args => EditUserRoles(data))" @onclick:stopPropagation="true"
+                                                          title="Đổi role" />
+                                            <RadzenButton ButtonStyle="ButtonStyle.Warning" Icon="lock_reset" Variant="Variant.Flat" Shade="Shade.Lighter"
+                                                          Size="ButtonSize.Small" class="my-1 ms-1" Click="@(args => ResetUserPassword(data))" @onclick:stopPropagation="true"
+                                                          title="Reset mật khẩu" />
+                                            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter"
+                                                          Size="ButtonSize.Small" class="my-1 ms-1" Click="@(args => DeleteItem(data.Id, data.UserName))" @onclick:stopPropagation="true" 
+                                                          title="Xóa user" />
+                                        </RadzenStack>
                                     </Template>
                                 </RadzenDataGridColumn>
                             </Columns>

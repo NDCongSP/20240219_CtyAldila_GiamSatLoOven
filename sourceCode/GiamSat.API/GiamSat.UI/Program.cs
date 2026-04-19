@@ -33,11 +33,15 @@ builder.Services.AutoRegisterInterfaces<IApiService>();
 
 builder.Services.AddAuthorizationCore(options =>
 {
-    options.AddPolicy(UserRoles.Admin, policy =>
+    options.AddPolicy(UserRoles.Admin, policy => policy.RequireRole(UserRoles.Admin));
+    options.AddPolicy(UserRoles.User, policy => policy.RequireRole(UserRoles.User));
+    options.AddPolicy(UserRoles.Operator, policy => policy.RequireRole(UserRoles.Operator));
+
+    foreach (var permission in AppPermissions.GetAll())
     {
-        policy.RequireRole(UserRoles.Admin);
-        //policy.RequireRole(UserRoles.User);
-    });
+        options.AddPolicy(permission, policy => policy.RequireAssertion(context =>
+            context.User.HasClaim(PermissionNames.Prefix, permission)));
+    }
 });
 
 builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthenticationService>()

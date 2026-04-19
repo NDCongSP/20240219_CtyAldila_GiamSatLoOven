@@ -16,5 +16,7 @@ namespace GiamSat.Models
         /// Chỉ xem realtime và report.
         /// </summary>
         public const string Operator = "Operator";
+
+        public static readonly string[] DefaultRoles = { Admin, User, Operator };
     }
 }

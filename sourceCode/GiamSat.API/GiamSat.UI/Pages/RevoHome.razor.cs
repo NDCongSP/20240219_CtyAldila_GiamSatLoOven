@@ -11,6 +11,7 @@ namespace GiamSat.UI.Pages
         private List<RevoRealtimeModel> _revoData = new List<RevoRealtimeModel>();
         private bool _isLoading = true;
         private System.Timers.Timer? _refreshTimer;
+        private bool _disposed;
 
         // Key = RevoId, Value = shaft count DTO from sp_GetTotalShaft
         private Dictionary<int, APIClient.RevoGetTotalShaftCountDto> _shaftStats = new();
@@ -27,29 +28,38 @@ namespace GiamSat.UI.Pages
 
         private async void OnTimerElapsed(object? sender, ElapsedEventArgs e)
         {
+            if (_disposed) return;
             await InvokeAsync(async () =>
             {
+                if (_disposed) return;
                 await LoadData();
             });
         }
 
         public void Dispose()
         {
-            _refreshTimer?.Stop();
-            _refreshTimer?.Dispose();
+            _disposed = true;
+            if (_refreshTimer != null)
+            {
+                _refreshTimer.Elapsed -= OnTimerElapsed;
+                _refreshTimer.Stop();
+                _refreshTimer.Dispose();
+            }
         }
 
         private async Task LoadData()
         {
+            if (_disposed) return;
             try
             {
                 _isLoading = true;
-                StateHasChanged();
+                if (!_disposed) StateHasChanged();
 
                 _revoData = new List<RevoRealtimeModel>();
 
                 // Load FT08 data via NSwag client
                 var ft08Result = await _fT08Client.GetAllAsync();
+                if (_disposed) return;
                 if (ft08Result.Succeeded && ft08Result.Data != null)
                 {
                     foreach (var ft08 in ft08Result.Data)
@@ -68,6 +78,7 @@ namespace GiamSat.UI.Pages
 
                 // Load FT07 to get REVO names via NSwag client
                 var ft07Result = await _fT07Client.GetAllAsync();
+                if (_disposed) return;
                 if (ft07Result.Succeeded && ft07Result.Data != null && ft07Result.Data.Count > 0)
                 {
                     var ft07 = ft07Result.Data.FirstOrDefault(x => x.Actived == true) ?? ft07Result.Data.FirstOrDefault();
@@ -83,6 +94,7 @@ namespace GiamSat.UI.Pages
                                 {
                                     revo.RevoName    = config.Name ?? $"REVO {revo.RevoId}";
                                     revo.MachineType = config.MachineType;
+                                    revo.Pulse_Rev   = config.Pulse_Rev;
                                 }
                                 else
                                 {
@@ -100,7 +112,7 @@ namespace GiamSat.UI.Pages
             finally
             {
                 _isLoading = false;
-                StateHasChanged();
+                if (!_disposed) StateHasChanged();
             }
 
             // Load shaft stats sau khi đã có danh sách RevoId (ngoài try-catch chính)
@@ -109,9 +121,11 @@ namespace GiamSat.UI.Pages
 
         private async Task LoadShaftStats()
         {
+            if (_disposed) return;
             try
             {
                 var result = await _fT09Client.GetTotalShaftAsync(null);
+                if (_disposed) return;
 
                 var newStats = new Dictionary<int, APIClient.RevoGetTotalShaftCountDto>();
                 if (result.Succeeded && result.Data != null)
@@ -121,7 +135,7 @@ namespace GiamSat.UI.Pages
                 }
 
                 _shaftStats = newStats;
-                StateHasChanged();
+                if (!_disposed) StateHasChanged();
             }
             catch
             {
@@ -139,6 +153,9 @@ namespace GiamSat.UI.Pages
 
             _shaftStats.TryGetValue(revo.RevoId, out var stats);
             var dto = stats ?? new APIClient.RevoGetTotalShaftCountDto { RevoId = revo.RevoId };
+
+            // Ensure the global config is updated before opening the dialog for immediate correct display
+            GlobalVariable.RevoConfig.Pulse_Rev = revo.Pulse_Rev;
 
             await _dialogService.OpenAsync<DialogRevoDetail>("Chi tiết REVO",
                 new Dictionary<string, object>

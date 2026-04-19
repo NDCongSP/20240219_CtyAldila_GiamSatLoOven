@@ -1,0 +1,278 @@
+@page "/admin/roles"
+@page "/roles-permissions"
+@using System.Net.Http.Json
+@using GiamSat.Models
+@attribute [Authorize(Roles = UserRoles.Admin)]
+@inject Radzen.DialogService DialogService
+@inject IJSRuntime _js
+
+<PageTitle>Roles & Permissions</PageTitle>
+
+<RadzenRow>
+    <RadzenColumn Size="12">
+        <RadzenCard Class="rz-p-4">
+            <RadzenStack Gap="1rem">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenText TextStyle="TextStyle.H5">Quản lý vai trò và quyền</RadzenText>
+                </RadzenStack>
+
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" Wrap="FlexWrap.Wrap">
+                    <RadzenTextBox @bind-Value="_newRoleName" Placeholder="Tên role" Style="min-width:240px" />
+                    <RadzenButton Text="Thêm role" Icon="add_circle" Click="CreateRoleAsync" ButtonStyle="ButtonStyle.Success" />
+                </RadzenStack>
+
+                @if (_roles == null)
+                {
+                    <p>Đang tải...</p>
+                }
+                else
+                {
+                    <RadzenDataGrid @ref="_grid" Data="@_roles" TItem="APIClient.IdentityRoleDto" AllowPaging="true" PageSize="10" 
+                            AllowSorting="true" AllowFiltering="false"
+                            PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)"
+                            PageSizeText="Bản ghi trên trang">
+                        <Columns>
+                            <RadzenDataGridColumn TItem="APIClient.IdentityRoleDto" Property="Name" Title="Role" />
+                            <RadzenDataGridColumn TItem="APIClient.IdentityRoleDto" Title="Users" Sortable="false">
+                                <Template Context="role">@role.UserCount</Template>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="APIClient.IdentityRoleDto" Title="Claims" Sortable="false">
+                                <Template Context="role">@(role.Claims?.Count ?? 0)</Template>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="APIClient.IdentityRoleDto" Title="Thao tác" Sortable="false" Filterable="false">
+                                <Template Context="role">
+                                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                                        <RadzenButton Size="ButtonSize.Small" Text="Chọn" Click="@(async _ => await SelectRoleAsync(role))" />
+                                        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Info" Text="Sửa" Click="@(async _ => await EditRoleAsync(role))" />
+                                        <RadzenButton Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" Text="Xóa" 
+                                                      Click="@(async _ => await DeleteRoleAsync(role.Id))" 
+                                                      Disabled="@(role.UserCount > 0 || (role.Claims?.Count ?? 0) > 0)"
+                                                      title="@(role.UserCount > 0 || (role.Claims?.Count ?? 0) > 0 ? "Không thể xóa Role đang được sử dụng" : "Xóa Role")" />
+                                    </RadzenStack>
+                                </Template>
+                            </RadzenDataGridColumn>
+                        </Columns>
+                    </RadzenDataGrid>
+                }
+
+                @if (_selectedRole != null)
+                {
+                    <RadzenCard Class="rz-p-3">
+                        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+                            <RadzenText TextStyle="TextStyle.H6">Phân quyền cho: @_selectedRole.Name</RadzenText>
+                            <RadzenButton Text="Bỏ chọn" ButtonStyle="ButtonStyle.Light" Click="ClearSelectedRole" />
+                        </RadzenStack>
+
+                        <RadzenStack Gap="0.5rem" Class="rz-mt-3">
+                            @foreach (var group in _permissionGroups)
+                            {
+                                <RadzenFieldset>
+                                    <HeaderTemplate>
+                                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                                            <RadzenSwitch TValue="bool" Value="@IsGroupAllSelected(group)" Change="@(args => ToggleGroup(group, args))" />
+                                            <RadzenText TextStyle="TextStyle.Subtitle2" Style="margin: 0; font-weight: bold;">@group.Key (Chọn tất cả)</RadzenText>
+                                        </RadzenStack>
+                                    </HeaderTemplate>
+                                    <ChildContent>
+                                        <RadzenStack Orientation="Orientation.Horizontal" Wrap="FlexWrap.Wrap" Gap="1rem">
+                                            @foreach (var p in group)
+                                            {
+                                                var pCode = p.Module + "." + p.Actions;
+                                                <label style="display:flex;align-items:center;gap:.5rem;min-width:220px;cursor:pointer;" title="@p.Description">
+                                                    <RadzenSwitch TValue="bool" Value="@_selectedPermissionCodes.Contains(pCode)" 
+                                                                    Change="@(args => TogglePermission(pCode, args))" />
+                                                    <span>@p.Actions</span>
+                                                </label>
+                                            }
+                                        </RadzenStack>
+                                    </ChildContent>
+                                </RadzenFieldset>
+                            }
+                        </RadzenStack>
+                        <RadzenButton Text="Lưu quyền" Icon="save" Click="SavePermissionsAsync" Style="margin-top:1rem" />
+                    </RadzenCard>
+                }
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+</RadzenRow>
+
+@code {
+    private RadzenDataGrid<APIClient.IdentityRoleDto>? _grid;
+    private List<APIClient.IdentityRoleDto>? _roles;
+    private List<GiamSat.Models.Permissions> _permissions = new();
+    private IEnumerable<IGrouping<string, GiamSat.Models.Permissions>> _permissionGroups = Array.Empty<IGrouping<string, GiamSat.Models.Permissions>>();
+    private APIClient.IdentityRoleDto? _selectedRole;
+    private HashSet<string> _selectedPermissionCodes = new();
+    private string? _newRoleName;
+
+    protected override async Task OnInitializedAsync() => await LoadAsync();
+
+    private HttpClient ApiClient => _httpClientFactory.CreateClient("GiamSatAPI");
+
+    private async Task LoadAsync()
+    {
+        _roles = await ApiClient.GetFromJsonAsync<List<APIClient.IdentityRoleDto>>("api/permissions/roles");
+        _permissions = await ApiClient.GetFromJsonAsync<List<GiamSat.Models.Permissions>>("api/permissions/permissions") ?? new();
+        _permissionGroups = _permissions
+            .GroupBy(x => x.Module ?? "Khác")
+            .OrderBy(x => x.Key);
+        StateHasChanged();
+    }
+
+    /*
+    private async Task SeedAsync()
+    {
+        await ApiClient.PostAsync("api/permissions/seed", null);
+        await LoadAsync();
+    }
+    */
+
+    private async Task CreateRoleAsync()
+    {
+        var roleName = _newRoleName?.Trim();
+        if (string.IsNullOrWhiteSpace(roleName)) return;
+
+        try
+        {
+            var res = await ApiClient.PostAsJsonAsync("api/permissions/roles", new APIClient.IdentityRoleDto { Name = roleName });
+            
+            if (res.IsSuccessStatusCode)
+            {
+                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Thành công", Detail = "Thêm role thành công" });
+                _newRoleName = string.Empty;
+                await LoadAsync();
+            }
+            else
+            {
+                string errorMessage = "Thêm thất bại";
+                try
+                {
+                    var dict = await res.Content.ReadFromJsonAsync<Dictionary<string, object>>();
+                    if (dict != null)
+                    {
+                        if (dict.ContainsKey("Message")) errorMessage = dict["Message"].ToString();
+                        else if (dict.ContainsKey("message")) errorMessage = dict["message"].ToString();
+                    }
+                }
+                catch { }
+                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Lỗi", Detail = errorMessage });
+            }
+        }
+        catch (Exception ex)
+        {
+            _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Lỗi kết nối", Detail = ex.Message });
+        }
+    }
+
+    private async Task SelectRoleAsync(APIClient.IdentityRoleDto role)
+    {
+        _selectedRole = role;
+        _selectedPermissionCodes = role.Claims?.ToHashSet() ?? new HashSet<string>();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void ClearSelectedRole() => _selectedRole = null;
+
+    private async Task EditRoleAsync(APIClient.IdentityRoleDto role)
+    {
+        var result = await DialogService.OpenAsync<Components.DialogPrompt>("Sửa tên Role", new Dictionary<string, object>
+        {
+            { "Message", "Nhập tên mới cho Role:" },
+            { "Value", role.Name }
+        });
+
+        if (result is string newName && !string.IsNullOrWhiteSpace(newName) && newName != role.Name)
+        {
+            var updateDto = new APIClient.IdentityRoleDto { Id = role.Id, Name = newName };
+            var response = await ApiClient.PutAsJsonAsync($"api/permissions/roles/{role.Id}", updateDto);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Thành công", Detail = "Đã cập nhật role" });
+                await LoadAsync();
+            }
+            else
+            {
+                string errorMessage = "Cập nhật thất bại";
+                try
+                {
+                    var dict = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
+                    if (dict != null)
+                    {
+                        if (dict.ContainsKey("Message")) errorMessage = dict["Message"].ToString();
+                        else if (dict.ContainsKey("message")) errorMessage = dict["message"].ToString();
+                    }
+                }
+                catch { }
+                _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Lỗi", Detail = errorMessage });
+            }
+        }
+    }
+
+    private async Task DeleteRoleAsync(string roleId)
+    {
+        var confirm = await DialogService.Confirm("Bạn có chắc chắn muốn xóa Role này?", "Xác nhận xóa", new ConfirmOptions { OkButtonText = "Xóa", CancelButtonText = "Hủy" });
+        if (confirm != true) return;
+
+        var res = await ApiClient.DeleteAsync($"api/permissions/roles/{roleId}");
+        if (res.IsSuccessStatusCode)
+        {
+            _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Thành công", Detail = "Đã xóa role" });
+            if (_selectedRole?.Id == roleId) ClearSelectedRole();
+            await LoadAsync();
+        }
+        else
+        {
+            string errorMessage = "Xóa thất bại";
+            try
+            {
+                var dict = await res.Content.ReadFromJsonAsync<Dictionary<string, object>>();
+                if (dict != null)
+                {
+                    if (dict.ContainsKey("Message")) errorMessage = dict["Message"].ToString();
+                    else if (dict.ContainsKey("message")) errorMessage = dict["message"].ToString();
+                }
+            }
+            catch { }
+            _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Lỗi", Detail = errorMessage });
+        }
+    }
+
+    private void TogglePermission(string permissionCode, bool isChecked)
+    {
+        if (isChecked) _selectedPermissionCodes.Add(permissionCode);
+        else _selectedPermissionCodes.Remove(permissionCode);
+    }
+
+    private bool IsGroupAllSelected(IGrouping<string, GiamSat.Models.Permissions> group)
+    {
+        return group.Any() && group.All(p => _selectedPermissionCodes.Contains(p.Module + "." + p.Actions));
+    }
+
+    private void ToggleGroup(IGrouping<string, GiamSat.Models.Permissions> group, bool isChecked)
+    {
+        foreach (var p in group)
+        {
+            var pCode = p.Module + "." + p.Actions;
+            if (isChecked) _selectedPermissionCodes.Add(pCode);
+            else _selectedPermissionCodes.Remove(pCode);
+        }
+    }
+
+    private async Task SavePermissionsAsync()
+    {
+        if (_selectedRole == null) return;
+        var res = await ApiClient.PutAsJsonAsync($"api/permissions/roles/{_selectedRole.Id}/permissions", _selectedPermissionCodes.ToList());
+        
+        if (res.IsSuccessStatusCode)
+        {
+            _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Thành công", Detail = "Đã lưu phân quyền cho role" });
+            await LoadAsync();
+        }
+        else
+        {
+            _notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Lỗi", Detail = "Lưu phân quyền thất bại" });
+        }
+    }
+}

@@ -1,6 +1,7 @@
-﻿@page "/settings"
+@page "/settings"
 @using GiamSat.Models
-@attribute [Authorize(Roles = "Admin")]
+@using AppPermissions = GiamSat.Models.AppPermissions
+@attribute [Authorize(Policy = AppPermissions.Oven_Settings_View)]
 
 <div Class="rz-p-0 rz-p-md-12">
     @if (_configInfo == null)

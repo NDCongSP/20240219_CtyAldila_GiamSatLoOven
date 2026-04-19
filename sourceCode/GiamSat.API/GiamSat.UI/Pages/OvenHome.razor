@@ -1,13 +1,16 @@
 @page "/oven/{OvenId:int}"
 @using GiamSat.Models
+@using AppPermissions = GiamSat.Models.AppPermissions
+@attribute [Authorize(Policy = AppPermissions.Oven_Home_View)]
 
+<div class="dashboard-page-container">
 <!-- Header với Legend và View Mode Buttons -->
 <RadzenRow class="rz-mb-3">
     <RadzenColumn Size="12">
         <div class="header-controls">
             <!-- Legend -->
             <div class="status-legend">
-                <RadzenText TextStyle="TextStyle.Body2" Style="margin-right: 1rem; font-weight: 600; color: var(--rz-text-color);">
+                <RadzenText TextStyle="TextStyle.Body2" Style="margin-right: 1rem; font-weight: 600;">
                     Trạng thái:
                 </RadzenText>
                 <div class="legend-item">
@@ -117,6 +120,7 @@
         </RadzenColumn>
     }
 </RadzenRow>
+</div>
 
 @code {
     [Parameter]

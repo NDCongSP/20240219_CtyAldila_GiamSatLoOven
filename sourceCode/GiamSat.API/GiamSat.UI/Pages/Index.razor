@@ -1,7 +1,8 @@
-﻿@page "/"
-@attribute [Authorize]
+@page "/oven-home"
+@using AppPermissions = GiamSat.Models.AppPermissions
+@attribute [Authorize(Policy = AppPermissions.Oven_Home_View)]
 
-<div Class="rz-p-0 rz-p-md-6">
+<div class="dashboard-page-container">
     @if (_displayRealtime == null || _displayRealtime.Count <= 0)
     {
         <div class="spinner center-div"></div>
@@ -14,7 +15,7 @@
                 <RadzenColumn SizeXS="12" SizeMD="3">
                     @if (item.ConnectionStatus == 1 && item.Alarm == 0 && item.Status == 1 && item.DoorStatus == 1)
                     {
-                        <RadzenCard Varian="Varian.Filled" class="rz-background-color-info-light rz-shadow-0 rz-border-radius-4 rz-m-0">
+                        <RadzenCard Varian="Varian.Filled" class="rz-background-color-info rz-shadow-0 rz-border-radius-4 rz-m-0">
                             <RadzenStack Orientation="Orientation.Vertical" Gap="10px">
                                 <RadzenRow RowGap="0">
                                     <RadzenColumn>
@@ -107,7 +108,7 @@
                     }
                     else if (item.ConnectionStatus == 1 && (item.Alarm == 1 || (item.DoorStatus == 0 && item.Status == 1)))
                     {
-                        <RadzenCard Varian="Varian.Filled" class="rz-background-color-warning-light rz-shadow-0 rz-border-radius-4 rz-m-0">
+                        <RadzenCard Varian="Varian.Filled" class="rz-background-color-warning rz-shadow-0 rz-border-radius-4 rz-m-0">
                             <RadzenStack Orientation="Orientation.Vertical" Gap="10px">
                                 <RadzenRow RowGap="0">
                                     <RadzenColumn>
@@ -163,7 +164,7 @@
                     }
                     else if (item.ConnectionStatus == 0)
                     {
-                        <RadzenCard Varian="Varian.Filled" class="rz-background-color-danger-light rz-shadow-0 rz-border-radius-4 rz-m-0">
+                        <RadzenCard Varian="Varian.Filled" class="rz-background-color-danger rz-shadow-0 rz-border-radius-4 rz-m-0">
                             <RadzenStack Orientation="Orientation.Vertical" Gap="10px">
                                 <RadzenText TextStyle="TextStyle.H6" class=""><strong>@item.OvenName</strong></RadzenText>
                                 <RadzenRow RowGap="0">

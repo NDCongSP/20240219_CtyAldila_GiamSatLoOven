@@ -1,0 +1,50 @@
+@using GiamSat.Models
+@using GiamSat.Models.Enums
+@using System
+@using Microsoft.AspNetCore.Components
+@inject Radzen.DialogService dialogService
+
+<RadzenStack Gap="1rem">
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+        <RadzenLabel Text="Tên Quyền (Name)*" Style="width: 150px;" />
+        <RadzenTextBox @bind-Value="Model.Name" Style="flex: 1;" />
+    </RadzenStack>
+
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+        <RadzenLabel Text="Phân hệ (Module)*" Style="width: 150px;" />
+        <RadzenDropDown @bind-Value="Model.Module" Data="@_modules" Style="flex: 1;" AllowClear="true" />
+    </RadzenStack>
+
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+        <RadzenLabel Text="Hành động (Action)*" Style="width: 150px;" />
+        <RadzenDropDown @bind-Value="Model.Actions" Data="@_actions" Style="flex: 1;" AllowClear="true" />
+    </RadzenStack>
+
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+        <RadzenLabel Text="Mô tả chi tiết" Style="width: 150px;" />
+        <RadzenTextArea @bind-Value="Model.Description" Style="flex: 1;" />
+    </RadzenStack>
+
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem" Class="rz-mt-4">
+        <RadzenButton Text="Hủy" ButtonStyle="ButtonStyle.Light" Click="OnCancel" />
+        <RadzenButton Text="Lưu" ButtonStyle="ButtonStyle.Primary" Click="OnSave" />
+    </RadzenStack>
+</RadzenStack>
+
+@code {
+    [Parameter] public Permissions Model { get; set; } = new();
+    [Parameter] public bool IsCreate { get; set; }
+
+    private List<string> _modules = Enum.GetNames(typeof(AppModule)).ToList();
+    private List<string> _actions = Enum.GetNames(typeof(AppAction)).ToList();
+
+    private void OnCancel()
+    {
+        try { dialogService.Close(false); } catch { }
+    }
+
+    private void OnSave()
+    {
+        try { dialogService.Close(true); } catch { }
+    }
+}

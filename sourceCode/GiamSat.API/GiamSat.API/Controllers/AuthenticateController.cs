@@ -1,7 +1,8 @@
-﻿using GiamSat.Models;
+using GiamSat.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -21,15 +22,18 @@ namespace GiamSat.API.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _dbContext;
         private readonly IConfiguration _configuration;
 
         public AuthenticateController(
             UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
+            ApplicationDbContext dbContext,
             IConfiguration configuration)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _dbContext = dbContext;
             _configuration = configuration;
         }
 
@@ -45,20 +49,23 @@ namespace GiamSat.API.Controllers
 
                 var authClaims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Email,user.Email),
+                    new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
+                    new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
                 foreach (var userRole in userRoles)
                 {
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-
                 }
 
-                //test add claim
-                authClaims.Add(new Claim("testabc", "10000_test"));
-                authClaims.Add(new Claim("emailTest", user.Email));
+                var permissionCodes = await GetPermissionCodesAsync(userRoles);
+                foreach (var permissionCode in permissionCodes)
+                {
+                    authClaims.Add(new Claim(PermissionNames.Prefix, permissionCode));
+                }
+
+                // Permissions are now fully managed via DB — no wildcard bypass
 
                 var token = GetToken(authClaims);
 
@@ -92,18 +99,20 @@ namespace GiamSat.API.Controllers
 
                 var authClaims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
                 foreach (var userRole in userRoles)
                 {
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-
                 }
 
-                //test add claim
-                authClaims.Add(new Claim("testabc", "10000_test"));
+                var permissionCodes = await GetPermissionCodesAsync(userRoles);
+                foreach (var permissionCode in permissionCodes)
+                {
+                    authClaims.Add(new Claim(PermissionNames.Prefix, permissionCode));
+                }
 
                 var token = GetToken(authClaims);
 
@@ -174,10 +183,13 @@ namespace GiamSat.API.Controllers
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
-            if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
-            if (!await _roleManager.RoleExistsAsync(UserRoles.User))
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+            foreach (var roleName in UserRoles.DefaultRoles)
+            {
+                if (!await _roleManager.RoleExistsAsync(roleName))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
 
             if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
             {
@@ -199,34 +211,50 @@ namespace GiamSat.API.Controllers
         public async Task<IActionResult> UpdatePass([FromBody] UpdateModel model)
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
-            var checkPass = await _userManager.CheckPasswordAsync(userExists, model.OldPassword);
-
             if (userExists == null)
                 return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "User not found!" });
 
-            if (checkPass == false)
-                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "Wrong old pass!" });
+            var checkPass = await _userManager.CheckPasswordAsync(userExists, model.OldPassword);
+            if (!checkPass)
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "Mật khẩu cũ không chính xác!" });
 
             if (model.NewPassword != model.ReNewPassword)
             {
-                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "New password does not match." });
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "Mật khẩu mới không khớp!" });
             }
 
             var result = await _userManager.ChangePasswordAsync(userExists, model.OldPassword, model.NewPassword);
 
             if (!result.Succeeded)
             {
-                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = $"{result.Errors}." });
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = $"Lỗi cập nhật mật khẩu: {errors}" });
             }
 
-            //update kieu ko can nhap pass cu
-            //_userManager.RemovePasswordAsync(userExists);
-            //_userManager.AddPasswordAsync(userExists, "password moi");
+            return Ok(new Response { Status = "Success", Message = "Cập nhật mật khẩu thành công!" });
+        }
 
-            //if (!result.Succeeded)
-            //    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+        [HttpPost]
+        [Route("resetpass")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Response))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(Response))]
+        public async Task<IActionResult> ResetPass([FromBody] ResetPasswordModel model)
+        {
+            var user = await _userManager.FindByNameAsync(model.Username);
+            if (user == null)
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "Người dùng không tồn tại!" });
 
-            return Ok(new Response { Status = "Success", Message = "User update successfully!" });
+            // Removing password and adding a new one is a safe way to force a reset in this context
+            await _userManager.RemovePasswordAsync(user);
+            var result = await _userManager.AddPasswordAsync(user, "123@456");
+
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = $"Lỗi reset mật khẩu: {errors}" });
+            }
+
+            return Ok(new Response { Status = "Success", Message = "Reset mật khẩu thành công. Mật khẩu mới là 123@456" });
         }
 
         [HttpPost]
@@ -302,9 +330,46 @@ namespace GiamSat.API.Controllers
                 return StatusCode(StatusCodes.Status200OK, new Response() { Status = "Error", Message = "User not found!" });
             }
 
+            // Usage check: Ensure the user is not "in use" (has no roles)
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            if (currentRoles.Any())
+            {
+                return StatusCode(StatusCodes.Status200OK, new Response() { Status = "Error", Message = "Không thể xóa tài khoản đang có vai trò (Role) gán kèm. Vui lòng gỡ hết Role trước." });
+            }
+
             var res = await _userManager.DeleteAsync(user);
 
             return Ok(new Response() { Status="Success",Message="Delete user success."});
+        }
+
+        private async Task<List<string>> GetPermissionCodesAsync(IEnumerable<string> roles)
+        {
+            var roleNames = roles.ToList();
+            if (!roleNames.Any()) return new List<string>();
+
+            // Retrieve role IDs given role names
+            var roleIds = await _roleManager.Roles
+                .Where(r => roleNames.Contains(r.Name))
+                .Select(r => r.Id)
+                .ToListAsync();
+
+            if (!roleIds.Any()) return new List<string>();
+
+            // Manual mapping because NO navigation property in RoleToPermissions
+            var roleMap = await _dbContext.RoleToPermissions
+                .Where(x => roleIds.Contains(x.RoleId))
+                .Select(x => x.PermissionId)
+                .ToListAsync();
+
+            var permIds = roleMap.Distinct().ToList();
+
+            var perms = await _dbContext.Permissions
+                .Where(p => permIds.Contains(p.Id) && p.IsActived == true)
+                .Select(p => p.Module + "." + p.Actions)
+                .Distinct()
+                .ToListAsync();
+
+            return perms;
         }
 
         private JwtSecurityToken GetToken(List<Claim> authClaims)

@@ -1,6 +1,6 @@
 @page "/revo/config"
 @using GiamSat.Models
-@attribute [Authorize(Roles = "Admin,User")]
+@attribute [Authorize(Policy = AppPermissions.Revo_Config_View)]
 
 <RadzenRow Gap="1rem">
     <RadzenColumn Size="12">
@@ -8,10 +8,12 @@
             <RadzenStack Gap="1rem">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
                     <RadzenText TextStyle="TextStyle.H5">Cấu hình REVO</RadzenText>
-                    <RadzenButton Icon="add_circle" 
-                                Text="Thêm REVO" 
-                                ButtonStyle="ButtonStyle.Success" 
-                                Click="@OnAddRevo" />
+                    <AuthorizeView Policy="@AppPermissions.Revo_Config_Create">
+                        <RadzenButton Icon="add_circle" 
+                                    Text="Thêm REVO" 
+                                    ButtonStyle="ButtonStyle.Success" 
+                                    Click="@OnAddRevo" />
+                    </AuthorizeView>
                 </RadzenStack>
 
                 @if (_isLoading)
@@ -36,7 +38,9 @@
                                   AllowSorting="true"
                                   PagerHorizontalAlign="HorizontalAlign.Right"
                                   ShowPagingSummary="true"
-                                  PagingSummaryFormat="Hiển thị {0} - {1} / {2} mục"
+                                  PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)"
+                                  PageSizeText="Bản ghi trên trang"
+                                  PageSizeOptions="@(new int[] { 5, 10, 20, 50 })"
                                   class="rz-mt-3">
                         <Columns>
                             <RadzenDataGridColumn TItem="RevoConfigModel" Property="Id" Title="ID" Width="100px" TextAlign="TextAlign.Center" />
@@ -53,18 +57,22 @@
                             <RadzenDataGridColumn TItem="RevoConfigModel" Title="Hành động" Width="200px" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
                                 <Template Context="item">
                                     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" JustifyContent="JustifyContent.Center">
-                                        <RadzenButton Icon="edit" 
-                                                    ButtonStyle="ButtonStyle.Primary" 
-                                                    Size="ButtonSize.Small" 
-                                                    Variant="Variant.Flat"
-                                                    Click="@(() => OnEdit(item))"
-                                                    title="Chỉnh sửa" />
-                                        <RadzenButton Icon="delete" 
-                                                    ButtonStyle="ButtonStyle.Danger" 
-                                                    Size="ButtonSize.Small" 
-                                                    Variant="Variant.Flat"
-                                                    Click="@(() => OnDelete(item))"
-                                                    title="Xóa" />
+                                        <AuthorizeView Policy="@AppPermissions.Revo_Config_Edit">
+                                            <RadzenButton Icon="edit" 
+                                                        ButtonStyle="ButtonStyle.Primary" 
+                                                        Size="ButtonSize.Small" 
+                                                        Variant="Variant.Flat"
+                                                        Click="@(() => OnEdit(item))"
+                                                        title="Chỉnh sửa" />
+                                        </AuthorizeView>
+                                        <AuthorizeView Policy="@AppPermissions.Revo_Config_Delete">
+                                            <RadzenButton Icon="delete" 
+                                                        ButtonStyle="ButtonStyle.Danger" 
+                                                        Size="ButtonSize.Small" 
+                                                        Variant="Variant.Flat"
+                                                        Click="@(() => OnDelete(item))"
+                                                        title="Xóa" />
+                                        </AuthorizeView>
                                     </RadzenStack>
                                 </Template>
                             </RadzenDataGridColumn>

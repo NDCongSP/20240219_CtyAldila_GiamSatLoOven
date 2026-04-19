@@ -9,7 +9,7 @@ using ApiClient = GiamSat.APIClient;
 
 namespace GiamSat.UI.Pages
 {
-    public partial class OvenConfiguration
+    public partial class RevoConfiguration
     {
         [Parameter]
         public int OvenId { get; set; }
