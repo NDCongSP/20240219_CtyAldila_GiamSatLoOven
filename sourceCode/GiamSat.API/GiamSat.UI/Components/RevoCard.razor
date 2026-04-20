@@ -93,15 +93,15 @@
                             }
                             else if (step.StartAt.HasValue && step.EndAt.HasValue && step.TotalRunTime.HasValue && step.TotalRunTime.Value > 0)
                             {
-                                <div class="step-runtime">@step.StartAt.Value.ToString("mm:ss") → @step.EndAt.Value.ToString("mm:ss") · @($"{step.TotalRunTime.Value.ToString("0.##")}s")</div>
+                                <div class="step-runtime">@step.StartAt.Value.ToString("HH:mm:ss") → @step.EndAt.Value.ToString("HH:mm:ss") · @($"{step.TotalRunTime.Value.ToString("0.##")}s")</div>
                             }
                             else if (step.StartAt.HasValue && step.EndAt.HasValue)
                             {
-                                <div class="step-runtime">@step.StartAt.Value.ToString("mm:ss") → @step.EndAt.Value.ToString("mm:ss")</div>
+                                <div class="step-runtime">@step.StartAt.Value.ToString("HH:mm:ss") → @step.EndAt.Value.ToString("HH:mm:ss")</div>
                             }
                             else if (step.StartAt.HasValue)
                             {
-                                <div class="step-runtime step-runtime-running">@step.StartAt.Value.ToString("mm:ss") → ...</div>
+                                <div class="step-runtime step-runtime-running">@step.StartAt.Value.ToString("HH:mm:ss") → ...</div>
                             }
                         </div>
                     </div>

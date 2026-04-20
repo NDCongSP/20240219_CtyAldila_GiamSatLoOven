@@ -48,9 +48,9 @@ main {
 
 /* LEFT Section - Menu + Logo + Name */
 ::deep .header-left {
-    width: 280px;
-    min-width: 280px;
-    max-width: 280px;
+    width: 320px;
+    min-width: 320px;
+    max-width: 320px;
     padding: 0 1.5rem 0 0;
     border-right: 1px solid var(--rz-border-color, rgba(0, 0, 0, 0.08));
     height: 64px;

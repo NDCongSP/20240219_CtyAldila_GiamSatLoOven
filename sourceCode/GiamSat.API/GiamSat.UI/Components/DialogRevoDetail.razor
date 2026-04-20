@@ -97,18 +97,18 @@
                                 }
                                 else if (step.StartAt.HasValue && step.EndAt.HasValue)
                                 {
-                                    <span class="step-time-detail">@step.StartAt.Value.ToString("mm:ss") → @step.EndAt.Value.ToString("mm:ss") · @($"{(step.TotalRunTime ?? 0).ToString("0.##")}s")</span>
+                                    <span class="step-time-detail">@step.StartAt.Value.ToString("HH:mm:ss") → @step.EndAt.Value.ToString("HH:mm:ss") · @($"{(step.TotalRunTime ?? 0).ToString("0.##")}s")</span>
                                 }
                                 else if (step.StartAt.HasValue)
                                 {
-                                    <span class="step-time-detail">@step.StartAt.Value.ToString("mm:ss") → ...</span>
+                                    <span class="step-time-detail">@step.StartAt.Value.ToString("HH:mm:ss") → ...</span>
                                 }
                             </div>
                         </div>
                         <div class="step-detail-values">
                             <span>
                                 Pul=@(step.SoLuongXung?.ToString("0") ?? "0")(@(((double)(step.SoLuongXung ?? 0) / (GlobalVariable.RevoConfig.Pulse_Rev > 0 ? GlobalVariable.RevoConfig.Pulse_Rev : 1)).ToString("0.##")) v) 
-                                - Speed = @(step.Speed_Hz?.ToString("0") ?? "0") (@(((double)(step.Speed_Hz ?? 0) / (GlobalVariable.RevoConfig.Pulse_Rev > 0 ? GlobalVariable.RevoConfig.Pulse_Rev : 1)).ToString("0.##"))v/s)
+                                - Speed = @(step.Speed_Hz?.ToString("0") ?? "0") (@(((double)(step.Speed_Hz ?? 0) / (GlobalVariable.RevoConfig.Pulse_Rev > 0 ? GlobalVariable.RevoConfig.Pulse_Rev : 1)).ToString("0.##")) v/s)
                             </span>
                         </div>
                     </div>
