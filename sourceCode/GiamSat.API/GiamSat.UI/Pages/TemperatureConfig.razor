@@ -1,0 +1,94 @@
+@page "/temperature/config"
+@using GiamSat.Models
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<RadzenRow Gap="1rem">
+    <RadzenColumn Size="12">
+        <RadzenCard class="rz-shadow-3">
+            <RadzenStack Gap="1rem">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenText TextStyle="TextStyle.H5">Cấu hình Vị trí Đo Nhiệt độ</RadzenText>
+                    
+                    <RadzenButton Icon="add_circle" 
+                                Text="Thêm Vị trí" 
+                                ButtonStyle="ButtonStyle.Success" 
+                                Click="@InsertRow" />
+                    
+                </RadzenStack>
+
+                @if (_isLoading)
+                {
+                    <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+                    <RadzenText>Đang tải dữ liệu...</RadzenText>
+                }
+                else
+                {
+                    <RadzenDataGrid @ref="_dataGrid" 
+                                  Data="@_configs" 
+                                  TItem="TemperatureConfigsModel" 
+                                  AllowPaging="true" 
+                                  PageSize="10"
+                                  AllowSorting="true"
+                                  EditMode="DataGridEditMode.Single"
+                                  RowUpdate="@OnUpdateRow"
+                                  RowCreate="@OnCreateRow"
+                                  class="rz-mt-3">
+                        <Columns>
+                            <RadzenDataGridColumn TItem="TemperatureConfigsModel" Property="Id" Title="ID" Width="70px" TextAlign="TextAlign.Center">
+                                <EditTemplate Context="item">
+                                    <RadzenNumeric @bind-Value="item.Id" Style="width:100%" Disabled="true" />
+                                </EditTemplate>
+                            </RadzenDataGridColumn>
+                            
+                            <RadzenDataGridColumn TItem="TemperatureConfigsModel" Property="Name" Title="Tên vị trí" Width="150px">
+                                <EditTemplate Context="item">
+                                    <RadzenTextBox @bind-Value="item.Name" Style="width:100%" />
+                                </EditTemplate>
+                            </RadzenDataGridColumn>
+                            
+                            <RadzenDataGridColumn TItem="TemperatureConfigsModel" Property="Path" Title="Đường dẫn thẻ" Width="200px">
+                                <EditTemplate Context="item">
+                                    <RadzenTextBox @bind-Value="item.Path" Style="width:100%" />
+                                </EditTemplate>
+                            </RadzenDataGridColumn>
+
+                            <RadzenDataGridColumn TItem="TemperatureConfigsModel" Property="Offset" Title="Offset" Width="80px">
+                                <EditTemplate Context="item">
+                                    <RadzenNumeric @bind-Value="item.Offset" Style="width:100%" />
+                                </EditTemplate>
+                            </RadzenDataGridColumn>
+
+                            <RadzenDataGridColumn TItem="TemperatureConfigsModel" Property="HightLevel" Title="Ngưỡng cao" Width="100px">
+                                <EditTemplate Context="item">
+                                    <RadzenNumeric @bind-Value="item.HightLevel" Style="width:100%" />
+                                </EditTemplate>
+                            </RadzenDataGridColumn>
+
+                            <RadzenDataGridColumn TItem="TemperatureConfigsModel" Property="LowLevel" Title="Ngưỡng thấp" Width="100px">
+                                <EditTemplate Context="item">
+                                    <RadzenNumeric @bind-Value="item.LowLevel" Style="width:100%" />
+                                </EditTemplate>
+                            </RadzenDataGridColumn>
+
+                            <RadzenDataGridColumn TItem="TemperatureConfigsModel" Title="Hành động" Width="150px" TextAlign="TextAlign.Center" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+                                <Template Context="item">
+                                    
+                                    <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small" Variant="Variant.Flat" Click="@(() => EditRow(item))" />
+                                    
+                                    
+                                    <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" Variant="Variant.Flat" Click="@(() => DeleteRow(item))" class="rz-ml-1" />
+                                    
+                                </Template>
+                                <EditTemplate Context="item">
+                                    <RadzenButton Icon="save" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Small" Variant="Variant.Flat" Click="@(() => _dataGrid.UpdateRow(item))" />
+                                    <RadzenButton Icon="cancel" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" Variant="Variant.Flat" Click="@(() => CancelEdit(item))" class="rz-ml-1" />
+                                </EditTemplate>
+                            </RadzenDataGridColumn>
+                        </Columns>
+                    </RadzenDataGrid>
+                }
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+</RadzenRow>

@@ -81,6 +81,19 @@
         </RadzenPanelMenuItem>
     }
 
+    <RadzenPanelMenuItem Text="Giám sát Nhiệt độ"
+                         Icon="thermostat"
+                         Expanded="false">
+        <ChildContent>
+            <AuthorizeView Policy="@AppPermissions.Revo_Config_View">
+                <RadzenPanelMenuItem Text="Cấu hình"
+                                     Icon="build"
+                                     Path="/temperature/config"
+                                     Match="NavLinkMatch.All"/>
+            </AuthorizeView>
+        </ChildContent>
+    </RadzenPanelMenuItem>
+
     <AuthorizeView Policy="@AppPermissions.System_Config_View">
         <RadzenPanelMenuItem Text="Quản trị hệ thống" Icon="admin_panel_settings" Expanded="false">
             <ChildContent>
