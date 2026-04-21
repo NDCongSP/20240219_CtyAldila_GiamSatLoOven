@@ -33,4 +33,4 @@
 
 **Success Criteria:**
 1. Dashboard render thành công các khu vực biểu đồ, chỉ số đọc ra từ `FT10` (Map) và `FT11` (Status) bằng tín hiệu Realtime sạch.
-2. Danh sách View DataGrid cảnh báo hiển thị tường minh Start/End Log trên Dashboard lịch sử báo động.
+2. Giao diện trang Báo Cáo chuyên dụng liệt kê đầy đủ nhật ký báo động (DataGrid/Table) có khả năng trình bày rõ Start Log/End Log khi alarm xảy ra.

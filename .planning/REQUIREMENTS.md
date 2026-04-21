@@ -15,7 +15,7 @@
 - [ ] **UI-01**: Xây dựng màn hình Config Page cho phép User thao tác CRUD danh sách cấu hình các vị trí đo nhiệt độ (`TemperatureConfigsModel`), lưu vào bảng `FT10_TemperatureConfig`.
 - [ ] **UI-02**: Cung cấp API Controller để fetch dữ liệu từ FT10, FT11, FT12, FT13 đưa ra Frontend.
 - [ ] **UI-03**: Tạo Dashboard Blazor (tái sử dụng UI màn Revo) hiển thị biểu đồ và chỉ số thời gian thực từ các vị trí đã thiết lập trong bản đồ của `FT10`.
-- [ ] **UI-04**: Tạo View DataGrid danh sách lịch sử biến thiên báo động (Alarm Logs) với thời điểm bắt đầu, thời điểm phục hồi và nhiệt độ tương ứng.
+- [ ] **UI-04**: Xây dựng thêm một **Trang Báo Cáo (Report Page)** chuyên dụng chuyên liệt kê, bộ lọc phân tích (có DataGrid) danh sách lịch sử biến thiên báo động (các Alarm Alerts đã log vào `FT13`) biểu hiện lúc bắt đầu và kết thúc sự cố.
 
 ## Out of Scope
 - Chỉnh sửa hệ thống cũ Oven/Revo: Yêu cầu này chỉ focus vào 1 web module/winform riêng và cấy chung vào solution, không đụng tới mã thực thi lõi của dây chuyền cũ.
