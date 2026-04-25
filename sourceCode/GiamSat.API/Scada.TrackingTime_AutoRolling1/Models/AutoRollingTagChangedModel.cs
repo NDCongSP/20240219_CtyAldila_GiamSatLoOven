@@ -10,6 +10,8 @@ namespace Scada.TrackingTime_AutoRolling1
     {
         public int RevoId { get; set; } = 0;
 
+        public string? RevoName { get; set; }
+
         public string Path { get; set; } = string.Empty;
 
         public bool PlcConnected { get; set; } = false;
