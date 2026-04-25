@@ -27,7 +27,7 @@ namespace GiamSat.API.Controllers
         /// Get the first active FT10_TemperatureConfig data and deserialize it into a list
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> GetConfigs()
+        public async Task<ActionResult<List<TemperatureConfigsModel>>> GetConfigs()
         {
             try
             {
@@ -47,12 +47,11 @@ namespace GiamSat.API.Controllers
                 return StatusCode(500, new { Error = ex.Message });
             }
         }
-
         /// <summary>
         /// Save a list of TemperatureConfigsModel back to the FT10_TemperatureConfig C000 field
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> SaveConfigs([FromBody] List<TemperatureConfigsModel> configs)
+        public async Task<ActionResult<TemperatureConfigsModel>> SaveConfigs([FromBody] List<TemperatureConfigsModel> configs)
         {
             try
             {

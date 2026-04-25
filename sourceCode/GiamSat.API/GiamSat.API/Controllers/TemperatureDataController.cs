@@ -22,6 +22,47 @@ namespace GiamSat.API.Controllers
             _context = context;
         }
 
+        [HttpGet("GetRealtime")]
+        public async Task<ActionResult<List<TemperatureRealtimeModel>>> GetRealtime()
+        {
+            try
+            {
+                var ft11 = await _context.FT11_TemperatureRealtimes.FirstOrDefaultAsync();
+                if (ft11 == null || string.IsNullOrEmpty(ft11.C001_Data))
+                {
+                    return Ok(new List<TemperatureRealtimeModel>());
+                }
+
+                var data = JsonConvert.DeserializeObject<List<TemperatureRealtimeModel>>(ft11.C001_Data);
+                return Ok(data ?? new List<TemperatureRealtimeModel>());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = ex.Message });
+            }
+        }
+
+        [HttpGet("GetAlarmLogs")]
+        public async Task<ActionResult<List<FT13_TemperatureAlarmLog>>> GetAlarmLogs([FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+            try
+            {
+                // Align to end of the day for toDate if needed
+                var endOfDay = toDate.Date.AddDays(1).AddTicks(-1);
+
+                var logs = await _context.FT13_TemperatureAlarmLogs
+                    .Where(x => x.CreatedAt >= fromDate.Date && x.CreatedAt <= endOfDay)
+                    .OrderByDescending(x => x.CreatedAt)
+                    .ToListAsync();
+
+                return Ok(logs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = ex.Message });
+            }
+        }
+
         [HttpPost("SyncRealtime")]
         public async Task<IActionResult> SyncRealtime([FromBody] List<TemperatureRealtimeModel> reqData)
         {

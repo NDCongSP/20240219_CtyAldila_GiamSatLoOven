@@ -24,6 +24,16 @@
 1. Record trong bảng `FT11` (Realtime) & `FT12` (Datalog) được update liên tục tương thích với các điểm đo từ file cấu hình `FT10`.
 2. Hệ thống kiểm soát Cảnh Báo (`FT13`) nắm bắt chính xác mức nhiệt vượt ngưỡng (bắt đầu) -> hồi phục (kết thúc) kèm temperature.
 
+### Phase 4: Thiết lập Test Flow EasyDriver
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 3
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 4 to break down)
+
 ---
 
 ## Phase 3: Dashboard Realtime & Lịch sử

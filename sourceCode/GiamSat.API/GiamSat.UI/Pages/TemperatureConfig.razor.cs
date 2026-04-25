@@ -1,11 +1,10 @@
-using GiamSat.Models;
 using Microsoft.AspNetCore.Components;
 using Radzen;
 using Radzen.Blazor;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Net.Http.Json;
+using GiamSat.APIClient;
 using System.Threading.Tasks;
 using System.Linq;
 
@@ -13,7 +12,7 @@ namespace GiamSat.UI.Pages
 {
     public partial class TemperatureConfig
     {
-        [Inject] private HttpClient HttpClient { get; set; } = default!;
+        [Inject] private ITemperatureConfigClient _temperatureConfigClient { get; set; } = default!;
         [Inject] private NotificationService NotificationService { get; set; } = default!;
         [Inject] private DialogService DialogService { get; set; } = default!;
 
@@ -32,10 +31,10 @@ namespace GiamSat.UI.Pages
             StateHasChanged();
             try
             {
-                var result = await HttpClient.GetFromJsonAsync<List<TemperatureConfigsModel>>("api/TemperatureConfig");
+                var result = await _temperatureConfigClient.GetConfigsAsync();
                 if (result != null)
                 {
-                    _configs = result;
+                    _configs = result.ToList();
                 }
             }
             catch (Exception ex)
@@ -53,15 +52,8 @@ namespace GiamSat.UI.Pages
         {
             try
             {
-                var response = await HttpClient.PostAsJsonAsync("api/TemperatureConfig", _configs);
-                if (response.IsSuccessStatusCode)
-                {
-                    NotificationService.Notify(NotificationSeverity.Success, "Thành công", "Đã lưu cấu hình thành công");
-                }
-                else
-                {
-                    NotificationService.Notify(NotificationSeverity.Error, "Lỗi", "Lỗi lưu cấu hình");
-                }
+                await _temperatureConfigClient.SaveConfigsAsync(_configs);
+                NotificationService.Notify(NotificationSeverity.Success, "Thành công", "Đã lưu cấu hình thành công");
             }
             catch (Exception ex)
             {

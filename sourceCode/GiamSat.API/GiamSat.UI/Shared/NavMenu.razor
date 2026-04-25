@@ -86,9 +86,17 @@
                          Expanded="false">
         <ChildContent>
             <AuthorizeView Policy="@AppPermissions.Revo_Config_View">
+                <RadzenPanelMenuItem Text="Trạm điều hành"
+                                     Icon="dashboard"
+                                     Path="/temperature/dashboard"
+                                     Match="NavLinkMatch.All"/>
                 <RadzenPanelMenuItem Text="Cấu hình"
                                      Icon="build"
                                      Path="/temperature/config"
+                                     Match="NavLinkMatch.All"/>
+                <RadzenPanelMenuItem Text="Cảnh báo sự cố"
+                                     Icon="report"
+                                     Path="/temperature/report"
                                      Match="NavLinkMatch.All"/>
             </AuthorizeView>
         </ChildContent>
@@ -99,9 +107,8 @@
             <ChildContent>
                 <RadzenPanelMenuItem Text="Tài khoản" Icon="person" Path="/admin/users" />
                 <RadzenPanelMenuItem Text="Quyền & Vai trò" Icon="security" Path="/admin/roles" />
-                <RadzenPanelMenuItem Text="System Permissions" Icon="format_list_bulleted" Path="/admin/permissions" />
+                <RadzenPanelMenuItem Text="Lịch sử Truy cập" Icon="history" Path="/admin/history" />
             </ChildContent>
         </RadzenPanelMenuItem>
     </AuthorizeView>
 </RadzenPanelMenu>
-

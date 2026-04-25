@@ -137,7 +137,7 @@ namespace Scada.TemperatureMonitoring
 
                     payload.Add(new TemperatureRealtimeModel
                     {
-                        Id = config.Id,
+                        Id = (int)config.Id,
                         Name = config.Name,
                         Path = config.Path,
                         PV = pvValue + config.Offset,

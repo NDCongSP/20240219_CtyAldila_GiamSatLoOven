@@ -1,0 +1,58 @@
+@page "/temperature/report"
+@using GiamSat.APIClient
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<RadzenRow Gap="1rem">
+    <RadzenColumn Size="12">
+        <RadzenText TextStyle="TextStyle.H4">Báo cáo Máy hoạt động lỗi Nhiệt</RadzenText>
+    </RadzenColumn>
+</RadzenRow>
+
+<RadzenCard class="rz-shadow-3 rz-mb-4" >
+    <RadzenRow Gap="1rem" AlignItems="AlignItems.End">
+        <RadzenColumn Size="12" SizeMD="4">
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Từ ngày</RadzenText>
+            <RadzenDatePicker @bind-Value="_fromDate" Style="width: 100%;" DateFormat="dd/MM/yyyy" />
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="4">
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Đến ngày</RadzenText>
+            <RadzenDatePicker @bind-Value="_toDate" Style="width: 100%;" DateFormat="dd/MM/yyyy" />
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="4">
+            <RadzenButton Text="Tra cứu" Icon="search" ButtonStyle="ButtonStyle.Primary" Click="@LoadData" Style="width: 100%;" IsBusy="_isLoading" />
+        </RadzenColumn>
+    </RadzenRow>
+</RadzenCard>
+
+<RadzenDataGrid @ref="_dataGrid" 
+                Data="@_logs" 
+                TItem="FT13_TemperatureAlarmLog" 
+                AllowPaging="true" 
+                PageSize="15"
+                AllowSorting="true"
+                AllowFiltering="true"
+                FilterMode="FilterMode.Simple"
+                IsLoading="@_isLoading"
+                class="rz-shadow-3">
+    <Columns>
+        <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="CreatedAt" Title="Th.Gian Bắt Đầu" Width="170px">
+            <Template Context="item">
+                @item.CreatedAt?.ToString("dd/MM/yyyy HH:mm:ss")
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="UpdateddAt" Title="Th.Gian Phục Hồi" Width="170px">
+            <Template Context="item">
+                @item.UpdateddAt?.ToString("dd/MM/yyyy HH:mm:ss")
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="LocationName" Title="Khu Vực" Width="150px" />
+        <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="Path" Title="Device Tag" Width="200px" />
+        <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="Pv" Title="Ngưỡng PV (Bắt đầu)" Width="150px">
+            <Template Context="item">
+                <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@($"{item.Pv:0.0} °C")" />
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="Description" Title="Chi tiết chẩn đoán" />
+    </Columns>
+</RadzenDataGrid>
