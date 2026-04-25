@@ -20,7 +20,7 @@ using System.Windows.Forms;
 
 namespace Scada.TrackingTime_AutoRolling1
 {
-    public partial class Form1 : Form
+    public partial class frmProduction : Form
     {
         private EasyDriverConnector _easyDriverConnector;
         private ConnectionStatus _easyStatus;
@@ -74,7 +74,7 @@ namespace Scada.TrackingTime_AutoRolling1
         private Button btnMaintenance;
         private Label titleText;
 
-        public Form1()
+        public frmProduction()
         {
             InitializeComponent();
 
@@ -119,7 +119,7 @@ namespace Scada.TrackingTime_AutoRolling1
             btnMaximize.FlatStyle = FlatStyle.Flat;
             btnMaximize.FlatAppearance.BorderSize = 0;
             btnMaximize.Size = new Size(40, 40);
-            btnMaximize.Location = new Point(this.Width, 0);
+            btnMaximize.Location = new Point(this.Width - 40, 0);
             btnMaximize.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             // 1) Gán icon từ Resources (đặt tên hình là "updateVersion" như trong Resource)
             btnMaximize.Image = Properties.Resources.maximize_30_white;  // PNG từ Resources
@@ -137,7 +137,7 @@ namespace Scada.TrackingTime_AutoRolling1
             btnMinimize.FlatStyle = FlatStyle.Flat;
             btnMinimize.FlatAppearance.BorderSize = 0;
             btnMinimize.Size = new Size(40, 40);
-            btnMinimize.Location = new Point(this.Width - 60, 0);
+            btnMinimize.Location = new Point(this.Width - 80, 0);
             btnMinimize.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             // 1) Gán icon từ Resources (đặt tên hình là "updateVersion" như trong Resource)
             btnMinimize.Image = Properties.Resources.minimize_30_White;  // PNG từ Resources
@@ -221,11 +221,11 @@ namespace Scada.TrackingTime_AutoRolling1
             // 3. Nếu flowMain đang là Dock Fill, nó sẽ tự động chừa chỗ cho _labStatus
             // flowMain.Dock = DockStyle.Fill;
 
-            Load += Form1_Load;
+            Load += frmProduction_Load;
             //FormClosing += Form1_FormClosing;
         }
 
-        private void Form1_FormClosing(object? sender, FormClosingEventArgs e)
+        private void frmProduction_FormClosing(object? sender, FormClosingEventArgs e)
         {
             try
             {
@@ -255,7 +255,7 @@ namespace Scada.TrackingTime_AutoRolling1
             }
         }
 
-        private async void Form1_Load(object? sender, EventArgs e)
+        private async void frmProduction_Load(object? sender, EventArgs e)
         {
             //ddocj gias trij config
             using (var dbContext = new ApplicationDbContext())
@@ -294,15 +294,29 @@ namespace Scada.TrackingTime_AutoRolling1
                     return;
                 }
 
+                //khởi tạo các step mặc định (15 step) đối với máy auto rolling
+                var steps = new List<RevoStep>();
+                for (int i = 1; i <= 15; i++)
+                {
+                    var step = new RevoStep()
+                    {
+                        StepIndex = i
+                    };
+
+                    steps.Add(step);
+                }
+
+
                 //khởi tạo model realtime data
                 foreach (var item in GlobalVariable.RevoConfigs)
                 {
+
                     GlobalVariable.RevoRealtimeModels.Add(new RevoRealtimeModel()
                     {
                         RevoId = item.Id.Value,
                         RevoName = item.Name,
                         Path = item.Path,
-                        Steps = new List<RevoStep>()
+                        Steps = steps
                     });
 
                     _tagsValueRealtime.Add(new AutoRollingTagChangedModel()
@@ -361,7 +375,7 @@ namespace Scada.TrackingTime_AutoRolling1
                     {
                         _labStatus.Text = $"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")} - Easy Driver: {_easyStatus} - PLC: {_tagsValueRealtime.FirstOrDefault().PlcConnected} - DB Server:";
 
-                       
+
                     });
 
                     #region Log data vào DB
@@ -581,6 +595,10 @@ namespace Scada.TrackingTime_AutoRolling1
                     {
                         item.PlcConnected = e.NewQuality == Quality.Good;
 
+                        //cập nhật lại realtime model để tránh trường hợp tag mất kết nối rồi có giá trị mới vẫn cập nhật vào model, dẫn đến sai dữ liệu
+                        var realtimeModel = GlobalVariable.RevoRealtimeModels.FirstOrDefault(x => x.Path == path);
+                        realtimeModel.PlcConnected = item.PlcConnected;
+                        
                         Log.Warning($"Alarm description {item.RevoId} disconnect.");
                         return;
                     }
@@ -589,6 +607,11 @@ namespace Scada.TrackingTime_AutoRolling1
             catch (Exception ex) { Log.Error(ex, $"From TagValueChanged {e.Tag.Path}"); }
         }
 
+        /// <summary>
+        /// Khi tag này thay đổi thì sẽ chuyển part code mới vào model realtime, đồng thời đưa path vào hàng đợi để TaskResetShaftAsync lấy ra xử lý reset trục (vì khi thay đổi part code thì sẽ reset trục). Sau khi TaskResetShaftAsync xử lý xong sẽ cập nhật lại UI và log vào DB.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Part_Code_ValueChanged(object sender, TagValueChangedEventArgs e)
         {
             try
@@ -604,6 +627,11 @@ namespace Scada.TrackingTime_AutoRolling1
                     {
                         item.Part_Code = e.NewValue;
 
+                        // Đưa Path vào hàng đợi để Task lấy ra dùng
+                        _resetShaftQueue.Enqueue(item.Path);
+                        _triggerResetShaft.Set(); // kích hoạt _triggerResetShaft chạy
+
+                        UpdateGrid();
                         return;
                     }
                 }
@@ -611,6 +639,12 @@ namespace Scada.TrackingTime_AutoRolling1
             catch (Exception ex) { Log.Error(ex, $"From TagValueChanged {e.Tag.Path}"); }
         }
 
+        /// <summary>
+        /// Tag này sẽ thay đổi mỗi khi tag partCode thay đổi, nó quy định theo công thức thì các bước nào được sử dụng.
+        /// Sẽ được mã hóa thành một số nguyên và gửi về PLC. Khi tag này thay đổi thì sẽ chuyển giá trị mới vào model realtime, đồng thời chuyển sang dạng bit để biết được step nào đang được sử dụng, sau đó cập nhật lại UI. Ngoài ra khi tag này thay đổi cũng sẽ đưa path vào hàng đợi để TaskResetShaftAsync lấy ra xử lý reset trục (vì khi thay đổi recipe setting thì sẽ reset trục). Sau khi TaskResetShaftAsync xử lý xong sẽ cập nhật lại UI và log vào DB.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Recipe_Settings_ValueChanged(object sender, TagValueChangedEventArgs e)
         {
             try
@@ -626,9 +660,7 @@ namespace Scada.TrackingTime_AutoRolling1
                         item.Recipe_Settings = int.TryParse(e.NewValue, out int value) ? value : 0;
                         item.StepsIsRun = ConvertWordToBitArray((ushort)item.Recipe_Settings);
 
-                        // Đưa Path vào hàng đợi để Task lấy ra dùng
-                        _resetShaftQueue.Enqueue(item.Path);
-                        _triggerResetShaft.Set(); // kích hoạt _triggerResetShaft chạy
+                        UpdateGrid();
                         return;
                     }
                 }
@@ -787,6 +819,8 @@ namespace Scada.TrackingTime_AutoRolling1
                         _resetPartQueue.Enqueue(item.Path);
                         _triggerResetPart.Set(); // kích hoạt _triggerResetPart chạy
 
+                        UpdateGrid();
+
                         return;
                     }
                 }
@@ -796,6 +830,18 @@ namespace Scada.TrackingTime_AutoRolling1
         #endregion
 
         #region Method helper
+        private void UpdateGrid()
+        {
+            GlobalVariable.InvokeIfRequired(this, () =>
+            {
+                if (_grv.DataSource == null)
+                {
+                    _grv.DataSource = _tagsValueRealtime;
+                }
+                else _grv.Refresh();
+            });
+        }
+
         /// <summary>
         /// Hàm chuyển đổi giá trị kiểu ushort (16 bit) thành một mảng bool có 16 phần tử, mỗi phần tử đại diện cho trạng thái của một bit trong giá trị đó.
         /// </summary>
@@ -1130,6 +1176,5 @@ namespace Scada.TrackingTime_AutoRolling1
             this.WindowState = FormWindowState.Minimized;
         }
         #endregion
-
     }
 }
