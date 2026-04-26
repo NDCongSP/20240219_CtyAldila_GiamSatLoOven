@@ -1,4 +1,5 @@
-﻿using GiamSat.Models;
+﻿using EasyScada.Winforms.Controls;
+using GiamSat.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace Scada.TrackingTime_AutoRolling1
 {
     public partial class frmConfig : Form
     {
+        public EasyDriverConnector EasyDriverConnector { get; set; }
         EnumSaveMode _saveMode;
 
         public frmConfig()
@@ -32,46 +34,7 @@ namespace Scada.TrackingTime_AutoRolling1
 
         private void FrmConfig_Load(object sender, EventArgs e)
         {
-            _btnSave.Click += _btnSave_Click;
-
-            _radioSave.CheckedChanged += (s, o) =>
-            {
-                var sender = s as RadioButton;
-                if (sender.Checked)
-                {
-                    _saveMode = EnumSaveMode.Save;
-
-                    GlobalVariable.InvokeIfRequired(this, () =>
-                    {
-                        _radioSaveAll.Checked = false;
-                    });
-                }
-            };
-
-            _radioSaveAll.CheckedChanged += (s, o) =>
-            {
-                var sender = s as RadioButton;
-                if (sender.Checked)
-                {
-                    _saveMode = EnumSaveMode.SaveAll;
-
-                    GlobalVariable.InvokeIfRequired(this, () =>
-                    {
-                        _radioSave.Checked = false;
-                    });
-                }
-            };
-
-            if (GlobalVariable.RevoConfigs.FirstOrDefault().SaveMode == GiamSat.Models.EnumSaveMode.Save)
-            {
-                _radioSave.Checked = true;
-                _radioSaveAll.Checked = false;
-            }
-            else
-            {
-                _radioSave.Checked = false;
-                _radioSaveAll.Checked = true;
-            }
+            //_btnSave.Click += _btnSave_Click;
         }
 
         private async void _btnSave_Click(object sender, EventArgs e)

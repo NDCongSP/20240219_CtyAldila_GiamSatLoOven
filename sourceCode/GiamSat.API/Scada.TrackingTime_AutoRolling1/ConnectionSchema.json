@@ -4,7 +4,7 @@
   "Port": 8800,
   "CommunicationMode": 0,
   "RefreshRate": 100,
-  "CreatedDate": "2026-03-26T18:27:25.8628056+07:00",
+  "CreatedDate": "2026-04-20T22:13:59.3796491+07:00",
   "Username": null,
   "Password": null,
   "Childs": [
@@ -425,7 +425,7 @@
           "Name": "Channel_Auto_Rolling_2",
           "Path": "Local Station/Channel_Auto_Rolling_2",
           "Description": null,
-          "DisplayInfo": "ModbusTCP - 192.168.11.12:502",
+          "DisplayInfo": "ModbusTCP - 192.168.1.100:503",
           "Error": null,
           "ConnectionStatus": 0,
           "Childs": [
@@ -817,8 +817,8 @@
             }
           ],
           "Properties": {
-            "IpAddress": "192.168.11.12",
-            "Port": "502",
+            "IpAddress": "192.168.1.100",
+            "Port": "503",
             "DelayBetweenPool": "5",
             "ScanRate": "100"
           }
@@ -828,7 +828,7 @@
           "Name": "Channel_Auto_Rolling_3",
           "Path": "Local Station/Channel_Auto_Rolling_3",
           "Description": null,
-          "DisplayInfo": "ModbusTCP - 192.168.11.13:502",
+          "DisplayInfo": "ModbusTCP - 192.168.11.13:504",
           "Error": null,
           "ConnectionStatus": 0,
           "Childs": [
@@ -1221,7 +1221,7 @@
           ],
           "Properties": {
             "IpAddress": "192.168.11.13",
-            "Port": "502",
+            "Port": "504",
             "DelayBetweenPool": "5",
             "ScanRate": "100"
           }
