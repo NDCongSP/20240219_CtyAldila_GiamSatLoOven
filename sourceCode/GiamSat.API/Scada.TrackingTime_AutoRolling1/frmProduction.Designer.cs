@@ -49,9 +49,9 @@ namespace Scada.TrackingTime_AutoRolling1
             // _grv
             // 
             this._grv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this._grv.Location = new System.Drawing.Point(12, 36);
+            this._grv.Location = new System.Drawing.Point(12, 64);
             this._grv.Name = "_grv";
-            this._grv.Size = new System.Drawing.Size(1326, 364);
+            this._grv.Size = new System.Drawing.Size(1326, 336);
             this._grv.TabIndex = 21;
             // 
             // frmProduction

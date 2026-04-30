@@ -83,7 +83,7 @@ namespace Scada.TrackingTime_AutoRolling1
             this.Text = "Custom Title Bar";
             this.FormBorderStyle = FormBorderStyle.None; // Bỏ header mặc định
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.Size = new Size(845, 514);
+            this.Size = new Size(1350, 514);
 
             // Tạo panel làm thanh tiêu đề
             titleBar = new Panel();
@@ -147,7 +147,6 @@ namespace Scada.TrackingTime_AutoRolling1
             btnMinimize.Click += BtnMinimize_Click;
             titleBar.Controls.Add(btnMinimize);
 
-
             // Nút update version
             btnMaintenance = new Button();
             btnMaintenance.Text = "";                      // Không cần chữ, chỉ hiển thị icon
@@ -203,7 +202,7 @@ namespace Scada.TrackingTime_AutoRolling1
 
             // Text
             titleText = new Label();
-            titleText.Text = $"AUTO ROLLING  PRODUCTION";
+            titleText.Text = $"AUTO ROLLING PRODUCTION";
             titleText.ForeColor = Color.White;
             titleText.Font = new Font("Segoe UI", 12, FontStyle.Bold);
             titleText.AutoSize = true;
@@ -300,7 +299,8 @@ namespace Scada.TrackingTime_AutoRolling1
                 {
                     var step = new RevoStep()
                     {
-                        StepIndex = i
+                        StepIndex = i,
+                        StepName = $"Step {i}",
                     };
 
                     steps.Add(step);
@@ -378,9 +378,8 @@ namespace Scada.TrackingTime_AutoRolling1
 
                     });
 
-                    #region Log data vào DB
-                    //LogDb();
-                    #endregion
+                    //Log data realtime vào DB
+                    await LogDataRealtime();
                 }
                 catch (Exception ex)
                 {
@@ -403,7 +402,7 @@ namespace Scada.TrackingTime_AutoRolling1
                     // === xử lý 1 lần duy nhất mỗi lần được kích ===
                     Debug.WriteLine($"TaskCheckTimeStepAsync triggered {START_STOP_STEP}");
 
-
+                   
                 }
             }
             catch (OperationCanceledException) { /* thoát êm */ }
@@ -598,7 +597,7 @@ namespace Scada.TrackingTime_AutoRolling1
                         //cập nhật lại realtime model để tránh trường hợp tag mất kết nối rồi có giá trị mới vẫn cập nhật vào model, dẫn đến sai dữ liệu
                         var realtimeModel = GlobalVariable.RevoRealtimeModels.FirstOrDefault(x => x.Path == path);
                         realtimeModel.PlcConnected = item.PlcConnected;
-                        
+
                         Log.Warning($"Alarm description {item.RevoId} disconnect.");
                         return;
                     }
@@ -1087,6 +1086,99 @@ namespace Scada.TrackingTime_AutoRolling1
 
                 await dbContext.SaveChangesAsync();
             }
+        }
+
+        private async Task LogDataRealtime()
+        {
+            //mappign data
+            foreach (var tagData in _tagsValueRealtime)
+            {
+                // 1. Tìm đối tượng tương ứng trong list RevoRealtimeModels
+                var revoModel = GlobalVariable.RevoRealtimeModels.FirstOrDefault(x => x.RevoId == tagData.RevoId);
+
+                if (revoModel != null)
+                {
+                    // 2. Duyệt qua 15 bước (bỏ qua bit 0 theo yêu cầu của bạn)
+                    for (int i = 1; i <= 15; i++)
+                    {
+                        // Tìm StepIndex tương ứng (Giả định StepIndex trong RevoStep khớp với số thứ tự)
+                        var step = revoModel.Steps.FirstOrDefault(s => s.StepIndex == i);
+
+                        if (step == null)
+                        {
+                            // Nếu chưa có step trong list thì khởi tạo mới
+                            step = new RevoStep { StepIndex = i };
+                            revoModel.Steps.Add(step);
+                        }
+
+                        // 3. Cập nhật trạng thái chạy từ mảng bool[] StepsIsRun
+                        // Giả định StepsIsRun có 16 phần tử, index 1 tương ứng Step 1
+                        step.Enable = tagData.StepsIsRun[i];
+
+                        // 4. Cập nhật thời gian chạy từ các biến TimeRunStepX
+                        step.TotalRunTime = GetTimeRunStepByIndex(tagData, i);
+
+                        // 5. Cập nhật trạng thái Highlight (Bước nào đang chạy)
+                        // Nếu tagData.StepRun trả về đúng số bước đang chạy
+                        //step.StepSelection = (tagData.StepRun == i);
+                    }
+
+                    // Có thể cập nhật thêm thông tin Part hiện tại nếu cần
+                    // revoModel.CurrentPart = tagData.Part_Code; 
+                }
+            }
+
+            using (var dbContext = new ApplicationDbContext())
+            {
+                var listIds = GlobalVariable.RevoConfigs.Select(x => x.Id).Distinct().ToList();
+                var dbRecords = dbContext.FT08_RevoRealtimes
+                    .Where(x => listIds.Contains(x.C000_RevoId.Value))
+                    .ToList();
+
+                foreach (var item in GlobalVariable.RevoRealtimeModels)
+                {
+                    var dbRecord = dbRecords.FirstOrDefault(x => x.C000_RevoId == item.RevoId);
+                    if (dbRecord != null)
+                    {
+                        dbRecord.C001_Data = JsonConvert.SerializeObject(item);
+                    }
+                    else
+                    {
+                        var nl = new FT08_RevoRealtime()
+                        {
+                            Id = Guid.NewGuid(),
+                            C000_RevoId = item.RevoId,
+                            C001_Data = JsonConvert.SerializeObject(item)
+                        };
+                        dbContext.FT08_RevoRealtimes.Add(nl);
+                    }
+                }
+
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        public double GetTimeRunStepByIndex(AutoRollingTagChangedModel model, int index)
+        {
+            return index switch
+            {
+                1 => model.TimeRunStep1,
+                2 => model.TimeRunStep2,
+                3 => model.TimeRunStep3,
+                4 => model.TimeRunStep4,
+                5 => model.TimeRunStep5,
+                6 => model.TimeRunStep6,
+                7 => model.TimeRunStep7,
+                8 => model.TimeRunStep8,
+                9 => model.TimeRunStep9,
+                10 => model.TimeRunStep10,
+                11 => model.TimeRunStep11,
+                12 => model.TimeRunStep12,
+                13 => model.TimeRunStep13,
+                14 => model.TimeRunStep14,
+                15 => model.TimeRunStep15,
+                _ => 0
+            };
         }
 
         private async Task<GroupShaftModel> GetTotalShaftAsync()
