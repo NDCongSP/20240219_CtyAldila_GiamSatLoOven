@@ -385,14 +385,20 @@ namespace GiamSat.API
 
             Log.Information("Configure: UseMiddleware<CorrelationIdMiddleware> + UseSerilogRequestLogging");
             app.UseMiddleware<CorrelationIdMiddleware>();
-            // Elevate 4xx/5xx lên Warning/Error để SignalR sink push realtime cho UI.
+            // Elevate level theo HTTP status để dễ audit:
+            //   5xx hoặc exception → Error
+            //   401/403 (auth/security event) → Error  ← nên flag rõ ràng
+            //   4xx khác (404, 400 client error) → Warning
+            //   2xx/3xx → Information
             app.UseSerilogRequestLogging(options =>
             {
                 options.GetLevel = (httpContext, elapsed, exception) =>
                 {
                     if (exception != null) return Serilog.Events.LogEventLevel.Error;
-                    if (httpContext.Response.StatusCode >= 500) return Serilog.Events.LogEventLevel.Error;
-                    if (httpContext.Response.StatusCode >= 400) return Serilog.Events.LogEventLevel.Warning;
+                    var status = httpContext.Response.StatusCode;
+                    if (status >= 500) return Serilog.Events.LogEventLevel.Error;
+                    if (status == 401 || status == 403) return Serilog.Events.LogEventLevel.Error;
+                    if (status >= 400) return Serilog.Events.LogEventLevel.Warning;
                     return Serilog.Events.LogEventLevel.Information;
                 };
             });

@@ -76,5 +76,8 @@ namespace GiamSat.Models
 
         [Delete("files/{fileName}")]
         Task<Result> DeleteFile([Path] string fileName);
+
+        [Post("clear/{fileName}")]
+        Task<Result> ClearFile([Path] string fileName);
     }
 }

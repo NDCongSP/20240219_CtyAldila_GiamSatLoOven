@@ -73,12 +73,22 @@
                                     {
                                         var fileName = f.FileName;
                                         var rowClass = fileName == _selectedFile ? "file-row selected" : "file-row";
-                                        <div class="@rowClass" @onclick="@(() => SelectFile(fileName))">
-                                            <div class="file-name">
-                                                <span class="@KindBadgeClass(f.Kind)">@f.Kind</span>
-                                                <span>@fileName</span>
+                                        <div class="@rowClass">
+                                            <div class="file-info" @onclick="@(() => SelectFile(fileName))">
+                                                <div class="file-name">
+                                                    <span class="@KindBadgeClass(f.Kind)">@f.Kind</span>
+                                                    <span>@fileName</span>
+                                                </div>
+                                                <div class="file-meta">@FormatSize(f.SizeBytes) · @f.LastModified.ToString("MM-dd HH:mm")</div>
                                             </div>
-                                            <div class="file-meta">@FormatSize(f.SizeBytes) · @f.LastModified.ToString("MM-dd HH:mm")</div>
+                                            <div class="file-actions">
+                                                <RadzenButton Icon="cleaning_services" ButtonStyle="ButtonStyle.Warning" Size="ButtonSize.ExtraSmall"
+                                                              title="Xóa nội dung (giữ file)"
+                                                              Click="@(() => ClearFileAsync(fileName))" />
+                                                <RadzenButton Icon="delete_forever" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.ExtraSmall"
+                                                              title="Xóa hẳn file"
+                                                              Click="@(() => DeleteFileAsync(fileName))" />
+                                            </div>
                                         </div>
                                     }
                                 </div>
@@ -172,11 +182,13 @@
     .filter-cell { display:flex; flex-direction:column; }
     .files-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; }
     .files-list { display:flex; flex-direction:column; gap:0.25rem; max-height:60vh; overflow:auto; }
-    .file-row { padding:6px 8px; border-radius:4px; cursor:pointer; border:1px solid transparent; }
+    .file-row { padding:6px 8px; border-radius:4px; border:1px solid transparent; display:flex; align-items:center; gap:6px; }
     .file-row:hover { background: var(--rz-base-200); }
     .file-row.selected { background: var(--rz-primary-lighter); border-color: var(--rz-primary); }
+    .file-info { flex:1; cursor:pointer; min-width:0; }
     .file-name { font-weight:600; font-size:13px; display:flex; align-items:center; gap:6px; }
     .file-meta { font-size:11px; color: var(--rz-text-tertiary-color); }
+    .file-actions { display:flex; gap:4px; flex-shrink:0; }
     .kind-badge { font-size:10px; padding:1px 6px; border-radius:8px; font-weight:700; text-transform:uppercase; }
     .kind-all { background:#e3f2fd; color:#1565c0; }
     .kind-error { background:#ffebee; color:#c62828; }
@@ -318,6 +330,48 @@
     {
         _selectedFile = fileName;
         await LoadFileEntries();
+    }
+
+    private async Task ClearFileAsync(string fileName)
+    {
+        try
+        {
+            var res = await LogsClient.ClearFile(fileName);
+            if (res != null && res.Succeeded)
+            {
+                Notify(NotificationSeverity.Success, $"Đã xóa nội dung {fileName}");
+                if (fileName == _selectedFile) _fileEntries.Clear();
+                await LoadFiles();
+            }
+            else if (res != null)
+            {
+                Notify(NotificationSeverity.Error, string.Join(", ", res.Messages));
+            }
+        }
+        catch (Exception ex) { Notify(NotificationSeverity.Error, ex.Message); }
+    }
+
+    private async Task DeleteFileAsync(string fileName)
+    {
+        try
+        {
+            var res = await LogsClient.DeleteFile(fileName);
+            if (res != null && res.Succeeded)
+            {
+                Notify(NotificationSeverity.Success, $"Đã xóa file {fileName}");
+                if (fileName == _selectedFile)
+                {
+                    _selectedFile = null;
+                    _fileEntries.Clear();
+                }
+                await LoadFiles();
+            }
+            else if (res != null)
+            {
+                Notify(NotificationSeverity.Error, string.Join(", ", res.Messages));
+            }
+        }
+        catch (Exception ex) { Notify(NotificationSeverity.Error, ex.Message); }
     }
 
     private async Task LoadFileEntries()

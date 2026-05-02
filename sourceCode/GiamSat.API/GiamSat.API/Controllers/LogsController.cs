@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -180,13 +181,41 @@ namespace GiamSat.API.Controllers
                 var path = Path.Combine(_logDir, fileName);
                 if (!System.IO.File.Exists(path))
                     return Ok(Result.Fail($"Không tìm thấy: {fileName}"));
+                // Mở stream để force unlock trước khi delete (Serilog có thể đang giữ file).
                 System.IO.File.Delete(path);
-                _logger.LogWarning("Log file {FileName} đã bị xóa bởi {User}", fileName, User?.Identity?.Name);
-                return Ok(Result.Success("Đã xóa."));
+                _logger.LogWarning("Log file {FileName} đã bị XÓA bởi {User}", fileName, User?.Identity?.Name);
+                return Ok(Result.Success("Đã xóa file."));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed deleting {FileName}", fileName);
+                return Ok(Result.Fail(ex.Message));
+            }
+        }
+
+        /// <summary>Truncate file (giữ file nhưng xóa nội dung) — không phá Serilog đang ghi.</summary>
+        [HttpPost("clear/{fileName}")]
+        public ActionResult<Result> ClearFile(string fileName)
+        {
+            try
+            {
+                if (!IsValidFileName(fileName))
+                    return Ok(Result.Fail("Tên file không hợp lệ."));
+                var path = Path.Combine(_logDir, fileName);
+                if (!System.IO.File.Exists(path))
+                    return Ok(Result.Fail($"Không tìm thấy: {fileName}"));
+
+                // Mở với FileShare.ReadWrite để không xung đột với Serilog đang giữ file.
+                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Write, FileShare.ReadWrite | FileShare.Delete))
+                {
+                    fs.SetLength(0);
+                }
+                _logger.LogWarning("Log file {FileName} đã bị CLEAR bởi {User}", fileName, User?.Identity?.Name);
+                return Ok(Result.Success("Đã xóa nội dung file."));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed clearing {FileName}", fileName);
                 return Ok(Result.Fail(ex.Message));
             }
         }
@@ -207,8 +236,7 @@ namespace GiamSat.API.Controllers
 
         private static async Task<List<LogEntry>> ReadEntriesAsync(string path)
         {
-            // Mở file với FileShare.ReadWrite để KHÔNG tranh chấp lock với Serilog (đang giữ file để ghi).
-            // Nếu dùng File.ReadAllLinesAsync sẽ bị lỗi "The process cannot access the file because it is being used by another process".
+            // Mở file với FileShare.ReadWrite để KHÔNG tranh chấp lock với Serilog đang ghi.
             var lines = new List<string>();
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
             using (var reader = new StreamReader(fs, System.Text.Encoding.UTF8))
@@ -218,6 +246,12 @@ namespace GiamSat.API.Controllers
                 {
                     lines.Add(line);
                 }
+            }
+
+            // File CLEF (JSON-per-line) parse khác với plain text.
+            if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            {
+                return ParseClefLines(lines);
             }
 
             var entries = new List<LogEntry>(capacity: lines.Count / 2);
@@ -284,5 +318,71 @@ namespace GiamSat.API.Controllers
             "FTL" => "Fatal",
             _ => serilogShort
         };
+
+        /// <summary>
+        /// Parse file CLEF (Compact Log Event Format) do CompactJsonFormatter sinh ra.
+        /// Mỗi line là 1 JSON object với keys: @t (timestamp), @l (level - mặc định Information nếu thiếu),
+        /// @m (rendered message), @mt (template), @x (exception), và các property bổ sung như CorrelationId, SourceContext.
+        /// </summary>
+        private static List<LogEntry> ParseClefLines(List<string> lines)
+        {
+            var entries = new List<LogEntry>(capacity: lines.Count);
+            foreach (var line in lines)
+            {
+                if (string.IsNullOrWhiteSpace(line)) continue;
+                try
+                {
+                    using var doc = JsonDocument.Parse(line);
+                    var root = doc.RootElement;
+
+                    DateTime ts = DateTime.MinValue;
+                    if (root.TryGetProperty("@t", out var tsEl) && tsEl.ValueKind == JsonValueKind.String)
+                    {
+                        DateTime.TryParse(tsEl.GetString(), CultureInfo.InvariantCulture,
+                            DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out ts);
+                    }
+
+                    // CLEF không ghi @l cho level Information mặc định → fallback "Information".
+                    var level = "Information";
+                    if (root.TryGetProperty("@l", out var lvlEl) && lvlEl.ValueKind == JsonValueKind.String)
+                        level = lvlEl.GetString();
+
+                    string message = null;
+                    if (root.TryGetProperty("@m", out var mEl) && mEl.ValueKind == JsonValueKind.String)
+                        message = mEl.GetString();
+                    else if (root.TryGetProperty("@mt", out var mtEl) && mtEl.ValueKind == JsonValueKind.String)
+                        message = mtEl.GetString();
+
+                    string exception = null;
+                    if (root.TryGetProperty("@x", out var xEl) && xEl.ValueKind == JsonValueKind.String)
+                        exception = xEl.GetString();
+                    if (!string.IsNullOrEmpty(exception))
+                        message = (message ?? "") + "\n" + exception;
+
+                    string corr = null;
+                    if (root.TryGetProperty("CorrelationId", out var cEl) && cEl.ValueKind == JsonValueKind.String)
+                        corr = cEl.GetString();
+
+                    string source = null;
+                    if (root.TryGetProperty("SourceContext", out var sEl) && sEl.ValueKind == JsonValueKind.String)
+                        source = sEl.GetString();
+
+                    entries.Add(new LogEntry
+                    {
+                        Timestamp = ts,
+                        Level = level,
+                        CorrelationId = corr,
+                        Source = source,
+                        Message = message,
+                        Raw = line
+                    });
+                }
+                catch
+                {
+                    // JSON corrupt — bỏ dòng, đừng phá toàn bộ.
+                }
+            }
+            return entries;
+        }
     }
 }
