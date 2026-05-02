@@ -52,3 +52,17 @@ function scrollStepsContainer(containerRef, scrollPosition) {
         containerRef.scrollTop = scrollPosition;
     }
 }
+
+// Dùng cho trang /admin/logs để export CSV (kèm UTF-8 BOM cho Excel mở đúng).
+function downloadCsv(filename, content) {
+    const bom = "﻿";
+    const blob = new Blob([bom + content], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(url);
+    a.remove();
+}
