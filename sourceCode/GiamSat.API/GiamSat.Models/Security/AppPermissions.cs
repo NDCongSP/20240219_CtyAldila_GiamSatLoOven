@@ -35,6 +35,9 @@ namespace GiamSat.Models
         public const string System_Config_View = "System_Config.View";
         public const string System_Config_Edit = "System_Config.Edit";
 
+        // LOGS
+        public const string System_Logs_View = "System_Logs.View";
+
         /// <summary>
         /// Gets all defined permission codes automatically using reflection.
         /// </summary>

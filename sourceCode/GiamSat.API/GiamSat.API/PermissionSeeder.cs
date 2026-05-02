@@ -33,15 +33,15 @@ namespace GiamSat.API
 
             // SYSTEM MODULE
             ("System_Config", "View", "Xem cấu hình hệ thống"),
-            ("System_Config", "Edit", "Chỉnh sửa cấu hình hệ thống")
+            ("System_Config", "Edit", "Chỉnh sửa cấu hình hệ thống"),
+
+            // SYSTEM LOGS
+            ("System_Logs", "View", "Xem log hệ thống (Serilog)")
         };
 
         public static async Task SeedAsync(ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager)
         {
-            // Only seed if both tables are empty (or one of them is missing data)
-            // As requested: "khi 2 bảng permission, roletopoermission đã có data thì ko seed nữa"
-            if (await dbContext.Permissions.AnyAsync() && await dbContext.RoleToPermissions.AnyAsync())
-                return;
+            // Idempotent — chạy lại sẽ chỉ thêm permission còn thiếu (vd System_Logs.View khi nâng cấp).
 
             // 1. Ensure default roles exist
             foreach (var roleName in UserRoles.DefaultRoles)

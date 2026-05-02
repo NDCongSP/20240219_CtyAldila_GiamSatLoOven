@@ -1,2 +1,484 @@
-@* File này còn sót lại sau khi rollback. An toàn để xóa khỏi Solution Explorer. *@
-@* Stub tạm để không phá build cho tới khi bạn xóa file này. *@
+@page "/admin/logs"
+@implements IAsyncDisposable
+@using GiamSat.Models
+@using GiamSat.UI.Services
+@using Microsoft.AspNetCore.SignalR.Client
+@using AppPermissions = GiamSat.Models.AppPermissions
+@attribute [Authorize(Policy = AppPermissions.System_Logs_View)]
+
+<PageTitle>System Log Viewer</PageTitle>
+
+<div class="logs-page">
+
+    @* === HEADER === *@
+    <div class="logs-header">
+        <RadzenText TextStyle="TextStyle.H5" class="rz-m-0">System Log Viewer</RadzenText>
+        <div class="logs-actions">
+            <span class="@LiveBadgeClass">@LiveBadgeText</span>
+            <RadzenButton Text="@PauseLabel" Icon="@PauseIcon"
+                          ButtonStyle="ButtonStyle.Warning" Size="ButtonSize.Small" Click="TogglePause" />
+            <RadzenButton Text="RELOAD" Icon="refresh" ButtonStyle="ButtonStyle.Primary"
+                          Size="ButtonSize.Small" Click="ReloadCurrentTab" />
+            <RadzenButton Text="CLEAR" Icon="delete" ButtonStyle="ButtonStyle.Danger"
+                          Size="ButtonSize.Small" Click="ClearCurrentTab" />
+            <RadzenButton Text="CSV" Icon="file_download" ButtonStyle="ButtonStyle.Success"
+                          Size="ButtonSize.Small" Click="ExportCsv" />
+        </div>
+    </div>
+
+    <RadzenTabs @bind-SelectedIndex="_tabIndex">
+        <Tabs>
+
+            @* TAB 1: REAL-TIME *@
+            <RadzenTabsItem Text="REAL-TIME">
+                <div class="filter-row">
+                    <div class="filter-cell" style="min-width:160px">
+                        <RadzenText TextStyle="TextStyle.Caption">Level</RadzenText>
+                        <RadzenDropDown @bind-Value="_filterLevel"
+                                        Data="@_levels" AllowClear="true" Placeholder="Tất cả" Style="width:100%" />
+                    </div>
+                    <div class="filter-cell" style="min-width:240px">
+                        <RadzenText TextStyle="TextStyle.Caption">Search (message)</RadzenText>
+                        <RadzenTextBox @bind-Value="_filterKeyword" Placeholder="Keyword..." Style="width:100%" />
+                    </div>
+                    <div class="filter-cell" style="min-width:200px">
+                        <RadzenText TextStyle="TextStyle.Caption">Source</RadzenText>
+                        <RadzenTextBox @bind-Value="_filterSource" Placeholder="e.g. SFT01" Style="width:100%" />
+                    </div>
+                    <div class="filter-cell" style="min-width:120px">
+                        <RadzenText TextStyle="TextStyle.Caption">Max entries</RadzenText>
+                        <RadzenNumeric TValue="int" @bind-Value="_filterTake" Min="50" Max="5000" Step="100" Style="width:100%" />
+                    </div>
+                </div>
+                <LogsTable Data="GetRealtimeView()" OnTraceClick="GoToTrace" />
+            </RadzenTabsItem>
+
+            @* TAB 2: LOG FILES *@
+            <RadzenTabsItem Text="LOG FILES">
+                <RadzenRow Gap="1rem">
+                    <RadzenColumn Size="12" SizeMD="4">
+                        <RadzenCard>
+                            <div class="files-header">
+                                <RadzenText TextStyle="TextStyle.H6" class="rz-m-0">Log Files</RadzenText>
+                                <RadzenButton Icon="refresh" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" Click="LoadFiles" />
+                            </div>
+                            @if (_files.Count == 0)
+                            {
+                                <RadzenText>Không có file nào.</RadzenText>
+                            }
+                            else
+                            {
+                                <div class="files-list">
+                                    @foreach (var f in _files)
+                                    {
+                                        var fileName = f.FileName;
+                                        var rowClass = fileName == _selectedFile ? "file-row selected" : "file-row";
+                                        <div class="@rowClass" @onclick="@(() => SelectFile(fileName))">
+                                            <div class="file-name">
+                                                <span class="@KindBadgeClass(f.Kind)">@f.Kind</span>
+                                                <span>@fileName</span>
+                                            </div>
+                                            <div class="file-meta">@FormatSize(f.SizeBytes) · @f.LastModified.ToString("MM-dd HH:mm")</div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </RadzenCard>
+                    </RadzenColumn>
+                    <RadzenColumn Size="12" SizeMD="8">
+                        <div class="filter-row">
+                            <div class="filter-cell" style="min-width:160px">
+                                <RadzenText TextStyle="TextStyle.Caption">Level</RadzenText>
+                                <RadzenDropDown @bind-Value="_filterLevel"
+                                                Data="@_levels" AllowClear="true" Placeholder="Tất cả" Style="width:100%" />
+                            </div>
+                            <div class="filter-cell" style="min-width:240px">
+                                <RadzenText TextStyle="TextStyle.Caption">Search</RadzenText>
+                                <RadzenTextBox @bind-Value="_filterKeyword" Placeholder="Keyword..." Style="width:100%" />
+                            </div>
+                            <div class="filter-cell" style="min-width:120px">
+                                <RadzenText TextStyle="TextStyle.Caption">Max entries</RadzenText>
+                                <RadzenNumeric TValue="int" @bind-Value="_filterTake" Min="50" Max="5000" Step="100" Style="width:100%" />
+                            </div>
+                            <div class="filter-cell" style="align-self:flex-end">
+                                <RadzenButton Text="Apply" Icon="search" ButtonStyle="ButtonStyle.Primary" Click="LoadFileEntries" />
+                            </div>
+                        </div>
+                        <LogsTable Data="@_fileEntries" OnTraceClick="GoToTrace" />
+                    </RadzenColumn>
+                </RadzenRow>
+            </RadzenTabsItem>
+
+            @* TAB 3: TRACE ID *@
+            <RadzenTabsItem Text="TRACE ID">
+                <div class="filter-row">
+                    <RadzenTextBox @bind-Value="_traceId" Placeholder="Nhập correlation/trace ID..." Style="min-width:280px" />
+                    <RadzenButton Text="Trace" Icon="search" ButtonStyle="ButtonStyle.Primary" Click="LoadTrace" />
+                    <RadzenText class="rz-m-0" TextStyle="TextStyle.Caption">
+                        Tìm xuyên các file all-*.log gần đây để xem toàn bộ pipeline 1 request.
+                    </RadzenText>
+                </div>
+                <LogsTable Data="@_traceEntries" OnTraceClick="GoToTrace" />
+            </RadzenTabsItem>
+
+            @* TAB 4: SUMMARY *@
+            <RadzenTabsItem Text="SUMMARY">
+                <div class="filter-row">
+                    <RadzenDropDown @bind-Value="_summaryFile"
+                                    Data="@_files" TextProperty="FileName" ValueProperty="FileName"
+                                    Placeholder="Chọn file..." Style="min-width:280px" />
+                    <RadzenButton Text="Tổng hợp" Icon="bar_chart" ButtonStyle="ButtonStyle.Primary" Click="LoadSummary" />
+                </div>
+                @{
+                    var summary = _summary;
+                }
+                @if (summary != null)
+                {
+                    <RadzenCard>
+                        <RadzenText TextStyle="TextStyle.H6">@summary.FileName — Tổng: @summary.Total dòng</RadzenText>
+                        <RadzenDataGrid Data="@summary.ByLevel" TItem="LogSummaryItem" AllowSorting="true" Density="Density.Compact">
+                            <Columns>
+                                <RadzenDataGridColumn TItem="LogSummaryItem" Property="Level" Title="Level" Width="200px">
+                                    <Template Context="i">
+                                        <span class="@LevelCssClass(i.Level)">@i.Level</span>
+                                    </Template>
+                                </RadzenDataGridColumn>
+                                <RadzenDataGridColumn TItem="LogSummaryItem" Property="Count" Title="Count" Width="120px" />
+                                <RadzenDataGridColumn TItem="LogSummaryItem" Title="%">
+                                    <Template Context="i">
+                                        @PercentText(summary!.Total, i.Count)
+                                    </Template>
+                                </RadzenDataGridColumn>
+                            </Columns>
+                        </RadzenDataGrid>
+                    </RadzenCard>
+                }
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
+
+    <div class="stats-row">
+        <span>All: <b>@CurrentEntries.Count</b></span>
+        <span>ERR: <b class="rz-color-danger">@CountByLevels(CurrentEntries, "Error", "Fatal")</b></span>
+        <span>WRN: <b class="rz-color-warning">@CountByLevels(CurrentEntries, "Warning")</b></span>
+    </div>
+</div>
+
+<style>
+    .logs-page { padding: 0.5rem; }
+    .logs-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem; }
+    .logs-actions { display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; }
+    .filter-row { display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end; margin-bottom:0.5rem; }
+    .filter-cell { display:flex; flex-direction:column; }
+    .files-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; }
+    .files-list { display:flex; flex-direction:column; gap:0.25rem; max-height:60vh; overflow:auto; }
+    .file-row { padding:6px 8px; border-radius:4px; cursor:pointer; border:1px solid transparent; }
+    .file-row:hover { background: var(--rz-base-200); }
+    .file-row.selected { background: var(--rz-primary-lighter); border-color: var(--rz-primary); }
+    .file-name { font-weight:600; font-size:13px; display:flex; align-items:center; gap:6px; }
+    .file-meta { font-size:11px; color: var(--rz-text-tertiary-color); }
+    .kind-badge { font-size:10px; padding:1px 6px; border-radius:8px; font-weight:700; text-transform:uppercase; }
+    .kind-all { background:#e3f2fd; color:#1565c0; }
+    .kind-error { background:#ffebee; color:#c62828; }
+    .kind-json { background:#f3e5f5; color:#6a1b9a; }
+    .kind-other { background:#eeeeee; color:#555; }
+    .live-badge { padding:2px 10px; border-radius:10px; font-weight:700; font-size:12px; }
+    .live-on { background:#4caf50; color:white; animation: pulse 1.5s infinite; }
+    .live-off { background:#9e9e9e; color:white; }
+    @@keyframes pulse { 0%, 100% { opacity:1; } 50% { opacity:0.6; } }
+    .stats-row { display:flex; gap:1.5rem; padding:8px; font-size:13px; border-top:1px solid var(--rz-base-300); margin-top:6px; }
+</style>
+
+@code {
+    [Inject] private ILogsClient LogsClient { get; set; } = default!;
+    [Inject] private LogStreamHubService HubService { get; set; } = default!;
+    [Inject] private NotificationService Notification { get; set; } = default!;
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    private const int RealtimeMax = 1000;
+    private static readonly string[] _levels = new[] { "Verbose", "Debug", "Information", "Warning", "Error", "Fatal" };
+
+    private int _tabIndex = 0;
+
+    private readonly List<LogEntry> _realtime = new List<LogEntry>();
+    private bool _paused = false;
+
+    private List<LogFileInfo> _files = new List<LogFileInfo>();
+    private string? _selectedFile;
+    private List<LogEntry> _fileEntries = new List<LogEntry>();
+
+    private string _traceId = string.Empty;
+    private List<LogEntry> _traceEntries = new List<LogEntry>();
+
+    private string? _summaryFile;
+    private LogSummary? _summary;
+
+    private string? _filterLevel;
+    private string _filterKeyword = string.Empty;
+    private string _filterSource = string.Empty;
+    private int _filterTake = 500;
+
+    private string PauseLabel => _paused ? "RESUME" : "PAUSE";
+    private string PauseIcon => _paused ? "play_arrow" : "pause";
+    private string LiveBadgeClass => "live-badge " + (HubService.IsConnected && !_paused ? "live-on" : "live-off");
+    private string LiveBadgeText => HubService.IsConnected ? (_paused ? "PAUSED" : "● LIVE") : "OFFLINE";
+
+    private List<LogEntry> CurrentEntries
+    {
+        get
+        {
+            switch (_tabIndex)
+            {
+                case 0: return GetRealtimeView();
+                case 1: return _fileEntries;
+                case 2: return _traceEntries;
+                default: return new List<LogEntry>();
+            }
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        HubService.OnLogReceived += HandleLogReceived;
+        HubService.OnStateChanged += HandleStateChanged;
+
+        try
+        {
+            await HubService.StartAsync();
+        }
+        catch (Exception ex)
+        {
+            Notify(NotificationSeverity.Warning, "SignalR: " + ex.Message);
+        }
+
+        await LoadFiles();
+    }
+
+    private void HandleLogReceived(LogStreamEntry e)
+    {
+        if (_paused) return;
+        var msg = string.IsNullOrEmpty(e.Exception) ? e.Message : (e.Message + "\n" + e.Exception);
+        var entry = new LogEntry
+        {
+            Timestamp = e.Timestamp.ToLocalTime(),
+            Level = e.Level,
+            Message = msg,
+            CorrelationId = e.CorrelationId,
+            Source = e.Source
+        };
+        _ = InvokeAsync(() =>
+        {
+            _realtime.Insert(0, entry);
+            if (_realtime.Count > RealtimeMax)
+                _realtime.RemoveRange(RealtimeMax, _realtime.Count - RealtimeMax);
+            StateHasChanged();
+        });
+    }
+
+    private void HandleStateChanged(HubConnectionState state)
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private List<LogEntry> GetRealtimeView()
+    {
+        IEnumerable<LogEntry> q = _realtime;
+        if (!string.IsNullOrWhiteSpace(_filterLevel))
+        {
+            var lvl = _filterLevel;
+            q = q.Where(e => string.Equals(e.Level, lvl, StringComparison.OrdinalIgnoreCase));
+        }
+        if (!string.IsNullOrWhiteSpace(_filterKeyword))
+        {
+            var kw = _filterKeyword;
+            q = q.Where(e => (e.Message ?? string.Empty).IndexOf(kw, StringComparison.OrdinalIgnoreCase) >= 0);
+        }
+        if (!string.IsNullOrWhiteSpace(_filterSource))
+        {
+            var src = _filterSource;
+            q = q.Where(e => (e.Source ?? string.Empty).IndexOf(src, StringComparison.OrdinalIgnoreCase) >= 0);
+        }
+        return q.Take(_filterTake).ToList();
+    }
+
+    private async Task LoadFiles()
+    {
+        try
+        {
+            var res = await LogsClient.GetFiles();
+            if (res != null && res.Succeeded)
+                _files = res.Data ?? new List<LogFileInfo>();
+            else if (res != null)
+                Notify(NotificationSeverity.Error, string.Join(", ", res.Messages));
+        }
+        catch (Exception ex) { Notify(NotificationSeverity.Error, ex.Message); }
+    }
+
+    private async Task SelectFile(string fileName)
+    {
+        _selectedFile = fileName;
+        await LoadFileEntries();
+    }
+
+    private async Task LoadFileEntries()
+    {
+        if (string.IsNullOrEmpty(_selectedFile)) return;
+        try
+        {
+            var res = await LogsClient.GetEntries(_selectedFile, _filterLevel, _filterKeyword, _filterTake);
+            if (res != null && res.Succeeded)
+                _fileEntries = res.Data ?? new List<LogEntry>();
+            else
+            {
+                _fileEntries = new List<LogEntry>();
+                if (res != null) Notify(NotificationSeverity.Warning, string.Join(", ", res.Messages));
+            }
+        }
+        catch (Exception ex) { Notify(NotificationSeverity.Error, ex.Message); }
+    }
+
+    private async Task LoadTrace()
+    {
+        if (string.IsNullOrWhiteSpace(_traceId)) return;
+        try
+        {
+            var res = await LogsClient.GetByTrace(_traceId.Trim());
+            if (res != null && res.Succeeded)
+                _traceEntries = res.Data ?? new List<LogEntry>();
+            else
+            {
+                _traceEntries = new List<LogEntry>();
+                if (res != null) Notify(NotificationSeverity.Warning, string.Join(", ", res.Messages));
+            }
+        }
+        catch (Exception ex) { Notify(NotificationSeverity.Error, ex.Message); }
+    }
+
+    private async Task LoadSummary()
+    {
+        if (string.IsNullOrEmpty(_summaryFile)) return;
+        try
+        {
+            var res = await LogsClient.GetSummary(_summaryFile);
+            if (res != null && res.Succeeded)
+                _summary = res.Data;
+            else
+            {
+                _summary = null;
+                if (res != null) Notify(NotificationSeverity.Warning, string.Join(", ", res.Messages));
+            }
+        }
+        catch (Exception ex) { Notify(NotificationSeverity.Error, ex.Message); }
+    }
+
+    private async Task GoToTrace(string id)
+    {
+        _traceId = id ?? string.Empty;
+        _tabIndex = 2;
+        await LoadTrace();
+    }
+
+    private void TogglePause() { _paused = !_paused; }
+
+    private async Task ReloadCurrentTab()
+    {
+        switch (_tabIndex)
+        {
+            case 1: await LoadFileEntries(); break;
+            case 2: await LoadTrace(); break;
+            case 3: await LoadSummary(); break;
+            default: break;
+        }
+    }
+
+    private void ClearCurrentTab()
+    {
+        switch (_tabIndex)
+        {
+            case 0: _realtime.Clear(); break;
+            case 1: _fileEntries.Clear(); break;
+            case 2: _traceEntries.Clear(); break;
+            default: break;
+        }
+    }
+
+    private async Task ExportCsv()
+    {
+        var rows = CurrentEntries;
+        if (rows.Count == 0)
+        {
+            Notify(NotificationSeverity.Info, "Không có dữ liệu để export.");
+            return;
+        }
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("Timestamp,Level,CorrelationId,Source,Message");
+        foreach (var e in rows)
+        {
+            sb.Append(e.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff")).Append(',');
+            sb.Append(Csv(e.Level)).Append(',');
+            sb.Append(Csv(e.CorrelationId)).Append(',');
+            sb.Append(Csv(e.Source)).Append(',');
+            sb.AppendLine(Csv(e.Message));
+        }
+        var fileName = "logs-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".csv";
+        await JS.InvokeVoidAsync("downloadCsv", fileName, sb.ToString());
+    }
+
+    private static int CountByLevels(IEnumerable<LogEntry> source, params string[] levels)
+    {
+        var set = new HashSet<string>(levels, StringComparer.OrdinalIgnoreCase);
+        return source.Count(e => e.Level != null && set.Contains(e.Level));
+    }
+
+    private static string PercentText(int total, int count)
+    {
+        if (total == 0) return "0.0%";
+        var pct = 100.0 * count / total;
+        return pct.ToString("0.0") + "%";
+    }
+
+    private static string Csv(string? s)
+    {
+        if (string.IsNullOrEmpty(s)) return string.Empty;
+        var v = s.Replace("\"", "\"\"");
+        if (v.IndexOf(',') >= 0 || v.IndexOf('"') >= 0 || v.IndexOf('\n') >= 0)
+            return "\"" + v + "\"";
+        return v;
+    }
+
+    private static string LevelCssClass(string? level)
+    {
+        var l = (level ?? string.Empty).ToLowerInvariant();
+        return "lvl-badge lvl-" + l;
+    }
+
+    private static string KindBadgeClass(string? kind)
+    {
+        return "kind-badge kind-" + (kind ?? "other");
+    }
+
+    private static string FormatSize(long bytes)
+    {
+        if (bytes < 1024) return bytes + " B";
+        if (bytes < 1024 * 1024) return (bytes / 1024.0).ToString("0.#") + " KB";
+        return (bytes / 1024.0 / 1024).ToString("0.#") + " MB";
+    }
+
+    private void Notify(NotificationSeverity severity, string detail)
+    {
+        Notification.Notify(new NotificationMessage
+        {
+            Severity = severity,
+            Summary = severity.ToString(),
+            Detail = detail,
+            Duration = 3000
+        });
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        HubService.OnLogReceived -= HandleLogReceived;
+        HubService.OnStateChanged -= HandleStateChanged;
+        await HubService.DisposeAsync();
+    }
+}
