@@ -1,10 +1,10 @@
 {
   "ItemType": 0,
-  "ServerAddress": "192.168.1.100",
+  "ServerAddress": "127.0.0.1",
   "Port": 8800,
   "CommunicationMode": 0,
   "RefreshRate": 100,
-  "CreatedDate": "2026-05-02T16:35:37.3000044+07:00",
+  "CreatedDate": "2026-05-02T16:33:59.4086203+07:00",
   "Username": null,
   "Password": null,
   "Childs": [

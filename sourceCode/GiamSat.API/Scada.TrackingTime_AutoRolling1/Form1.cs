@@ -302,7 +302,10 @@ namespace Scada.TrackingTime_AutoRolling1
                         RevoId = item.Id.Value,
                         RevoName = item.Name,
                         Path = item.Path,
-                        Steps = new List<RevoStep>()
+                        Steps = new List<RevoStep>(),
+                        // KHÔNG gán ShaftNum - để mặc định Guid.Empty.
+                        // LogDataStepRun bỏ qua Guid.Empty -> không log thừa trước khi
+                        // TaskResetShaftAsync gán Guid thật từ event PLC đầu tiên.
                     });
 
                     _tagsValueRealtime.Add(new AutoRollingTagChangedModel()
