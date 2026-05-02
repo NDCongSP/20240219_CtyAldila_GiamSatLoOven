@@ -30,6 +30,11 @@ GlobalVariable.RealtimeTrendInterval = int.TryParse(config["AppSettings:Realtime
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AutoRegisterInterfaces<IApiService>();
 
+// RestEase client cho ILogsClient (dùng chung HttpClient "GiamSatAPI" có JWT handler).
+builder.Services.AddRestEaseClients();
+// SignalR client wrapper cho stream log realtime.
+builder.Services.AddScoped<GiamSat.UI.Services.LogStreamHubService>();
+
 
 builder.Services.AddAuthorizationCore(options =>
 {
