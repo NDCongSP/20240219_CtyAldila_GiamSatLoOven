@@ -1344,16 +1344,19 @@ namespace Scada.TrackingTime_AutoRolling1
 
                     foreach (var item in validModels)
                     {
-                        // Rule UPDATE:
-                        // - Nếu TẤT CẢ step Enable=true đều có TotalRunTime != 0
-                        //   -> coi như shaft đã "đầy đủ" data -> KHÔNG cho UPDATE (lock data lại).
-                        // - Ngược lại (có ít nhất 1 step Enable=true mà TotalRunTime = 0)
-                        //   -> shaft chưa đầy đủ, vẫn đang chạy -> CHO UPDATE.
-                        // INSERT luôn cho phép (cần khởi tạo data cho shaft mới).
-                        bool allEnabledNonZero = existingDataLogs
-                            .All(s => (s.TotalTime ?? 0) != 0);
-
                         var steps = item.Steps.Where(x => x.Enable == true).ToList();
+
+                        // Rule UPDATE: chỉ LOCK khi DB đã có ĐẦY ĐỦ rows cho mọi enabled step
+                        // của shaft hiện tại VÀ tất cả các row đó có TotalTime != 0.
+                        // - DB còn thiếu row hoặc có row TotalTime=0 -> CHO UPDATE (sync lên DB).
+                        // - DB đã đầy đủ + tất cả !=0 -> shaft hoàn thành -> LOCK update.
+                        // INSERT luôn cho phép (cần để khởi tạo row đầu tiên cho shaft mới).
+                        bool dbAllStepsComplete = steps.All(step =>
+                        {
+                            var k = ((int?)item.RevoId, (int?)step.StepIndex, item.ShaftNum);
+                            return existingMap.TryGetValue(k, out var existing)
+                                && (existing.TotalTime ?? 0) != 0;
+                        });
 
                         foreach (var itemStep in steps)
                         {
@@ -1361,9 +1364,10 @@ namespace Scada.TrackingTime_AutoRolling1
 
                             if (existingMap.TryGetValue(key, out var existing))
                             {
-                                // ĐÃ CÓ -> chỉ UPDATE khi shaft CHƯA đầy đủ data
-                                // (tức là vẫn còn step Enable=true đang ở 0).
-                                if (allEnabledNonZero) continue;
+                                // ĐÃ CÓ trong DB -> kiểm tra DB đã sync đầy đủ chưa.
+                                // Nếu DB còn thiếu hoặc có 0 -> vẫn UPDATE (kể cả các row đã sync,
+                                // để đồng bộ Work/Part nếu có thay đổi).
+                                if (dbAllStepsComplete) continue;
 
                                 existing.Work = item.Work;
                                 existing.Part = item.Part;
