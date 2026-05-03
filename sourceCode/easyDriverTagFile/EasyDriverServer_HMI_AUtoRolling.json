@@ -11,7 +11,7 @@
   "IsReadOnly": true,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:43:59.185364+07:00",
-  "ModifiedDate": "2026-05-02T16:51:38.197167+07:00",
+  "ModifiedDate": "2026-05-03T06:38:24.1165994+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -31,7 +31,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:44:13.0399531+07:00",
-  "ModifiedDate": "2026-05-02T16:51:38.197167+07:00",
+  "ModifiedDate": "2026-05-03T06:38:24.1165994+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -51,7 +51,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:44:17.7993086+07:00",
-  "ModifiedDate": "2026-05-02T16:51:38.197167+07:00",
+  "ModifiedDate": "2026-05-03T19:36:51.9083004+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -1090,6 +1090,33 @@
   "Childs": [],
   "HaveTags": true,
   "Tags": []
+},
+    {
+  "Name": "Tag1",
+  "Description": null,
+  "ItemType": "Tag",
+  "IsReadOnly": false,
+  "Enabled": true,
+  "CreatedDate": "2026-05-03T09:47:59.3087036+07:00",
+  "ModifiedDate": "2026-05-03T09:47:59.3087036+07:00",
+  "ParameterContainer": {
+  "DisplayName": null,
+  "DisplayParameters": null,
+  "Parameters": {}
+},
+  "Address": "400035",
+  "DataTypeName": "Float",
+  "RefreshRate": 100,
+  "ByteOrder": 0,
+  "AccessPermission": "ReadAndWrite",
+  "Offset": 0.0,
+  "Gain": 1.0,
+  "IsInternalTag": false,
+  "GUID": null,
+  "Retain": false,
+  "Childs": [],
+  "HaveTags": true,
+  "Tags": []
 }
   ]
 }
@@ -1102,7 +1129,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:44:13.0399531+07:00",
-  "ModifiedDate": "2026-05-02T16:51:38.197167+07:00",
+  "ModifiedDate": "2026-05-03T06:38:24.1165994+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -1122,7 +1149,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:44:17.7993086+07:00",
-  "ModifiedDate": "2026-05-02T16:51:38.197167+07:00",
+  "ModifiedDate": "2026-05-03T06:38:24.1165994+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -2173,7 +2200,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:44:13.0399531+07:00",
-  "ModifiedDate": "2026-05-02T16:51:38.197167+07:00",
+  "ModifiedDate": "2026-05-03T06:38:24.1165994+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -2193,7 +2220,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:44:17.7993086+07:00",
-  "ModifiedDate": "2026-05-02T16:51:38.197167+07:00",
+  "ModifiedDate": "2026-05-03T06:38:24.1165994+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
