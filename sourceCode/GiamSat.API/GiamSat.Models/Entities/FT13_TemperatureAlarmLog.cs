@@ -27,7 +27,8 @@ namespace GiamSat.Models
 
         public string? Path { get; set; }
 
-        public double? PV { get; set; } = 0;
+        public double? PV_Alarm { get; set; } = 0;
+        public double? PV_Normal { get; set; } = 0;
 
         public double? SV_High { get; set; } = 0;
 

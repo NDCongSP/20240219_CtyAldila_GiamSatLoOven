@@ -704,9 +704,14 @@ namespace Scada.TrackingTime_AutoRolling1
                     {
                         item.StepRun = int.TryParse(e.NewValue, out int value) ? value : 0;
 
-                        if (item.StepRun == 0)
+                        //var latestStep = GlobalVariable.RevoRealtimeModels.FirstOrDefault(x => x.Path == path);
+                        //var totalRunTimeLastStep = latestStep?.Steps.Where(x => x.Enable == true)
+                        //      .OrderByDescending(x => x.StepIndex)
+                        //      .FirstOrDefault().TotalRunTime;
+
+                        if (item.StepRun == 0 || (item.StepRun == item.Recipe_Settings))
                         {
-                            // Step_Run = 0 -> kết thúc shaft cũ, sang cây shaft mới
+                                                        // Step_Run = 0 -> kết thúc shaft cũ, sang cây shaft mới
                             EnqueueResetShaft(item.Path, ShaftActionReason.StepRunZero);
                         }
 

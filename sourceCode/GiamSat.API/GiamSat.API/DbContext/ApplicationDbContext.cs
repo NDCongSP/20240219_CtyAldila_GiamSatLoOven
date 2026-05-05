@@ -2,6 +2,7 @@ using GiamSat.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace GiamSat.API
 {
@@ -32,10 +33,14 @@ namespace GiamSat.API
             builder.Entity<FT12_TemperatureDatalog>();
             builder.Entity<FT13_TemperatureAlarmLog>();
 
+
             builder.Entity<RoleToPermission>(entity =>
             {
                 entity.ToTable("RoleToPermissions");
-                entity.HasKey(x => x.Id);
+                entity.HasKey(e => e.Id); // Xác định rõ Id là khóa chính
+                entity.HasKey(e => new { e.RoleId, e.PermissionId }); // Composite Key
+                //// Nếu RoleId trong DB là nvarchar(max) như hình ảnh
+                //entity.Property(e => e.RoleId).IsRequired(false);
             });
 
             // SQL Views (no key)
