@@ -37,5 +37,7 @@
         /// Thời gian nhấp nháy cảnh báo trên UI khi nhiệt độ vượt quá ngưỡng cao hoặc thấp (ms), để thu hút sự chú ý của người dùng.
         /// </summary>
         public double TimeBlinkAlarm { get; set; } = 1000;
+
+        public bool FlagOffset { get; set; } = false;
     }
 }

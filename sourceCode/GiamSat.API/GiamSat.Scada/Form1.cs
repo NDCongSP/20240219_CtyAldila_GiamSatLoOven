@@ -232,7 +232,7 @@ namespace GiamSat.Scada
                                 Id = i,
                                 Name = $"Oven {i}",
                                 Profiles = profiles,
-                                Path = $"Local Station/Channel{chanel}/Oven{i}"
+                                Path = $"Local Station/ChannelTemperature1Channel{chanel}/Oven{i}"
                             });
 
                         }
@@ -590,7 +590,7 @@ namespace GiamSat.Scada
 
                     if (_alarmEnable[i])
                     {
-                        await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{i + 1}", _alarmValue[i], WritePiority.High);
+                        await easyDriverConnector1.WriteTagAsync($"Local Station/ChannelTemperature1Channel4/PLC/AL{i + 1}", _alarmValue[i], WritePiority.High);
                         //_alarmEnableFlag[i] = false;
                         _alarmEnable[i] = false;
                     }
@@ -601,12 +601,12 @@ namespace GiamSat.Scada
                 //{
                 //    if (_alarmEnable[i] && _alarmEnableFlag[i] == false)
                 //    {
-                //        await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{i + 1}", _alarmValue[i], WritePiority.High);
+                //        await easyDriverConnector1.WriteTagAsync($"Local Station/ChannelTemperature1Channel4/PLC/AL{i + 1}", _alarmValue[i], WritePiority.High);
                 //        _alarmEnableFlag[i] = true;
                 //    }
                 //    else if (!_alarmEnable[i] && _alarmEnableFlag[i] == true)
                 //    {
-                //        await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{i + 1}", "0", WritePiority.High);
+                //        await easyDriverConnector1.WriteTagAsync($"Local Station/ChannelTemperature1Channel4/PLC/AL{i + 1}", "0", WritePiority.High);
                 //        _alarmEnableFlag[i] = false;
                 //    }
                 //}
@@ -669,7 +669,7 @@ namespace GiamSat.Scada
                                         item.Alarm = 0;
                                         item.SerienStatus = 0;
                                         item.AlarmDescription = null;
-                                        //await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
+                                        //await easyDriverConnector1.WriteTagAsync($"Local Station/ChannelTemperature1Channel4/PLC/AL{index}", "0", WritePiority.High);
                                         _alarmEnable[item.OvenId - 1] = true;
                                         _alarmValue[item.OvenId - 1] = "0";
 
@@ -707,7 +707,7 @@ namespace GiamSat.Scada
                                         item.Alarm = 1;
                                         item.SerienStatus = 1;
                                         item.AlarmDescription = $"Nhiệt độ chưa đạt";
-                                        //await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
+                                        //await easyDriverConnector1.WriteTagAsync($"Local Station/ChannelTemperature1Channel4/PLC/AL{index}", "1", WritePiority.High);
                                         _alarmEnable[item.OvenId - 1] = true;
                                         _alarmValue[item.OvenId - 1] = "1";
 
@@ -818,7 +818,7 @@ namespace GiamSat.Scada
                                         item.Alarm = 1;
                                         item.SerienStatus = 1;
                                         item.AlarmDescription = $"Nhiệt độ chưa đạt";
-                                        //await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
+                                        //await easyDriverConnector1.WriteTagAsync($"Local Station/ChannelTemperature1Channel4/PLC/AL{index}", "1", WritePiority.High);
                                         _alarmEnable[item.OvenId - 1] = true;
                                         _alarmValue[item.OvenId - 1] = "1";
                                         //log DB alarm
@@ -862,7 +862,7 @@ namespace GiamSat.Scada
                                             item.Alarm = 0;
                                             item.SerienStatus = 0;
                                             item.AlarmDescription = null;
-                                            //await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
+                                            //await easyDriverConnector1.WriteTagAsync($"Local Station/ChannelTemperature1Channel4/PLC/AL{index}", "0", WritePiority.High);
                                             _alarmEnable[item.OvenId - 1] = true;
                                             _alarmValue[item.OvenId - 1] = "0";
                                             //item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
@@ -897,7 +897,7 @@ namespace GiamSat.Scada
                                             item.Alarm = 0;
                                             item.SerienStatus = 0;
                                             item.AlarmDescription = null;
-                                            //await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
+                                            //await easyDriverConnector1.WriteTagAsync($"Local Station/ChannelTemperature1Channel4/PLC/AL{index}", "0", WritePiority.High);
                                             _alarmEnable[item.OvenId - 1] = true;
                                             _alarmValue[item.OvenId - 1] = "0";
                                             //item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
@@ -932,7 +932,7 @@ namespace GiamSat.Scada
                                         item.Alarm = 1;
                                         item.SerienStatus = 1;
                                         item.AlarmDescription = $"Nhiệt độ cao";
-                                        //await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "1", WritePiority.High);
+                                        //await easyDriverConnector1.WriteTagAsync($"Local Station/ChannelTemperature1Channel4/PLC/AL{index}", "1", WritePiority.High);
                                         _alarmEnable[item.OvenId - 1] = true;
                                         _alarmValue[item.OvenId - 1] = "1";
                                         //log DB alarm
@@ -970,7 +970,7 @@ namespace GiamSat.Scada
                                 item.Alarm = 0;
                                 item.SerienStatus = 0;
                                 item.AlarmDescription = null;
-                                //await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{index}", "0", WritePiority.High);
+                                //await easyDriverConnector1.WriteTagAsync($"Local Station/ChannelTemperature1Channel4/PLC/AL{index}", "0", WritePiority.High);
                                 _alarmEnable[item.OvenId - 1] = true;
                                 _alarmValue[item.OvenId - 1] = "0";
                                 item.EndStep = 0;//tắt tín hiệu này thì mới vào cảnh báo toàn thời gian được.
@@ -1168,7 +1168,7 @@ namespace GiamSat.Scada
                         if (item.ConnectionStatus == 0)
                         {
                             item.AlarmDescription = "Mất kết nối đến lò";
-                            //await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{al}", "2", WritePiority.High);
+                            //await easyDriverConnector1.WriteTagAsync($"Local Station/ChannelTemperature1Channel4/PLC/AL{al}", "2", WritePiority.High);
                             _alarmEnable[item.OvenId - 1] = true;
                             _alarmValue[item.OvenId - 1] = "2";
                             item.SerienStatus = 1;
@@ -1176,7 +1176,7 @@ namespace GiamSat.Scada
                         else
                         {
                             item.AlarmDescription = null;
-                            //await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{al}", "0", WritePiority.High);
+                            //await easyDriverConnector1.WriteTagAsync($"Local Station/ChannelTemperature1Channel4/PLC/AL{al}", "0", WritePiority.High);
                             _alarmEnable[item.OvenId - 1] = true;
                             _alarmValue[item.OvenId - 1] = "0";
                             item.SerienStatus = 0;
@@ -1231,7 +1231,7 @@ namespace GiamSat.Scada
 
                             if (item.Status == 1)
                             {
-                                //await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{al}", "1", WritePiority.High);
+                                //await easyDriverConnector1.WriteTagAsync($"Local Station/ChannelTemperature1Channel4/PLC/AL{al}", "1", WritePiority.High);
                                 _alarmEnable[item.OvenId - 1] = true;
                             }
                         }
@@ -1241,7 +1241,7 @@ namespace GiamSat.Scada
 
                             if (item.Status == 1)
                             {
-                                //await easyDriverConnector1.WriteTagAsync($"Local Station/Channel4/PLC/AL{al}", "0", WritePiority.High);
+                                //await easyDriverConnector1.WriteTagAsync($"Local Station/ChannelTemperature1Channel4/PLC/AL{al}", "0", WritePiority.High);
                                 _alarmEnable[item.OvenId - 1] = false;
                             }
                         }

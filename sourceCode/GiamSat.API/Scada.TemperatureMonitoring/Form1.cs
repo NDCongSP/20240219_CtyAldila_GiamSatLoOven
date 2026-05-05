@@ -4,10 +4,11 @@ using GiamSat.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
-using System.Windows.Forms;
-using System.Threading.Tasks;
 using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Scada.TemperatureMonitoring
 {
@@ -53,23 +54,23 @@ namespace Scada.TemperatureMonitoring
             try
             {
                 // Retrieve configs using API (instead of direct DB Connection to keep WinForm decoupled)
-                string apiUrl = "http://localhost:5000/api/TemperatureConfig"; // Need to bind properly based on deployment
-                
-                using (HttpClient client = new HttpClient())
-                {
-                    // For dev purposes, assuming API matches base
-                    var response = await client.GetAsync(apiUrl);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string json = await response.Content.ReadAsStringAsync();
-                        _configs = JsonConvert.DeserializeObject<List<TemperatureConfigsModel>>(json) ?? new List<TemperatureConfigsModel>();
-                    }
-                }
+                //string apiUrl = "http://localhost:5000/api/TemperatureConfig"; // Need to bind properly based on deployment
 
-                if (_configs.Count == 0)
-                {
-                    MessageBox.Show("Không đọc được thông tin cấu hình FT10. Hệ thống có thể chưa được cấu hình. Vui lòng kiểm tra lại cấu hình qua màn hình quản trị WEB.", "THÔNG BÁO", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                //using (HttpClient client = new HttpClient())
+                //{
+                //    // For dev purposes, assuming API matches base
+                //    var response = await client.GetAsync(apiUrl);
+                //    if (response.IsSuccessStatusCode)
+                //    {
+                //        string json = await response.Content.ReadAsStringAsync();
+                //        _configs = JsonConvert.DeserializeObject<List<TemperatureConfigsModel>>(json) ?? new List<TemperatureConfigsModel>();
+                //    }
+                //}
+
+                //if (_configs.Count == 0)
+                //{
+                //    MessageBox.Show("Không đọc được thông tin cấu hình FT10. Hệ thống có thể chưa được cấu hình. Vui lòng kiểm tra lại cấu hình qua màn hình quản trị WEB.", "THÔNG BÁO", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //}
 
                 #region Khởi tạo easy driver connector
                 _easyDriverConnector = new EasyDriverConnector();
@@ -99,6 +100,8 @@ namespace Scada.TemperatureMonitoring
                 _timer.Start();
 
                 #endregion
+
+                button1.Click += Button1_Click;
             }
             catch (Exception ex)
             {
@@ -106,9 +109,73 @@ namespace Scada.TemperatureMonitoring
             }
         }
 
+        private async void Button1_Click(object sender, EventArgs e)
+        {
+            await _easyDriverConnector.GetTag($"Local Station/ChannelTemperature1/Device1/Offset").WriteAsync(textBox1.Text, WritePiority.High);
+        }
+
         private void _easyDriverConnector_Started(object sender, EventArgs e)
         {
-            // Triggered when connector is started
+            System.Threading.Thread.Sleep(2000);
+
+            _easyDriverConnector.GetTag($"Local Station/ChannelTemperature1/Device1/PV").ValueChanged += PV_ValueChanged;
+            _easyDriverConnector.GetTag($"Local Station/ChannelTemperature1/Device2/PV").ValueChanged += PV_ValueChanged;
+            _easyDriverConnector.GetTag($"Local Station/ChannelTemperature2/Device1/PV").ValueChanged += PV_ValueChanged;
+
+            PV_ValueChanged(_easyDriverConnector.GetTag($"Local Station/ChannelTemperature1/Device1/PV")
+                , new TagValueChangedEventArgs(_easyDriverConnector.GetTag($"Local Station/ChannelTemperature1/Device1/PV")
+                , "", _easyDriverConnector.GetTag($"Local Station/ChannelTemperature1/Device1/PV").Value));
+
+            PV_ValueChanged(_easyDriverConnector.GetTag($"Local Station/ChannelTemperature1/Device2/PV")
+                , new TagValueChangedEventArgs(_easyDriverConnector.GetTag($"Local Station/ChannelTemperature1/Device2/PV")
+                , "", _easyDriverConnector.GetTag($"Local Station/ChannelTemperature1/Device2/PV").Value));
+
+
+            PV_ValueChanged(_easyDriverConnector.GetTag($"Local Station/ChannelTemperature2/Device1/PV")
+                , new TagValueChangedEventArgs(_easyDriverConnector.GetTag($"Local Station/ChannelTemperature2/Device1/PV")
+                , "", _easyDriverConnector.GetTag($"Local Station/ChannelTemperature2/Device1/PV").Value));
+        }
+
+        private void Form1_ValueChanged(object sender, TagValueChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PV_ValueChanged(object sender, TagValueChangedEventArgs e)
+        {
+            try
+            {
+                var path = e.Tag.Parent.Path;
+                var deviceName = e.Tag.Parent.Name;
+                var al = deviceName.Substring(4);
+                var tagName = e.Tag.Name;
+
+                var status = e.Tag.Quality;
+
+
+                // Update UI elements here based on the new value and status
+                Console.WriteLine($"Value changed for {path}: New Value = {e.NewValue}, Quality = {status}");
+
+                //foreach (var item in _tagsValueRealtime)
+                //{
+                //    if (item.Path == path)
+                //    {
+                //        item.Part_Code = e.NewValue;
+
+                //        // Đưa Path vào hàng đợi để Task lấy ra dùng
+                //        _resetShaftQueue.Enqueue(item.Path);
+                //        _triggerResetShaft.Set(); // kích hoạt _triggerResetShaft chạy
+
+                //        UpdateGrid();
+                //        return;
+                //    }
+                //}
+            }
+            catch (Exception ex)
+            {
+                //Log.Error(ex, $"From TagValueChanged {e.Tag.Path}"); 
+            }
+
         }
 
         private void _easyDriverConnector_ConnectionStatusChaged(object sender, ConnectionStatusChangedEventArgs e)
@@ -121,6 +188,15 @@ namespace Scada.TemperatureMonitoring
             _timer.Stop();
             try
             {
+                if (this.InvokeRequired)
+                {
+                    this.Invoke(new Action(() =>
+                    {
+                        label1.Text = $"Connection Status: {_easyStatus}";
+                    }));
+                }
+                else label1.Text = $"Connection Status: {_easyStatus}";
+
                 if (_easyStatus != ConnectionStatus.Connected) return;
 
                 var payload = new List<TemperatureRealtimeModel>();
