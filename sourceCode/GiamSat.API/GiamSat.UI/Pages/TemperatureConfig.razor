@@ -24,6 +24,28 @@
                 }
                 else
                 {
+                    <RadzenCard class="rz-mb-3 rz-background-color-info-lighter">
+                        <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-2">Cấu hình chung toàn hệ thống</RadzenText>
+                        <RadzenRow Gap="1rem">
+                            <RadzenColumn Size="12" SizeMD="4">
+                                <RadzenLabel Text="Chu kỳ Realtime (giây)" Component="timerRealtime" class="rz-mb-1" />
+                                <RadzenNumeric @bind-Value="_globalTimerRealtime" Name="timerRealtime" Style="width:100%" />
+                            </RadzenColumn>
+                            <RadzenColumn Size="12" SizeMD="4">
+                                <RadzenLabel Text="Chu kỳ Datalog (giây)" Component="timerDatalog" class="rz-mb-1" />
+                                <RadzenNumeric @bind-Value="_globalTimerDatalog" Name="timerDatalog" Style="width:100%" />
+                            </RadzenColumn>
+                            <RadzenColumn Size="12" SizeMD="4">
+                                <RadzenLabel Text="Nhấp nháy báo động (ms)" Component="timeBlink" class="rz-mb-1" />
+                                <RadzenNumeric @bind-Value="_globalTimeBlinkAlarm" Name="timeBlink" Style="width:100%" />
+                            </RadzenColumn>
+                        </RadzenRow>
+                        <RadzenRow class="rz-mt-3">
+                            <RadzenColumn Size="12">
+                                <RadzenButton Text="Lưu Cấu Hình Chung" ButtonStyle="ButtonStyle.Primary" Click="@SaveGlobalConfig" />
+                            </RadzenColumn>
+                        </RadzenRow>
+                    </RadzenCard>
                     <RadzenDataGrid @ref="_dataGrid" 
                                   Data="@_configs" 
                                   TItem="TemperatureConfigsModel" 

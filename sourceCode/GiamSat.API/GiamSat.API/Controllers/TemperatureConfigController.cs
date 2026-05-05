@@ -68,6 +68,7 @@ namespace GiamSat.API.Controllers
                         Id = Guid.NewGuid(),
                         C000 = jsonString,
                         Actived = true,
+                        IsConfigChanged = true,
                         CreatedAt = DateTime.Now
                     };
                     await _context.FT10_TemperatureConfigs.AddAsync(ft10);
@@ -76,6 +77,7 @@ namespace GiamSat.API.Controllers
                 {
                     // Update existing row
                     ft10.C000 = jsonString;
+                    ft10.IsConfigChanged = true;
                     _context.FT10_TemperatureConfigs.Update(ft10);
                 }
 

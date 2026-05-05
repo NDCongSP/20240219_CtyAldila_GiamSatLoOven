@@ -1,4 +1,4 @@
-﻿namespace GiamSat.Models
+namespace GiamSat.Models
 {
     public class TemperatureConfigsModel
     {
@@ -39,5 +39,15 @@
         public double TimeBlinkAlarm { get; set; } = 1000;
 
         public bool FlagOffset { get; set; } = false;
+
+        /// <summary>
+        /// Chu kỳ lưu log realtime (giây).
+        /// </summary>
+        public int TimerRealtimeLog { get; set; } = 10;
+
+        /// <summary>
+        /// Chu kỳ lưu data log (giây).
+        /// </summary>
+        public int TimerDataLog { get; set; } = 300;
     }
 }

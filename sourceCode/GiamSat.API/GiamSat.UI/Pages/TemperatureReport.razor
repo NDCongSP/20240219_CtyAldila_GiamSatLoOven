@@ -41,16 +41,24 @@
                 @item.CreatedAt?.ToString("dd/MM/yyyy HH:mm:ss")
             </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="UpdateddAt" Title="Th.Gian Phục Hồi" Width="170px">
+        <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="EndedAt" Title="Th.Gian Phục Hồi" Width="170px">
             <Template Context="item">
-                @item.UpdateddAt?.ToString("dd/MM/yyyy HH:mm:ss")
+                @(item.EndedAt.HasValue ? item.EndedAt.Value.ToString("dd/MM/yyyy HH:mm:ss") : "Đang báo động")
             </Template>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="LocationName" Title="Khu Vực" Width="150px" />
         <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="Path" Title="Device Tag" Width="200px" />
-        <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="Pv" Title="Ngưỡng PV (Bắt đầu)" Width="150px">
+        <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="PV_Alarm" Title="Nhiệt độ (Báo động)" Width="150px">
             <Template Context="item">
-                <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@($"{item.Pv:0.0} °C")" />
+                <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@($"{item.PV_Alarm:0.0} °C")" />
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="PV_Normal" Title="Nhiệt độ (Phục hồi)" Width="150px">
+            <Template Context="item">
+                @if (item.PV_Normal.HasValue)
+                {
+                    <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@($"{item.PV_Normal:0.0} °C")" />
+                }
             </Template>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="Description" Title="Chi tiết chẩn đoán" />

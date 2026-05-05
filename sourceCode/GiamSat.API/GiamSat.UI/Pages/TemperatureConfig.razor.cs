@@ -20,6 +20,10 @@ namespace GiamSat.UI.Pages
         private List<TemperatureConfigsModel> _configs = new List<TemperatureConfigsModel>();
         private bool _isLoading = true;
 
+        private int _globalTimerRealtime = 10;
+        private int _globalTimerDatalog = 300;
+        private double _globalTimeBlinkAlarm = 1000;
+
         protected override async Task OnInitializedAsync()
         {
             await LoadData();
@@ -35,6 +39,13 @@ namespace GiamSat.UI.Pages
                 if (result != null)
                 {
                     _configs = result.ToList();
+                    var first = _configs.FirstOrDefault();
+                    if (first != null)
+                    {
+                        _globalTimerRealtime = first.TimerRealtimeLog;
+                        _globalTimerDatalog = first.TimerDataLog;
+                        _globalTimeBlinkAlarm = first.TimeBlinkAlarm;
+                    }
                 }
             }
             catch (Exception ex)
@@ -52,6 +63,14 @@ namespace GiamSat.UI.Pages
         {
             try
             {
+                // Sync global settings to all items before save
+                foreach(var c in _configs)
+                {
+                    c.TimerRealtimeLog = _globalTimerRealtime;
+                    c.TimerDataLog = _globalTimerDatalog;
+                    c.TimeBlinkAlarm = _globalTimeBlinkAlarm;
+                }
+
                 await _temperatureConfigClient.SaveConfigsAsync(_configs);
                 NotificationService.Notify(NotificationSeverity.Success, "Thành công", "Đã lưu cấu hình thành công");
             }
@@ -59,6 +78,11 @@ namespace GiamSat.UI.Pages
             {
                 NotificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Lỗi khi lưu dữ liệu: {ex.Message}");
             }
+        }
+
+        private async Task SaveGlobalConfig()
+        {
+            await SaveData();
         }
 
         private async Task InsertRow()

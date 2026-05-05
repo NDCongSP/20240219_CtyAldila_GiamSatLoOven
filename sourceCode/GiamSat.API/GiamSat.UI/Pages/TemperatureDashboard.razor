@@ -40,9 +40,10 @@
         {
             var isAlarm = item.Pv > item.Config.HightLevel || item.Pv < item.Config.LowLevel;
             var alarmClass = isAlarm ? "alarm-blink alarm-card" : "normal-card";
+            var timeBlinkStr = (item.Config.TimeBlinkAlarm / 1000.0).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) + "s";
 
             <RadzenColumn Size="12" SizeMD="6" SizeLG="4">
-                <RadzenCard class="@($"rz-shadow-3 {alarmClass}")" Style="border-radius: 8px;">
+                <RadzenCard class="@($"rz-shadow-3 {alarmClass}")" Style="@($"border-radius: 8px; {(isAlarm ? $"animation-duration: {timeBlinkStr};" : "")}")">
                     <RadzenText TextStyle="TextStyle.H6" class="rz-color-primary rz-mb-0">@item.Name</RadzenText>
                     <RadzenText TextStyle="TextStyle.Caption" class="rz-color-secondary rz-mb-3">@item.Path</RadzenText>
                     

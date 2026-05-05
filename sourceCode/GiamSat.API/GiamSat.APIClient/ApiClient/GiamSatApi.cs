@@ -11963,8 +11963,14 @@ namespace GiamSat.APIClient
         [System.Text.Json.Serialization.JsonPropertyName("path")]
         public string? Path { get; set; } = default!;
 
-        [System.Text.Json.Serialization.JsonPropertyName("pv")]
-        public double? Pv { get; set; } = default!;
+        [System.Text.Json.Serialization.JsonPropertyName("pV_Alarm")]
+        public double? PV_Alarm { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("pV_Normal")]
+        public double? PV_Normal { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("endedAt")]
+        public System.DateTime? EndedAt { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("sV_High")]
         public double? SV_High { get; set; } = default!;
@@ -12653,6 +12659,15 @@ namespace GiamSat.APIClient
 
         [System.Text.Json.Serialization.JsonPropertyName("timeBlinkAlarm")]
         public double TimeBlinkAlarm { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("flagOffset")]
+        public bool FlagOffset { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("timerRealtimeLog")]
+        public int TimerRealtimeLog { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("timerDataLog")]
+        public int TimerDataLog { get; set; } = default!;
 
     }
 
