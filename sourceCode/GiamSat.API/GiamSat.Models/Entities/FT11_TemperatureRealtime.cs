@@ -21,8 +21,7 @@ namespace GiamSat.Models
         /// <summary>
         /// List<TemperatureRealtimeModel>().
         /// </summary>
-        [Column("C001")]
-        public string?  C001_Data { get; set; }
+        public string?  C000 { get; set; }
 
         public DateTime? CreatedAt { get; set; }
     }

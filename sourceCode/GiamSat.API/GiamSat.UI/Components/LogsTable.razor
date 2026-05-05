@@ -1,0 +1,60 @@
+@using GiamSat.Models
+
+<RadzenDataGrid Data="@Data" TItem="LogEntry" AllowPaging="true" PageSize="50"
+                AllowSorting="true" Density="Density.Compact" Style="height: calc(100vh - 380px);">
+    <Columns>
+        <RadzenDataGridColumn TItem="LogEntry" Property="Timestamp" Title="Time" Width="180px"
+                              FormatString="{0:HH:mm:ss.fff}" />
+        <RadzenDataGridColumn TItem="LogEntry" Property="Level" Title="Lvl" Width="100px">
+            <Template Context="e">
+                <span class="@LevelCssClass(e.Level)">@e.Level</span>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="LogEntry" Property="CorrelationId" Title="Trace" Width="120px">
+            <Template Context="e">
+                @if (!string.IsNullOrEmpty(e.CorrelationId))
+                {
+                    var cid = e.CorrelationId;
+                    <span class="trace-link" @onclick="@(() => HandleTraceClick(cid))">@cid</span>
+                }
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="LogEntry" Property="Source" Title="Source" Width="200px" />
+        <RadzenDataGridColumn TItem="LogEntry" Property="Message" Title="Message">
+            <Template Context="e">
+                <pre class="msg">@e.Message</pre>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+<style>
+    .lvl-badge { padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 11px; display: inline-block; }
+    .lvl-error, .lvl-fatal { background: #c62828; color: white; }
+    .lvl-warning { background: #ef6c00; color: white; }
+    .lvl-information { background: #1976d2; color: white; }
+    .lvl-debug { background: #757575; color: white; }
+    .lvl-verbose { background: #bdbdbd; color: black; }
+    pre.msg { white-space: pre-wrap; margin: 0; font-family: Consolas, monospace; font-size: 12px; }
+    .trace-link { cursor: pointer; color: var(--rz-primary); font-family: Consolas, monospace; font-size: 11px; text-decoration: underline; }
+    .trace-link:hover { color: var(--rz-primary-dark); }
+</style>
+
+@code {
+    [Parameter] public IReadOnlyList<LogEntry> Data { get; set; } = new List<LogEntry>();
+    [Parameter] public EventCallback<string> OnTraceClick { get; set; }
+
+    private async Task HandleTraceClick(string id)
+    {
+        if (OnTraceClick.HasDelegate)
+        {
+            await OnTraceClick.InvokeAsync(id);
+        }
+    }
+
+    private static string LevelCssClass(string? level)
+    {
+        var l = (level ?? string.Empty).ToLowerInvariant();
+        return "lvl-badge lvl-" + l;
+    }
+}

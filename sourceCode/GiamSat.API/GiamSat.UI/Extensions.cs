@@ -1,4 +1,8 @@
-﻿namespace GiamSat.UI
+using GiamSat.Models;
+using RestEase;
+using System.Net.Http;
+
+namespace GiamSat.UI
 {
     public static class Extensions
     {
@@ -24,6 +28,17 @@
                     services.AddTransient(type.Service, type.Implementation);
                 }
             }
+            return services;
+        }
+
+        /// <summary>
+        /// Đăng ký các RestEase client interfaces. Dùng chung HttpClient (đã có JWT handler)
+        /// đã được register Scoped trong Program.cs (factory CreateClient("GiamSatAPI")).
+        /// </summary>
+        public static IServiceCollection AddRestEaseClients(this IServiceCollection services)
+        {
+            services.AddScoped<ILogsClient>(sp =>
+                RestClient.For<ILogsClient>(sp.GetRequiredService<HttpClient>()));
             return services;
         }
     }

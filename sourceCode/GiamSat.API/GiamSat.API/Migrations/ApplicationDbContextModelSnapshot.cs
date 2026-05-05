@@ -368,9 +368,8 @@ namespace GiamSat.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("C001_Data")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("C001");
+                    b.Property<string>("C000")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -401,6 +400,9 @@ namespace GiamSat.API.Migrations
                     b.Property<double?>("PV")
                         .HasColumnType("float");
 
+                    b.Property<string>("Path")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("UpdateddAt")
                         .HasColumnType("datetime2");
 
@@ -430,7 +432,10 @@ namespace GiamSat.API.Migrations
                     b.Property<string>("LocationName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("PV")
+                    b.Property<double?>("PV_Alarm")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("PV_Normal")
                         .HasColumnType("float");
 
                     b.Property<string>("Path")
@@ -456,46 +461,30 @@ namespace GiamSat.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("Actions")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedMachine")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool?>("IsActived")
                         .HasColumnType("bit");
 
                     b.Property<string>("Module")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("Code")
-                        .IsUnique();
-
-                    b.ToTable("Permissions", (string)null);
+                    b.ToTable("Permissions");
                 });
 
             modelBuilder.Entity("GiamSat.Models.RevoGetTotalShaftCountDto", b =>
@@ -697,13 +686,17 @@ namespace GiamSat.API.Migrations
                     b.Property<Guid>("PermissionId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedMachine")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("RoleId", "PermissionId");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool?>("IsActived")
+                        .HasColumnType("bit");
 
                     b.Property<string>("PermisionDescription")
                         .HasColumnType("nvarchar(max)");
@@ -711,16 +704,10 @@ namespace GiamSat.API.Migrations
                     b.Property<string>("PermisionName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("PermissionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("RoleName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("RoleId", "PermissionId");
 
                     b.ToTable("RoleToPermissions", (string)null);
                 });
@@ -923,25 +910,6 @@ namespace GiamSat.API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("GiamSat.Models.RoleToPermission", b =>
-                {
-                    b.HasOne("GiamSat.Models.Permissions", "Permission")
-                        .WithMany("RoleToPermissions")
-                        .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Permission");
-
-                    b.Navigation("Role");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -991,11 +959,6 @@ namespace GiamSat.API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("GiamSat.Models.Permissions", b =>
-                {
-                    b.Navigation("RoleToPermissions");
                 });
 #pragma warning restore 612, 618
         }

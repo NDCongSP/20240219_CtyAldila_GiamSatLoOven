@@ -5,6 +5,15 @@ DB name: Oven
 MD5 secret: PTAut0m@t!0n30!)@)20
 conStr" qFgsKRXrOBXrpXLXV/PyMGuUw2HscP3Q/TloIHzSy62+hoLwOzXqyds8oOCa+GuAR/RjEhPAc+7VHDfNYB0vgTks32Ax652Ts4Ygi1wvVoBypvDtyRLmcpLk9zddZBDMvOmr3hP4jW8=
 
+-- Index chính cho bộ key truy vấn
+CREATE NONCLUSTERED INDEX IX_FT09_ShaftNum_RevoId_StepId
+ON FT09 (ShaftNum, RevoId, StepId)
+INCLUDE (StartedAt, EndedAt, TotalTime, StepName);
+
+-- Index phụ nếu cần lọc theo thời gian
+CREATE NONCLUSTERED INDEX IX_FT09_CreatedAt
+ON FT09 (CreatedAt);
+-----------------------------------------------------------------------------------------------------------------------
 Kiến trúc hệ thống:
 |---Web
 |       |---Hệ thống lò Oven
@@ -19,7 +28,7 @@ Kiến trúc hệ thống:
         |---App chạy riêng biệt từng máy cho các máy Revo Goft
         |       |---Chỉ chạy riêng cho từng máy, đọc data master từ file access, điều khiển chạy PLC và log thời gian chạy dừng từng bước vào DB
         |       |---EasyDriver chỉ kết nối với 1 PLC của máy đó (modbus TCP/IP).
-        |
+        |---App máy Auto rolling chạy riêng 1 máy cho 3 máy auto rolling.
 ------------------------------------------------------------------
 Hệ thống giám sát lò OVEN
 ------------------------------------------------------------------

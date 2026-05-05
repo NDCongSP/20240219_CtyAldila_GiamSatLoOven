@@ -25,6 +25,8 @@ namespace GiamSat.Models
 
         public string? LocationName { get; set; }
 
+        public string? Path { get; set; }
+
         public double? PV { get; set; } = 0;
     }
 }

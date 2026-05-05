@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "iisSettings": {
     "windowsAuthentication": false,
@@ -8,17 +8,18 @@
       "sslPort": 0
     }
   },
-  "GiamSat.API": {
-    "commandName": "Project",
-    "dotnetRunMessages": "true",
-    "launchBrowser": true,
-    "launchUrl": "swagger",
-    "applicationUrl": "http://localhost:5000",
-    "environmentVariables": {
-      "ASPNETCORE_ENVIRONMENT": "Development"
-    }
-  },
   "profiles": {
+    "GiamSat.API": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:64665",
+      "useShellExecute": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,

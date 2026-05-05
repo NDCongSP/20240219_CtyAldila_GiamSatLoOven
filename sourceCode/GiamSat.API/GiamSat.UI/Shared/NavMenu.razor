@@ -107,7 +107,10 @@
             <ChildContent>
                 <RadzenPanelMenuItem Text="Tài khoản" Icon="person" Path="/admin/users" />
                 <RadzenPanelMenuItem Text="Quyền & Vai trò" Icon="security" Path="/admin/roles" />
-                <RadzenPanelMenuItem Text="Lịch sử Truy cập" Icon="history" Path="/admin/history" />
+                <RadzenPanelMenuItem Text="System Permissions" Icon="format_list_bulleted" Path="/admin/permissions" />
+                <AuthorizeView Policy="@AppPermissions.System_Logs_View" Context="logCtx">
+                    <RadzenPanelMenuItem Text="System Logs" Icon="article" Path="/admin/logs" />
+                </AuthorizeView>
             </ChildContent>
         </RadzenPanelMenuItem>
     </AuthorizeView>

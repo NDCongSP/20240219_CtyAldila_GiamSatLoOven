@@ -1,8 +1,11 @@
+using GiamSat.API.Hubs;
+using GiamSat.API.Middleware;
 using GiamSat.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -14,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -212,6 +216,22 @@ namespace GiamSat.API
                     ValidIssuer = Configuration["JWT:ValidIssuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
                 };
+
+                // SignalR (WebSocket) không gửi được "Authorization" header — đọc token từ query "?access_token="
+                // khi request đi vào endpoint /hubs/*.
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = ctx =>
+                    {
+                        var accessToken = ctx.Request.Query["access_token"];
+                        var path = ctx.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                        {
+                            ctx.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             services.AddAuthorization(options =>
@@ -224,6 +244,9 @@ namespace GiamSat.API
 
             services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
             services.AddControllers();
+
+            // SignalR cho realtime log streaming (LogsHub).
+            services.AddSignalR();
 
             //AddRepoServices(services);//add transient tu dong
 
@@ -303,39 +326,104 @@ namespace GiamSat.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // Re-configure Serilog tại đây để thêm SignalR sink (sau khi DI đã build xong, an toàn).
+            try
+            {
+                var hub = app.ApplicationServices.GetService(typeof(Microsoft.AspNetCore.SignalR.IHubContext<LogsHub>))
+                          as Microsoft.AspNetCore.SignalR.IHubContext<LogsHub>;
+                if (hub != null)
+                {
+                    var minLevelStr = Configuration["Logs:SignalRMinLevel"] ?? "Warning";
+                    if (!Enum.TryParse<Serilog.Events.LogEventLevel>(minLevelStr, true, out var minLevel))
+                        minLevel = Serilog.Events.LogEventLevel.Warning;
+
+                    // Tạo logger mới = logger hiện tại + SignalR sink. Gán làm static logger.
+                    Log.Logger = new LoggerConfiguration()
+                        .MinimumLevel.Information()
+                        .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+                        .MinimumLevel.Override("Microsoft.Hosting.Lifetime", Serilog.Events.LogEventLevel.Information)
+                        .MinimumLevel.Override("Microsoft.EntityFrameworkCore", Serilog.Events.LogEventLevel.Warning)
+                        .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning)
+                        .Enrich.FromLogContext()
+                        .WriteTo.Logger(Log.Logger)  // bao bọc logger cũ (console + 3 file)
+                        .WriteTo.Sink(new GiamSat.API.Logging.SignalRLogSink(hub, minLevel))
+                        .CreateLogger();
+                    Log.Information("SignalR log sink đã được register");
+                }
+            }
+            catch (Exception sinkEx)
+            {
+                Log.Warning(sinkEx, "Không register được SignalR log sink — bỏ qua");
+            }
+
             #region Migration DB
-            using var scope = app.ApplicationServices.CreateScope();
-
-            //nếu chạy mới thì bỏ comment chỗ này để nó tạo bảng
-            ////create DB
-            //scope.ServiceProvider.GetService<ApplicationDbContext>().Database.EnsureCreated();
-            ////create table
-            //scope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
-
-            SeedingData(scope).Wait();
-            PermissionSeeder.SeedAsync(scope.ServiceProvider.GetService<ApplicationDbContext>(), scope.ServiceProvider.GetService<RoleManager<IdentityRole>>()).Wait();
+            // Chạy seed BACKGROUND để API listen ngay, không bị chặn bởi DB chậm/timeout.
+            // Trước đây dùng .Wait() block thread chính → API treo nếu DB không reach.
+            Log.Information("Configure pipeline — kicking off background seeder...");
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    using var scope = app.ApplicationServices.CreateScope();
+                    Log.Information("[Seeder] Bắt đầu seed roles/users");
+                    await SeedingData(scope);
+                    Log.Information("[Seeder] Seed roles/users xong, sang permissions");
+                    await PermissionSeeder.SeedAsync(
+                        scope.ServiceProvider.GetService<ApplicationDbContext>(),
+                        scope.ServiceProvider.GetService<RoleManager<IdentityRole>>());
+                    Log.Information("[Seeder] Hoàn tất");
+                }
+                catch (Exception seedEx)
+                {
+                    Log.Error(seedEx, "[Seeder] Thất bại — API vẫn lên được, sẽ retry ở lần chạy sau");
+                }
+            });
             #endregion
 
+            Log.Information("Configure: UseCors");
             app.UseCors("AllowAll");
 
-            if (env.IsDevelopment() || env.IsProduction())
+            Log.Information("Configure: UseMiddleware<CorrelationIdMiddleware> + UseSerilogRequestLogging");
+            app.UseMiddleware<CorrelationIdMiddleware>();
+            // Elevate level theo HTTP status để dễ audit:
+            //   5xx hoặc exception → Error
+            //   401/403 (auth/security event) → Error  ← nên flag rõ ràng
+            //   4xx khác (404, 400 client error) → Warning
+            //   2xx/3xx → Information
+            app.UseSerilogRequestLogging(options =>
+            {
+                options.GetLevel = (httpContext, elapsed, exception) =>
+                {
+                    if (exception != null) return Serilog.Events.LogEventLevel.Error;
+                    var status = httpContext.Response.StatusCode;
+                    if (status >= 500) return Serilog.Events.LogEventLevel.Error;
+                    if (status == 401 || status == 403) return Serilog.Events.LogEventLevel.Error;
+                    if (status >= 400) return Serilog.Events.LogEventLevel.Warning;
+                    return Serilog.Events.LogEventLevel.Information;
+                };
+            });
+
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            Log.Information("Configure: UseSwagger + SwaggerUI");
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GiamSat.API v1"));
-           
+
+            Log.Information("Configure: UseRouting + Authentication + Authorization");
             app.UseRouting();
-
-            //them
             app.UseAuthentication();
-
             app.UseAuthorization();
 
+            Log.Information("Configure: MapControllers + MapHub<LogsHub>");
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<LogsHub>(LogsHub.HubPath);
             });
+            Log.Information("Configure: PIPELINE READY — API listening...");
         }
 
         public IServiceCollection AddRepoServices(IServiceCollection services)

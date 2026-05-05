@@ -19,7 +19,7 @@ namespace GiamSat.Models
 
         /// <summary>
         /// Lưu thông tin cấu hình của tất cả các lò.
-        /// List<TemperatureConfigsModel>().
+        /// TemperatureConfigsModel().
         /// </summary>
         public string? C000 { get; set; }
 
