@@ -6,6 +6,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="DevExpress.Reporting.Core" Version="23.1.6" />
 		<PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.14" />
 		<PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="10.0.6" />
 		<PackageReference Include="RestEase.HttpClientFactory" Version="1.6.4" />

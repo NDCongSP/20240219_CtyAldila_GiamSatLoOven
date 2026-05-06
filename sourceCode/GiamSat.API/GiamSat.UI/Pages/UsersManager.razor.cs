@@ -174,7 +174,7 @@ namespace GiamSat.UI.Pages
 
             if (confirm == true)
             {
-                var res = await _authSerivce.ResetPassword(new ResetPasswordModel
+                var res = await _authSerivce.ResetPassword(new GiamSat.APIClient.ResetPasswordModel
                 {
                     Username = user.UserName
                 });

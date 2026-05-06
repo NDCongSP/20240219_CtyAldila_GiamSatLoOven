@@ -1,9 +1,9 @@
 @page "/admin/logs"
 @implements IAsyncDisposable
-@using GiamSat.Models
 @using GiamSat.UI.Services
 @using Microsoft.AspNetCore.SignalR.Client
 @using AppPermissions = GiamSat.Models.AppPermissions
+@using LogStreamEntry = GiamSat.Models.LogStreamEntry
 @attribute [Authorize(Policy = AppPermissions.System_Logs_View)]
 
 <PageTitle>System Log Viewer</PageTitle>
@@ -317,9 +317,9 @@
     {
         try
         {
-            var res = await LogsClient.GetFiles();
+            var res = await LogsClient.GetFilesAsync();
             if (res != null && res.Succeeded)
-                _files = res.Data ?? new List<LogFileInfo>();
+                _files = res.Data?.ToList() ?? new List<LogFileInfo>();
             else if (res != null)
                 Notify(NotificationSeverity.Error, string.Join(", ", res.Messages));
         }
@@ -336,7 +336,7 @@
     {
         try
         {
-            var res = await LogsClient.ClearFile(fileName);
+            var res = await LogsClient.ClearFileAsync(fileName);
             if (res != null && res.Succeeded)
             {
                 Notify(NotificationSeverity.Success, $"Đã xóa nội dung {fileName}");
@@ -355,7 +355,7 @@
     {
         try
         {
-            var res = await LogsClient.DeleteFile(fileName);
+            var res = await LogsClient.DeleteFileAsync(fileName);
             if (res != null && res.Succeeded)
             {
                 Notify(NotificationSeverity.Success, $"Đã xóa file {fileName}");
@@ -379,9 +379,9 @@
         if (string.IsNullOrEmpty(_selectedFile)) return;
         try
         {
-            var res = await LogsClient.GetEntries(_selectedFile, _filterLevel, _filterKeyword, _filterTake);
+            var res = await LogsClient.GetEntriesAsync(_selectedFile, _filterLevel, _filterKeyword, _filterTake);
             if (res != null && res.Succeeded)
-                _fileEntries = res.Data ?? new List<LogEntry>();
+                _fileEntries = res.Data?.ToList() ?? new List<LogEntry>();
             else
             {
                 _fileEntries = new List<LogEntry>();
@@ -396,9 +396,9 @@
         if (string.IsNullOrWhiteSpace(_traceId)) return;
         try
         {
-            var res = await LogsClient.GetByTrace(_traceId.Trim());
+            var res = await LogsClient.GetByTraceAsync(_traceId.Trim());
             if (res != null && res.Succeeded)
-                _traceEntries = res.Data ?? new List<LogEntry>();
+                _traceEntries = res.Data?.ToList() ?? new List<LogEntry>();
             else
             {
                 _traceEntries = new List<LogEntry>();
@@ -413,7 +413,7 @@
         if (string.IsNullOrEmpty(_summaryFile)) return;
         try
         {
-            var res = await LogsClient.GetSummary(_summaryFile);
+            var res = await LogsClient.GetSummaryAsync(_summaryFile);
             if (res != null && res.Succeeded)
                 _summary = res.Data;
             else

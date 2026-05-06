@@ -17,8 +17,9 @@ namespace GiamSat.API
         public ISFT07 SFT07 { get; private set; }
         public ISFT08 SFT08 { get; private set; }
         public ISFT09 SFT09 { get; private set; }
+        public ISFT14 SFT14 { get; private set; }
 
-        public SCommon(ISFT01 sFT01 = null, ISFT02 sFT02 = null, ISFT03 sFT03 = null, ISFT04 sFT04 = null, ISFT05 sFT05 = null, ISFT06 sFT06 = null, ISFT07 sFT07 = null, ISFT08 sFT08 = null, ISFT09 sFT09 = null)
+        public SCommon(ISFT01 sFT01 = null, ISFT02 sFT02 = null, ISFT03 sFT03 = null, ISFT04 sFT04 = null, ISFT05 sFT05 = null, ISFT06 sFT06 = null, ISFT07 sFT07 = null, ISFT08 sFT08 = null, ISFT09 sFT09 = null, ISFT14 sFT14 = null)
         {
             SFT01 = sFT01;
             SFT02 = sFT02;
@@ -29,6 +30,7 @@ namespace GiamSat.API
             SFT07 = sFT07;
             SFT08 = sFT08;
             SFT09 = sFT09;
+            SFT14 = sFT14;
         }
     }
 }

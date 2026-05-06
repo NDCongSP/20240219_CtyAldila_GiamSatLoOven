@@ -86,5 +86,9 @@ namespace GiamSat.Models
             public const string BasePath = "api/FT09";
             public const string GetFilter = "GetFilter";
         }
+        public static class FT14
+        {
+            public const string BasePath = "api/FT14";
+        }
     }
 }

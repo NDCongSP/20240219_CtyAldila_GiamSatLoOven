@@ -32,6 +32,7 @@ namespace GiamSat.API
             builder.Entity<FT11_TemperatureRealtime>();
             builder.Entity<FT12_TemperatureDatalog>();
             builder.Entity<FT13_TemperatureAlarmLog>();
+            builder.Entity<FT14_TipOdFreq>();
 
 
             builder.Entity<RoleToPermission>(entity =>
@@ -87,5 +88,6 @@ namespace GiamSat.API
         public DbSet<FT13_TemperatureAlarmLog> FT13_TemperatureAlarmLogs { get; set; }
         public DbSet<Permissions> Permissions { get; set; }
         public DbSet<RoleToPermission> RoleToPermissions { get; set; }
+        public DbSet<FT14_TipOdFreq> FT14_TipOdFreqs { get; set; }
     }
 }
