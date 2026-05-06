@@ -37,6 +37,8 @@ namespace GiamSat.Models
         /// </summary>
         public string? PartName { get; set; }
 
+        public double? Length { get; set; } = 0;
+
         public double? FreqTarget { get; set; } = 0;
 
         public double? Set_Freq_Offset_Low { get; set; } = 0;
