@@ -52,6 +52,6 @@
         /// <summary>
         /// chứa các thông số cài đặt liên quan đến việc đo nhiệt độ, như offset, ngưỡng cảnh báo, đường dẫn easy driver,... để có thể hiển thị và cảnh báo phù hợp.
         /// </summary>
-        public TemperatureConfigsModel Config { get; set; }
+        public TemperatureLocationModel Config { get; set; }
     }
 }

@@ -4,7 +4,7 @@
   "Port": 8800,
   "CommunicationMode": 0,
   "RefreshRate": 100,
-  "CreatedDate": "2026-04-20T22:13:59.3796491+07:00",
+  "CreatedDate": "2026-05-02T16:35:37.3000044+07:00",
   "Username": null,
   "Password": null,
   "Childs": [
@@ -398,6 +398,118 @@
                     "DataType": "Word",
                     "Address": "400026"
                   }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_1",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Work_1",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400027"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_2",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Work_2",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400028"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_3",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Work_3",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400029"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_4",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Work_4",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400030"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_5",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Work_5",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400031"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_6",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Work_6",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400032"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_7",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Work_7",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400033"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_8",
+                  "Path": "Local Station/Channel_Auto_Rolling_1/Device1/Work_8",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400034"
+                  }
                 }
               ],
               "Properties": {
@@ -408,7 +520,7 @@
                 "InputContactReadBlockSettings": "[]",
                 "OutputCoilsReadBlockSettings": "[]",
                 "InputRegisterReadBlockSettings": "[]",
-                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400026\"\r\n  }\r\n]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400034\"\r\n  }\r\n]",
                 "MaxWritesCount": "10"
               }
             }
@@ -801,6 +913,118 @@
                     "DataType": "Word",
                     "Address": "400026"
                   }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_1",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Work_1",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400027"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_2",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Work_2",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400028"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_3",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Work_3",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400029"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_4",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Work_4",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400030"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_5",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Work_5",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400031"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_6",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Work_6",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400032"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_7",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Work_7",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400033"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_8",
+                  "Path": "Local Station/Channel_Auto_Rolling_2/Device1/Work_8",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400034"
+                  }
                 }
               ],
               "Properties": {
@@ -811,7 +1035,7 @@
                 "InputContactReadBlockSettings": "[]",
                 "OutputCoilsReadBlockSettings": "[]",
                 "InputRegisterReadBlockSettings": "[]",
-                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400026\"\r\n  }\r\n]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400034\"\r\n  }\r\n]",
                 "MaxWritesCount": "10"
               }
             }
@@ -828,7 +1052,7 @@
           "Name": "Channel_Auto_Rolling_3",
           "Path": "Local Station/Channel_Auto_Rolling_3",
           "Description": null,
-          "DisplayInfo": "ModbusTCP - 192.168.11.13:504",
+          "DisplayInfo": "ModbusTCP - 192.168.1.100:504",
           "Error": null,
           "ConnectionStatus": 0,
           "Childs": [
@@ -1204,6 +1428,118 @@
                     "DataType": "Word",
                     "Address": "400026"
                   }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_1",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Work_1",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400027"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_2",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Work_2",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400028"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_3",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Work_3",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400029"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_4",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Work_4",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400030"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_5",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Work_5",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400031"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_6",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Work_6",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400032"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_7",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Work_7",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400033"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Work_8",
+                  "Path": "Local Station/Channel_Auto_Rolling_3/Device1/Work_8",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400034"
+                  }
                 }
               ],
               "Properties": {
@@ -1214,13 +1550,13 @@
                 "InputContactReadBlockSettings": "[]",
                 "OutputCoilsReadBlockSettings": "[]",
                 "InputRegisterReadBlockSettings": "[]",
-                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400026\"\r\n  }\r\n]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400034\"\r\n  }\r\n]",
                 "MaxWritesCount": "10"
               }
             }
           ],
           "Properties": {
-            "IpAddress": "192.168.11.13",
+            "IpAddress": "192.168.1.100",
             "Port": "504",
             "DelayBetweenPool": "5",
             "ScanRate": "100"

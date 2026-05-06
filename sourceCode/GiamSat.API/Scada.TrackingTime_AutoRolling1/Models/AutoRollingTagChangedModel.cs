@@ -18,6 +18,8 @@ namespace Scada.TrackingTime_AutoRolling1
 
         public string Part_Name { get; set; } = string.Empty;
 
+        public string Work { get; set; } = string.Empty;
+
         public bool[] StepsIsRun { get; set; } = new bool[16];
 
         //---------------------------------------------------------------------------------
@@ -50,5 +52,14 @@ namespace Scada.TrackingTime_AutoRolling1
         public int Part_Name6 { get; set; } = 0;
         public int Part_Name7 { get; set; } = 0;
         public int Part_Name8 { get; set; } = 0;
+
+        public int Work_1 { get; set; } = 0;
+        public int Work_2 { get; set; } = 0;
+        public int Work_3 { get; set; } = 0;
+        public int Work_4 { get; set; } = 0;
+        public int Work_5 { get; set; } = 0;
+        public int Work_6 { get; set; } = 0;
+        public int Work_7 { get; set; } = 0;
+        public int Work_8 { get; set; } = 0;
     }
 }

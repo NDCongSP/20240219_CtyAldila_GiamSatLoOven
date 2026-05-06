@@ -1,0 +1,513 @@
+@page "/autosanding/config"
+@using GiamSat.Models
+
+<RadzenRow Gap="1rem">
+    <RadzenColumn Size="12">
+        <RadzenCard class="rz-shadow-3">
+            <RadzenStack Gap="0.75rem">
+
+                @* Header *@
+                <RadzenStack Orientation="Orientation.Horizontal"
+                             AlignItems="AlignItems.Center"
+                             JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenText TextStyle="TextStyle.H5">Cấu hình Auto Sanding</RadzenText>
+                </RadzenStack>
+
+                @* Tabs *@
+                <RadzenTabs @bind-SelectedIndex="_selectedTab" RenderMode="TabRenderMode.Client">
+                    <Tabs>
+
+                        @* ═══════════════════════════════════════════════════════
+                             TAB 1: CẤU HÌNH CHUNG
+                             ═══════════════════════════════════════════════════════ *@
+                        <RadzenTabsItem Text="Cấu hình chung" Icon="settings">
+                            <RadzenStack Gap="0.75rem" class="rz-pt-3">
+
+                                <RadzenStack Orientation="Orientation.Horizontal"
+                                             AlignItems="AlignItems.Center"
+                                             JustifyContent="JustifyContent.SpaceBetween">
+                                    <RadzenText TextStyle="TextStyle.Subtitle1">
+                                        Danh sách Part
+                                    </RadzenText>
+                                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                                        <RadzenButton Icon="add_circle"
+                                                      Text="Thêm part"
+                                                      ButtonStyle="ButtonStyle.Success"
+                                                      Size="ButtonSize.Small"
+                                                      Click="@OnAddPart" />
+                                        <RadzenButton Icon="save"
+                                                      Text="Lưu"
+                                                      ButtonStyle="ButtonStyle.Primary"
+                                                      Size="ButtonSize.Small"
+                                                      Click="@OnSaveConfig"
+                                                      IsBusy="@_isSaving" />
+                                    </RadzenStack>
+                                </RadzenStack>
+
+                                @if (_isLoading)
+                                {
+                                    <RadzenProgressBarCircular ShowValue="false"
+                                                               Mode="ProgressBarMode.Indeterminate" />
+                                    <RadzenText>Đang tải dữ liệu...</RadzenText>
+                                }
+                                else
+                                {
+                                    <RadzenDataGrid @ref="_configGrid"
+                                                    Data="@_configs"
+                                                    TItem="AutoSandingConfigModel"
+                                                    AllowPaging="true"
+                                                    PageSize="10"
+                                                    AllowSorting="true"
+                                                    PagerHorizontalAlign="HorizontalAlign.Right"
+                                                    ShowPagingSummary="true"
+                                                    PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)"
+                                                    PageSizeText="Bản ghi / trang"
+                                                    PageSizeOptions="@(new int[]{5,10,20})"
+                                                    class="rz-mt-2">
+                                        <Columns>
+
+                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
+                                                                  Property="ItemNumber"
+                                                                  Title="Item Number"
+                                                                  Width="160px" />
+
+                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
+                                                                  Property="Length"
+                                                                  Title="Length (mm)"
+                                                                  Width="110px"
+                                                                  TextAlign="TextAlign.Center" />
+
+                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
+                                                                  Property="FreqTarget"
+                                                                  Title="Freq Target (CPM)"
+                                                                  Width="140px"
+                                                                  TextAlign="TextAlign.Center" />
+
+                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
+                                                                  Title="Dung sai (-/+)"
+                                                                  Width="130px"
+                                                                  TextAlign="TextAlign.Center">
+                                                <Template Context="item">
+                                                    <span>-@item.ToleranceLow / +@item.ToleranceHigh</span>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
+                                                                  Title="Diam LL / UL"
+                                                                  Width="130px"
+                                                                  TextAlign="TextAlign.Center">
+                                                <Template Context="item">
+                                                    <span>@item.DiamLL / @item.DiamUL</span>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
+                                                                  Property="TipOdLength"
+                                                                  Title="Tip OD Length"
+                                                                  Width="180px" />
+
+                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
+                                                                  Property="FormulaF"
+                                                                  Title="Formula F"
+                                                                  Width="100px"
+                                                                  TextAlign="TextAlign.Center" />
+
+                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
+                                                                  Title="A"
+                                                                  Width="80px"
+                                                                  TextAlign="TextAlign.Center">
+                                                <Template Context="item">
+                                                    <span style="color: var(--rz-primary)">@item.A.ToString("F3")</span>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
+                                                                  Title="B"
+                                                                  Width="80px"
+                                                                  TextAlign="TextAlign.Center">
+                                                <Template Context="item">
+                                                    <span style="color: var(--rz-primary)">@item.B.ToString("F3")</span>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
+                                                                  Title="C"
+                                                                  Width="80px"
+                                                                  TextAlign="TextAlign.Center">
+                                                <Template Context="item">
+                                                    <span style="color: var(--rz-success)">@item.C.ToString("F3")</span>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
+                                                                  Title="D"
+                                                                  Width="80px"
+                                                                  TextAlign="TextAlign.Center">
+                                                <Template Context="item">
+                                                    <span style="color: var(--rz-success)">@item.D.ToString("F3")</span>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
+                                                                  Title="Hành động"
+                                                                  Width="120px"
+                                                                  TextAlign="TextAlign.Center"
+                                                                  Frozen="true"
+                                                                  FrozenPosition="FrozenColumnPosition.Right">
+                                                <Template Context="item">
+                                                    <RadzenStack Orientation="Orientation.Horizontal"
+                                                                 Gap="0.4rem"
+                                                                 JustifyContent="JustifyContent.Center">
+                                                        <RadzenButton Icon="edit"
+                                                                      ButtonStyle="ButtonStyle.Primary"
+                                                                      Size="ButtonSize.Small"
+                                                                      Variant="Variant.Flat"
+                                                                      Click="@(() => OnEditPart(item))"
+                                                                      title="Chỉnh sửa" />
+                                                        <RadzenButton Icon="delete"
+                                                                      ButtonStyle="ButtonStyle.Danger"
+                                                                      Size="ButtonSize.Small"
+                                                                      Variant="Variant.Flat"
+                                                                      Click="@(() => OnDeletePart(item))"
+                                                                      title="Xóa" />
+                                                    </RadzenStack>
+                                                </Template>
+                                            </RadzenDataGridColumn>
+
+                                        </Columns>
+                                    </RadzenDataGrid>
+                                }
+                            </RadzenStack>
+                        </RadzenTabsItem>
+
+                        @* ═══════════════════════════════════════════════════════
+                             TAB 2: TÍNH ABCD
+                             ═══════════════════════════════════════════════════════ *@
+                        <RadzenTabsItem Text="Tính A,B,C,D" Icon="calculate">
+                            <RadzenStack Gap="1rem" class="rz-pt-3">
+
+                                @* Chọn part *@
+                                <RadzenRow Gap="1rem" AlignItems="AlignItems.End">
+                                    <RadzenColumn Size="12" SizeMD="4">
+                                        <RadzenFormField Text="Chọn Part" Variant="Variant.Outlined" Style="width:100%">
+                                            <RadzenDropDown @bind-Value="_selectedPartId"
+                                                            Data="@_configs"
+                                                            TextProperty="ItemNumber"
+                                                            ValueProperty="Id"
+                                                            Placeholder="-- Chọn part --"
+                                                            Style="width:100%"
+                                                            Change="@OnPartSelected" />
+                                        </RadzenFormField>
+                                    </RadzenColumn>
+                                    <RadzenColumn Size="12" SizeMD="8">
+                                        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                                            <RadzenButton Icon="add"
+                                                          Text="Thêm dòng"
+                                                          ButtonStyle="ButtonStyle.Light"
+                                                          Size="ButtonSize.Small"
+                                                          Click="@OnAddTestRow" />
+                                            <RadzenButton Icon="delete_sweep"
+                                                          Text="Xóa dòng cuối"
+                                                          ButtonStyle="ButtonStyle.Light"
+                                                          Size="ButtonSize.Small"
+                                                          Click="@OnRemoveLastRow" />
+                                            <RadzenButton Icon="data_object"
+                                                          Text="Fake Data"
+                                                          ButtonStyle="ButtonStyle.Light"
+                                                          Size="ButtonSize.Small"
+                                                          Click="@OnLoadFakeData" />
+                                            <RadzenButton Icon="functions"
+                                                          Text="Tính A,B,C,D"
+                                                          ButtonStyle="ButtonStyle.Warning"
+                                                          Size="ButtonSize.Medium"
+                                                          Click="@OnCalculateABCD" />
+                                            @if (_abcdCalculated)
+                                            {
+                                                <RadzenButton Icon="upload"
+                                                              Text="Áp dụng vào Part"
+                                                              ButtonStyle="ButtonStyle.Success"
+                                                              Size="ButtonSize.Medium"
+                                                              Click="@OnApplyAbcdToPart" />
+                                            }
+                                        </RadzenStack>
+                                    </RadzenColumn>
+                                </RadzenRow>
+
+                                @* Bảng nhập dữ liệu test *@
+                                <RadzenCard class="rz-background-color-base-200 rz-p-2">
+                                    <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-2">
+                                        Dữ liệu đo test (Sand 1 → Sand 2)
+                                    </RadzenText>
+
+                                    <div style="overflow-x:auto">
+                                        <table class="as-test-table">
+                                            <thead>
+                                                <tr>
+                                                    <th rowspan="2" class="col-idx">#</th>
+                                                    <th colspan="2" class="group-sand1">1st After Sanding</th>
+                                                    <th rowspan="2" class="group-rpm">Fix Belt<br/>Rotation (RPM)</th>
+                                                    <th colspan="3" class="group-sand2">Formula calculation – 2nd After Sanding</th>
+                                                </tr>
+                                                <tr>
+                                                    <th class="group-sand1">Fre1 (CPM)</th>
+                                                    <th class="group-sand1">Stiffness Z (Kg)</th>
+                                                    <th class="group-sand2">Fre2 (CPM)</th>
+                                                    <th class="group-sand2">Stiffness Y (Kg)</th>
+                                                    <th class="group-sand2">Freq Diff S<br/>(Fre1–Fre2)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var row in _testRows)
+                                                {
+                                                    <tr>
+                                                        <td class="col-idx">@row.RowIndex</td>
+                                                        <td>
+                                                            <RadzenNumeric @bind-Value="row.Fre1"
+                                                                           Format="F1"
+                                                                           Style="width:90px"
+                                                                           TValue="double" />
+                                                        </td>
+                                                        <td>
+                                                            <RadzenNumeric @bind-Value="row.StiffnessZ"
+                                                                           Format="F3"
+                                                                           Style="width:90px"
+                                                                           TValue="double" />
+                                                        </td>
+                                                        <td>
+                                                            <RadzenNumeric @bind-Value="row.BeltRotationRpm"
+                                                                           Format="F0"
+                                                                           Style="width:80px"
+                                                                           TValue="double" />
+                                                        </td>
+                                                        <td>
+                                                            <RadzenNumeric @bind-Value="row.Fre2"
+                                                                           Format="F1"
+                                                                           Style="width:90px"
+                                                                           TValue="double" />
+                                                        </td>
+                                                        <td>
+                                                            <RadzenNumeric @bind-Value="row.StiffnessY"
+                                                                           Format="F3"
+                                                                           Style="width:90px"
+                                                                           TValue="double" />
+                                                        </td>
+                                                        <td class="col-diff">
+                                                            @row.FreqDiff.ToString("F1")
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </RadzenCard>
+
+                                @* Kết quả ABCD *@
+                                @if (_abcdCalculated)
+                                {
+                                    <RadzenRow Gap="1rem">
+                                        @* Kết quả số *@
+                                        <RadzenColumn Size="12" SizeMD="4">
+                                            <RadzenCard class="rz-border-radius-6" Style="border-left: 4px solid var(--rz-primary)">
+                                                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-3">
+                                                    📐 Kết quả tính toán
+                                                </RadzenText>
+
+                                                <RadzenStack Gap="0.5rem">
+                                                    <RadzenRow>
+                                                        <RadzenColumn Size="6">
+                                                            <RadzenText TextStyle="TextStyle.Caption" style="color:var(--rz-text-secondary-color)">
+                                                                Stiffness vs Frequency
+                                                            </RadzenText>
+                                                            <RadzenText TextStyle="TextStyle.Body2" style="font-family:monospace">
+                                                                Y = A·Z + B
+                                                            </RadzenText>
+                                                        </RadzenColumn>
+                                                        <RadzenColumn Size="6">
+                                                            <RadzenText TextStyle="TextStyle.Caption" style="color:var(--rz-text-secondary-color)">
+                                                                Belt Rotation vs Freq Diff
+                                                            </RadzenText>
+                                                            <RadzenText TextStyle="TextStyle.Body2" style="font-family:monospace">
+                                                                R = C·S + D
+                                                            </RadzenText>
+                                                        </RadzenColumn>
+                                                    </RadzenRow>
+
+                                                    <RadzenRow class="rz-mt-2">
+                                                        <RadzenColumn Size="3">
+                                                            <div class="abcd-box abcd-a">
+                                                                <span class="abcd-label">A</span>
+                                                                <span class="abcd-value">@_resultAB.Slope.ToString("F3")</span>
+                                                            </div>
+                                                        </RadzenColumn>
+                                                        <RadzenColumn Size="3">
+                                                            <div class="abcd-box abcd-b">
+                                                                <span class="abcd-label">B</span>
+                                                                <span class="abcd-value">@_resultAB.Intercept.ToString("F3")</span>
+                                                            </div>
+                                                        </RadzenColumn>
+                                                        <RadzenColumn Size="3">
+                                                            <div class="abcd-box abcd-c">
+                                                                <span class="abcd-label">C</span>
+                                                                <span class="abcd-value">@_resultCD.Slope.ToString("F3")</span>
+                                                            </div>
+                                                        </RadzenColumn>
+                                                        <RadzenColumn Size="3">
+                                                            <div class="abcd-box abcd-d">
+                                                                <span class="abcd-label">D</span>
+                                                                <span class="abcd-value">@_resultCD.Intercept.ToString("F3")</span>
+                                                            </div>
+                                                        </RadzenColumn>
+                                                    </RadzenRow>
+
+                                                    <RadzenRow class="rz-mt-1">
+                                                        <RadzenColumn Size="6">
+                                                            <RadzenText TextStyle="TextStyle.Caption">
+                                                                R² = <strong>@_resultAB.R2.ToString("F4")</strong>
+                                                            </RadzenText>
+                                                        </RadzenColumn>
+                                                        <RadzenColumn Size="6">
+                                                            <RadzenText TextStyle="TextStyle.Caption">
+                                                                R² = <strong>@_resultCD.R2.ToString("F4")</strong>
+                                                            </RadzenText>
+                                                        </RadzenColumn>
+                                                    </RadzenRow>
+
+                                                    <RadzenRow class="rz-mt-2">
+                                                        <RadzenColumn Size="12">
+                                                            <RadzenAlert AlertStyle="AlertStyle.Info"
+                                                                         Shade="Shade.Lighter"
+                                                                         AllowClose="false"
+                                                                         Size="AlertSize.ExtraSmall">
+                                                                <strong>Công thức F (Belt wear):</strong><br />
+                                                                F = (−0.0006·X³ + 0.3·X² − 72.2·X) × (−0.001)
+                                                            </RadzenAlert>
+                                                        </RadzenColumn>
+                                                    </RadzenRow>
+                                                </RadzenStack>
+                                            </RadzenCard>
+                                        </RadzenColumn>
+
+                                        @* Biểu đồ Y = A*Z + B *@
+                                        <RadzenColumn Size="12" SizeMD="4">
+                                            <RadzenCard>
+                                                <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-2">
+                                                    Stiffness vs Frequency (Y = A·Z + B)
+                                                </RadzenText>
+                                                <RadzenChart Style="height:220px">
+                                                    <RadzenScatterSeries Data="@_chartABPoints"
+                                                                         CategoryProperty="X"
+                                                                         ValueProperty="Y"
+                                                                         Title="Đo thực tế"
+                                                                         Fill="var(--rz-primary)">
+                                                        <TooltipTemplate Context="pt">
+                                                            Z=@pt.X.ToString("F3") kg → Y=@pt.Y.ToString("F1") CPM
+                                                        </TooltipTemplate>
+                                                    </RadzenScatterSeries>
+                                                    <RadzenLineSeries Data="@_trendABPoints"
+                                                                      CategoryProperty="X"
+                                                                      ValueProperty="Y"
+                                                                      Title="Y = A·Z + B"
+                                                                      Stroke="var(--rz-danger)"
+                                                                      StrokeWidth="2" />
+                                                    <RadzenCategoryAxis>
+                                                        <RadzenAxisTitle Text="Stiffness Z (kg)" />
+                                                    </RadzenCategoryAxis>
+                                                    <RadzenValueAxis>
+                                                        <RadzenAxisTitle Text="Frequency (CPM)" />
+                                                    </RadzenValueAxis>
+                                                    <RadzenLegend Position="LegendPosition.Bottom" />
+                                                </RadzenChart>
+                                            </RadzenCard>
+                                        </RadzenColumn>
+
+                                        @* Biểu đồ R = C*S + D *@
+                                        <RadzenColumn Size="12" SizeMD="4">
+                                            <RadzenCard>
+                                                <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-2">
+                                                    Belt Rotation vs Freq Diff (R = C·S + D)
+                                                </RadzenText>
+                                                <RadzenChart Style="height:220px">
+                                                    <RadzenScatterSeries Data="@_chartCDPoints"
+                                                                         CategoryProperty="X"
+                                                                         ValueProperty="Y"
+                                                                         Title="Đo thực tế"
+                                                                         Fill="var(--rz-success)">
+                                                        <TooltipTemplate Context="pt">
+                                                            S=@pt.X.ToString("F1") → R=@pt.Y.ToString("F0") RPM
+                                                        </TooltipTemplate>
+                                                    </RadzenScatterSeries>
+                                                    <RadzenLineSeries Data="@_trendCDPoints"
+                                                                      CategoryProperty="X"
+                                                                      ValueProperty="Y"
+                                                                      Title="R = C·S + D"
+                                                                      Stroke="var(--rz-danger)"
+                                                                      StrokeWidth="2" />
+                                                    <RadzenCategoryAxis>
+                                                        <RadzenAxisTitle Text="Freq Diff S (CPM)" />
+                                                    </RadzenCategoryAxis>
+                                                    <RadzenValueAxis>
+                                                        <RadzenAxisTitle Text="Belt Rotation R (RPM)" />
+                                                    </RadzenValueAxis>
+                                                    <RadzenLegend Position="LegendPosition.Bottom" />
+                                                </RadzenChart>
+                                            </RadzenCard>
+                                        </RadzenColumn>
+                                    </RadzenRow>
+                                }
+
+                            </RadzenStack>
+                        </RadzenTabsItem>
+
+                    </Tabs>
+                </RadzenTabs>
+
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+</RadzenRow>
+
+<style>
+    /* ── Bảng nhập test data ── */
+    .as-test-table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 0.82rem;
+    }
+
+    .as-test-table th,
+    .as-test-table td {
+        border: 1px solid var(--rz-base-300);
+        padding: 4px 8px;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    .as-test-table thead th {
+        background: var(--rz-base-200);
+        font-weight: 600;
+    }
+
+    .group-sand1 { background: #fff3e0 !important; color: #e65100; }
+    .group-sand2 { background: #e8f5e9 !important; color: #1b5e20; }
+    .group-rpm   { background: #e3f2fd !important; color: #0d47a1; }
+    .col-idx     { background: var(--rz-base-300) !important; width: 36px; font-weight: 600; }
+    .col-diff    { background: #f3e5f5 !important; color: #6a1b9a; font-weight: 600; }
+
+    /* ── Ô kết quả ABCD ── */
+    .abcd-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        padding: 8px 4px;
+        height: 70px;
+    }
+    .abcd-label { font-size: 1.1rem; font-weight: 700; line-height: 1; }
+    .abcd-value { font-size: 0.9rem; font-family: monospace; margin-top: 4px; }
+    .abcd-a { background: #e3f2fd; color: #1565c0; }
+    .abcd-b { background: #e8f5e9; color: #2e7d32; }
+    .abcd-c { background: #fff3e0; color: #e65100; }
+    .abcd-d { background: #f3e5f5; color: #6a1b9a; }
+</style>

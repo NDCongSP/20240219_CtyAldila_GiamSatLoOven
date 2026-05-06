@@ -11,7 +11,7 @@
   "IsReadOnly": true,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:43:59.185364+07:00",
-  "ModifiedDate": "2026-04-28T07:55:07.9590047+07:00",
+  "ModifiedDate": "2026-05-03T06:38:24.1165994+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -31,7 +31,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:44:13.0399531+07:00",
-  "ModifiedDate": "2026-04-28T07:55:07.9590047+07:00",
+  "ModifiedDate": "2026-05-03T06:38:24.1165994+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -51,7 +51,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:44:17.7993086+07:00",
-  "ModifiedDate": "2026-04-28T07:55:07.9590047+07:00",
+  "ModifiedDate": "2026-05-03T19:36:51.9083004+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -298,7 +298,7 @@
   }
 },
   "Address": "400008",
-  "DataTypeName": "Word",
+  "DataTypeName": "Short",
   "RefreshRate": 100,
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
@@ -862,7 +862,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400027"
+  }
 },
   "Address": "400027",
   "DataTypeName": "Word",
@@ -870,7 +873,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -889,7 +892,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400028"
+  }
 },
   "Address": "400028",
   "DataTypeName": "Word",
@@ -897,7 +903,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -916,7 +922,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400029"
+  }
 },
   "Address": "400029",
   "DataTypeName": "Word",
@@ -924,7 +933,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -943,7 +952,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400030"
+  }
 },
   "Address": "400030",
   "DataTypeName": "Word",
@@ -951,7 +963,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -970,7 +982,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400031"
+  }
 },
   "Address": "400031",
   "DataTypeName": "Word",
@@ -978,7 +993,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -997,7 +1012,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400032"
+  }
 },
   "Address": "400032",
   "DataTypeName": "Word",
@@ -1005,7 +1023,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -1024,7 +1042,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400033"
+  }
 },
   "Address": "400033",
   "DataTypeName": "Word",
@@ -1032,7 +1053,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -1051,7 +1072,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400034"
+  }
 },
   "Address": "400034",
   "DataTypeName": "Word",
@@ -1059,7 +1083,34 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
+  "IsInternalTag": false,
+  "GUID": null,
+  "Retain": false,
+  "Childs": [],
+  "HaveTags": true,
+  "Tags": []
+},
+    {
+  "Name": "Tag1",
+  "Description": null,
+  "ItemType": "Tag",
+  "IsReadOnly": false,
+  "Enabled": true,
+  "CreatedDate": "2026-05-03T09:47:59.3087036+07:00",
+  "ModifiedDate": "2026-05-03T09:47:59.3087036+07:00",
+  "ParameterContainer": {
+  "DisplayName": null,
+  "DisplayParameters": null,
+  "Parameters": {}
+},
+  "Address": "400035",
+  "DataTypeName": "Float",
+  "RefreshRate": 100,
+  "ByteOrder": 0,
+  "AccessPermission": "ReadAndWrite",
+  "Offset": 0.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -1078,7 +1129,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:44:13.0399531+07:00",
-  "ModifiedDate": "2026-04-28T07:55:07.9590047+07:00",
+  "ModifiedDate": "2026-05-03T06:38:24.1165994+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -1098,7 +1149,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:44:17.7993086+07:00",
-  "ModifiedDate": "2026-04-28T07:55:07.9590047+07:00",
+  "ModifiedDate": "2026-05-03T06:38:24.1165994+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -1909,7 +1960,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400027"
+  }
 },
   "Address": "400027",
   "DataTypeName": "Word",
@@ -1917,7 +1971,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -1936,7 +1990,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400028"
+  }
 },
   "Address": "400028",
   "DataTypeName": "Word",
@@ -1944,7 +2001,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -1963,7 +2020,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400029"
+  }
 },
   "Address": "400029",
   "DataTypeName": "Word",
@@ -1971,7 +2031,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -1990,7 +2050,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400030"
+  }
 },
   "Address": "400030",
   "DataTypeName": "Word",
@@ -1998,7 +2061,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -2017,7 +2080,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400031"
+  }
 },
   "Address": "400031",
   "DataTypeName": "Word",
@@ -2025,7 +2091,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -2044,7 +2110,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400032"
+  }
 },
   "Address": "400032",
   "DataTypeName": "Word",
@@ -2052,7 +2121,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -2071,7 +2140,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400033"
+  }
 },
   "Address": "400033",
   "DataTypeName": "Word",
@@ -2079,7 +2151,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -2098,7 +2170,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400034"
+  }
 },
   "Address": "400034",
   "DataTypeName": "Word",
@@ -2106,7 +2181,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -2125,7 +2200,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:44:13.0399531+07:00",
-  "ModifiedDate": "2026-04-28T07:55:07.9590047+07:00",
+  "ModifiedDate": "2026-05-03T06:38:24.1165994+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -2145,7 +2220,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:44:17.7993086+07:00",
-  "ModifiedDate": "2026-04-28T07:55:07.9590047+07:00",
+  "ModifiedDate": "2026-05-03T06:38:24.1165994+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -2956,7 +3031,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400027"
+  }
 },
   "Address": "400027",
   "DataTypeName": "Word",
@@ -2964,7 +3042,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -2983,7 +3061,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400028"
+  }
 },
   "Address": "400028",
   "DataTypeName": "Word",
@@ -2991,7 +3072,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -3010,7 +3091,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400029"
+  }
 },
   "Address": "400029",
   "DataTypeName": "Word",
@@ -3018,7 +3102,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -3037,7 +3121,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400030"
+  }
 },
   "Address": "400030",
   "DataTypeName": "Word",
@@ -3045,7 +3132,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -3064,7 +3151,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400031"
+  }
 },
   "Address": "400031",
   "DataTypeName": "Word",
@@ -3072,7 +3162,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -3091,7 +3181,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400032"
+  }
 },
   "Address": "400032",
   "DataTypeName": "Word",
@@ -3099,7 +3192,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -3118,7 +3211,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400033"
+  }
 },
   "Address": "400033",
   "DataTypeName": "Word",
@@ -3126,7 +3222,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
@@ -3145,7 +3241,10 @@
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
-  "Parameters": {}
+  "Parameters": {
+    "DataType": "Word",
+    "Address": "400034"
+  }
 },
   "Address": "400034",
   "DataTypeName": "Word",
@@ -3153,7 +3252,7 @@
   "ByteOrder": 0,
   "AccessPermission": "ReadAndWrite",
   "Offset": 0.0,
-  "Gain": 10.0,
+  "Gain": 1.0,
   "IsInternalTag": false,
   "GUID": null,
   "Retain": false,
