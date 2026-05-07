@@ -63,6 +63,8 @@ namespace Scada_TrackingTIme_Revo
         private Button btnMaintenance;
         private Label titleText;
 
+        private bool _isBackstepped = false; // Biến cờ chặn việc lùi liên tục
+
         public frmProduction()
         {
             InitializeComponent();
@@ -216,6 +218,15 @@ namespace Scada_TrackingTIme_Revo
 
         private void frmProduction_FormClosing(object sender, FormClosingEventArgs e)
         {
+            //// Nếu người dùng nhấn nút X hoặc Alt+F4
+            //if (e.CloseReason == CloseReason.UserClosing)
+            //{
+            //    // Ví dụ: Chỉ cho phép đóng nếu đã nhấn nút Maintenance hoặc có biến xác thực
+            //     e.Cancel = true; 
+            //     MessageBox.Show("Bạn không có quyền thoát ứng dụng!");
+            //     return;
+            //}
+
             try
             {
                 _txtPart.KeyDown -= _txtPart_KeyDown;
@@ -251,6 +262,9 @@ namespace Scada_TrackingTIme_Revo
             //ddocj gias trij config
             using (var dbContext = new ApplicationDbContext())
             {
+                // Sử dụng ExecuteSqlCommandAsync thay cho ExecuteSqlRawAsync
+                await dbContext.Database.ExecuteSqlCommandAsync("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED");
+
                 var constring = dbContext.Database.Connection.ConnectionString;
                 GlobalVariable.IpDbServer = constring.Split(';')[0].Split('=')[1];
 
@@ -402,7 +416,9 @@ namespace Scada_TrackingTIme_Revo
 
         private void BtnClose_Click(object sender, EventArgs e)
         {
-            this.Close();
+            if (MessageBox.Show("Bạn có chắc chắn muốn thoát ứng dụng không?", "Cảnh Báo", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+                == DialogResult.Yes)
+                this.Close();
         }
 
         private void BtnMaximize_Click(object sender, EventArgs e)
@@ -430,6 +446,13 @@ namespace Scada_TrackingTIme_Revo
             if (e.KeyCode == Keys.Up)
             {
                 //MessageBox.Show("Nhấn mũi tên lên");
+
+                // Kiểm tra nếu đã lùi rồi thì không cho lùi tiếp
+                if (_isBackstepped)
+                {
+                    Debug.WriteLine("Đã lùi 1 bước rồi, phải chờ bước này chạy mới được lùi tiếp.");
+                    return;
+                }
 
                 var currentStep = GlobalVariable.RevoRealtimeModel.Steps
                               .FirstOrDefault(s =>
@@ -473,6 +496,15 @@ namespace Scada_TrackingTIme_Revo
 
                         UpdateStepUI(currentStep, 2);
                         UpdateStepUI(previousStep, 1);
+
+                        // KHOÁ LẠI: Đã lùi xong, không cho lùi nữa
+                        _isBackstepped = true;
+                    }
+                    else
+                    {
+                        // Nếu là bước đầu tiên (không có bước trước đó), chỉ reset chính nó
+                        currentStep.StartAt = null;
+                        UpdateStepUI(currentStep, 1);
                     }
                 }
                 else if (e.KeyCode == Keys.Down)
@@ -558,6 +590,16 @@ namespace Scada_TrackingTIme_Revo
                     {
                         goto Loop1;
                     }
+                    //// Thay vì dùng goto Loop1
+                    //int retryCount = 0;
+                    //while (!PC_ALLOW_RUN_TO_PLC && retryCount < 3)
+                    //{
+                    //    await _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/PC_ALLOW_RUN_TO_PLC"
+                    //        , "1"
+                    //        , WritePiority.High);
+                    //    await Task.Delay(100); // Chờ một chút để PLC phản hồi
+                    //    retryCount++;
+                    //}
 
                     await _easyDriverConnector.WriteTagAsync($"{GlobalVariable.RevoConfig.Path}/TOC_DO_HZ"
                                                             , currentStep?.Speed_Hz.ToString() ?? "0"
@@ -622,20 +664,6 @@ namespace Scada_TrackingTIme_Revo
                 await Task.Delay(100, token); // Chờ 1 giây trước khi lặp lại
             }
         }
-        string PingServer(string host)
-        {
-            try
-            {
-                Ping ping = new Ping();
-                PingReply reply = ping.Send(host, 3000); // timeout 3s
-
-                return reply.Status == IPStatus.Success ? "Good" : "Bad";
-            }
-            catch
-            {
-                return "Bad";
-            }
-        }
 
         private async Task TaskCheckTimeStepAsync(CancellationToken token)
         {
@@ -664,6 +692,13 @@ namespace Scada_TrackingTIme_Revo
                                 currentStep.StartAt = DateTime.Now;
                                 Log.Information($"Bắt đầu step {currentStep.StepIndex} - {currentStep.StepName} lúc {currentStep.StartAt}");
                                 Debug.WriteLine($"Bắt đầu step {currentStep.StepIndex} - {currentStep.StepName} lúc {currentStep.StartAt}");
+
+                                // Khi có một bước bất kỳ đang chạy, ta cho phép lùi lại (nếu cần) ở lần tới
+                                if (_isBackstepped)
+                                {
+                                    _isBackstepped = false;
+                                    Debug.WriteLine("Bước đang chạy, đã mở khóa cho phép lùi bước tiếp theo.");
+                                }
                             }
                         }
                         else
@@ -954,8 +989,8 @@ namespace Scada_TrackingTIme_Revo
 
                     lblStep.Text = $"{step.StepName} - {startAtText} -> {endAtText}: {step.TotalRunTime}s" +
                         $"{Environment.NewLine}" +
-                        $"Pul={step.SoLuongXung}({step.SoLuongXung/GlobalVariable.RevoConfig.Pulse_Rev} v) " +
-                        $"- Speed = {step.Speed_Hz} ({step.Speed_Hz/GlobalVariable.RevoConfig.Pulse_Rev} v/s)";
+                        $"Pul={step.SoLuongXung}({step.SoLuongXung / GlobalVariable.RevoConfig.Pulse_Rev} v) " +
+                        $"- Speed = {step.Speed_Hz} ({step.Speed_Hz / GlobalVariable.RevoConfig.Pulse_Rev} v/s)";
 
                     if ((step.StartAt.HasValue && !step.EndAt.HasValue) || isFirst == 1)
                     {
@@ -1009,6 +1044,9 @@ namespace Scada_TrackingTIme_Revo
         {
             using (var dbContext = new ApplicationDbContext())
             {
+                // Sử dụng ExecuteSqlCommandAsync thay cho ExecuteSqlRawAsync
+                await dbContext.Database.ExecuteSqlCommandAsync("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED");
+
                 #region Data log
                 var createdAt = DateTime.Now;
                 var createdMachine = Environment.MachineName;
@@ -1098,8 +1136,10 @@ namespace Scada_TrackingTIme_Revo
         private async Task<RevoGetTotalShaftCountDto> GetTotalShaftAsync()
         {
             using var dbContext = new ApplicationDbContext();
+            // Sử dụng ExecuteSqlCommandAsync thay cho ExecuteSqlRawAsync
+            await dbContext.Database.ExecuteSqlCommandAsync("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED");
 
-            var data =await dbContext.Database
+            var data = await dbContext.Database
                 .SqlQuery<RevoGetTotalShaftCountDto>($"EXEC sp_GetTotalShaft @RevoId = {GlobalVariable.RevoConfig.Id}")
                 .FirstOrDefaultAsync();
 
