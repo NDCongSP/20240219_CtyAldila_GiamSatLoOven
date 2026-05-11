@@ -28,12 +28,12 @@ namespace GiamSat.API.Controllers
             try
             {
                 var ft11 = await _context.FT11_TemperatureRealtimes.FirstOrDefaultAsync();
-                if (ft11 == null || string.IsNullOrEmpty(ft11.C001_Data))
+                if (ft11 == null || string.IsNullOrEmpty(ft11.C000))
                 {
                     return Ok(new List<TemperatureRealtimeModel>());
                 }
 
-                var data = JsonConvert.DeserializeObject<List<TemperatureRealtimeModel>>(ft11.C001_Data);
+                var data = JsonConvert.DeserializeObject<List<TemperatureRealtimeModel>>(ft11.C000);
                 return Ok(data ?? new List<TemperatureRealtimeModel>());
             }
             catch (Exception ex)
@@ -81,14 +81,14 @@ namespace GiamSat.API.Controllers
                     ft11 = new FT11_TemperatureRealtime
                     {
                         Id = Guid.NewGuid(),
-                        C001_Data = jsonString,
+                        C000 = jsonString,
                         CreatedAt = now
                     };
                     await _context.FT11_TemperatureRealtimes.AddAsync(ft11);
                 }
                 else
                 {
-                    ft11.C001_Data = jsonString;
+                    ft11.C000 = jsonString;
                     _context.FT11_TemperatureRealtimes.Update(ft11);
                 }
 
@@ -116,7 +116,7 @@ namespace GiamSat.API.Controllers
                                 LocationId = model.Id,
                                 LocationName = model.Name,
                                 Path = model.Path,
-                                PV = model.PV,
+                                PV_Alarm = model.PV,
                                 SV_High = model.Config.HightLevel,
                                 SV_Low = model.Config.LowLevel,
                                 Description = model.PV > model.Config.HightLevel ? 
@@ -131,6 +131,7 @@ namespace GiamSat.API.Controllers
                         if (existingAlarm != null)
                         {
                             // End existing alarm
+                            existingAlarm.PV_Normal = model.PV;
                             existingAlarm.UpdateddAt = now;
                             existingAlarm.Description += $" | Đã khôi phục PV = {model.PV}°C";
                             _context.FT13_TemperatureAlarmLogs.Update(existingAlarm);

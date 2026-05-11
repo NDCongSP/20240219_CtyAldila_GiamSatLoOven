@@ -16,13 +16,9 @@ namespace GiamSat.UI.Pages
         [Inject] private NotificationService NotificationService { get; set; } = default!;
         [Inject] private DialogService DialogService { get; set; } = default!;
 
-        private RadzenDataGrid<TemperatureConfigsModel> _dataGrid = default!;
-        private List<TemperatureConfigsModel> _configs = new List<TemperatureConfigsModel>();
+        private RadzenDataGrid<TemperatureLocationModel> _dataGrid = default!;
+        private TemperatureConfigsModel _config = new TemperatureConfigsModel { LocationsConfig = new List<TemperatureLocationModel>() };
         private bool _isLoading = true;
-
-        private int _globalTimerRealtime = 10;
-        private int _globalTimerDatalog = 300;
-        private double _globalTimeBlinkAlarm = 1000;
 
         protected override async Task OnInitializedAsync()
         {
@@ -38,13 +34,10 @@ namespace GiamSat.UI.Pages
                 var result = await _temperatureConfigClient.GetConfigsAsync();
                 if (result != null)
                 {
-                    _configs = result.ToList();
-                    var first = _configs.FirstOrDefault();
-                    if (first != null)
+                    _config = result;
+                    if (_config.LocationsConfig == null)
                     {
-                        _globalTimerRealtime = first.TimerRealtimeLog;
-                        _globalTimerDatalog = first.TimerDataLog;
-                        _globalTimeBlinkAlarm = first.TimeBlinkAlarm;
+                        _config.LocationsConfig = new List<TemperatureLocationModel>();
                     }
                 }
             }
@@ -63,15 +56,13 @@ namespace GiamSat.UI.Pages
         {
             try
             {
-                // Sync global settings to all items before save
-                foreach(var c in _configs)
+                // Notify winform to reload
+                foreach (var loc in _config.LocationsConfig)
                 {
-                    c.TimerRealtimeLog = _globalTimerRealtime;
-                    c.TimerDataLog = _globalTimerDatalog;
-                    c.TimeBlinkAlarm = _globalTimeBlinkAlarm;
+                    loc.TriggerUpdate = true;
                 }
 
-                await _temperatureConfigClient.SaveConfigsAsync(_configs);
+                await _temperatureConfigClient.SaveConfigsAsync(_config);
                 NotificationService.Notify(NotificationSeverity.Success, "Thành công", "Đã lưu cấu hình thành công");
             }
             catch (Exception ex)
@@ -87,51 +78,50 @@ namespace GiamSat.UI.Pages
 
         private async Task InsertRow()
         {
-            var conf = new TemperatureConfigsModel {
-                Id = _configs.Count > 0 ? _configs.Max(x => x.Id ?? 0) + 1 : 1,
-                Name = $"Lò mới {_configs.Count + 1}",
-                Path = "Local Station/Channel_Revo/Device1",
+            var conf = new TemperatureLocationModel {
+                Id = _config.LocationsConfig.Count > 0 ? _config.LocationsConfig.Max(x => x.Id ?? 0) + 1 : 1,
+                Name = $"Lò mới {_config.LocationsConfig.Count + 1}",
+                Path = "Local Station/ChannelTemperature1/Device1",
                 Offset = 0,
                 HightLevel = 45,
-                LowLevel = -30,
-                TimeBlinkAlarm = 1000
+                LowLevel = -30
             };
             
             await _dataGrid.InsertRow(conf);
         }
 
-        private async Task OnCreateRow(TemperatureConfigsModel config)
+        private async Task OnCreateRow(TemperatureLocationModel config)
         {
-            _configs.Add(config);
+            _config.LocationsConfig.Add(config);
             await SaveData();
             await _dataGrid.Reload();
         }
 
-        private async Task EditRow(TemperatureConfigsModel config)
+        private async Task EditRow(TemperatureLocationModel config)
         {
             await _dataGrid.EditRow(config);
         }
 
-        private async Task OnUpdateRow(TemperatureConfigsModel config)
+        private async Task OnUpdateRow(TemperatureLocationModel config)
         {
             await SaveData();
         }
 
-        private void CancelEdit(TemperatureConfigsModel config)
+        private void CancelEdit(TemperatureLocationModel config)
         {
             _dataGrid.CancelEditRow(config);
         }
 
-        private async Task DeleteRow(TemperatureConfigsModel config)
+        private async Task DeleteRow(TemperatureLocationModel config)
         {
-            if (_configs.Contains(config))
+            if (_config.LocationsConfig.Contains(config))
             {
                 var confirm = await DialogService.Confirm($"Bạn có chắc muốn xóa {config.Name}?", "Xác nhận xóa",
                     new ConfirmOptions { OkButtonText = "Xóa", CancelButtonText = "Hủy" });
 
                 if (confirm == true)
                 {
-                    _configs.Remove(config);
+                    _config.LocationsConfig.Remove(config);
                     await SaveData();
                     await _dataGrid.Reload();
                 }

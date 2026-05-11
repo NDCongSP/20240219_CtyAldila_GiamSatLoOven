@@ -1,7 +1,10 @@
 @page "/temperature/report"
+@using Radzen
+@using Radzen.Blazor
 @using GiamSat.APIClient
 @using Microsoft.AspNetCore.Authorization
-@attribute [Authorize]
+@attribute [Authorize(Policy = GiamSat.Models.AppPermissions.Temperature_Report_View)]
+
 
 <RadzenRow Gap="1rem">
     <RadzenColumn Size="12">
@@ -20,7 +23,12 @@
             <RadzenDatePicker @bind-Value="_toDate" Style="width: 100%;" DateFormat="dd/MM/yyyy" />
         </RadzenColumn>
         <RadzenColumn Size="12" SizeMD="4">
-            <RadzenButton Text="Tra cứu" Icon="search" ButtonStyle="ButtonStyle.Primary" Click="@LoadData" Style="width: 100%;" IsBusy="_isLoading" />
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                <RadzenButton Text="Tra cứu" Icon="search" ButtonStyle="ButtonStyle.Primary" Click="@LoadData" IsBusy="_isLoading" />
+                <AuthorizeView Policy="@GiamSat.Models.AppPermissions.Temperature_Report_Export">
+                    <RadzenButton Text="Xuất Excel" Icon="file_download" ButtonStyle="ButtonStyle.Success" Click="@ExportExcel" Disabled="@(_logs == null || !_logs.Any())" />
+                </AuthorizeView>
+            </RadzenStack>
         </RadzenColumn>
     </RadzenRow>
 </RadzenCard>
@@ -31,8 +39,6 @@
                 AllowPaging="true" 
                 PageSize="15"
                 AllowSorting="true"
-                AllowFiltering="true"
-                FilterMode="FilterMode.Simple"
                 IsLoading="@_isLoading"
                 class="rz-shadow-3">
     <Columns>

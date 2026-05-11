@@ -10530,21 +10530,21 @@ namespace GiamSat.APIClient
     {
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TemperatureConfigsModel>> GetConfigsAsync();
+        System.Threading.Tasks.Task<TemperatureConfigsModel> GetConfigsAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TemperatureConfigsModel>> GetConfigsAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<TemperatureConfigsModel> GetConfigsAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<TemperatureConfigsModel> SaveConfigsAsync(System.Collections.Generic.IEnumerable<TemperatureConfigsModel>? body);
+        System.Threading.Tasks.Task<TemperatureConfigsModel> SaveConfigsAsync(TemperatureConfigsModel body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<TemperatureConfigsModel> SaveConfigsAsync(System.Collections.Generic.IEnumerable<TemperatureConfigsModel>? body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<TemperatureConfigsModel> SaveConfigsAsync(TemperatureConfigsModel body, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -10578,7 +10578,7 @@ namespace GiamSat.APIClient
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TemperatureConfigsModel>> GetConfigsAsync()
+        public virtual System.Threading.Tasks.Task<TemperatureConfigsModel> GetConfigsAsync()
         {
             return GetConfigsAsync(System.Threading.CancellationToken.None);
         }
@@ -10586,7 +10586,7 @@ namespace GiamSat.APIClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TemperatureConfigsModel>> GetConfigsAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<TemperatureConfigsModel> GetConfigsAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -10627,7 +10627,7 @@ namespace GiamSat.APIClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<TemperatureConfigsModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<TemperatureConfigsModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -10656,7 +10656,7 @@ namespace GiamSat.APIClient
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<TemperatureConfigsModel> SaveConfigsAsync(System.Collections.Generic.IEnumerable<TemperatureConfigsModel>? body)
+        public virtual System.Threading.Tasks.Task<TemperatureConfigsModel> SaveConfigsAsync(TemperatureConfigsModel body)
         {
             return SaveConfigsAsync(body, System.Threading.CancellationToken.None);
         }
@@ -10664,7 +10664,7 @@ namespace GiamSat.APIClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<TemperatureConfigsModel> SaveConfigsAsync(System.Collections.Generic.IEnumerable<TemperatureConfigsModel>? body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<TemperatureConfigsModel> SaveConfigsAsync(TemperatureConfigsModel body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -11963,14 +11963,14 @@ namespace GiamSat.APIClient
         [System.Text.Json.Serialization.JsonPropertyName("path")]
         public string? Path { get; set; } = default!;
 
+        [System.Text.Json.Serialization.JsonPropertyName("endedAt")]
+        public System.DateTime? EndedAt { get; set; } = default!;
+
         [System.Text.Json.Serialization.JsonPropertyName("pV_Alarm")]
         public double? PV_Alarm { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("pV_Normal")]
         public double? PV_Normal { get; set; } = default!;
-
-        [System.Text.Json.Serialization.JsonPropertyName("endedAt")]
-        public System.DateTime? EndedAt { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("sV_High")]
         public double? SV_High { get; set; } = default!;
@@ -12638,7 +12638,25 @@ namespace GiamSat.APIClient
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class TemperatureConfigsModel
     {
+        [System.Text.Json.Serialization.JsonPropertyName("timeBlinkAlarm")]
+        public double TimeBlinkAlarm { get; set; } = default!;
 
+        [System.Text.Json.Serialization.JsonPropertyName("intervalRealtimeUI")]
+        public double IntervalRealtimeUI { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("intervalRealtime")]
+        public double IntervalRealtime { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("intervalDataLog")]
+        public double IntervalDataLog { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("locationsConfig")]
+        public System.Collections.Generic.ICollection<TemperatureLocationModel>? LocationsConfig { get; set; } = default!;
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class TemperatureLocationModel
+    {
         [System.Text.Json.Serialization.JsonPropertyName("id")]
         public int? Id { get; set; } = default!;
 
@@ -12657,18 +12675,8 @@ namespace GiamSat.APIClient
         [System.Text.Json.Serialization.JsonPropertyName("lowLevel")]
         public double LowLevel { get; set; } = default!;
 
-        [System.Text.Json.Serialization.JsonPropertyName("timeBlinkAlarm")]
-        public double TimeBlinkAlarm { get; set; } = default!;
-
-        [System.Text.Json.Serialization.JsonPropertyName("flagOffset")]
-        public bool FlagOffset { get; set; } = default!;
-
-        [System.Text.Json.Serialization.JsonPropertyName("timerRealtimeLog")]
-        public int TimerRealtimeLog { get; set; } = default!;
-
-        [System.Text.Json.Serialization.JsonPropertyName("timerDataLog")]
-        public int TimerDataLog { get; set; } = default!;
-
+        [System.Text.Json.Serialization.JsonPropertyName("triggerUpdate")]
+        public bool TriggerUpdate { get; set; } = default!;
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -12703,7 +12711,7 @@ namespace GiamSat.APIClient
         public string? AlarmDescription { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("config")]
-        public TemperatureConfigsModel Config { get; set; } = default!;
+        public TemperatureLocationModel Config { get; set; } = default!;
 
     }
 

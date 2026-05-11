@@ -85,15 +85,19 @@
                          Icon="thermostat"
                          Expanded="false">
         <ChildContent>
-            <AuthorizeView Policy="@AppPermissions.Revo_Config_View">
+            <AuthorizeView Policy="@AppPermissions.Temperature_Home_View">
                 <RadzenPanelMenuItem Text="Trạm điều hành"
                                      Icon="dashboard"
                                      Path="/temperature/dashboard"
                                      Match="NavLinkMatch.All"/>
+            </AuthorizeView>
+            <AuthorizeView Policy="@AppPermissions.Temperature_Config_View">
                 <RadzenPanelMenuItem Text="Cấu hình"
                                      Icon="build"
                                      Path="/temperature/config"
                                      Match="NavLinkMatch.All"/>
+            </AuthorizeView>
+            <AuthorizeView Policy="@AppPermissions.Temperature_Report_View">
                 <RadzenPanelMenuItem Text="Cảnh báo sự cố"
                                      Icon="report"
                                      Path="/temperature/report"

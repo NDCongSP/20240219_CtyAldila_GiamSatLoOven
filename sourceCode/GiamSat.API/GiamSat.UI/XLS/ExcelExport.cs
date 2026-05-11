@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using ClosedXML.Report;
 using DocumentFormat.OpenXml.Office2021.PowerPoint.Designer;
 using GiamSat.APIClient;
@@ -211,6 +211,64 @@ namespace GiamSat.UI
             wb.SaveAs(XLSStream);
 
             return XLSStream.ToArray();
+        }
+
+        public async Task<byte[]> GenerateTemperatureAlarmExcelAsync(List<GiamSat.APIClient.FT13_TemperatureAlarmLog> data, string dateQuery)
+        {
+            using (var wb = new XLWorkbook())
+            {
+                var ws = wb.Worksheets.Add("AlarmReport");
+
+                ws.Range(1, 1, 1, 7).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center)
+                .Alignment.SetVertical(XLAlignmentVerticalValues.Center)
+                .Font.SetFontSize(15).Font.SetBold(true);
+
+                ws.Range(2, 1, 2, 7).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center)
+               .Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+
+                ws.Cell(1, 1).Value = "BÁO CÁO CẢNH BÁO NHIỆT ĐỘ";
+                ws.Cell(1, 1).Style.Fill.BackgroundColor = XLColor.Orange;
+                ws.Cell(2, 1).Value = $"Thời gian: {dateQuery}";
+
+                ws.Cell(3, 1).Value = "Thời gian bắt đầu";
+                ws.Cell(3, 2).Value = "Thời gian phục hồi";
+                ws.Cell(3, 3).Value = "Khu vực";
+                ws.Cell(3, 4).Value = "Device Tag";
+                ws.Cell(3, 5).Value = "Nhiệt độ (Báo động)";
+                ws.Cell(3, 6).Value = "Nhiệt độ (Phục hồi)";
+                ws.Cell(3, 7).Value = "Chi tiết chẩn đoán";
+
+                ws.Range(3, 1, 3, 7).SetAutoFilter(true);
+                ws.Range(3, 1, 3, 7).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+                ws.Range($"A3:G{data.Count + 3}").Style.Border.SetInsideBorder(XLBorderStyleValues.Thin)
+                                       .Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+
+                var row = 0;
+                foreach (var item in data)
+                {
+                    ws.Cell(row + 4, 1).Value = item.CreatedAt?.ToString("yyyy-MM-dd HH:mm:ss");
+                    ws.Cell(row + 4, 2).Value = item.EndedAt.HasValue ? item.EndedAt.Value.ToString("yyyy-MM-dd HH:mm:ss") : "Đang báo động";
+                    ws.Cell(row + 4, 3).Value = item.LocationName;
+                    ws.Cell(row + 4, 4).Value = item.Path;
+                    ws.Cell(row + 4, 5).Value = item.PV_Alarm;
+                    ws.Cell(row + 4, 6).Value = item.PV_Normal;
+                    ws.Cell(row + 4, 7).Value = item.Description;
+
+                    row += 1;
+                }
+
+                ws.Columns().AdjustToContents();
+
+                var bytes = new byte[0];
+                using (var ms = new MemoryStream())
+                {
+                    wb.SaveAs(ms);
+                    bytes = ms.ToArray();
+                }
+
+                return await Task.FromResult(bytes);
+            }
         }
     }
 

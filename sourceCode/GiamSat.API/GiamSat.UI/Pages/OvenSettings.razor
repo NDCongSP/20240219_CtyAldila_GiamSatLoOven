@@ -1,6 +1,9 @@
 @page "/oven/{OvenId:int}/settings"
+@using Radzen
+@using Radzen.Blazor
 @using GiamSat.Models
 @attribute [Authorize(Policy = AppPermissions.Oven_Settings_View)]
+
 
 @if (_configInfo == null)
 {

@@ -3,6 +3,8 @@
 	<PropertyGroup>
 		<TargetFrameworks>net7.0;net48</TargetFrameworks>
 		<LangVersion>9.0</LangVersion>
+		<Nullable>enable</Nullable>
+		<NoWarn>$(NoWarn);CS8618</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>

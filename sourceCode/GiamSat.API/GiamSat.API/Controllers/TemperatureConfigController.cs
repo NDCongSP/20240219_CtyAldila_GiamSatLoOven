@@ -27,7 +27,7 @@ namespace GiamSat.API.Controllers
         /// Get the first active FT10_TemperatureConfig data and deserialize it into a list
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<List<TemperatureConfigsModel>>> GetConfigs()
+        public async Task<ActionResult<TemperatureConfigsModel>> GetConfigs()
         {
             try
             {
@@ -36,11 +36,11 @@ namespace GiamSat.API.Controllers
 
                 if (ft10 == null || string.IsNullOrEmpty(ft10.C000))
                 {
-                    return Ok(new List<TemperatureConfigsModel>()); // Return empty list if no config exists
+                    return Ok(new TemperatureConfigsModel { LocationsConfig = new List<TemperatureLocationModel>() }); // Return empty config
                 }
 
-                var configs = JsonConvert.DeserializeObject<List<TemperatureConfigsModel>>(ft10.C000);
-                return Ok(configs ?? new List<TemperatureConfigsModel>());
+                var config = JsonConvert.DeserializeObject<TemperatureConfigsModel>(ft10.C000);
+                return Ok(config ?? new TemperatureConfigsModel { LocationsConfig = new List<TemperatureLocationModel>() });
             }
             catch (Exception ex)
             {
@@ -51,14 +51,14 @@ namespace GiamSat.API.Controllers
         /// Save a list of TemperatureConfigsModel back to the FT10_TemperatureConfig C000 field
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<TemperatureConfigsModel>> SaveConfigs([FromBody] List<TemperatureConfigsModel> configs)
+        public async Task<ActionResult<TemperatureConfigsModel>> SaveConfigs([FromBody] TemperatureConfigsModel config)
         {
             try
             {
                 var ft10 = await _context.FT10_TemperatureConfigs
                     .FirstOrDefaultAsync(f => f.Actived == true);
 
-                var jsonString = JsonConvert.SerializeObject(configs);
+                var jsonString = JsonConvert.SerializeObject(config);
 
                 if (ft10 == null)
                 {
@@ -68,7 +68,6 @@ namespace GiamSat.API.Controllers
                         Id = Guid.NewGuid(),
                         C000 = jsonString,
                         Actived = true,
-                        IsConfigChanged = true,
                         CreatedAt = DateTime.Now
                     };
                     await _context.FT10_TemperatureConfigs.AddAsync(ft10);
@@ -77,7 +76,6 @@ namespace GiamSat.API.Controllers
                 {
                     // Update existing row
                     ft10.C000 = jsonString;
-                    ft10.IsConfigChanged = true;
                     _context.FT10_TemperatureConfigs.Update(ft10);
                 }
 
