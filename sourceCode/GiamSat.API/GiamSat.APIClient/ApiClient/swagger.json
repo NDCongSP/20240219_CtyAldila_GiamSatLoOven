@@ -5085,6 +5085,11 @@
             "type": "string",
             "nullable": true
           },
+          "length": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
           "freqTarget": {
             "type": "number",
             "format": "double",
@@ -5334,15 +5339,15 @@
             "type": "string",
             "nullable": true
           },
-          "message": {
-            "type": "string",
-            "nullable": true
-          },
           "correlationId": {
             "type": "string",
             "nullable": true
           },
           "source": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
             "type": "string",
             "nullable": true
           },

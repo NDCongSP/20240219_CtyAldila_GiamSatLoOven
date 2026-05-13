@@ -234,7 +234,7 @@ namespace GiamSat.UI
             }
         }
 
-        public async Task<APIClient.Response> ResetPassword(GiamSat.Models.ResetPasswordModel model)
+        public async Task<APIClient.Response> ResetPassword(APIClient.ResetPasswordModel model)
         {
             try
             {

@@ -12345,6 +12345,9 @@ namespace GiamSat.APIClient
         [System.Text.Json.Serialization.JsonPropertyName("partName")]
         public string? PartName { get; set; } = default!;
 
+        [System.Text.Json.Serialization.JsonPropertyName("length")]
+        public double? Length { get; set; } = default!;
+
         [System.Text.Json.Serialization.JsonPropertyName("freqTarget")]
         public double? FreqTarget { get; set; } = default!;
 
@@ -12519,14 +12522,14 @@ namespace GiamSat.APIClient
         [System.Text.Json.Serialization.JsonPropertyName("level")]
         public string? Level { get; set; } = default!;
 
-        [System.Text.Json.Serialization.JsonPropertyName("message")]
-        public string? Message { get; set; } = default!;
-
         [System.Text.Json.Serialization.JsonPropertyName("correlationId")]
         public string? CorrelationId { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("source")]
         public string? Source { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("message")]
+        public string? Message { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("raw")]
         public string? Raw { get; set; } = default!;
