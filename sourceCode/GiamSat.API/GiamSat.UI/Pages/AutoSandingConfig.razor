@@ -182,131 +182,29 @@
                                     {
                                         <hr style="border-color:var(--rz-info-light); margin:0.5rem 0" />
                                         <div class="guide-body">
-
-                                            @* BƯỚC 1 *@
                                             <div class="guide-step">
                                                 <span class="guide-badge" style="background:var(--rz-warning)">1</span>
-                                                <div style="flex:1">
-                                                    <strong>Sand lần 1 — Thu thập Fre1 &amp; Stiffness Z</strong>
-                                                    <p class="guide-p">Chạy từng shaft qua máy sand với <em>1 tốc độ belt cố định</em>. Sau khi sand xong, đo ngay:</p>
-                                                    <ul class="guide-ul">
-                                                        <li><em style="color:#e65100">Fre1 (CPM)</em> – tần số dao động của shaft đo bằng thiết bị rung.</li>
-                                                        <li><em style="color:#e65100">Stiffness Z (Kg)</em> – độ cứng đo theo chiều Z (lực / độ võng).</li>
-                                                    </ul>
-                                                    <p class="guide-p">Nhập cả hai giá trị vào bảng. Mỗi shaft = 1 dòng.</p>
-                                                </div>
+                                                <div><strong>Sand lần 1</strong> – Chạy từng shaft qua máy sand với 1 tốc độ cố định. Đo và nhập <em style="color:#e65100">Fre1 (CPM)</em> + <em style="color:#e65100">Stiffness Z (Kg)</em>.</div>
                                             </div>
-
-                                            @* BƯỚC 2 *@
                                             <div class="guide-step">
                                                 <span class="guide-badge" style="background:var(--rz-info)">2</span>
-                                                <div style="flex:1">
-                                                    <strong>Sand lần 2 — Thu thập RPM, Fre2 &amp; Stiffness Y</strong>
-                                                    <p class="guide-p">Sand lại các shaft theo từng mức tốc độ belt tăng dần (VD: 100, 200, 300, 400, 500 RPM — cứ 2 shaft/mức). Sau mỗi lần sand, đo:</p>
-                                                    <ul class="guide-ul">
-                                                        <li><em style="color:#0d47a1">RPM</em> – tốc độ belt đã dùng.</li>
-                                                        <li><em style="color:#1b5e20">Fre2 (CPM)</em> – tần số dao động sau sand lần 2.</li>
-                                                        <li><em style="color:#1b5e20">Stiffness Y (Kg)</em> – độ cứng theo chiều Y sau sand lần 2.</li>
-                                                    </ul>
-                                                    <p class="guide-p">Cột <em style="color:#6a1b9a"><strong>Freq Diff S</strong> = Fre1 − Fre2</em> được tính tự động — đây là lượng tần số thay đổi do sand.</p>
-                                                </div>
+                                                <div><strong>Sand lần 2</strong> – Cứ 2 shaft chạy 1 tốc độ, tăng dần (VD: 100→500 RPM). Nhập <em style="color:#0d47a1">RPM</em>, đo <em style="color:#1b5e20">Fre2</em> + <em style="color:#1b5e20">Stiffness Y</em>. Cột <em style="color:#6a1b9a">Freq Diff S</em> tự tính = Fre1−Fre2.</div>
                                             </div>
-
-                                            @* BƯỚC 3 - TÍNH A, B *@
                                             <div class="guide-step">
-                                                <span class="guide-badge" style="background:var(--rz-primary)">3a</span>
-                                                <div style="flex:1">
-                                                    <strong>Tính A, B — Hồi quy tuyến tính: Y = A·Z + B</strong>
-                                                    <p class="guide-p">
-                                                        Mục tiêu: tìm đường thẳng khớp nhất với tập dữ liệu <em>(Stiffness Y → Fre2)</em>.<br />
-                                                        Đặt: <code>x = Stiffness Y (Kg)</code>, <code>y = Fre2 (CPM)</code>, <code>n = số dòng dữ liệu</code>.
-                                                    </p>
-                                                    <div class="guide-math-block">
-                                                        <div class="guide-math-title">Công thức hồi quy tuyến tính (Ordinary Least Squares):</div>
-                                                        <div class="guide-math-row">
-                                                            <span class="guide-math-label" style="color:var(--rz-primary)">A (slope)</span>
-                                                            <span class="guide-math-eq">= <strong>(n·Σ(x·y) − Σx·Σy) / (n·Σx² − (Σx)²)</strong></span>
-                                                        </div>
-                                                        <div class="guide-math-row">
-                                                            <span class="guide-math-label" style="color:var(--rz-primary)">B (intercept)</span>
-                                                            <span class="guide-math-eq">= <strong>(Σy − A·Σx) / n</strong></span>
-                                                        </div>
-                                                        <div class="guide-math-row">
-                                                            <span class="guide-math-label">R² (độ khớp)</span>
-                                                            <span class="guide-math-eq">= <strong>1 − SS<sub>res</sub>/SS<sub>tot</sub></strong> &nbsp;|&nbsp; SS<sub>tot</sub> = Σ(y−ȳ)² &nbsp;|&nbsp; SS<sub>res</sub> = Σ(y−(A·x+B))²</span>
-                                                        </div>
+                                                <span class="guide-badge" style="background:var(--rz-success)">3</span>
+                                                <div>
+                                                    <strong>Nhấn "Tính A,B,C,D"</strong> – Hồi quy tuyến tính trên 2 tập:
+                                                    <div class="guide-formula-row">
+                                                        <div class="guide-formula-box" style="border-color:var(--rz-primary)"><span style="color:var(--rz-primary)">Y = <b>A</b>·Z + <b>B</b></span><br /><small>Y=Fre2(CPM), Z=Stiffness(Kg)</small></div>
+                                                        <div class="guide-formula-box" style="border-color:var(--rz-success)"><span style="color:var(--rz-success)">R = <b>C</b>·S + <b>D</b></span><br /><small>R=RPM, S=Fre1−Fre2</small></div>
+                                                        <div class="guide-formula-box" style="border-color:var(--rz-warning-dark)"><span style="color:var(--rz-warning-dark)">F = (−0.0006·X³+0.3·X²−72.2·X)×(−0.001)</span><br /><small>X=số shaft đã mài</small></div>
                                                     </div>
-                                                    <p class="guide-p guide-example">
-                                                        <strong>Ví dụ (2 dòng):</strong> x=[2.546, 2.526], y=[308.1, 306.3], n=2<br />
-                                                        Σx=5.072 | Σy=614.4 | Σxy=2.546×308.1+2.526×306.3=1562.3+773.3=... → A≈102, B≈46<br />
-                                                        <em>Nghĩa là: mỗi kg Stiffness tăng thêm → Fre2 tăng ~102 CPM.</em>
-                                                    </p>
                                                 </div>
                                             </div>
-
-                                            @* BƯỚC 3b - TÍNH C, D *@
-                                            <div class="guide-step">
-                                                <span class="guide-badge" style="background:var(--rz-success)">3b</span>
-                                                <div style="flex:1">
-                                                    <strong>Tính C, D — Hồi quy tuyến tính: R = C·S + D</strong>
-                                                    <p class="guide-p">
-                                                        Mục tiêu: tìm mối quan hệ giữa <em>lượng tần số thay đổi → tốc độ belt cần thiết</em>.<br />
-                                                        Đặt: <code>x = Freq Diff S = Fre1−Fre2 (CPM)</code>, <code>y = RPM</code>, <code>n = số dòng</code>.
-                                                    </p>
-                                                    <div class="guide-math-block">
-                                                        <div class="guide-math-title">Cùng công thức OLS, nhưng trên tập dữ liệu khác:</div>
-                                                        <div class="guide-math-row">
-                                                            <span class="guide-math-label" style="color:var(--rz-success)">C (slope)</span>
-                                                            <span class="guide-math-eq">= <strong>(n·Σ(S·R) − ΣS·ΣR) / (n·ΣS² − (ΣS)²)</strong></span>
-                                                        </div>
-                                                        <div class="guide-math-row">
-                                                            <span class="guide-math-label" style="color:var(--rz-success)">D (intercept)</span>
-                                                            <span class="guide-math-eq">= <strong>(ΣR − C·ΣS) / n</strong></span>
-                                                        </div>
-                                                    </div>
-                                                    <p class="guide-p guide-example">
-                                                        <strong>Ý nghĩa thực tế:</strong> Biết shaft cần sand thêm S CPM, hệ thống tính ngược R = C·S + D để chọn đúng tốc độ belt.<br />
-                                                        <em>Ví dụ: S=5 CPM, C=48, D=−40 → R = 48×5+(−40) = 200 RPM.</em>
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            @* BƯỚC 3c - F *@
-                                            <div class="guide-step">
-                                                <span class="guide-badge" style="background:var(--rz-warning-dark)">3c</span>
-                                                <div style="flex:1">
-                                                    <strong>Hệ số F — Bù hao mòn belt theo số shaft đã mài (X)</strong>
-                                                    <p class="guide-p">Belt càng mòn, hiệu suất sand càng giảm → cần tăng tốc độ để bù. Công thức đa thức bậc 3:</p>
-                                                    <div class="guide-math-block">
-                                                        <div class="guide-math-row">
-                                                            <span class="guide-math-label" style="color:var(--rz-warning-dark)">F(X)</span>
-                                                            <span class="guide-math-eq">= <strong>(−0.0006·X³ + 0.3·X² − 72.2·X) × (−0.001)</strong></span>
-                                                        </div>
-                                                        <div class="guide-math-row">
-                                                            <span class="guide-math-label">X</span>
-                                                            <span class="guide-math-eq">= số shaft đã mài kể từ lần thay belt</span>
-                                                        </div>
-                                                    </div>
-                                                    <p class="guide-p guide-example">
-                                                        <em>X=0 → F=0 (belt mới, không bù). X=100 → F tăng dần → RPM được cộng thêm F để giữ chất lượng sand ổn định.</em>
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            @* BƯỚC 4 *@
                                             <div class="guide-step">
                                                 <span class="guide-badge" style="background:var(--rz-danger)">4</span>
-                                                <div style="flex:1">
-                                                    <strong>Kiểm tra R² và lưu DB</strong>
-                                                    <ul class="guide-ul">
-                                                        <li><strong>R² &gt; 0.95</strong>: dữ liệu đủ tuyến tính, A/B/C/D đáng tin cậy → nhấn <strong>"Áp dụng &amp; Lưu DB"</strong>.</li>
-                                                        <li><strong>R² = 0.80–0.95</strong>: chấp nhận được nhưng nên đo thêm dữ liệu.</li>
-                                                        <li><strong>R² &lt; 0.80</strong>: dữ liệu nhiễu, kiểm tra lại phép đo trước khi lưu.</li>
-                                                    </ul>
-                                                    <p class="guide-p">Sau khi lưu, hệ thống sẽ dùng công thức <code>RPM = C·(FreqTarget − FreqMeasured) + D + F(X)</code> để tự động điều chỉnh tốc độ belt cho part này.</p>
-                                                </div>
+                                                <div><strong>Kiểm tra R² &gt; 0.95</strong> rồi nhấn <strong>"Áp dụng &amp; Lưu DB"</strong> để ghi A,B,C,D vào DB theo PartName.</div>
                                             </div>
-
                                         </div>
                                     }
                                 </RadzenCard>
@@ -458,16 +356,8 @@
 
     /* ── Hướng dẫn ── */
     .guide-body { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem; font-size: 0.85rem; }
-    .guide-step { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; background: rgba(255,255,255,0.75); border-radius: 8px; line-height: 1.6; }
-    .guide-badge { flex-shrink: 0; min-width: 32px; height: 32px; border-radius: 50%; color: #fff; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; margin-top: 2px; padding: 0 4px; }
-    .guide-p { margin: 0.3rem 0 0.2rem; line-height: 1.6; }
-    .guide-ul { margin: 0.25rem 0 0.25rem 1.25rem; padding: 0; line-height: 1.7; }
-    .guide-math-block { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 0.6rem 0.85rem; margin: 0.4rem 0; font-family: Consolas, monospace; font-size: 0.83rem; }
-    .guide-math-title { font-weight: 600; font-family: inherit; margin-bottom: 0.35rem; color: #444; font-size: 0.8rem; }
-    .guide-math-row { display: flex; align-items: baseline; gap: 0.75rem; padding: 0.15rem 0; }
-    .guide-math-label { min-width: 120px; font-weight: 700; flex-shrink: 0; }
-    .guide-math-eq { color: #1a1a2e; }
-    .guide-example { background: #fffde7; border-left: 3px solid #f9a825; border-radius: 4px; padding: 0.4rem 0.6rem; font-size: 0.82rem; color: #555; }
+    .guide-step { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.6rem 0.75rem; background: rgba(255,255,255,0.7); border-radius: 8px; line-height: 1.6; }
+    .guide-badge { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; color: #fff; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
     .guide-formula-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
     .guide-formula-box { flex: 1 1 180px; border: 2px solid; border-radius: 8px; padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.85); font-size: 0.83rem; line-height: 1.5; }
 </style>
