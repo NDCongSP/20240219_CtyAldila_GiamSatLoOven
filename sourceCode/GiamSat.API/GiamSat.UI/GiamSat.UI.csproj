@@ -4,9 +4,6 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <!-- Fix: SDK 9.x dùng wasm-opt gây lỗi "Can't find satellite assembly" trên net7 project -->
-    <WasmBuildNative>false</WasmBuildNative>
-    <RunAOTCompilation>false</RunAOTCompilation>
   </PropertyGroup>
 
   <ItemGroup>
