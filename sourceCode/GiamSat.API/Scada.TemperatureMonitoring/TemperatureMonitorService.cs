@@ -43,6 +43,21 @@ namespace Scada.TemperatureMonitoring
             }
         }
 
+        public void TriggerFirstTimeFetch()
+        {
+            if (_driver.IsStarted && _config.LocationsConfig != null)
+            {
+                foreach (var loc in _config.LocationsConfig)
+                {
+                    var tagPv = _driver.GetTag($"{loc.Path}/PV");
+                    if (tagPv != null)
+                    {
+                        OnDeviceUpdated?.Invoke(loc.Path, tagPv.Value, tagPv.Quality);
+                    }
+                }
+            }
+        }
+
         private void TagPv_ValueChanged(object sender, TagValueChangedEventArgs e)
         {
             if (sender is ITag tag)

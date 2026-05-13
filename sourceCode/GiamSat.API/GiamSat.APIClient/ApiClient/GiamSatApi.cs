@@ -10884,6 +10884,14 @@ namespace GiamSat.APIClient
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task SyncDatalogAsync(System.Collections.Generic.IEnumerable<TemperatureRealtimeModel>? body, System.Threading.CancellationToken cancellationToken);
 
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<FT12_TemperatureDatalog>> GetDataLogsAsync(System.DateTime? fromDate, System.DateTime? toDate);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<FT12_TemperatureDatalog>> GetDataLogsAsync(System.DateTime? fromDate, System.DateTime? toDate, System.Threading.CancellationToken cancellationToken);
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -11936,6 +11944,28 @@ namespace GiamSat.APIClient
         [System.Text.Json.Serialization.JsonPropertyName("data")]
         public FT09_RevoDatalog Data { get; set; } = default!;
 
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FT12_TemperatureDatalog
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("id")]
+        public System.Guid Id { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("createdAt")]
+        public System.DateTime? CreatedAt { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("createdMachine")]
+        public string? CreatedMachine { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("locationId")]
+        public int? LocationId { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("locationName")]
+        public string? LocationName { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("pv")]
+        public double Pv { get; set; } = default!;
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]

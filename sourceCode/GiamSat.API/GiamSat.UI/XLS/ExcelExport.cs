@@ -270,6 +270,58 @@ namespace GiamSat.UI
                 return await Task.FromResult(bytes);
             }
         }
+
+        public async Task<byte[]> GenerateTemperatureDataLogExcelAsync(List<GiamSat.APIClient.FT12_TemperatureDatalog> data, string dateQuery)
+        {
+            using (var wb = new XLWorkbook())
+            {
+                var ws = wb.Worksheets.Add("DataLogReport");
+
+                ws.Range(1, 1, 1, 4).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center)
+                .Alignment.SetVertical(XLAlignmentVerticalValues.Center)
+                .Font.SetFontSize(15).Font.SetBold(true);
+
+                ws.Range(2, 1, 2, 4).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center)
+               .Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+
+                ws.Cell(1, 1).Value = "BÁO CÁO LỊCH SỬ NHIỆT ĐỘ";
+                ws.Cell(1, 1).Style.Fill.BackgroundColor = XLColor.LightBlue;
+                ws.Cell(2, 1).Value = $"Thời gian: {dateQuery}";
+
+                ws.Cell(3, 1).Value = "Thời gian";
+                ws.Cell(3, 2).Value = "Khu vực";
+                ws.Cell(3, 3).Value = "Nhiệt độ (°C)";
+                ws.Cell(3, 4).Value = "Máy ghi";
+
+                ws.Range(3, 1, 3, 4).SetAutoFilter(true);
+                ws.Range(3, 1, 3, 4).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+                ws.Range($"A3:D{data.Count + 3}").Style.Border.SetInsideBorder(XLBorderStyleValues.Thin)
+                                       .Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+
+                var row = 0;
+                foreach (var item in data)
+                {
+                    ws.Cell(row + 4, 1).Value = item.CreatedAt?.ToString("yyyy-MM-dd HH:mm:ss");
+                    ws.Cell(row + 4, 2).Value = item.LocationName;
+                    ws.Cell(row + 4, 3).Value = item.Pv;
+                    ws.Cell(row + 4, 4).Value = item.CreatedMachine;
+
+                    row += 1;
+                }
+
+                ws.Columns().AdjustToContents();
+
+                var bytes = new byte[0];
+                using (var ms = new MemoryStream())
+                {
+                    wb.SaveAs(ms);
+                    bytes = ms.ToArray();
+                }
+
+                return await Task.FromResult(bytes);
+            }
+        }
     }
 
     class ExcelModel

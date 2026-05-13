@@ -13,8 +13,6 @@ namespace GiamSat.UI.Pages
     public partial class TemperatureConfig
     {
         [Inject] private ITemperatureConfigClient _temperatureConfigClient { get; set; } = default!;
-        [Inject] private NotificationService NotificationService { get; set; } = default!;
-        [Inject] private DialogService DialogService { get; set; } = default!;
 
         private RadzenDataGrid<TemperatureLocationModel> _dataGrid = default!;
         private TemperatureConfigsModel _config = new TemperatureConfigsModel { LocationsConfig = new List<TemperatureLocationModel>() };
@@ -43,7 +41,7 @@ namespace GiamSat.UI.Pages
             }
             catch (Exception ex)
             {
-                NotificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Không thể tải cấu hình: {ex.Message}");
+                _notificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Không thể tải cấu hình: {ex.Message}");
             }
             finally
             {
@@ -63,11 +61,11 @@ namespace GiamSat.UI.Pages
                 }
 
                 await _temperatureConfigClient.SaveConfigsAsync(_config);
-                NotificationService.Notify(NotificationSeverity.Success, "Thành công", "Đã lưu cấu hình thành công");
+                _notificationService.Notify(NotificationSeverity.Success, "Thành công", "Đã lưu cấu hình thành công");
             }
             catch (Exception ex)
             {
-                NotificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Lỗi khi lưu dữ liệu: {ex.Message}");
+                _notificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Lỗi khi lưu dữ liệu: {ex.Message}");
             }
         }
 
@@ -116,7 +114,7 @@ namespace GiamSat.UI.Pages
         {
             if (_config.LocationsConfig.Contains(config))
             {
-                var confirm = await DialogService.Confirm($"Bạn có chắc muốn xóa {config.Name}?", "Xác nhận xóa",
+                var confirm = await _dialogService.Confirm($"Bạn có chắc muốn xóa {config.Name}?", "Xác nhận xóa",
                     new ConfirmOptions { OkButtonText = "Xóa", CancelButtonText = "Hủy" });
 
                 if (confirm == true)

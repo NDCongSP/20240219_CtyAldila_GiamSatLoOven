@@ -6,7 +6,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Threading.Tasks;
+using Radzen;
+using GiamSat.UI.Components;
 
 namespace GiamSat.UI.Pages
 {
@@ -14,6 +15,7 @@ namespace GiamSat.UI.Pages
     {
         [Inject] private ITemperatureDataClient _temperatureDataClient { get; set; } = default!;
         [Inject] private ITemperatureConfigClient _temperatureConfigClient { get; set; } = default!;
+        [Inject] private NavigationManager _navigationManager { get; set; } = default!;
         
         private ICollection<TemperatureRealtimeModel>? _realtimeData;
         private System.Timers.Timer? _timer;
@@ -65,6 +67,13 @@ namespace GiamSat.UI.Pages
             {
                 Console.WriteLine($"Error fetch realtime dashboard: {ex.Message}");
             }
+        }
+
+        private async Task OnViewDetail(TemperatureRealtimeModel item)
+        {
+            await _dialogService.OpenAsync<DialogCardPageTemperatureDetail>($"Chi tiết: {item.Name}",
+                new Dictionary<string, object> { { "LocationId", item.Id } },
+                new DialogOptions { Width = "1100px", Height = "650px", Resizable = true, Draggable = true });
         }
 
         public void Dispose()

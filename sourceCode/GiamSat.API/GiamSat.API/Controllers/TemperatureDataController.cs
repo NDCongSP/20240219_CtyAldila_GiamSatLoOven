@@ -63,6 +63,26 @@ namespace GiamSat.API.Controllers
             }
         }
 
+        [HttpGet("GetDataLogs")]
+        public async Task<ActionResult<List<FT12_TemperatureDatalog>>> GetDataLogs([FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+            try
+            {
+                var endOfDay = toDate.Date.AddDays(1).AddTicks(-1);
+
+                var logs = await _context.FT12_TemperatureDatalogs
+                    .Where(x => x.CreatedAt >= fromDate.Date && x.CreatedAt <= endOfDay)
+                    .OrderByDescending(x => x.CreatedAt)
+                    .ToListAsync();
+
+                return Ok(logs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = ex.Message });
+            }
+        }
+
         [HttpPost("SyncRealtime")]
         public async Task<IActionResult> SyncRealtime([FromBody] List<TemperatureRealtimeModel> reqData)
         {

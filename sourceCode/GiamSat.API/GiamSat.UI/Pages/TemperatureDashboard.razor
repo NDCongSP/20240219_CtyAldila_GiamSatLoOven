@@ -45,7 +45,7 @@
     {
         @foreach (var item in _realtimeData)
         {
-            var calibratedPv = item.Pv + item.Config.Offset;
+            var calibratedPv = item.Pv;
             var isAlarm = calibratedPv > item.Config.HightLevel || calibratedPv < item.Config.LowLevel;
             var alarmClass = isAlarm ? "alarm-blink alarm-card" : "normal-card";
             var timeBlinkStr = (_timeBlinkAlarm / 1000.0).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) +
@@ -84,6 +84,10 @@
                             Hệ thống hoạt động ổn định
                         </RadzenAlert>
                     }
+
+                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" class="rz-mt-3">
+                        <RadzenButton Icon="info" Text="Xem chi tiết" ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Size="ButtonSize.Small" Click="@(() => OnViewDetail(item))" />
+                    </RadzenStack>
                 </RadzenCard>
             </RadzenColumn>
         }

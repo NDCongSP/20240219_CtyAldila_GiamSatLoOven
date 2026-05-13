@@ -13,14 +13,19 @@ namespace GiamSat.UI.Pages
     public partial class TemperatureReport
     {
         [Inject] private ITemperatureDataClient _temperatureDataClient { get; set; } = default!;
-        [Inject] private NotificationService NotificationService { get; set; } = default!;
 
         private RadzenDataGrid<FT13_TemperatureAlarmLog> _dataGrid = default!;
         private ICollection<FT13_TemperatureAlarmLog> _logs = new List<FT13_TemperatureAlarmLog>();
+
+        private RadzenDataGrid<FT12_TemperatureDatalog> _dataGridLog = default!;
+        private ICollection<FT12_TemperatureDatalog> _dataLogs = new List<FT12_TemperatureDatalog>();
         
         private DateTime _fromDate = DateTime.Today;
         private DateTime _toDate = DateTime.Today;
         private bool _isLoading = false;
+        private int _tabIndex = 0;
+
+        private bool IsExportDisabled => _tabIndex == 0 ? (_logs == null || !_logs.Any()) : (_dataLogs == null || !_dataLogs.Any());
 
         protected override async Task OnInitializedAsync()
         {
@@ -32,12 +37,20 @@ namespace GiamSat.UI.Pages
              _isLoading = true;
             try
             {
-                var result = await _temperatureDataClient.GetAlarmLogsAsync(_fromDate, _toDate);
-                _logs = result ?? new List<FT13_TemperatureAlarmLog>();
+                if (_tabIndex == 0)
+                {
+                    var result = await _temperatureDataClient.GetAlarmLogsAsync(_fromDate, _toDate);
+                    _logs = result?.OrderByDescending(x => x.CreatedAt).ThenBy(x => x.LocationName).ToList() ?? new List<FT13_TemperatureAlarmLog>();
+                }
+                else
+                {
+                    var result = await _temperatureDataClient.GetDataLogsAsync(_fromDate, _toDate);
+                    _dataLogs = result?.OrderByDescending(x => x.CreatedAt).ThenBy(x => x.LocationName).ToList() ?? new List<FT12_TemperatureDatalog>();
+                }
             }
             catch (Exception ex)
             {
-                NotificationService.Notify(NotificationSeverity.Error, "Lỗi Server", $"Không thể tải báo cáo: {ex.Message}");
+                _notificationService.Notify(NotificationSeverity.Error, "Lỗi Server", $"Không thể tải báo cáo: {ex.Message}");
             }
             finally
             {
@@ -47,25 +60,40 @@ namespace GiamSat.UI.Pages
 
         private async Task ExportExcel()
         {
-            if (_logs == null || !_logs.Any())
-            {
-                NotificationService.Notify(NotificationSeverity.Warning, "Cảnh báo", "Không có dữ liệu để xuất Excel.");
-                return;
-            }
-
             try
             {
                 _isLoading = true;
                 var export = new ExcelExport();
                 var dateQuery = $"{_fromDate:dd/MM/yyyy} đến {_toDate:dd/MM/yyyy}";
-                var bytes = await export.GenerateTemperatureAlarmExcelAsync(_logs.ToList(), dateQuery);
+                byte[] bytes;
+                string fileName;
 
-                var fileName = $"TemperatureAlarmReport_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                if (_tabIndex == 0)
+                {
+                    if (_logs == null || !_logs.Any())
+                    {
+                        _notificationService.Notify(NotificationSeverity.Warning, "Cảnh báo", "Không có dữ liệu để xuất Excel.");
+                        return;
+                    }
+                    bytes = await export.GenerateTemperatureAlarmExcelAsync(_logs.ToList(), dateQuery);
+                    fileName = $"TemperatureAlarmReport_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                }
+                else
+                {
+                    if (_dataLogs == null || !_dataLogs.Any())
+                    {
+                        _notificationService.Notify(NotificationSeverity.Warning, "Cảnh báo", "Không có dữ liệu để xuất Excel.");
+                        return;
+                    }
+                    bytes = await export.GenerateTemperatureDataLogExcelAsync(_dataLogs.ToList(), dateQuery);
+                    fileName = $"TemperatureDataLogReport_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                }
+
                 await _js.InvokeVoidAsync("BlazorDownloadFile", fileName, bytes);
             }
             catch (Exception ex)
             {
-                NotificationService.Notify(NotificationSeverity.Error, "Lỗi Xuất Excel", ex.Message);
+                _notificationService.Notify(NotificationSeverity.Error, "Lỗi Xuất Excel", ex.Message);
             }
             finally
             {

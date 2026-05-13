@@ -62,6 +62,7 @@
                                   TItem="TemperatureLocationModel" 
                                   AllowPaging="true" 
                                   PageSize="10"
+                                  PageSizeOptions="@(new int[] { 5, 10, 20, 50 })"
                                   AllowSorting="true"
                                   EditMode="DataGridEditMode.Single"
                                   RowUpdate="@OnUpdateRow"

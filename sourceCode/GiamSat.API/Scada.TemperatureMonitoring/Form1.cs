@@ -162,12 +162,12 @@ namespace Scada.TemperatureMonitoring
 
         private async void _easyDriverConnector_Started(object sender, EventArgs e)
         {
-            await Task.Delay(2000); // Đợi 2s để driver kết nối thực sự tới trạm
-            // Service handles subscribing to PV changes now.
-            // Re-apply config to hook PV changes for driver start.
+            await Task.Delay(500); // Đợi 500ms để driver kết nối thực sự tới trạm
+            
             if (_monitorService != null)
             {
                 _monitorService.SetConfig(_configWrapper);
+                _monitorService.TriggerFirstTimeFetch();
             }
         }
 
