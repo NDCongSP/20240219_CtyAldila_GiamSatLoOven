@@ -1,9 +1,12 @@
 @page "/oven/{OvenId:int}"
+@using Radzen
+@using Radzen.Blazor
 @using GiamSat.Models
 @using AppPermissions = GiamSat.Models.AppPermissions
 @attribute [Authorize(Policy = AppPermissions.Oven_Home_View)]
 
 <div class="dashboard-page-container">
+
 <!-- Header với Legend và View Mode Buttons -->
 <RadzenRow class="rz-mb-3">
     <RadzenColumn Size="12">

@@ -1,8 +1,11 @@
-@page "/ovenconfig/{OvenId}"
+@page "/ovenconfig/{OvenId:int}"
+@using Radzen
+@using Radzen.Blazor
 @using GiamSat.Models
 @attribute [Authorize(Policy = AppPermissions.Oven_Config_View)]
 
 <div Class="rz-p-0 rz-p-md-12">
+
     @if (_ovenInfo == null)
     {
         <p><em>Loading...</em></p>

@@ -399,3 +399,6 @@ FodyWeavers.xsd
 
 # Docker local development files
 appsettings.Development.Local.json
+
+# GSD planning files
+.planning/

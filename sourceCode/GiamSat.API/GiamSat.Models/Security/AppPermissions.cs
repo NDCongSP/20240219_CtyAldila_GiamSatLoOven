@@ -38,6 +38,17 @@ namespace GiamSat.Models
         // LOGS
         public const string System_Logs_View = "System_Logs.View";
 
+        // TEMPERATURE
+        public const string Temperature_Home_View = "Temperature_Home.View";
+
+        public const string Temperature_Config_View = "Temperature_Config.View";
+        public const string Temperature_Config_Create = "Temperature_Config.Create";
+        public const string Temperature_Config_Edit = "Temperature_Config.Edit";
+        public const string Temperature_Config_Delete = "Temperature_Config.Delete";
+
+        public const string Temperature_Report_View = "Temperature_Report.View";
+        public const string Temperature_Report_Export = "Temperature_Report.Export";
+
         /// <summary>
         /// Gets all defined permission codes automatically using reflection.
         /// </summary>

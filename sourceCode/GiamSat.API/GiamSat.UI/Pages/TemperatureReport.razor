@@ -1,0 +1,113 @@
+@page "/temperature/report"
+@using Radzen
+@using Radzen.Blazor
+@using GiamSat.APIClient
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Policy = GiamSat.Models.AppPermissions.Temperature_Report_View)]
+
+
+<RadzenRow Gap="1rem">
+    <RadzenColumn Size="12">
+        <RadzenText TextStyle="TextStyle.H4">Báo cáo Nhiệt độ</RadzenText>
+    </RadzenColumn>
+</RadzenRow>
+
+<RadzenCard class="rz-shadow-3 rz-mb-4" >
+    <RadzenRow Gap="1rem" AlignItems="AlignItems.End">
+        <RadzenColumn Size="12" SizeMD="4">
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Từ ngày</RadzenText>
+            <RadzenDatePicker @bind-Value="_fromDate" Style="width: 100%;" DateFormat="dd/MM/yyyy" />
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="4">
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Đến ngày</RadzenText>
+            <RadzenDatePicker @bind-Value="_toDate" Style="width: 100%;" DateFormat="dd/MM/yyyy" />
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="4">
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                <RadzenButton Text="Tra cứu" Icon="search" ButtonStyle="ButtonStyle.Primary" Click="@LoadData" IsBusy="_isLoading" />
+                <AuthorizeView Policy="@GiamSat.Models.AppPermissions.Temperature_Report_Export">
+                    <RadzenButton Text="Xuất Excel" Icon="file_download" ButtonStyle="ButtonStyle.Success" Click="@ExportExcel" Disabled="@IsExportDisabled" />
+                </AuthorizeView>
+            </RadzenStack>
+        </RadzenColumn>
+    </RadzenRow>
+</RadzenCard>
+
+<RadzenTabs RenderMode="TabRenderMode.Client" @bind-SelectedIndex="_tabIndex">
+    <Tabs>
+        <RadzenTabsItem Text="Báo cáo báo động" Icon="warning">
+            <RadzenDataGrid @ref="_dataGrid" 
+                            Data="@_logs" 
+                            TItem="FT13_TemperatureAlarmLog" 
+                            AllowPaging="true" 
+                            PageSize="10"
+                            PageSizeOptions="@(new int[] { 10, 20, 50, 100 })"
+                            PagerHorizontalAlign="HorizontalAlign.Right"
+                            ShowPagingSummary="true"
+                            PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)"
+                            PageSizeText="Bản ghi trên trang"
+                            AllowSorting="true"
+                            IsLoading="@_isLoading"
+                            class="rz-shadow-3">
+                <Columns>
+                    <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="CreatedAt" Title="Th.Gian Bắt Đầu" Width="170px">
+                        <Template Context="item">
+                            @item.CreatedAt?.ToString("dd/MM/yyyy HH:mm:ss")
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="EndedAt" Title="Th.Gian Phục Hồi" Width="170px">
+                        <Template Context="item">
+                            @(item.EndedAt.HasValue ? item.EndedAt.Value.ToString("dd/MM/yyyy HH:mm:ss") : "Đang báo động")
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="LocationName" Title="Khu Vực" Width="150px" />
+                    <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="Path" Title="Device Tag" Width="200px" />
+                    <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="PV_Alarm" Title="Nhiệt độ (Báo động)" Width="150px">
+                        <Template Context="item">
+                            <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@($"{item.PV_Alarm:0.0} °C")" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="PV_Normal" Title="Nhiệt độ (Phục hồi)" Width="150px">
+                        <Template Context="item">
+                            @if (item.PV_Normal.HasValue)
+                            {
+                                <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@($"{item.PV_Normal:0.0} °C")" />
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="Description" Title="Chi tiết chẩn đoán" />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="Data Log" Icon="list">
+            <RadzenDataGrid @ref="_dataGridLog" 
+                            Data="@_dataLogs" 
+                            TItem="FT12_TemperatureDatalog" 
+                            AllowPaging="true" 
+                            PageSize="10"
+                            PageSizeOptions="@(new int[] { 10, 20, 50, 100 })"
+                            PagerHorizontalAlign="HorizontalAlign.Right"
+                            ShowPagingSummary="true"
+                            PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)"
+                            PageSizeText="Bản ghi trên trang"
+                            AllowSorting="true"
+                            IsLoading="@_isLoading"
+                            class="rz-shadow-3">
+                <Columns>
+                    <RadzenDataGridColumn TItem="FT12_TemperatureDatalog" Property="CreatedAt" Title="Thời Gian" Width="200px">
+                        <Template Context="item">
+                            @item.CreatedAt?.ToString("dd/MM/yyyy HH:mm:ss")
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="FT12_TemperatureDatalog" Property="LocationName" Title="Khu Vực" Width="200px" />
+                    <RadzenDataGridColumn TItem="FT12_TemperatureDatalog" Property="Pv" Title="Nhiệt độ" Width="150px">
+                        <Template Context="item">
+                            <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@($"{item.Pv:0.0} °C")" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="FT12_TemperatureDatalog" Property="CreatedMachine" Title="Máy Ghi" />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenTabsItem>
+    </Tabs>
+</RadzenTabs>

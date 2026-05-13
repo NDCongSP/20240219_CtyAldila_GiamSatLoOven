@@ -34,6 +34,8 @@
         /// </summary>
         public double PV { get; set; } = 0;
 
+    
+
         /// <summary>
         /// Tín hiệu cảnh báo khi nhiệt độ vượt quá ngưỡng cao hoặc thấp, để hiển thị cảnh báo trên UI.
         /// </summary>

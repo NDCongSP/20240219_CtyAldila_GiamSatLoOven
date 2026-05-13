@@ -36,7 +36,16 @@ namespace GiamSat.API
             ("System_Config", "Edit", "Chỉnh sửa cấu hình hệ thống"),
 
             // SYSTEM LOGS
-            ("System_Logs", "View", "Xem log hệ thống (Serilog)")
+            ("System_Logs", "View", "Xem log hệ thống (Serilog)"),
+
+            // TEMPERATURE MODULE
+            ("Temperature_Home", "View", "Truy cập và xem Dashboard Nhiệt độ"),
+            ("Temperature_Config", "View", "Xem danh sách Cấu hình Nhiệt độ"),
+            ("Temperature_Config", "Create", "Thêm Cấu hình Nhiệt độ"),
+            ("Temperature_Config", "Edit", "Sửa Cấu hình Nhiệt độ"),
+            ("Temperature_Config", "Delete", "Xóa Cấu hình Nhiệt độ"),
+            ("Temperature_Report", "View", "Xem báo cáo Nhiệt độ"),
+            ("Temperature_Report", "Export", "Xuất file báo cáo Nhiệt độ")
         };
 
         public static async Task SeedAsync(ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager)

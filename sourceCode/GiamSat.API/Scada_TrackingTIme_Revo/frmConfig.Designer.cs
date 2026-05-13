@@ -246,6 +246,7 @@
             this.easyTextBox1.Text = "0";
             this.easyTextBox1.WriteDelay = 200;
             this.easyTextBox1.WriteTrigger = EasyScada.Core.WriteTrigger.OnEnter;
+            this.easyTextBox1.TextChanged += new System.EventHandler(this.easyTextBox1_TextChanged);
             // 
             // groupBox3
             // 

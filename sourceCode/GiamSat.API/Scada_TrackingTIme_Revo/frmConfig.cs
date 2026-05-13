@@ -74,5 +74,10 @@ namespace Scada_TrackingTIme_Revo
         {
 
         }
+
+        private void easyTextBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

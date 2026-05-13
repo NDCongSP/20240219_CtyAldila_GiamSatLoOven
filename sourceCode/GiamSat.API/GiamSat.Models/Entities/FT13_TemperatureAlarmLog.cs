@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -20,6 +20,8 @@ namespace GiamSat.Models
         public string? CreatedMachine { get; set; }
 
         public DateTime? UpdateddAt { get; set; }
+
+        public DateTime? EndedAt { get; set; }
 
         public int? LocationId { get; set; }
 

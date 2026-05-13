@@ -278,7 +278,13 @@ a,
 
     .rz-dialog-content {
         padding: 0.75rem;
+        overflow: hidden;
     }
+}
+
+/* Hide scrollbar in dialog popups */
+.rz-dialog-content {
+    overflow: hidden !important;
 }
 
 /* Notification Responsive */
