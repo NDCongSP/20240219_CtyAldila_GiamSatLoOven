@@ -1,4 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.InkML;
 using DocumentFormat.OpenXml.Office2019.Drawing.Model3D;
 using GiamSat.Models;
@@ -317,7 +317,7 @@ namespace GiamSat.UI.Pages
             StateHasChanged();
         }
 
-        void ShowTooltip(ElementReference elementReference, TooltipOptions options = null)
+        void ShowTooltip(ElementReference elementReference, TooltipOptions? options = null)
         {
             _tooltipService.Open(elementReference, "Local Station/Channel/Device", options);
         }

@@ -28,20 +28,22 @@ else
 
                         <RadzenColumn SizeXS="12" SizeSM="3">
                             <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-4 rz-mb-0">Offset</RadzenText>
-                            <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_displayInfo.Config.Offset</b></RadzenText>
+                            <RadzenText TextStyle="TextStyle.Body1" class=""><b>@(_displayInfo.Config?.Offset ?? 0)</b></RadzenText>
                         </RadzenColumn>
                         <RadzenColumn SizeXS="12" SizeSM="3">
                             <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-4 rz-mb-0">Ngưỡng thấp (Min)</RadzenText>
-                            <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_displayInfo.Config.LowLevel</b></RadzenText>
+                            <RadzenText TextStyle="TextStyle.Body1" class=""><b>@(_displayInfo.Config?.LowLevel ?? 0)</b></RadzenText>
                         </RadzenColumn>
                         <RadzenColumn SizeXS="12" SizeSM="3">
                             <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-4 rz-mb-0">Ngưỡng cao (Max)</RadzenText>
-                            <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_displayInfo.Config.HightLevel</b></RadzenText>
+                            <RadzenText TextStyle="TextStyle.Body1" class=""><b>@(_displayInfo.Config?.HightLevel ?? 0)</b></RadzenText>
                         </RadzenColumn>
                         <RadzenColumn SizeXS="12" SizeSM="3">
                             @{
                                 var calibratedPv = _displayInfo.Pv;
-                                var isAlarm = calibratedPv > _displayInfo.Config.HightLevel || calibratedPv < _displayInfo.Config.LowLevel;
+                                var highLevel = _displayInfo.Config?.HightLevel ?? double.MaxValue;
+                                var lowLevel = _displayInfo.Config?.LowLevel ?? double.MinValue;
+                                var isAlarm = calibratedPv > highLevel || calibratedPv < lowLevel;
                             }
                             <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-4 rz-mb-0">Trạng thái</RadzenText>
                             <RadzenBadge BadgeStyle="@(isAlarm ? BadgeStyle.Danger : BadgeStyle.Success)" 
@@ -57,7 +59,8 @@ else
                 <RadzenChart @ref="RadzenChart" class="chart" Style="height: 280px">
                     <RadzenLineSeries Smooth="true" Data="@_chartDataSeriesTemp" CategoryProperty="Date"
                                       Title="NĐ đo" ValueProperty="Value" Stroke="#2196F3" StrokeWidth="2">
-                        <RadzenMarkers Visible="false" />
+                        <RadzenMarkers Visible="@(GlobalVariable.ConfigSystem != null ? GlobalVariable.ConfigSystem.ShowMarkers : true)" MarkerType="MarkerType.Circle" Size="3" />
+                        <RadzenSeriesDataLabels Visible="@(GlobalVariable.ConfigSystem != null ? GlobalVariable.ConfigSystem.ShowDataLabels : true)" />
                     </RadzenLineSeries>
                     <RadzenLineSeries Smooth="false" Data="@_chartDataSeriesHigh" CategoryProperty="Date"
                                       Title="Ngưỡng cao" ValueProperty="Value" Stroke="#F44336" StrokeWidth="1" LineType="LineType.Dashed">
@@ -71,6 +74,11 @@ else
                     <RadzenCategoryAxis Padding="20" Formatter="@FormatAsTime">
                         <RadzenGridLines Visible="true" />
                         <RadzenAxisTitle Text="Thời gian" />
+                        <RadzenTicks>
+                            <Template>
+                                <text class="rz-tick-text" style="text-anchor: end; transform: translate(@(context.X.ToString().Replace(",","."))px, @((context.Y + 10).ToString().Replace(",","."))px) rotate(-45deg); font-size:small">@context.Value</text>
+                            </Template>
+                        </RadzenTicks>
                     </RadzenCategoryAxis>
                     <RadzenValueAxis Formatter="@FormatAsNumber">
                         <RadzenGridLines Visible="true" />

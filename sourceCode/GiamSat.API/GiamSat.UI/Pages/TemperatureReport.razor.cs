@@ -25,10 +25,24 @@ namespace GiamSat.UI.Pages
         private bool _isLoading = false;
         private int _tabIndex = 0;
 
-        private bool IsExportDisabled => _tabIndex == 0 ? (_logs == null || !_logs.Any()) : (_dataLogs == null || !_dataLogs.Any());
+        private IEnumerable<TemperatureRealtimeModel> _allLocations = new List<TemperatureRealtimeModel>();
+        private IEnumerable<int> _selectedLocationIds = new List<int>();
+
+        private IEnumerable<FT13_TemperatureAlarmLog> FilteredLogs => _selectedLocationIds.Any() ? _logs.Where(x => x.LocationId.HasValue && _selectedLocationIds.Contains(x.LocationId.Value)) : _logs;
+        private IEnumerable<FT12_TemperatureDatalog> FilteredDataLogs => _selectedLocationIds.Any() ? _dataLogs.Where(x => x.LocationId.HasValue && _selectedLocationIds.Contains(x.LocationId.Value)) : _dataLogs;
+
+        private bool IsExportDisabled => _tabIndex == 0 ? !FilteredLogs.Any() : !FilteredDataLogs.Any();
 
         protected override async Task OnInitializedAsync()
         {
+            try
+            {
+                _allLocations = await _temperatureDataClient.GetRealtimeAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading locations: {ex.Message}");
+            }
             await LoadData();
         }
 
@@ -70,22 +84,22 @@ namespace GiamSat.UI.Pages
 
                 if (_tabIndex == 0)
                 {
-                    if (_logs == null || !_logs.Any())
+                    if (!FilteredLogs.Any())
                     {
                         _notificationService.Notify(NotificationSeverity.Warning, "Cảnh báo", "Không có dữ liệu để xuất Excel.");
                         return;
                     }
-                    bytes = await export.GenerateTemperatureAlarmExcelAsync(_logs.ToList(), dateQuery);
+                    bytes = await export.GenerateTemperatureAlarmExcelAsync(FilteredLogs.ToList(), dateQuery);
                     fileName = $"TemperatureAlarmReport_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
                 }
                 else
                 {
-                    if (_dataLogs == null || !_dataLogs.Any())
+                    if (!FilteredDataLogs.Any())
                     {
                         _notificationService.Notify(NotificationSeverity.Warning, "Cảnh báo", "Không có dữ liệu để xuất Excel.");
                         return;
                     }
-                    bytes = await export.GenerateTemperatureDataLogExcelAsync(_dataLogs.ToList(), dateQuery);
+                    bytes = await export.GenerateTemperatureDataLogExcelAsync(FilteredDataLogs.ToList(), dateQuery);
                     fileName = $"TemperatureDataLogReport_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
                 }
 

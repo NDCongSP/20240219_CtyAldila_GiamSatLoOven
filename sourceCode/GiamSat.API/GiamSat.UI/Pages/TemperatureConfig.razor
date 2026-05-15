@@ -34,19 +34,25 @@
                         <RadzenRow Gap="1rem">
                             <RadzenColumn Size="12" SizeMD="3">
                                 <RadzenLabel Text="Chu kỳ UI Web (ms)" Component="timerRealtimeUI" class="rz-mb-1" />
-                                <RadzenNumeric @bind-Value="_config.IntervalRealtimeUI" Name="timerRealtimeUI" Style="width:100%" />
+                                <RadzenNumeric @bind-Value="_config.IntervalRealtimeUI" Name="timerRealtimeUI" Style="width:100%" Format="n0" />
                             </RadzenColumn>
                             <RadzenColumn Size="12" SizeMD="3">
                                 <RadzenLabel Text="Chu kỳ SCADA (ms)" Component="timerRealtime" class="rz-mb-1" />
-                                <RadzenNumeric @bind-Value="_config.IntervalRealtime" Name="timerRealtime" Style="width:100%" />
+                                <RadzenNumeric @bind-Value="_config.IntervalRealtime" Name="timerRealtime" Style="width:100%" Format="n0" />
                             </RadzenColumn>
                             <RadzenColumn Size="12" SizeMD="3">
                                 <RadzenLabel Text="Chu kỳ Datalog (ms)" Component="timerDatalog" class="rz-mb-1" />
-                                <RadzenNumeric @bind-Value="_config.IntervalDataLog" Name="timerDatalog" Style="width:100%" />
+                                <RadzenNumeric @bind-Value="_config.IntervalDataLog" Name="timerDatalog" Style="width:100%" Format="n0" />
                             </RadzenColumn>
                             <RadzenColumn Size="12" SizeMD="3">
                                 <RadzenLabel Text="Nhấp nháy báo động (ms)" Component="timeBlink" class="rz-mb-1" />
-                                <RadzenNumeric @bind-Value="_config.TimeBlinkAlarm" Name="timeBlink" Style="width:100%" />
+                                <RadzenNumeric @bind-Value="_config.TimeBlinkAlarm" Name="timeBlink" Style="width:100%" Format="n0" />
+                            </RadzenColumn>
+                        </RadzenRow>
+                        <RadzenRow Gap="1rem" class="rz-mt-3">
+                            <RadzenColumn Size="12" SizeMD="3">
+                                <RadzenLabel Text="Chu kỳ Chi tiết UI (ms)" Component="timerRealtimeDetailUI" class="rz-mb-1" />
+                                <RadzenNumeric @bind-Value="_config.IntervalRealtimeDetailUI" Name="timerRealtimeDetailUI" Style="width:100%" Format="n0" />
                             </RadzenColumn>
                         </RadzenRow>
                         <RadzenRow class="rz-mt-3">

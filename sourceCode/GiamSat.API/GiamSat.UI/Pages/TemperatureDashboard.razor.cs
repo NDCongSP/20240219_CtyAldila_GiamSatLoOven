@@ -22,6 +22,7 @@ namespace GiamSat.UI.Pages
         private bool _isFirstLoad = true;
         private double _timeBlinkAlarm = 1000;
         private double _intervalRealtime = 1000;
+        private bool _disposed = false;
 
         protected override async Task OnInitializedAsync()
         {
@@ -47,7 +48,22 @@ namespace GiamSat.UI.Pages
 
         private async Task Timer_Elapsed()
         {
+            if (_disposed) return;
+            if (_timer != null) _timer.Stop();
+            
             await LoadData();
+            
+            if (!_disposed && _timer != null) 
+            {
+                try 
+                {
+                    _timer.Start();
+                }
+                catch (ObjectDisposedException) 
+                {
+                    // Ignore if already disposed
+                }
+            }
         }
 
         private async Task LoadData()
@@ -58,6 +74,7 @@ namespace GiamSat.UI.Pages
                 
                 await InvokeAsync(() =>
                 {
+                    if (_disposed) return;
                     _realtimeData = response;
                     if (_isFirstLoad) _isFirstLoad = false;
                     StateHasChanged();
@@ -72,16 +89,18 @@ namespace GiamSat.UI.Pages
         private async Task OnViewDetail(TemperatureRealtimeModel item)
         {
             await _dialogService.OpenAsync<DialogCardPageTemperatureDetail>($"Chi tiết: {item.Name}",
-                new Dictionary<string, object> { { "LocationId", item.Id } },
+                new Dictionary<string, object?> { { "LocationId", item.Id } },
                 new DialogOptions { Width = "1100px", Height = "650px", Resizable = true, Draggable = true });
         }
 
         public void Dispose()
         {
+            _disposed = true;
             if (_timer != null)
             {
                 _timer.Stop();
                 _timer.Dispose();
+                _timer = null;
             }
         }
     }

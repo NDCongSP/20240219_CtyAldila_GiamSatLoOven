@@ -14,15 +14,19 @@
 
 <RadzenCard class="rz-shadow-3 rz-mb-4" >
     <RadzenRow Gap="1rem" AlignItems="AlignItems.End">
-        <RadzenColumn Size="12" SizeMD="4">
+        <RadzenColumn Size="12" SizeMD="3">
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Khu vực</RadzenText>
+            <RadzenDropDown @bind-Value="_selectedLocationIds" Data="@_allLocations" TextProperty="Name" ValueProperty="Id" Multiple="true" AllowClear="true" Placeholder="Tất cả khu vực" Style="width: 100%;" />
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="3">
             <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Từ ngày</RadzenText>
             <RadzenDatePicker @bind-Value="_fromDate" Style="width: 100%;" DateFormat="dd/MM/yyyy" />
         </RadzenColumn>
-        <RadzenColumn Size="12" SizeMD="4">
+        <RadzenColumn Size="12" SizeMD="3">
             <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Đến ngày</RadzenText>
             <RadzenDatePicker @bind-Value="_toDate" Style="width: 100%;" DateFormat="dd/MM/yyyy" />
         </RadzenColumn>
-        <RadzenColumn Size="12" SizeMD="4">
+        <RadzenColumn Size="12" SizeMD="3">
             <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
                 <RadzenButton Text="Tra cứu" Icon="search" ButtonStyle="ButtonStyle.Primary" Click="@LoadData" IsBusy="_isLoading" />
                 <AuthorizeView Policy="@GiamSat.Models.AppPermissions.Temperature_Report_Export">
@@ -33,11 +37,11 @@
     </RadzenRow>
 </RadzenCard>
 
-<RadzenTabs RenderMode="TabRenderMode.Client" @bind-SelectedIndex="_tabIndex">
+<RadzenTabs RenderMode="TabRenderMode.Client" @bind-SelectedIndex="_tabIndex" Style="background-color: white; padding: 1rem; border-radius: 8px;" class="rz-shadow-3">
     <Tabs>
         <RadzenTabsItem Text="Báo cáo báo động" Icon="warning">
             <RadzenDataGrid @ref="_dataGrid" 
-                            Data="@_logs" 
+                            Data="@FilteredLogs" 
                             TItem="FT13_TemperatureAlarmLog" 
                             AllowPaging="true" 
                             PageSize="10"
@@ -62,16 +66,30 @@
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="LocationName" Title="Khu Vực" Width="150px" />
                     <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="Path" Title="Device Tag" Width="200px" />
-                    <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="PV_Alarm" Title="Nhiệt độ (Báo động)" Width="150px">
+                    <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="SV_Low" Title="Ngưỡng thấp" Width="120px" TextAlign="TextAlign.Center">
+                        <Template Context="item">
+                            @(item.SV_Low.HasValue ? $"{item.SV_Low:0.0} °C" : "---")
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="SV_High" Title="Ngưỡng cao" Width="120px" TextAlign="TextAlign.Center">
+                        <Template Context="item">
+                            @(item.SV_High.HasValue ? $"{item.SV_High:0.0} °C" : "---")
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="PV_Alarm" Title="Nhiệt độ (Báo động)" Width="150px" TextAlign="TextAlign.Center">
                         <Template Context="item">
                             <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@($"{item.PV_Alarm:0.0} °C")" />
                         </Template>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="PV_Normal" Title="Nhiệt độ (Phục hồi)" Width="150px">
+                    <RadzenDataGridColumn TItem="FT13_TemperatureAlarmLog" Property="PV_Normal" Title="Nhiệt độ (Phục hồi)" Width="150px" TextAlign="TextAlign.Center">
                         <Template Context="item">
-                            @if (item.PV_Normal.HasValue)
+                            @if (item.PV_Normal.HasValue && item.PV_Normal != 0)
                             {
                                 <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@($"{item.PV_Normal:0.0} °C")" />
+                            }
+                            else
+                            {
+                                <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="---" />
                             }
                         </Template>
                     </RadzenDataGridColumn>
@@ -81,7 +99,7 @@
         </RadzenTabsItem>
         <RadzenTabsItem Text="Data Log" Icon="list">
             <RadzenDataGrid @ref="_dataGridLog" 
-                            Data="@_dataLogs" 
+                            Data="@FilteredDataLogs" 
                             TItem="FT12_TemperatureDatalog" 
                             AllowPaging="true" 
                             PageSize="10"

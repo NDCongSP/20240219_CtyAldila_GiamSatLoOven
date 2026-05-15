@@ -25,6 +25,11 @@ namespace GiamSat.Models
         public double IntervalDataLog { get; set; } = 60000;
 
         /// <summary>
+        /// Khoảng thời gian làm mới dữ liệu thời gian thực trên UI Website dành riêng cho Dashboard chi tiết của từng location (ms).
+        /// </summary>
+        public double IntervalRealtimeDetailUI { get; set; } = 10000;
+
+        /// <summary>
         /// lưu config của từng location.
         /// </summary>
         public List<TemperatureLocationModel> LocationsConfig { get; set; }

@@ -14,6 +14,7 @@ namespace GiamSat.UI.Components
         [Parameter] public int LocationId { get; set; }
 
         [Inject] private ITemperatureDataClient _temperatureDataClient { get; set; } = default!;
+        [Inject] private ITemperatureConfigClient _temperatureConfigClient { get; set; } = default!;
 
         private TemperatureRealtimeModel? _displayInfo;
         private System.Timers.Timer? _timer;
@@ -24,57 +25,62 @@ namespace GiamSat.UI.Components
         private List<ChartDataItem> _chartDataSeriesLow = new();
         private Radzen.Blazor.RadzenChart RadzenChart = new();
 
-        private const int MaxChartPoints = 60; // 10 minutes if 10s interval
+        private const int MaxChartPoints = 20;
 
         protected override async Task OnInitializedAsync()
         {
-            await LoadData();
+            await base.OnInitializedAsync();
 
-            _timer = new System.Timers.Timer(10000); // 10 seconds refresh
-            _timer.Elapsed += async (sender, e) => await RefreshData();
-            _timer.AutoReset = true;
-            _timer.Start();
-        }
-
-        private async Task LoadData()
-        {
             try
             {
                 var response = await _temperatureDataClient.GetRealtimeAsync();
                 _displayInfo = response.FirstOrDefault(x => x.Id == LocationId);
-                
-                if (_displayInfo != null)
+
+                AddPointToChart();
+
+                // Initialize timer
+                double interval = 10000;
+                var config = await _temperatureConfigClient.GetConfigsAsync();
+                if (config?.IntervalRealtimeDetailUI > 0)
                 {
-                    AddPointToChart(_displayInfo);
+                    interval = config.IntervalRealtimeDetailUI;
                 }
+
+                _timer = new System.Timers.Timer(interval);
+                _timer.Elapsed += RefreshData;
+                _timer.Enabled = true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error loading detail: {ex.Message}");
+                Console.WriteLine($"Error loading initial detail: {ex.Message}");
             }
         }
 
-        private async Task RefreshData()
+        private async void RefreshData(object? sender, ElapsedEventArgs e)
         {
             if (_disposed) return;
 
             try
             {
                 var response = await _temperatureDataClient.GetRealtimeAsync();
+
+                if (_disposed) return;
+
                 _displayInfo = response.FirstOrDefault(x => x.Id == LocationId);
 
-                if (_displayInfo != null && !_disposed)
+                if (_displayInfo != null)
                 {
-                    AddPointToChart(_displayInfo);
-                    
-                    await InvokeAsync(() =>
+                    AddPointToChart();
+
+                    if (!_disposed)
                     {
-                        if (!_disposed)
+                        await InvokeAsync(async () =>
                         {
-                            RadzenChart.Reload();
+                            if (_disposed) return;
+                            await RadzenChart.Reload();
                             StateHasChanged();
-                        }
-                    });
+                        });
+                    }
                 }
             }
             catch (Exception ex)
@@ -83,10 +89,10 @@ namespace GiamSat.UI.Components
             }
         }
 
-        private void AddPointToChart(TemperatureRealtimeModel item)
+        private void AddPointToChart()
         {
-            var now = DateTime.Now;
-            
+            if (_displayInfo == null) return;
+
             if (_chartDataSeriesTemp.Count >= MaxChartPoints)
             {
                 _chartDataSeriesTemp.RemoveAt(0);
@@ -94,17 +100,20 @@ namespace GiamSat.UI.Components
                 _chartDataSeriesLow.RemoveAt(0);
             }
 
-            _chartDataSeriesTemp.Add(new ChartDataItem { Date = now, Value = item.Pv });
-            _chartDataSeriesHigh.Add(new ChartDataItem { Date = now, Value = item.Config.HightLevel });
-            _chartDataSeriesLow.Add(new ChartDataItem { Date = now, Value = item.Config.LowLevel });
+            // Add zero-width space to prevent Radzen from parsing this as DateTime 
+            // and creating an interpolated time axis. We want exactly 1 tick per point.
+            var callTime = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") + "\u200B";
+
+            var highLevel = _displayInfo.Config?.HightLevel ?? 0;
+            var lowLevel = _displayInfo.Config?.LowLevel ?? 0;
+
+            _chartDataSeriesTemp.Add(new ChartDataItem { Date = callTime, Value = _displayInfo.Pv });
+            _chartDataSeriesHigh.Add(new ChartDataItem { Date = callTime, Value = highLevel });
+            _chartDataSeriesLow.Add(new ChartDataItem { Date = callTime, Value = lowLevel });
         }
 
         private string FormatAsTime(object value)
         {
-            if (value is DateTime dt)
-            {
-                return dt.ToString("HH:mm:ss");
-            }
             return value?.ToString() ?? "";
         }
 
@@ -118,6 +127,7 @@ namespace GiamSat.UI.Components
             _disposed = true;
             if (_timer != null)
             {
+                _timer.Elapsed -= RefreshData;
                 _timer.Stop();
                 _timer.Dispose();
             }
@@ -125,7 +135,7 @@ namespace GiamSat.UI.Components
 
         public class ChartDataItem
         {
-            public DateTime Date { get; set; }
+            public string Date { get; set; } = string.Empty;
             public double Value { get; set; }
         }
     }
