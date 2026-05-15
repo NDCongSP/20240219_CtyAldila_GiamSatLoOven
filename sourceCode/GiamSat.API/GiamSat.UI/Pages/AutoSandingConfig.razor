@@ -168,6 +168,23 @@
                                     </RadzenColumn>
                                 </RadzenRow>
 
+                                @* thêm phần lọc lấy  data Fe1,Fe2, Spine *@
+                                <RadzenRow Gap="" 1rem">
+                                    <RadzenColumn Size="12" SizeMD="4">
+                                        <RadzenText Text="Freq 01" />
+                                    </RadzenColumn>
+                                    <RadzenColumn Size="12" SizeMD="4">
+                                        <RadzenFormField Text="Nhập Work" Variant="Variant.Outlined" Style="width:100%">
+                                            <RadzenTextBox Placeholder="Nhập Work" Style="width:100%" />
+                                        </RadzenFormField>
+                                    </RadzenColumn>
+                                    <RadzenColumn Size="12" SizeMD="4">
+                                        <RadzenFormField Text="Offset" Variant="Variant.Outlined" Style="width:100%">
+                                            <RadzenTextBox Placeholder="Nhập Offset" Style="width:100%" />
+                                        </RadzenFormField>
+                                    </RadzenColumn>
+                                </RadzenRow>
+
                                 @* Hướng dẫn quy trình *@
                                 <RadzenCard Style="border-left: 4px solid var(--rz-info); background: var(--rz-info-lighter)">
                                     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
@@ -323,41 +340,204 @@
 
 <style>
     /* ── Bảng cấu hình chung ── */
-    .as-config-table { border-collapse: collapse; width: 100%; font-size: 0.82rem; }
-    .as-config-table th, .as-config-table td { border: 1px solid var(--rz-base-300); padding: 5px 8px; text-align: center; vertical-align: middle; white-space: nowrap; }
-    .as-config-table thead th { background: var(--rz-base-200); font-weight: 600; }
-    .th-tipod { background: #e8f5e9 !important; color: #1b5e20; }
-    .td-item  { font-weight: 600; text-align: left; }
-    .td-red   { color: #c62828; font-weight: 600; }
-    .td-blue  { color: #1565c0; font-weight: 600; }
-    .td-tipod { background: #f1f8e9; min-width: 130px; }
-    .td-action { width: 80px; }
-    .tipod-cell { display: flex; flex-direction: column; gap: 2px; align-items: center; font-size: 0.8rem; }
-    .tipod-label { color: #2e7d32; font-style: italic; }
+    .as-config-table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 0.82rem;
+    }
+
+        .as-config-table th, .as-config-table td {
+            border: 1px solid var(--rz-base-300);
+            padding: 5px 8px;
+            text-align: center;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .as-config-table thead th {
+            background: var(--rz-base-200);
+            font-weight: 600;
+        }
+
+    .th-tipod {
+        background: #e8f5e9 !important;
+        color: #1b5e20;
+    }
+
+    .td-item {
+        font-weight: 600;
+        text-align: left;
+    }
+
+    .td-red {
+        color: #c62828;
+        font-weight: 600;
+    }
+
+    .td-blue {
+        color: #1565c0;
+        font-weight: 600;
+    }
+
+    .td-tipod {
+        background: #f1f8e9;
+        min-width: 130px;
+    }
+
+    .td-action {
+        width: 80px;
+    }
+
+    .tipod-cell {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        align-items: center;
+        font-size: 0.8rem;
+    }
+
+    .tipod-label {
+        color: #2e7d32;
+        font-style: italic;
+    }
 
     /* ── Bảng test data ── */
-    .as-test-table { border-collapse: collapse; width: 100%; font-size: 0.82rem; }
-    .as-test-table th, .as-test-table td { border: 1px solid var(--rz-base-300); padding: 4px 8px; text-align: center; white-space: nowrap; vertical-align: middle; }
-    .as-test-table thead th { background: var(--rz-base-200); font-weight: 600; }
-    .group-sand1 { background: #fff3e0 !important; color: #e65100; }
-    .group-sand2 { background: #e8f5e9 !important; color: #1b5e20; }
-    .group-rpm   { background: #e3f2fd !important; color: #0d47a1; }
-    .col-idx     { background: var(--rz-base-300) !important; width: 36px; font-weight: 600; }
-    .col-diff    { background: #f3e5f5 !important; color: #6a1b9a; font-weight: 600; }
+    .as-test-table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 0.82rem;
+    }
+
+        .as-test-table th, .as-test-table td {
+            border: 1px solid var(--rz-base-300);
+            padding: 4px 8px;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        .as-test-table thead th {
+            background: var(--rz-base-200);
+            font-weight: 600;
+        }
+
+    .group-sand1 {
+        background: #fff3e0 !important;
+        color: #e65100;
+    }
+
+    .group-sand2 {
+        background: #e8f5e9 !important;
+        color: #1b5e20;
+    }
+
+    .group-rpm {
+        background: #e3f2fd !important;
+        color: #0d47a1;
+    }
+
+    .col-idx {
+        background: var(--rz-base-300) !important;
+        width: 36px;
+        font-weight: 600;
+    }
+
+    .col-diff {
+        background: #f3e5f5 !important;
+        color: #6a1b9a;
+        font-weight: 600;
+    }
 
     /* ── ABCD result boxes ── */
-    .abcd-box { display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; padding: 8px 4px; height: 70px; }
-    .abcd-label { font-size: 1.1rem; font-weight: 700; line-height: 1; }
-    .abcd-value { font-size: 0.9rem; font-family: monospace; margin-top: 4px; }
-    .abcd-a { background: #e3f2fd; color: #1565c0; }
-    .abcd-b { background: #e8f5e9; color: #2e7d32; }
-    .abcd-c { background: #fff3e0; color: #e65100; }
-    .abcd-d { background: #f3e5f5; color: #6a1b9a; }
+    .abcd-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        padding: 8px 4px;
+        height: 70px;
+    }
+
+    .abcd-label {
+        font-size: 1.1rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .abcd-value {
+        font-size: 0.9rem;
+        font-family: monospace;
+        margin-top: 4px;
+    }
+
+    .abcd-a {
+        background: #e3f2fd;
+        color: #1565c0;
+    }
+
+    .abcd-b {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .abcd-c {
+        background: #fff3e0;
+        color: #e65100;
+    }
+
+    .abcd-d {
+        background: #f3e5f5;
+        color: #6a1b9a;
+    }
 
     /* ── Hướng dẫn ── */
-    .guide-body { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem; font-size: 0.85rem; }
-    .guide-step { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.6rem 0.75rem; background: rgba(255,255,255,0.7); border-radius: 8px; line-height: 1.6; }
-    .guide-badge { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; color: #fff; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
-    .guide-formula-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
-    .guide-formula-box { flex: 1 1 180px; border: 2px solid; border-radius: 8px; padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.85); font-size: 0.83rem; line-height: 1.5; }
+    .guide-body {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .guide-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.6rem 0.75rem;
+        background: rgba(255,255,255,0.7);
+        border-radius: 8px;
+        line-height: 1.6;
+    }
+
+    .guide-badge {
+        flex-shrink: 0;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 2px;
+    }
+
+    .guide-formula-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .guide-formula-box {
+        flex: 1 1 180px;
+        border: 2px solid;
+        border-radius: 8px;
+        padding: 0.5rem 0.75rem;
+        background: rgba(255,255,255,0.85);
+        font-size: 0.83rem;
+        line-height: 1.5;
+    }
 </style>
