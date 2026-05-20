@@ -90,5 +90,15 @@ namespace GiamSat.Models
         {
             public const string BasePath = "api/FT14";
         }
+
+        public static class FT15
+        {
+            public const string BasePath = "api/FT15";
+        }
+
+        public static class FT16
+        {
+            public const string BasePath = "api/FT16";
+        }
     }
 }

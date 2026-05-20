@@ -3059,6 +3059,344 @@
         }
       }
     },
+    "/api/FT15": {
+      "get": {
+        "tags": [
+          "FT15"
+        ],
+        "operationId": "FT15_GetAll",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT015_SandingRealtimeListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT015_SandingRealtimeListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT015_SandingRealtimeListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT15/{id}": {
+      "get": {
+        "tags": [
+          "FT15"
+        ],
+        "operationId": "FT15_GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT015_SandingRealtimeResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT015_SandingRealtimeResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT015_SandingRealtimeResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT15/insert": {
+      "post": {
+        "tags": [
+          "FT15"
+        ],
+        "operationId": "FT15_Insert",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT015_SandingRealtime"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT015_SandingRealtime"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT015_SandingRealtime"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT015_SandingRealtimeResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT015_SandingRealtimeResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT015_SandingRealtimeResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT15/update": {
+      "post": {
+        "tags": [
+          "FT15"
+        ],
+        "operationId": "FT15_Update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT015_SandingRealtime"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT015_SandingRealtime"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT015_SandingRealtime"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT015_SandingRealtimeResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT015_SandingRealtimeResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT015_SandingRealtimeResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT16": {
+      "get": {
+        "tags": [
+          "FT16"
+        ],
+        "operationId": "FT16_GetAll",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT016_SandingLogDataListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT016_SandingLogDataListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT016_SandingLogDataListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT16/{id}": {
+      "get": {
+        "tags": [
+          "FT16"
+        ],
+        "operationId": "FT16_GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT016_SandingLogDataResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT016_SandingLogDataResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT016_SandingLogDataResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT16/insert": {
+      "post": {
+        "tags": [
+          "FT16"
+        ],
+        "operationId": "FT16_Insert",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT016_SandingLogData"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT016_SandingLogData"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT016_SandingLogData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT016_SandingLogDataResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT016_SandingLogDataResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT016_SandingLogDataResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT16/update": {
+      "post": {
+        "tags": [
+          "FT16"
+        ],
+        "operationId": "FT16_Update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT016_SandingLogData"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT016_SandingLogData"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FT016_SandingLogData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT016_SandingLogDataResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT016_SandingLogDataResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT016_SandingLogDataResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Logs/files": {
       "get": {
         "tags": [
@@ -4302,6 +4640,253 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT015_SandingRealtime": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "c001_Data": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT015_SandingRealtimeListResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FT015_SandingRealtime"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT015_SandingRealtimeResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/FT015_SandingRealtime"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT016_SandingLogData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdMachine": {
+            "type": "string",
+            "nullable": true
+          },
+          "part": {
+            "type": "string",
+            "nullable": true
+          },
+          "work": {
+            "type": "string",
+            "nullable": true
+          },
+          "formula": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "logType": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "shaftNum": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "motorSandingSpeed": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "spineA": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "spineB": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "spineTarget": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "spine_Low": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "spine_Hight": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "oK_NG_SpineB": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "tipOdLength_1": {
+            "type": "string",
+            "nullable": true
+          },
+          "tipOdLength_2": {
+            "type": "string",
+            "nullable": true
+          },
+          "tipOdLength_3": {
+            "type": "string",
+            "nullable": true
+          },
+          "diam_Reading_1": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "diam_Reading_2": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "diam_Reading_3": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "oK_NG_OD_1": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "oK_NG_OD_2": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "oK_NG_OD_3": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "diam_LL_1": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "diam_LL_2": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "diam_LL_3": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "diam_UL_1": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "diam_UL_2": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "diam_UL_3": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT016_SandingLogDataListResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FT016_SandingLogData"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT016_SandingLogDataResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/FT016_SandingLogData"
           }
         },
         "additionalProperties": false

@@ -260,6 +260,8 @@ namespace GiamSat.API
             services.AddScoped<ISFT08, SFT08>();
             services.AddScoped<ISFT09, SFT09>();
             services.AddScoped<ISFT14, SFT14>();
+            services.AddScoped<ISFT15, SFT15>();
+            services.AddScoped<ISFT16, SFT16>();
             services.AddScoped<SCommon>();
 
             services.AddSwaggerGen(c =>

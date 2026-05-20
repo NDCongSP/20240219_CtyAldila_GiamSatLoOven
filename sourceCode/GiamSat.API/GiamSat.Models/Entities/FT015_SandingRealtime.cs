@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GiamSat.Models.Entities
+namespace GiamSat.Models
 {
     [Table("FT015")]
     public class FT015_SandingRealtime

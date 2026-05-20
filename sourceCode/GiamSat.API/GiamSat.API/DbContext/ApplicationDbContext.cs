@@ -33,6 +33,8 @@ namespace GiamSat.API
             builder.Entity<FT12_TemperatureDatalog>();
             builder.Entity<FT13_TemperatureAlarmLog>();
             builder.Entity<FT14_TipOdFreq>();
+            builder.Entity<FT015_SandingRealtime>();
+            builder.Entity<FT016_SandingLogData>();
 
 
             builder.Entity<RoleToPermission>(entity =>
@@ -89,5 +91,7 @@ namespace GiamSat.API
         public DbSet<Permissions> Permissions { get; set; }
         public DbSet<RoleToPermission> RoleToPermissions { get; set; }
         public DbSet<FT14_TipOdFreq> FT14_TipOdFreqs { get; set; }
+        public DbSet<FT015_SandingRealtime> FT015_SandingRealtimes { get; set; }
+        public DbSet<FT016_SandingLogData> FT016_SandingLogDatas { get; set; }
     }
 }
