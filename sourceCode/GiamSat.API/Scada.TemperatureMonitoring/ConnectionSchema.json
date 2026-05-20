@@ -1,10 +1,10 @@
 {
   "ItemType": 0,
-  "ServerAddress": "192.168.1.6",
+  "ServerAddress": "127.0.0.1",
   "Port": 8800,
   "CommunicationMode": 0,
-  "RefreshRate": 100,
-  "CreatedDate": "2026-04-11T21:40:20.8604907+07:00",
+  "RefreshRate": 1000,
+  "CreatedDate": "2026-05-11T18:50:21.4645421+07:00",
   "Username": null,
   "Password": null,
   "Childs": [
@@ -8335,17 +8335,17 @@
         },
         {
           "ItemType": 3,
-          "Name": "Channel_Temperature_1",
-          "Path": "Local Station/Channel_Temperature_1",
+          "Name": "ChannelTemperature1",
+          "Path": "Local Station/ChannelTemperature1",
           "Description": null,
-          "DisplayInfo": "ModbusRTU COM3.9600.8.N.1",
+          "DisplayInfo": "ModbusRTU COM2.9600.8.N.1",
           "Error": null,
           "ConnectionStatus": 0,
           "Childs": [
             {
               "ItemType": 4,
               "Name": "Device1",
-              "Path": "Local Station/Channel_Temperature_1/Device1",
+              "Path": "Local Station/ChannelTemperature1/Device1",
               "Description": null,
               "DisplayInfo": "1",
               "Error": null,
@@ -8354,8 +8354,8 @@
                 {
                   "ItemType": 6,
                   "Name": "PV",
-                  "Path": "Local Station/Channel_Temperature_1/Device1/PV",
-                  "Description": "Gia tri nhiet do thuc te doc ve tu dong ho",
+                  "Path": "Local Station/ChannelTemperature1/Device1/PV",
+                  "Description": null,
                   "DisplayInfo": null,
                   "Error": null,
                   "ConnectionStatus": 0,
@@ -8363,6 +8363,62 @@
                   "Properties": {
                     "DataType": "Word",
                     "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Offset",
+                  "Path": "Local Station/ChannelTemperature1/Device1/Offset",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Short",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Id_Address",
+                  "Path": "Local Station/ChannelTemperature1/Device1/Id_Address",
+                  "Description": "Id address of the device",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "BaudRate",
+                  "Path": "Local Station/ChannelTemperature1/Device1/BaudRate",
+                  "Description": "0-9600; 1-19200;2-38400;3-57600;4-115200",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TriggerSaveConfig",
+                  "Path": "Local Station/ChannelTemperature1/Device1/TriggerSaveConfig",
+                  "Description": "set to 1 after any config about the ID address or baud rate.",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
                   }
                 }
               ],
@@ -8374,13 +8430,13 @@
                 "InputContactReadBlockSettings": "[]",
                 "OutputCoilsReadBlockSettings": "[]",
                 "InputRegisterReadBlockSettings": "[]",
-                "HoldingRegisterReadBlockSettings": "[]"
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400013\"\r\n  }\r\n]"
               }
             },
             {
               "ItemType": 4,
               "Name": "Device2",
-              "Path": "Local Station/Channel_Temperature_1/Device2",
+              "Path": "Local Station/ChannelTemperature1/Device2",
               "Description": null,
               "DisplayInfo": "2",
               "Error": null,
@@ -8389,7 +8445,7 @@
                 {
                   "ItemType": 6,
                   "Name": "PV",
-                  "Path": "Local Station/Channel_Temperature_1/Device2/PV",
+                  "Path": "Local Station/ChannelTemperature1/Device2/PV",
                   "Description": null,
                   "DisplayInfo": null,
                   "Error": null,
@@ -8398,6 +8454,62 @@
                   "Properties": {
                     "DataType": "Word",
                     "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Offset",
+                  "Path": "Local Station/ChannelTemperature1/Device2/Offset",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Id_Address",
+                  "Path": "Local Station/ChannelTemperature1/Device2/Id_Address",
+                  "Description": "Id address of the device",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "BaudRate",
+                  "Path": "Local Station/ChannelTemperature1/Device2/BaudRate",
+                  "Description": "0-9600; 1-19200;2-38400;3-57600;4-115200",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TriggerSaveConfig",
+                  "Path": "Local Station/ChannelTemperature1/Device2/TriggerSaveConfig",
+                  "Description": "set to 1 after any config about the ID address or baud rate.",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
                   }
                 }
               ],
@@ -8409,12 +8521,558 @@
                 "InputContactReadBlockSettings": "[]",
                 "OutputCoilsReadBlockSettings": "[]",
                 "InputRegisterReadBlockSettings": "[]",
-                "HoldingRegisterReadBlockSettings": "[]"
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400013\"\r\n  }\r\n]"
+              }
+            },
+            {
+              "ItemType": 4,
+              "Name": "Device3",
+              "Path": "Local Station/ChannelTemperature1/Device3",
+              "Description": null,
+              "DisplayInfo": "3",
+              "Error": null,
+              "ConnectionStatus": 0,
+              "Childs": [
+                {
+                  "ItemType": 6,
+                  "Name": "PV",
+                  "Path": "Local Station/ChannelTemperature1/Device3/PV",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Offset",
+                  "Path": "Local Station/ChannelTemperature1/Device3/Offset",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Id_Address",
+                  "Path": "Local Station/ChannelTemperature1/Device3/Id_Address",
+                  "Description": "Id address of the device",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "BaudRate",
+                  "Path": "Local Station/ChannelTemperature1/Device3/BaudRate",
+                  "Description": "0-9600; 1-19200;2-38400;3-57600;4-115200",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TriggerSaveConfig",
+                  "Path": "Local Station/ChannelTemperature1/Device3/TriggerSaveConfig",
+                  "Description": "set to 1 after any config about the ID address or baud rate.",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
+                  }
+                }
+              ],
+              "Properties": {
+                "DeviceId": "3",
+                "Timeout": "1000",
+                "TryReadWriteTimes": "3",
+                "ReadMode": "Block",
+                "InputContactReadBlockSettings": "[]",
+                "OutputCoilsReadBlockSettings": "[]",
+                "InputRegisterReadBlockSettings": "[]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400013\"\r\n  }\r\n]"
+              }
+            },
+            {
+              "ItemType": 4,
+              "Name": "Device4",
+              "Path": "Local Station/ChannelTemperature1/Device4",
+              "Description": null,
+              "DisplayInfo": "4",
+              "Error": null,
+              "ConnectionStatus": 0,
+              "Childs": [
+                {
+                  "ItemType": 6,
+                  "Name": "PV",
+                  "Path": "Local Station/ChannelTemperature1/Device4/PV",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Offset",
+                  "Path": "Local Station/ChannelTemperature1/Device4/Offset",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Id_Address",
+                  "Path": "Local Station/ChannelTemperature1/Device4/Id_Address",
+                  "Description": "Id address of the device",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "BaudRate",
+                  "Path": "Local Station/ChannelTemperature1/Device4/BaudRate",
+                  "Description": "0-9600; 1-19200;2-38400;3-57600;4-115200",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TriggerSaveConfig",
+                  "Path": "Local Station/ChannelTemperature1/Device4/TriggerSaveConfig",
+                  "Description": "set to 1 after any config about the ID address or baud rate.",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
+                  }
+                }
+              ],
+              "Properties": {
+                "DeviceId": "4",
+                "Timeout": "1000",
+                "TryReadWriteTimes": "3",
+                "ReadMode": "Block",
+                "InputContactReadBlockSettings": "[]",
+                "OutputCoilsReadBlockSettings": "[]",
+                "InputRegisterReadBlockSettings": "[]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400013\"\r\n  }\r\n]"
+              }
+            },
+            {
+              "ItemType": 4,
+              "Name": "Device5",
+              "Path": "Local Station/ChannelTemperature1/Device5",
+              "Description": null,
+              "DisplayInfo": "5",
+              "Error": null,
+              "ConnectionStatus": 0,
+              "Childs": [
+                {
+                  "ItemType": 6,
+                  "Name": "PV",
+                  "Path": "Local Station/ChannelTemperature1/Device5/PV",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Offset",
+                  "Path": "Local Station/ChannelTemperature1/Device5/Offset",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Id_Address",
+                  "Path": "Local Station/ChannelTemperature1/Device5/Id_Address",
+                  "Description": "Id address of the device",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "BaudRate",
+                  "Path": "Local Station/ChannelTemperature1/Device5/BaudRate",
+                  "Description": "0-9600; 1-19200;2-38400;3-57600;4-115200",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TriggerSaveConfig",
+                  "Path": "Local Station/ChannelTemperature1/Device5/TriggerSaveConfig",
+                  "Description": "set to 1 after any config about the ID address or baud rate.",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
+                  }
+                }
+              ],
+              "Properties": {
+                "DeviceId": "5",
+                "Timeout": "1000",
+                "TryReadWriteTimes": "3",
+                "ReadMode": "Block",
+                "InputContactReadBlockSettings": "[]",
+                "OutputCoilsReadBlockSettings": "[]",
+                "InputRegisterReadBlockSettings": "[]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400013\"\r\n  }\r\n]"
+              }
+            },
+            {
+              "ItemType": 4,
+              "Name": "Device6",
+              "Path": "Local Station/ChannelTemperature1/Device6",
+              "Description": null,
+              "DisplayInfo": "6",
+              "Error": null,
+              "ConnectionStatus": 0,
+              "Childs": [
+                {
+                  "ItemType": 6,
+                  "Name": "PV",
+                  "Path": "Local Station/ChannelTemperature1/Device6/PV",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Offset",
+                  "Path": "Local Station/ChannelTemperature1/Device6/Offset",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Id_Address",
+                  "Path": "Local Station/ChannelTemperature1/Device6/Id_Address",
+                  "Description": "Id address of the device",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "BaudRate",
+                  "Path": "Local Station/ChannelTemperature1/Device6/BaudRate",
+                  "Description": "0-9600; 1-19200;2-38400;3-57600;4-115200",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TriggerSaveConfig",
+                  "Path": "Local Station/ChannelTemperature1/Device6/TriggerSaveConfig",
+                  "Description": "set to 1 after any config about the ID address or baud rate.",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
+                  }
+                }
+              ],
+              "Properties": {
+                "DeviceId": "6",
+                "Timeout": "1000",
+                "TryReadWriteTimes": "3",
+                "ReadMode": "Block",
+                "InputContactReadBlockSettings": "[]",
+                "OutputCoilsReadBlockSettings": "[]",
+                "InputRegisterReadBlockSettings": "[]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400013\"\r\n  }\r\n]"
+              }
+            },
+            {
+              "ItemType": 4,
+              "Name": "Device7",
+              "Path": "Local Station/ChannelTemperature1/Device7",
+              "Description": null,
+              "DisplayInfo": "7",
+              "Error": null,
+              "ConnectionStatus": 0,
+              "Childs": [
+                {
+                  "ItemType": 6,
+                  "Name": "PV",
+                  "Path": "Local Station/ChannelTemperature1/Device7/PV",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Offset",
+                  "Path": "Local Station/ChannelTemperature1/Device7/Offset",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Id_Address",
+                  "Path": "Local Station/ChannelTemperature1/Device7/Id_Address",
+                  "Description": "Id address of the device",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "BaudRate",
+                  "Path": "Local Station/ChannelTemperature1/Device7/BaudRate",
+                  "Description": "0-9600; 1-19200;2-38400;3-57600;4-115200",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TriggerSaveConfig",
+                  "Path": "Local Station/ChannelTemperature1/Device7/TriggerSaveConfig",
+                  "Description": "set to 1 after any config about the ID address or baud rate.",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
+                  }
+                }
+              ],
+              "Properties": {
+                "DeviceId": "7",
+                "Timeout": "1000",
+                "TryReadWriteTimes": "3",
+                "ReadMode": "Block",
+                "InputContactReadBlockSettings": "[]",
+                "OutputCoilsReadBlockSettings": "[]",
+                "InputRegisterReadBlockSettings": "[]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400013\"\r\n  }\r\n]"
+              }
+            },
+            {
+              "ItemType": 4,
+              "Name": "Device8",
+              "Path": "Local Station/ChannelTemperature1/Device8",
+              "Description": null,
+              "DisplayInfo": "8",
+              "Error": null,
+              "ConnectionStatus": 0,
+              "Childs": [
+                {
+                  "ItemType": 6,
+                  "Name": "PV",
+                  "Path": "Local Station/ChannelTemperature1/Device8/PV",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Offset",
+                  "Path": "Local Station/ChannelTemperature1/Device8/Offset",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Id_Address",
+                  "Path": "Local Station/ChannelTemperature1/Device8/Id_Address",
+                  "Description": "Id address of the device",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "BaudRate",
+                  "Path": "Local Station/ChannelTemperature1/Device8/BaudRate",
+                  "Description": "0-9600; 1-19200;2-38400;3-57600;4-115200",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TriggerSaveConfig",
+                  "Path": "Local Station/ChannelTemperature1/Device8/TriggerSaveConfig",
+                  "Description": "set to 1 after any config about the ID address or baud rate.",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
+                  }
+                }
+              ],
+              "Properties": {
+                "DeviceId": "8",
+                "Timeout": "1000",
+                "TryReadWriteTimes": "3",
+                "ReadMode": "Block",
+                "InputContactReadBlockSettings": "[]",
+                "OutputCoilsReadBlockSettings": "[]",
+                "InputRegisterReadBlockSettings": "[]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400013\"\r\n  }\r\n]"
               }
             }
           ],
           "Properties": {
-            "Port": "COM3",
+            "Port": "COM2",
             "ScanRate": "1000",
             "Baudrate": "9600",
             "Parity": "None",
@@ -8426,17 +9084,17 @@
         },
         {
           "ItemType": 3,
-          "Name": "Channel_Temperature_2",
-          "Path": "Local Station/Channel_Temperature_2",
+          "Name": "ChannelTemperature2",
+          "Path": "Local Station/ChannelTemperature2",
           "Description": null,
-          "DisplayInfo": "ModbusRTU COM5.9600.8.N.1",
+          "DisplayInfo": "ModbusRTU COM3.9600.8.N.1",
           "Error": null,
           "ConnectionStatus": 0,
           "Childs": [
             {
               "ItemType": 4,
               "Name": "Device1",
-              "Path": "Local Station/Channel_Temperature_2/Device1",
+              "Path": "Local Station/ChannelTemperature2/Device1",
               "Description": null,
               "DisplayInfo": "1",
               "Error": null,
@@ -8445,7 +9103,7 @@
                 {
                   "ItemType": 6,
                   "Name": "PV",
-                  "Path": "Local Station/Channel_Temperature_2/Device1/PV",
+                  "Path": "Local Station/ChannelTemperature2/Device1/PV",
                   "Description": null,
                   "DisplayInfo": null,
                   "Error": null,
@@ -8454,6 +9112,62 @@
                   "Properties": {
                     "DataType": "Word",
                     "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Offset",
+                  "Path": "Local Station/ChannelTemperature2/Device1/Offset",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Id_Address",
+                  "Path": "Local Station/ChannelTemperature2/Device1/Id_Address",
+                  "Description": "Id address of the device",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "BaudRate",
+                  "Path": "Local Station/ChannelTemperature2/Device1/BaudRate",
+                  "Description": "0-9600; 1-19200;2-38400;3-57600;4-115200",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TriggerSaveConfig",
+                  "Path": "Local Station/ChannelTemperature2/Device1/TriggerSaveConfig",
+                  "Description": "set to 1 after any config about the ID address or baud rate.",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
                   }
                 }
               ],
@@ -8465,12 +9179,649 @@
                 "InputContactReadBlockSettings": "[]",
                 "OutputCoilsReadBlockSettings": "[]",
                 "InputRegisterReadBlockSettings": "[]",
-                "HoldingRegisterReadBlockSettings": "[]"
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400013\"\r\n  }\r\n]"
+              }
+            },
+            {
+              "ItemType": 4,
+              "Name": "Device2",
+              "Path": "Local Station/ChannelTemperature2/Device2",
+              "Description": null,
+              "DisplayInfo": "2",
+              "Error": null,
+              "ConnectionStatus": 0,
+              "Childs": [
+                {
+                  "ItemType": 6,
+                  "Name": "PV",
+                  "Path": "Local Station/ChannelTemperature2/Device2/PV",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Offset",
+                  "Path": "Local Station/ChannelTemperature2/Device2/Offset",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Id_Address",
+                  "Path": "Local Station/ChannelTemperature2/Device2/Id_Address",
+                  "Description": "Id address of the device",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "BaudRate",
+                  "Path": "Local Station/ChannelTemperature2/Device2/BaudRate",
+                  "Description": "0-9600; 1-19200;2-38400;3-57600;4-115200",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TriggerSaveConfig",
+                  "Path": "Local Station/ChannelTemperature2/Device2/TriggerSaveConfig",
+                  "Description": "set to 1 after any config about the ID address or baud rate.",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
+                  }
+                }
+              ],
+              "Properties": {
+                "DeviceId": "2",
+                "Timeout": "1000",
+                "TryReadWriteTimes": "3",
+                "ReadMode": "Block",
+                "InputContactReadBlockSettings": "[]",
+                "OutputCoilsReadBlockSettings": "[]",
+                "InputRegisterReadBlockSettings": "[]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400013\"\r\n  }\r\n]"
+              }
+            },
+            {
+              "ItemType": 4,
+              "Name": "Device3",
+              "Path": "Local Station/ChannelTemperature2/Device3",
+              "Description": null,
+              "DisplayInfo": "3",
+              "Error": null,
+              "ConnectionStatus": 0,
+              "Childs": [
+                {
+                  "ItemType": 6,
+                  "Name": "PV",
+                  "Path": "Local Station/ChannelTemperature2/Device3/PV",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Offset",
+                  "Path": "Local Station/ChannelTemperature2/Device3/Offset",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Id_Address",
+                  "Path": "Local Station/ChannelTemperature2/Device3/Id_Address",
+                  "Description": "Id address of the device",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "BaudRate",
+                  "Path": "Local Station/ChannelTemperature2/Device3/BaudRate",
+                  "Description": "0-9600; 1-19200;2-38400;3-57600;4-115200",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TriggerSaveConfig",
+                  "Path": "Local Station/ChannelTemperature2/Device3/TriggerSaveConfig",
+                  "Description": "set to 1 after any config about the ID address or baud rate.",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
+                  }
+                }
+              ],
+              "Properties": {
+                "DeviceId": "3",
+                "Timeout": "1000",
+                "TryReadWriteTimes": "3",
+                "ReadMode": "Block",
+                "InputContactReadBlockSettings": "[]",
+                "OutputCoilsReadBlockSettings": "[]",
+                "InputRegisterReadBlockSettings": "[]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400013\"\r\n  }\r\n]"
+              }
+            },
+            {
+              "ItemType": 4,
+              "Name": "Device4",
+              "Path": "Local Station/ChannelTemperature2/Device4",
+              "Description": null,
+              "DisplayInfo": "4",
+              "Error": null,
+              "ConnectionStatus": 0,
+              "Childs": [
+                {
+                  "ItemType": 6,
+                  "Name": "PV",
+                  "Path": "Local Station/ChannelTemperature2/Device4/PV",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Offset",
+                  "Path": "Local Station/ChannelTemperature2/Device4/Offset",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Id_Address",
+                  "Path": "Local Station/ChannelTemperature2/Device4/Id_Address",
+                  "Description": "Id address of the device",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "BaudRate",
+                  "Path": "Local Station/ChannelTemperature2/Device4/BaudRate",
+                  "Description": "0-9600; 1-19200;2-38400;3-57600;4-115200",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TriggerSaveConfig",
+                  "Path": "Local Station/ChannelTemperature2/Device4/TriggerSaveConfig",
+                  "Description": "set to 1 after any config about the ID address or baud rate.",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
+                  }
+                }
+              ],
+              "Properties": {
+                "DeviceId": "4",
+                "Timeout": "1000",
+                "TryReadWriteTimes": "3",
+                "ReadMode": "Block",
+                "InputContactReadBlockSettings": "[]",
+                "OutputCoilsReadBlockSettings": "[]",
+                "InputRegisterReadBlockSettings": "[]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400013\"\r\n  }\r\n]"
+              }
+            },
+            {
+              "ItemType": 4,
+              "Name": "Device5",
+              "Path": "Local Station/ChannelTemperature2/Device5",
+              "Description": null,
+              "DisplayInfo": "5",
+              "Error": null,
+              "ConnectionStatus": 0,
+              "Childs": [
+                {
+                  "ItemType": 6,
+                  "Name": "PV",
+                  "Path": "Local Station/ChannelTemperature2/Device5/PV",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Offset",
+                  "Path": "Local Station/ChannelTemperature2/Device5/Offset",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Id_Address",
+                  "Path": "Local Station/ChannelTemperature2/Device5/Id_Address",
+                  "Description": "Id address of the device",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "BaudRate",
+                  "Path": "Local Station/ChannelTemperature2/Device5/BaudRate",
+                  "Description": "0-9600; 1-19200;2-38400;3-57600;4-115200",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TriggerSaveConfig",
+                  "Path": "Local Station/ChannelTemperature2/Device5/TriggerSaveConfig",
+                  "Description": "set to 1 after any config about the ID address or baud rate.",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
+                  }
+                }
+              ],
+              "Properties": {
+                "DeviceId": "5",
+                "Timeout": "1000",
+                "TryReadWriteTimes": "3",
+                "ReadMode": "Block",
+                "InputContactReadBlockSettings": "[]",
+                "OutputCoilsReadBlockSettings": "[]",
+                "InputRegisterReadBlockSettings": "[]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400013\"\r\n  }\r\n]"
+              }
+            },
+            {
+              "ItemType": 4,
+              "Name": "Device6",
+              "Path": "Local Station/ChannelTemperature2/Device6",
+              "Description": null,
+              "DisplayInfo": "6",
+              "Error": null,
+              "ConnectionStatus": 0,
+              "Childs": [
+                {
+                  "ItemType": 6,
+                  "Name": "PV",
+                  "Path": "Local Station/ChannelTemperature2/Device6/PV",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Offset",
+                  "Path": "Local Station/ChannelTemperature2/Device6/Offset",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Id_Address",
+                  "Path": "Local Station/ChannelTemperature2/Device6/Id_Address",
+                  "Description": "Id address of the device",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "BaudRate",
+                  "Path": "Local Station/ChannelTemperature2/Device6/BaudRate",
+                  "Description": "0-9600; 1-19200;2-38400;3-57600;4-115200",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TriggerSaveConfig",
+                  "Path": "Local Station/ChannelTemperature2/Device6/TriggerSaveConfig",
+                  "Description": "set to 1 after any config about the ID address or baud rate.",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
+                  }
+                }
+              ],
+              "Properties": {
+                "DeviceId": "6",
+                "Timeout": "1000",
+                "TryReadWriteTimes": "3",
+                "ReadMode": "Block",
+                "InputContactReadBlockSettings": "[]",
+                "OutputCoilsReadBlockSettings": "[]",
+                "InputRegisterReadBlockSettings": "[]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400013\"\r\n  }\r\n]"
+              }
+            },
+            {
+              "ItemType": 4,
+              "Name": "Device7",
+              "Path": "Local Station/ChannelTemperature2/Device7",
+              "Description": null,
+              "DisplayInfo": "7",
+              "Error": null,
+              "ConnectionStatus": 0,
+              "Childs": [
+                {
+                  "ItemType": 6,
+                  "Name": "PV",
+                  "Path": "Local Station/ChannelTemperature2/Device7/PV",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Offset",
+                  "Path": "Local Station/ChannelTemperature2/Device7/Offset",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Id_Address",
+                  "Path": "Local Station/ChannelTemperature2/Device7/Id_Address",
+                  "Description": "Id address of the device",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "BaudRate",
+                  "Path": "Local Station/ChannelTemperature2/Device7/BaudRate",
+                  "Description": "0-9600; 1-19200;2-38400;3-57600;4-115200",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TriggerSaveConfig",
+                  "Path": "Local Station/ChannelTemperature2/Device7/TriggerSaveConfig",
+                  "Description": "set to 1 after any config about the ID address or baud rate.",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
+                  }
+                }
+              ],
+              "Properties": {
+                "DeviceId": "7",
+                "Timeout": "1000",
+                "TryReadWriteTimes": "3",
+                "ReadMode": "Block",
+                "InputContactReadBlockSettings": "[]",
+                "OutputCoilsReadBlockSettings": "[]",
+                "InputRegisterReadBlockSettings": "[]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400013\"\r\n  }\r\n]"
+              }
+            },
+            {
+              "ItemType": 4,
+              "Name": "Device8",
+              "Path": "Local Station/ChannelTemperature2/Device8",
+              "Description": null,
+              "DisplayInfo": "8",
+              "Error": null,
+              "ConnectionStatus": 0,
+              "Childs": [
+                {
+                  "ItemType": 6,
+                  "Name": "PV",
+                  "Path": "Local Station/ChannelTemperature2/Device8/PV",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400001"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Offset",
+                  "Path": "Local Station/ChannelTemperature2/Device8/Offset",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400002"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Id_Address",
+                  "Path": "Local Station/ChannelTemperature2/Device8/Id_Address",
+                  "Description": "Id address of the device",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400011"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "BaudRate",
+                  "Path": "Local Station/ChannelTemperature2/Device8/BaudRate",
+                  "Description": "0-9600; 1-19200;2-38400;3-57600;4-115200",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400012"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "TriggerSaveConfig",
+                  "Path": "Local Station/ChannelTemperature2/Device8/TriggerSaveConfig",
+                  "Description": "set to 1 after any config about the ID address or baud rate.",
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "400013"
+                  }
+                }
+              ],
+              "Properties": {
+                "DeviceId": "8",
+                "Timeout": "1000",
+                "TryReadWriteTimes": "3",
+                "ReadMode": "Block",
+                "InputContactReadBlockSettings": "[]",
+                "OutputCoilsReadBlockSettings": "[]",
+                "InputRegisterReadBlockSettings": "[]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"400001\",\r\n    \"EndAddress\": \"400013\"\r\n  }\r\n]"
               }
             }
           ],
           "Properties": {
-            "Port": "COM5",
+            "Port": "COM3",
             "ScanRate": "1000",
             "Baudrate": "9600",
             "Parity": "None",

@@ -1,0 +1,103 @@
+@page "/temperature/dashboard"
+@using Radzen
+@using Radzen.Blazor
+@using GiamSat.APIClient
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Policy = GiamSat.Models.AppPermissions.Temperature_Home_View)]
+
+<style>
+    .alarm-blink {
+        animation: blinker 1s linear infinite;
+        background-color: #ffebee !important;
+        border: 2px solid #ef5350 !important;
+    }
+
+    @@keyframes blinker {
+        50% {
+            opacity: 0.6;
+        }
+    }
+
+    .normal-card {
+        border-left: 5px solid #66bb6a;
+    }
+
+    .alarm-card {
+        border-left: 5px solid #ef5350;
+    }
+</style>
+
+<RadzenRow Gap="1rem">
+    <RadzenColumn Size="12">
+        <RadzenText TextStyle="TextStyle.H4" class="rz-mb-4">Giám sát Nhiệt Độ</RadzenText>
+    </RadzenColumn>
+</RadzenRow>
+
+<RadzenRow Gap="1.5rem">
+    @if (_isFirstLoad && _realtimeData == null)
+    {
+        <RadzenColumn Size="12">
+            <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+            <RadzenText>Đang kết nối hệ thống...</RadzenText>
+        </RadzenColumn>
+    }
+    else if (_realtimeData != null && _realtimeData.Any())
+    {
+        @foreach (var item in _realtimeData)
+        {
+            var calibratedPv = item.Pv;
+            var isAlarm = calibratedPv > item.Config.HightLevel || calibratedPv < item.Config.LowLevel;
+            var alarmClass = isAlarm ? "alarm-blink alarm-card" : "normal-card";
+            var timeBlinkStr = (_timeBlinkAlarm / 1000.0).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) +
+            "s";
+
+            <RadzenColumn Size="12" SizeMD="6" SizeLG="4">
+                <RadzenCard class="@($"rz-shadow-3 {alarmClass}")"
+                    Style="@($"border-radius: 8px; {(isAlarm ? $"animation-duration: {timeBlinkStr};" : "")}")">
+                    <RadzenText TextStyle="TextStyle.H6" class="rz-color-primary rz-mb-0">@item.Name</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Caption" class="rz-color-secondary rz-mb-3">@item.Path</RadzenText>
+
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="6">
+                            <RadzenText TextStyle="TextStyle.H3" Style="font-weight: 700;"
+                                class="@(isAlarm ? "rz-color-danger" : "rz-color-success")">
+                                @calibratedPv.ToString("0.0")<span style="font-size: 0.4em;">°C</span>
+                            </RadzenText>
+                        </RadzenColumn>
+                        <RadzenColumn Size="6" class="rz-text-align-right">
+                            <RadzenText TextStyle="TextStyle.Body2">Low: @item.Config.LowLevel°C</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Body2">High: @item.Config.HightLevel°C</RadzenText>
+                        </RadzenColumn>
+                    </RadzenRow>
+
+                    @if (isAlarm)
+                    {
+                        <RadzenAlert Title="BÁO ĐỘNG" AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" Shade="Shade.Lighter"
+                            Size="AlertSize.Small" class="rz-mt-3 rz-mb-0">
+                            Nhiệt độ nằm ngoài ngưỡng an toàn!
+                        </RadzenAlert>
+                    }
+                    else
+                    {
+                        <RadzenAlert Title="Bình thường" AlertStyle="AlertStyle.Success" Variant="Variant.Flat"
+                            Shade="Shade.Lighter" Size="AlertSize.Small" class="rz-mt-3 rz-mb-0">
+                            Hệ thống hoạt động ổn định
+                        </RadzenAlert>
+                    }
+
+                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" class="rz-mt-3">
+                        <RadzenButton Icon="info" Text="Xem chi tiết" ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Size="ButtonSize.Small" Click="@(() => OnViewDetail(item))" />
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenColumn>
+        }
+    }
+    else
+    {
+        <RadzenColumn Size="12">
+            <RadzenAlert Title="Trống" AlertStyle="AlertStyle.Info" Variant="Variant.Flat">
+                Chưa có dữ liệu Realtime. Vui lòng kiểm tra thiết bị kết nối Scada.
+            </RadzenAlert>
+        </RadzenColumn>
+    }
+</RadzenRow>

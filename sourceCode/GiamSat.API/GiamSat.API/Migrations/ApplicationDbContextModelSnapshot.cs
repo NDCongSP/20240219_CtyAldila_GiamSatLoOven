@@ -426,6 +426,9 @@ namespace GiamSat.API.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("EndedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<int?>("LocationId")
                         .HasColumnType("int");
 

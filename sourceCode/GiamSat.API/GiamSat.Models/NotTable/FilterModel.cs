@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,9 +10,9 @@ namespace GiamSat.Models
     {
         public bool GetAll { get; set; }
         public int OvenId { get; set; } = 1;
-        public string OvenName { get; set; }
+        public string? OvenName { get; set; }
         public int ProfileId { get; set; } = 1;
-        public string ProfileName { get; set; }
+        public string? ProfileName { get; set; }
         public int StepId { get; set; } = 1;
 
         /// <summary>

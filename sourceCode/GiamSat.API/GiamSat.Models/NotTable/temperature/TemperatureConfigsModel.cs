@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace GiamSat.Models
 {
@@ -10,7 +10,12 @@ namespace GiamSat.Models
         public double TimeBlinkAlarm { get; set; } = 1000;
 
         /// <summary>
-        /// Khoảng thời gian làm mới dữ liệu thời gian thực (ms).
+        /// Khoảng thời gian làm mới dữ liệu thời gian thực trên UI Website (ms).
+        /// </summary>
+        public double IntervalRealtimeUI { get; set; } = 1000;
+
+        /// <summary>
+        /// Khoảng thời gian lấy mẫu dữ liệu thời gian thực của SCADA WinForms (ms).
         /// </summary>
         public double IntervalRealtime { get; set; } = 200;
 
@@ -18,6 +23,11 @@ namespace GiamSat.Models
         /// Thời gian interval để lưu dữ liệu log vào database (ms), ví dụ: 60000ms = 1 phút, tức là mỗi phút sẽ lưu một bản ghi dữ liệu log vào database, giúp theo dõi lịch sử nhiệt độ theo thời gian.
         /// </summary>
         public double IntervalDataLog { get; set; } = 60000;
+
+        /// <summary>
+        /// Khoảng thời gian làm mới dữ liệu thời gian thực trên UI Website dành riêng cho Dashboard chi tiết của từng location (ms).
+        /// </summary>
+        public double IntervalRealtimeDetailUI { get; set; } = 10000;
 
         /// <summary>
         /// lưu config của từng location.

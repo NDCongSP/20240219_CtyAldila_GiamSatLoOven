@@ -649,6 +649,75 @@
         }
       }
     },
+    "/api/Authenticate/resetpass": {
+      "post": {
+        "tags": [
+          "Authenticate"
+        ],
+        "operationId": "Authenticate_ResetPass",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Authenticate/checkuser": {
       "post": {
         "tags": [
@@ -2821,6 +2890,259 @@
         }
       }
     },
+    "/api/Logs/files": {
+      "get": {
+        "tags": [
+          "Logs"
+        ],
+        "operationId": "Logs_GetFiles",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogFileInfoListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogFileInfoListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogFileInfoListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Logs/entries/{fileName}": {
+      "get": {
+        "tags": [
+          "Logs"
+        ],
+        "operationId": "Logs_GetEntries",
+        "parameters": [
+          {
+            "name": "fileName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1000
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogEntryListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogEntryListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogEntryListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Logs/trace/{correlationId}": {
+      "get": {
+        "tags": [
+          "Logs"
+        ],
+        "operationId": "Logs_GetByTrace",
+        "parameters": [
+          {
+            "name": "correlationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogEntryListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogEntryListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogEntryListResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Logs/summary/{fileName}": {
+      "get": {
+        "tags": [
+          "Logs"
+        ],
+        "operationId": "Logs_GetSummary",
+        "parameters": [
+          {
+            "name": "fileName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogSummaryResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogSummaryResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogSummaryResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Logs/files/{fileName}": {
+      "delete": {
+        "tags": [
+          "Logs"
+        ],
+        "operationId": "Logs_DeleteFile",
+        "parameters": [
+          {
+            "name": "fileName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Logs/clear/{fileName}": {
+      "post": {
+        "tags": [
+          "Logs"
+        ],
+        "operationId": "Logs_ClearFile",
+        "parameters": [
+          {
+            "name": "fileName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Permissions/roles": {
       "get": {
         "tags": [
@@ -2967,7 +3289,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/SecurityPermission"
+                    "$ref": "#/components/schemas/Permissions"
                   }
                 }
               },
@@ -2975,7 +3297,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/SecurityPermission"
+                    "$ref": "#/components/schemas/Permissions"
                   }
                 }
               },
@@ -2983,11 +3305,106 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/SecurityPermission"
+                    "$ref": "#/components/schemas/Permissions"
                   }
                 }
               }
             }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Permissions"
+        ],
+        "operationId": "Permissions_CreatePermission",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Permissions"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Permissions"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Permissions"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Permissions/permissions/{id}": {
+      "put": {
+        "tags": [
+          "Permissions"
+        ],
+        "operationId": "Permissions_UpdatePermission",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Permissions"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Permissions"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Permissions"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Permissions"
+        ],
+        "operationId": "Permissions_DeletePermission",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
           }
         }
       }
@@ -3653,6 +4070,318 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/TemperatureConfig": {
+      "get": {
+        "tags": [
+          "TemperatureConfig"
+        ],
+        "operationId": "TemperatureConfig_GetConfigs",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemperatureConfigsModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemperatureConfigsModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemperatureConfigsModel"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "TemperatureConfig"
+        ],
+        "operationId": "TemperatureConfig_SaveConfigs",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TemperatureConfigsModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TemperatureConfigsModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TemperatureConfigsModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemperatureConfigsModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemperatureConfigsModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemperatureConfigsModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/TemperatureData/GetRealtime": {
+      "get": {
+        "tags": [
+          "TemperatureData"
+        ],
+        "operationId": "TemperatureData_GetRealtime",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TemperatureRealtimeModel"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TemperatureRealtimeModel"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TemperatureRealtimeModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/TemperatureData/GetAlarmLogs": {
+      "get": {
+        "tags": [
+          "TemperatureData"
+        ],
+        "operationId": "TemperatureData_GetAlarmLogs",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FT13_TemperatureAlarmLog"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FT13_TemperatureAlarmLog"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FT13_TemperatureAlarmLog"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/TemperatureData/GetDataLogs": {
+      "get": {
+        "tags": [
+          "TemperatureData"
+        ],
+        "operationId": "TemperatureData_GetDataLogs",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FT12_TemperatureDatalog"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FT12_TemperatureDatalog"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FT12_TemperatureDatalog"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/TemperatureData/SyncRealtime": {
+      "post": {
+        "tags": [
+          "TemperatureData"
+        ],
+        "operationId": "TemperatureData_SyncRealtime",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TemperatureRealtimeModel"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TemperatureRealtimeModel"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TemperatureRealtimeModel"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/TemperatureData/SyncDatalog": {
+      "post": {
+        "tags": [
+          "TemperatureData"
+        ],
+        "operationId": "TemperatureData_SyncDatalog",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TemperatureRealtimeModel"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TemperatureRealtimeModel"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TemperatureRealtimeModel"
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success"
@@ -4471,6 +5200,114 @@
         },
         "additionalProperties": false
       },
+      "FT12_TemperatureDatalog": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdMachine": {
+            "type": "string",
+            "nullable": true
+          },
+          "updateddAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "locationId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "locationName": {
+            "type": "string",
+            "nullable": true
+          },
+          "path": {
+            "type": "string",
+            "nullable": true
+          },
+          "pv": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FT13_TemperatureAlarmLog": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdMachine": {
+            "type": "string",
+            "nullable": true
+          },
+          "updateddAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "endedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "locationId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "locationName": {
+            "type": "string",
+            "nullable": true
+          },
+          "path": {
+            "type": "string",
+            "nullable": true
+          },
+          "pV_Alarm": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "pV_Normal": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "sV_High": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "sV_Low": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "FilterModel": {
         "type": "object",
         "properties": {
@@ -4504,28 +5341,6 @@
           "toDate": {
             "type": "string",
             "format": "date-time"
-          }
-        },
-        "additionalProperties": false
-      },
-      "IdentityRole": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "nullable": true
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "normalizedName": {
-            "type": "string",
-            "nullable": true
-          },
-          "concurrencyStamp": {
-            "type": "string",
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -4604,6 +5419,158 @@
         },
         "additionalProperties": false
       },
+      "LogEntry": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "level": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "correlationId": {
+            "type": "string",
+            "nullable": true
+          },
+          "source": {
+            "type": "string",
+            "nullable": true
+          },
+          "raw": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LogEntryListResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LogEntry"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LogFileInfo": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "kind": {
+            "type": "string",
+            "nullable": true
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LogFileInfoListResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LogFileInfo"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LogSummary": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "byLevel": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LogSummaryItem"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LogSummaryItem": {
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "string",
+            "nullable": true
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LogSummaryResult": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/LogSummary"
+          }
+        },
+        "additionalProperties": false
+      },
       "LoginModel": {
         "required": [
           "password",
@@ -4663,6 +5630,45 @@
         },
         "additionalProperties": false
       },
+      "Permissions": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "module": {
+            "type": "string",
+            "nullable": true
+          },
+          "actions": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdMachine": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActived": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "RefreshTokenModel": {
         "type": "object",
         "properties": {
@@ -4679,7 +5685,6 @@
       },
       "RegisterModel": {
         "required": [
-          "email",
           "password",
           "repeatPassword",
           "userName"
@@ -4691,9 +5696,9 @@
             "type": "string"
           },
           "email": {
-            "minLength": 1,
             "type": "string",
-            "format": "email"
+            "format": "email",
+            "nullable": true
           },
           "password": {
             "minLength": 1,
@@ -4713,6 +5718,19 @@
         },
         "additionalProperties": false
       },
+      "ResetPasswordModel": {
+        "required": [
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "username": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
       "Response": {
         "type": "object",
         "properties": {
@@ -4723,6 +5741,22 @@
           "message": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Result": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "succeeded": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -5098,30 +6132,6 @@
         },
         "additionalProperties": false
       },
-      "RolePermission": {
-        "type": "object",
-        "properties": {
-          "roleId": {
-            "type": "string",
-            "nullable": true
-          },
-          "role": {
-            "$ref": "#/components/schemas/IdentityRole"
-          },
-          "permissionId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "permission": {
-            "$ref": "#/components/schemas/SecurityPermission"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "additionalProperties": false
-      },
       "SandboxedRemoveCommand": {
         "type": "object",
         "properties": {
@@ -5148,60 +6158,6 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/StringStringMomentNullableValueTuple"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "SecurityPermission": {
-        "required": [
-          "action",
-          "code",
-          "module"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "code": {
-            "maxLength": 150,
-            "minLength": 1,
-            "type": "string"
-          },
-          "module": {
-            "maxLength": 100,
-            "minLength": 1,
-            "type": "string"
-          },
-          "action": {
-            "maxLength": 50,
-            "minLength": 1,
-            "type": "string"
-          },
-          "description": {
-            "maxLength": 256,
-            "type": "string",
-            "nullable": true
-          },
-          "isActive": {
-            "type": "boolean"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "rolePermissions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RolePermission"
             },
             "nullable": true
           }
@@ -5348,6 +6304,114 @@
           "isEmpty": {
             "type": "boolean",
             "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TemperatureConfigsModel": {
+        "type": "object",
+        "properties": {
+          "timeBlinkAlarm": {
+            "type": "number",
+            "format": "double"
+          },
+          "intervalRealtimeUI": {
+            "type": "number",
+            "format": "double"
+          },
+          "intervalRealtime": {
+            "type": "number",
+            "format": "double"
+          },
+          "intervalDataLog": {
+            "type": "number",
+            "format": "double"
+          },
+          "intervalRealtimeDetailUI": {
+            "type": "number",
+            "format": "double"
+          },
+          "locationsConfig": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TemperatureLocationModel"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TemperatureLocationModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "path": {
+            "type": "string",
+            "nullable": true
+          },
+          "offset": {
+            "type": "number",
+            "format": "double"
+          },
+          "hightLevel": {
+            "type": "number",
+            "format": "double"
+          },
+          "lowLevel": {
+            "type": "number",
+            "format": "double"
+          },
+          "triggerUpdate": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TemperatureRealtimeModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "path": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "boolean"
+          },
+          "connectionStatus": {
+            "type": "boolean"
+          },
+          "pv": {
+            "type": "number",
+            "format": "double"
+          },
+          "alarm": {
+            "type": "boolean"
+          },
+          "alarmFlag": {
+            "type": "boolean"
+          },
+          "alarmDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "config": {
+            "$ref": "#/components/schemas/TemperatureLocationModel"
           }
         },
         "additionalProperties": false
