@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace GiamSat.Models
 {
     [BasePath(ApiRoutes.FT15.BasePath)]
-    public interface ISFT15:IRepository<Guid, FT015_SandingRealtime>
+    public interface ISFT15:IRepository<Guid, FT15_SandingRealtime>
     {
     }
 }

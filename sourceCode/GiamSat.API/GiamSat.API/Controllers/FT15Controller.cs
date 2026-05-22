@@ -8,7 +8,7 @@ namespace GiamSat.API.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class FT15Controller : BaseController<Guid, FT015_SandingRealtime>, ISFT15
+    public class FT15Controller : BaseController<Guid, FT15_SandingRealtime>, ISFT15
     {
         readonly SCommon _sCommon;
 

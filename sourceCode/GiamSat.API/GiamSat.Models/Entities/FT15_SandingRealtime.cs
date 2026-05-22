@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace GiamSat.Models
 {
-    [Table("FT015")]
-    public class FT015_SandingRealtime
+    [Table("FT15")]
+    public class FT15_SandingRealtime
     {
         [Key]
         [Browsable(false)]

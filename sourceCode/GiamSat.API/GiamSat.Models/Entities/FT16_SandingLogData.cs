@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace GiamSat.Models
 {
-    [Table("FT016")]
-    public class FT016_SandingLogData
+    [Table("FT16")]
+    public class FT16_SandingLogData
     {
         [Key]
         public Guid Id { get; set; }
@@ -60,5 +60,11 @@ namespace GiamSat.Models
         public int? Diam_UL_1 { get; set; } = null;
         public int? Diam_UL_2 { get; set; } = null;
         public int? Diam_UL_3 { get; set; } = null;
+
+        /// <summary>
+        /// Báo cho biết log này được tạo ra trong chế độ nào của máy mài, ví dụ như chế độ sản xuất, chế độ test, chế độ demo, v.v. Tùy vào từng loại máy mài mà sẽ có các chế độ khác nhau, và mỗi chế độ sẽ có cách xử lý dữ liệu log khác nhau. Ví dụ như trong chế độ sản xuất thì sẽ lưu tất cả các log, còn trong chế độ test thì chỉ lưu một số log nhất định, còn trong chế độ demo thì không lưu log nào cả.
+        /// Khi tinh ABCD thì đọc với mode Test.
+        /// </summary>
+        public EnumSandingMode? SandingMode { get; set; } = EnumSandingMode.Production;
     }
 }
