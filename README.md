@@ -40,6 +40,8 @@ PLC: 192.168.106.32 - COM20
 CH1(1-->5): 192.168.106.33 - COM21
 CH2(6-->10): 192.168.106.34 - COM22
 CH3(11-->13): 192.168.106.35 - COM23
+nwtmask: 255.255.255.0
+Gateway: 192.168.106.1
 
 
 de host IIS cac ung dung ASP .net core thi mays tinhs can caif cai nay: dotnet-hosting-7.0.10-win
@@ -103,7 +105,7 @@ Dung Lora chia làm 2 channel, chuyển đổi 485-> TCP dùng 30nedata NP301 | 
 ID modbus của thiết bị bằng chính thứ tự của vị trí đo
 Chay chung EasyDriver với lò Oven
 
- Channel1 - IP: 192.168.1.253 -192.168.106.36 - LORA CH 17
+ Channel1 - IP: 192.168.106.36 - LORA CH 17
     - VT1, VT2, VT3, VT4, VT5, VT6, VT7, VT14
- Channel2 - IP: 192.168.1.254- 192.168.106.37 - LORA CH 14
+ Channel2 - IP: 192.168.106.37 - LORA CH 14
     - VT8, VT9, VT10, VT11, VT12, VT13, VT15, VT16
