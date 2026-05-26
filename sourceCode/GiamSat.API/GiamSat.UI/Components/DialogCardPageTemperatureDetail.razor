@@ -1,0 +1,96 @@
+@using GiamSat.APIClient
+@using GiamSat.Models
+@attribute [Authorize]
+
+@if (_displayInfo == null)
+{
+    <div class="spinner center-div"></div>
+}
+else
+{
+    <RadzenStack Gap="0.5rem" Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Start" Style="height: 100%;">
+        <RadzenRow>
+            <RadzenColumn Size="12" SizeMD="12" Class="rz-p-2">
+                <RadzenFieldset Text="Thông tin chi tiết điểm đo">
+                    <RadzenRow RowGap="0">
+                        <RadzenColumn SizeXS="12" SizeSM="4">
+                            <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-4 rz-mb-0">Tên vị trí</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_displayInfo.Name</b></RadzenText>
+                        </RadzenColumn>
+                        <RadzenColumn SizeXS="12" SizeSM="4">
+                            <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-4 rz-mb-0">Đường dẫn thẻ</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Body1" class=""><b>@_displayInfo.Path</b></RadzenText>
+                        </RadzenColumn>
+                        <RadzenColumn SizeXS="12" SizeSM="4">
+                            <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-4 rz-mb-0">Nhiệt độ hiện tại (oC)</RadzenText>
+                            <RadzenText TextStyle="TextStyle.H5" class="rz-color-primary"><b>@_displayInfo.Pv.ToString("0.0")</b></RadzenText>
+                        </RadzenColumn>
+
+                        <RadzenColumn SizeXS="12" SizeSM="3">
+                            <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-4 rz-mb-0">Offset</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Body1" class=""><b>@(_displayInfo.Config?.Offset ?? 0)</b></RadzenText>
+                        </RadzenColumn>
+                        <RadzenColumn SizeXS="12" SizeSM="3">
+                            <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-4 rz-mb-0">Ngưỡng thấp (Min)</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Body1" class=""><b>@(_displayInfo.Config?.LowLevel ?? 0)</b></RadzenText>
+                        </RadzenColumn>
+                        <RadzenColumn SizeXS="12" SizeSM="3">
+                            <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-4 rz-mb-0">Ngưỡng cao (Max)</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Body1" class=""><b>@(_displayInfo.Config?.HightLevel ?? 0)</b></RadzenText>
+                        </RadzenColumn>
+                        <RadzenColumn SizeXS="12" SizeSM="3">
+                            @{
+                                var calibratedPv = _displayInfo.Pv;
+                                var highLevel = _displayInfo.Config?.HightLevel ?? double.MaxValue;
+                                var lowLevel = _displayInfo.Config?.LowLevel ?? double.MinValue;
+                                var isAlarm = calibratedPv > highLevel || calibratedPv < lowLevel;
+                            }
+                            <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-4 rz-mb-0">Trạng thái</RadzenText>
+                            <RadzenBadge BadgeStyle="@(isAlarm ? BadgeStyle.Danger : BadgeStyle.Success)" 
+                                         Text="@(isAlarm ? "BÁO ĐỘNG" : "Bình thường")" />
+                        </RadzenColumn>
+                    </RadzenRow>
+                </RadzenFieldset>
+            </RadzenColumn>
+        </RadzenRow>
+
+        <RadzenRow>
+            <RadzenColumn SizeXS="12">
+                <RadzenChart @ref="RadzenChart" class="chart" Style="height: 280px">
+                    <RadzenLineSeries Smooth="true" Data="@_chartDataSeriesTemp" CategoryProperty="Date"
+                                      Title="NĐ đo" ValueProperty="Value" Stroke="#2196F3" StrokeWidth="2">
+                        <RadzenMarkers Visible="@(GlobalVariable.ConfigSystem != null ? GlobalVariable.ConfigSystem.ShowMarkers : true)" MarkerType="MarkerType.Circle" Size="3" />
+                        <RadzenSeriesDataLabels Visible="@(GlobalVariable.ConfigSystem != null ? GlobalVariable.ConfigSystem.ShowDataLabels : true)" />
+                    </RadzenLineSeries>
+                    <RadzenLineSeries Smooth="false" Data="@_chartDataSeriesHigh" CategoryProperty="Date"
+                                      Title="Ngưỡng cao" ValueProperty="Value" Stroke="#F44336" StrokeWidth="1" LineType="LineType.Dashed">
+                        <RadzenMarkers Visible="false" />
+                    </RadzenLineSeries>
+                    <RadzenLineSeries Smooth="false" Data="@_chartDataSeriesLow" CategoryProperty="Date"
+                                      Title="Ngưỡng thấp" ValueProperty="Value" Stroke="#4CAF50" StrokeWidth="1" LineType="LineType.Dashed">
+                        <RadzenMarkers Visible="false" />
+                    </RadzenLineSeries>
+
+                    <RadzenCategoryAxis Padding="20" Formatter="@FormatAsTime">
+                        <RadzenGridLines Visible="true" />
+                        <RadzenAxisTitle Text="Thời gian" />
+                        <RadzenTicks>
+                            <Template>
+                                <text class="rz-tick-text" style="text-anchor: end; transform: translate(@(context.X.ToString().Replace(",","."))px, @((context.Y + 10).ToString().Replace(",","."))px) rotate(-45deg); font-size:small">@context.Value</text>
+                            </Template>
+                        </RadzenTicks>
+                    </RadzenCategoryAxis>
+                    <RadzenValueAxis Formatter="@FormatAsNumber">
+                        <RadzenGridLines Visible="true" />
+                        <RadzenAxisTitle Text="Nhiệt độ (oC)" />
+                    </RadzenValueAxis>
+                </RadzenChart>
+            </RadzenColumn>
+        </RadzenRow>
+
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End" Gap="1rem" Wrap="FlexWrap.Wrap" class="rz-p-2">
+            <RadzenButton Click="@((args) => _dialogService.Close(true))" Variant="Variant.Flat" Shade="Shade.Dark" Text="Đóng" Icon="close"
+                          ButtonStyle="ButtonStyle.Light" Style="width: 120px" />
+        </RadzenStack>
+    </RadzenStack>
+}

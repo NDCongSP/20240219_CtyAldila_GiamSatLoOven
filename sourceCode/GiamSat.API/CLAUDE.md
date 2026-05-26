@@ -279,7 +279,10 @@ active_context:
     - "GiamSat.Models/Entities/*.cs"
     - "CLAUDE.md"
   blocked_by:       null
-  next_step:        "Xác nhận nội dung FT03..FT06 để hoàn thiện bảng entities trong section 2.4"
+  next_step:        
+    - dùng appsettings.json
+    - GiamSat.APIClient được dùng trong GiamSat.UI. khi run swagger api lên copy swagger.json vào GiamSat.APIClient build thì sẽ sinh ra GiamSat.API, Add vào trong UI để dùng các model và gọi API.
+    - Merge nhánh main vào nhánh revert1 và xử lý các conflig để chạy được. nhánh main đang có phần giám sát nhiệt độ."
   last_session:     "2026-05-25"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"

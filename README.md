@@ -14,6 +14,9 @@ INCLUDE (StartedAt, EndedAt, TotalTime, StepName);
 CREATE NONCLUSTERED INDEX IX_FT09_CreatedAt
 ON FT09 (CreatedAt);
 -----------------------------------------------------------------------------------------------------------------------
+DB:
+Server=192.168.96.822;Database=oven;User Id=mfg;Password=Mfg@321!;TrustServerCertificate=True;
+
 Kiến trúc hệ thống:
 |---Web
 |       |---Hệ thống lò Oven
@@ -33,15 +36,14 @@ Kiến trúc hệ thống:
 Hệ thống giám sát lò OVEN
 ------------------------------------------------------------------
 Đường dây lan cắm vào switch ở chỗ sát cửa phòng ăn, port 4
-PLC: 192.168.160.32 - COM20
-CH1(1-->5): 192.168.160.33 - COM21
-CH2(6-->10): 192.168.160.34 - COM22
-CH3(11-->13): 192.168.160.35 - COM23
+PLC: 192.168.106.32 - COM20
+CH1(1-->5): 192.168.106.33 - COM21
+CH2(6-->10): 192.168.106.34 - COM22
+CH3(11-->13): 192.168.106.35 - COM23
+nwtmask: 255.255.255.0
+Gateway: 192.168.106.1
 
-DB:
-Server=192.168.96.822;Database=oven;User Id=mfg;Password=Mfg@321!;TrustServerCertificate=True;
 
-ất cả các dự án giám sát trang trại của a Thám đều nằm trong này
 de host IIS cac ung dung ASP .net core thi mays tinhs can caif cai nay: dotnet-hosting-7.0.10-win
 Cai moi truong de publish IIS:
 - dotnet-hosting-7.0.14-win.exe
@@ -65,6 +67,7 @@ D203 ghi từ server xuống, để on/off check
 D204 ghi từ server xuống hoặc nhấn cùng lúc 3 nút trên tủ
 Khi check connection hoatj động sẽ on Y017
 
+-----------------------------------------------------------------------
 -----------------------------------------------------------------------
 Hệ thống giám sát thời gian chạy máy Revo Goft và auto rolling
 -----------------------------------------------------------------------
@@ -92,3 +95,17 @@ Auto rolling: HMI GOT2000, PLC-Q series
         |-HMI nhỏ: 192.168.11.23
 
 máy auto rolling đac có HMI tính toán các thông số chạy máy hết rồi, nên chỉ cẩn kết nối với HMI để lấy thông tin lên lưu vào DB
+
+-----------------------------------------------------------------------
+-----------------------------------------------------------------------
+Giám sát nhiệt độ nhà máy
+-----------------------------------------------------------------------
+CÓ tổng cộng 16 vị trí giám sát, trong đó có 3 kho lạnh
+Dung Lora chia làm 2 channel, chuyển đổi 485-> TCP dùng 30nedata NP301 | user: admin - admin
+ID modbus của thiết bị bằng chính thứ tự của vị trí đo
+Chay chung EasyDriver với lò Oven
+
+ Channel1 - IP: 192.168.106.36 - LORA CH 17
+    - VT1, VT2, VT3, VT4, VT5, VT6, VT7, VT14
+ Channel2 - IP: 192.168.106.37 - LORA CH 14
+    - VT8, VT9, VT10, VT11, VT12, VT13, VT15, VT16

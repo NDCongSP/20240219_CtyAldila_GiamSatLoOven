@@ -22,6 +22,9 @@ namespace GiamSat.UI.Shared
 
         protected override async Task OnInitializedAsync()
         {
+            _navigationManager.LocationChanged += HandleLocationChanged;
+            UpdateBreadcrumbFromUrl(_navigationManager.Uri);
+
             try
             {
                 var authState = await _authSerivce.GetAuthenticationStateAsync();
@@ -85,6 +88,92 @@ namespace GiamSat.UI.Shared
         public void Dispose()
         {
             _httpInterceptorManager.DisposeEvent();
+            _navigationManager.LocationChanged -= HandleLocationChanged;
+        }
+
+        private void HandleLocationChanged(object sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+        {
+            UpdateBreadcrumbFromUrl(e.Location);
+            StateHasChanged();
+        }
+
+        private void UpdateBreadcrumbFromUrl(string url)
+        {
+            var uri = new Uri(url);
+            var path = uri.AbsolutePath.ToLower();
+
+            GlobalVariable.BreadCrumbData = new List<BreadCrumbModel>();
+
+            if (path.Contains("/oven-home"))
+            {
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Hệ thống lò OVEN" });
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Trang chủ" });
+            }
+            else if (path.Contains("/ovenconfig"))
+            {
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Hệ thống lò OVEN" });
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Cấu hình" });
+            }
+            else if (path.Contains("/report") && !path.Contains("/revo") && !path.Contains("/temperature"))
+            {
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Hệ thống lò OVEN" });
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Báo cáo" });
+            }
+            else if (path.Contains("/settings"))
+            {
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Hệ thống lò OVEN" });
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Cài đặt" });
+            }
+            else if (path.Contains("/revo/config"))
+            {
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "REVO" });
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Cấu hình" });
+            }
+            else if (path.Contains("/revo/report"))
+            {
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "REVO" });
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Báo cáo" });
+            }
+            else if (path.Contains("/revo"))
+            {
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "REVO" });
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Trang chủ" });
+            }
+            else if (path.Contains("/temperature/dashboard"))
+            {
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Giám sát Nhiệt độ" });
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Trạm điều hành" });
+            }
+            else if (path.Contains("/temperature/config"))
+            {
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Giám sát Nhiệt độ" });
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Cấu hình" });
+            }
+            else if (path.Contains("/temperature/report"))
+            {
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Giám sát Nhiệt độ" });
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Cảnh báo sự cố" });
+            }
+            else if (path.Contains("/admin/users"))
+            {
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Quản trị hệ thống" });
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Tài khoản" });
+            }
+            else if (path.Contains("/admin/roles"))
+            {
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Quản trị hệ thống" });
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Quyền & Vai trò" });
+            }
+            else if (path.Contains("/admin/permissions"))
+            {
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Quản trị hệ thống" });
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "System Permissions" });
+            }
+            else if (path.Contains("/admin/logs"))
+            {
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "Quản trị hệ thống" });
+                GlobalVariable.BreadCrumbData.Add(new BreadCrumbModel { Text = "System Logs" });
+            }
         }
     }
 }

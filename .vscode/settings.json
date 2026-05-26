@@ -1,0 +1,37 @@
+{
+  "database-client.connections": [
+    {
+      "name": "SocialApp-Postgres",
+      "dbType": "PostgreSQL",
+      "host": "192.168.80.130",
+      "port": 30432,
+      "user": "admin",
+      "password": "Admin@Postgres123",
+      "database": "socialapp",
+      "global": false
+    },
+    {
+      "name": "SocialApp-Mongo",
+      "dbType": "MongoDB",
+      "host": "192.168.80.130",
+      "port": 32599,
+      "user": "superadmin",
+      "password": "SuperAdmin123",
+      "database": "admin",
+      "authSource": "admin",
+      "connectString": "mongodb://superadmin:SuperAdmin123@192.168.80.130:32599/?authSource=admin",
+      "global": false
+    }
+  ],
+  "sqltools.connections": [
+    {
+      "name": "SocialApp-Postgres",
+      "driver": "PostgreSQL",
+      "server": "192.168.80.130",
+      "port": 30432,
+      "database": "socialapp",
+      "username": "admin",
+      "password": "Admin@Postgres123"
+    }
+  ]
+}
