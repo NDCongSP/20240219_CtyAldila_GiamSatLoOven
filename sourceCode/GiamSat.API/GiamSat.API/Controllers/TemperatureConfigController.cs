@@ -1,12 +1,6 @@
-using GiamSat.API;
 using GiamSat.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GiamSat.API.Controllers
@@ -16,77 +10,33 @@ namespace GiamSat.API.Controllers
     [ApiController]
     public class TemperatureConfigController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ISFT10 _service;
 
-        public TemperatureConfigController(ApplicationDbContext context)
+        public TemperatureConfigController(ISFT10 service)
         {
-            _context = context;
+            _service = service;
         }
 
         /// <summary>
-        /// Get the first active FT10_TemperatureConfig data and deserialize it into a list
+        /// Lấy cấu hình nhiệt độ (toàn bộ location config từ FT10.C000).
         /// </summary>
         [HttpGet]
         public async Task<ActionResult<TemperatureConfigsModel>> GetConfigs()
         {
-            try
-            {
-                var ft10 = await _context.FT10_TemperatureConfigs
-                    .FirstOrDefaultAsync(f => f.Actived == true);
-
-                if (ft10 == null || string.IsNullOrEmpty(ft10.C000))
-                {
-                    return Ok(new TemperatureConfigsModel { LocationsConfig = new List<TemperatureLocationModel>() }); // Return empty config
-                }
-
-                var config = JsonConvert.DeserializeObject<TemperatureConfigsModel>(ft10.C000);
-                return Ok(config ?? new TemperatureConfigsModel { LocationsConfig = new List<TemperatureLocationModel>() });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Error = ex.Message });
-            }
+            var result = await _service.GetConfigs();
+            if (!result.Succeeded) return StatusCode(500, new { Error = result.Messages });
+            return Ok(result.Data);
         }
+
         /// <summary>
-        /// Save a list of TemperatureConfigsModel back to the FT10_TemperatureConfig C000 field
+        /// Lưu cấu hình nhiệt độ vào FT10.C000.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<TemperatureConfigsModel>> SaveConfigs([FromBody] TemperatureConfigsModel config)
+        public async Task<IActionResult> SaveConfigs([FromBody] TemperatureConfigsModel config)
         {
-            try
-            {
-                var ft10 = await _context.FT10_TemperatureConfigs
-                    .FirstOrDefaultAsync(f => f.Actived == true);
-
-                var jsonString = JsonConvert.SerializeObject(config);
-
-                if (ft10 == null)
-                {
-                    // Create new row
-                    ft10 = new FT10_TemperatureConfig
-                    {
-                        Id = Guid.NewGuid(),
-                        C000 = jsonString,
-                        Actived = true,
-                        CreatedAt = DateTime.Now
-                    };
-                    await _context.FT10_TemperatureConfigs.AddAsync(ft10);
-                }
-                else
-                {
-                    // Update existing row
-                    ft10.C000 = jsonString;
-                    _context.FT10_TemperatureConfigs.Update(ft10);
-                }
-
-                await _context.SaveChangesAsync();
-
-                return Ok(new { Message = "Configuration saved successfully." });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Error = ex.Message });
-            }
+            var result = await _service.SaveConfigs(config);
+            if (!result.Succeeded) return StatusCode(500, new { Error = result.Messages });
+            return Ok(new { Message = "Configuration saved successfully." });
         }
     }
 }
