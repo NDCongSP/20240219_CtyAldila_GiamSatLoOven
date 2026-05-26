@@ -271,21 +271,20 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "Merge main→revert1 đã hoàn thành. Sẵn sàng phát triển tính năng mới."
+  current_task:     "Service layer temperature monitoring (ISFT10/11) đã xong. Sẵn sàng bước tiếp."
   related_files:
     - "GiamSat.APIClient/ApiClient/GiamSatApi.cs"       # merge thủ công — FT14/15/16 + temperature
     - "GiamSat.APIClient/GiamSat.APIClient.csproj"      # NSwag target đã tắt
-    - "GiamSat.API/Startup.cs"                          # FT10-13 chưa được đăng ký DI
+    - "GiamSat.API/Services/SFT10.cs"                   # TemperatureConfig service (FT10)
+    - "GiamSat.API/Services/SFT11.cs"                   # TemperatureData service (FT11/12/13)
   blocked_by:       null
   next_step:
     - "Chạy API → swagger.json sẽ chứa đủ cả temperature + sanding endpoints → copy vào APIClient → bật lại NSwag target → build để tái sinh GiamSatApi.cs tự động"
-    - "Đăng ký FT10-FT13 services trong Startup.cs (temperature monitoring — chưa có trong cả 2 nhánh)"
     - "Kiểm tra UI: navigate /temperature/dashboard, /temperature/config, /temperature/report"
   last_session:     "2026-05-26"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
     - "Production appsettings có khác với appsettings.json không? Đang deploy ở đâu?"
-    - "FT10-FT13 services đã có implementation chưa, hay chỉ có controller?"
 ```
 
 ### 4.2 Quyết định đã chốt (Decision Log)
@@ -320,6 +319,21 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-05-26] — Session: Thêm service layer temperature monitoring
+
+```
+[FEAT]  ISFT10.cs          — Interface: GetConfigs, SaveConfigs (FT10 JSON config)
+[FEAT]  SFT10.cs            — Service: implement ISFT10, timeout 60 phút, Result<T> wrapper
+[FEAT]  ISFT11.cs          — Interface: GetRealtime, GetAlarmLogs, GetDataLogs, SyncRealtime, SyncDatalog
+[FEAT]  SFT11.cs            — Service: implement ISFT11, alarm dual-state logic chuyển từ controller
+[REFACTOR] TemperatureConfigController.cs — inject ISFT10 thay vì ApplicationDbContext trực tiếp
+[REFACTOR] TemperatureDataController.cs   — inject ISFT11 thay vì ApplicationDbContext trực tiếp
+[CHORE] ApiRoutes.cs       — Thêm FT10 (api/TemperatureConfig) và FT11 (api/TemperatureData) routes
+[CHORE] Startup.cs         — Đăng ký AddScoped<ISFT10, SFT10> và AddScoped<ISFT11, SFT11>
+```
 
 ---
 
