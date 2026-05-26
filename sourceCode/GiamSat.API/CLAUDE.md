@@ -271,24 +271,21 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "Khởi tạo và thực tế hoá CLAUDE.md cho project"
+  current_task:     "Merge main→revert1 đã hoàn thành. Sẵn sàng phát triển tính năng mới."
   related_files:
-    - "GiamSat.API/Startup.cs"
-    - "GiamSat.API/Program.cs"
-    - "GiamSat.API/Controllers/BaseController.cs"
-    - "GiamSat.Models/Entities/*.cs"
-    - "CLAUDE.md"
+    - "GiamSat.APIClient/ApiClient/GiamSatApi.cs"       # merge thủ công — FT14/15/16 + temperature
+    - "GiamSat.APIClient/GiamSat.APIClient.csproj"      # NSwag target đã tắt
+    - "GiamSat.API/Startup.cs"                          # FT10-13 chưa được đăng ký DI
   blocked_by:       null
-  next_step:        
-    - dùng appsettings.json
-    - GiamSat.APIClient được dùng trong GiamSat.UI. khi run swagger api lên copy swagger.json vào GiamSat.APIClient build thì sẽ sinh ra GiamSat.API, Add vào trong UI để dùng các model và gọi API.
-    - Merge nhánh main vào nhánh revert1 và xử lý các conflig để chạy được. nhánh main đang có phần giám sát nhiệt độ."
-  last_session:     "2026-05-25"
+  next_step:
+    - "Chạy API → swagger.json sẽ chứa đủ cả temperature + sanding endpoints → copy vào APIClient → bật lại NSwag target → build để tái sinh GiamSatApi.cs tự động"
+    - "Đăng ký FT10-FT13 services trong Startup.cs (temperature monitoring — chưa có trong cả 2 nhánh)"
+    - "Kiểm tra UI: navigate /temperature/dashboard, /temperature/config, /temperature/report"
+  last_session:     "2026-05-26"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
-    - "GiamSat.APIClient hiện được dùng ở project nào trong solution?"
-    - "Có kế hoạch thêm unit test project không?"
     - "Production appsettings có khác với appsettings.json không? Đang deploy ở đâu?"
+    - "FT10-FT13 services đã có implementation chưa, hay chỉ có controller?"
 ```
 
 ### 4.2 Quyết định đã chốt (Decision Log)
@@ -323,6 +320,28 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-05-26] — Session: Merge main → revert1
+
+```
+[CHORE] git merge          — Merge nhánh main (temperature monitoring) vào revert1 (auto-sanding).
+                             Resolved 7 conflicts thủ công:
+                             • NavMenu.razor: giữ cả Auto Sanding + Giám sát nhiệt độ
+                             • GiamSatApi.cs: merge tay (FT14/15/16 client + sanding data classes chèn vào bản main)
+                             • Logs.razor, LogsTable.razor, PermissionDialog.razor: lấy HEAD (revert1)
+                             • index.html: lấy timestamp mới hơn từ main
+                             • swagger.json: lấy main (có temperature endpoints)
+[CHORE] GiamSat.APIClient.csproj — Tắt NSwag auto-gen target (tránh ghi đè GiamSatApi.cs đã merge thủ công).
+                                    Ghi chú: bật lại sau khi có swagger.json đầy đủ cả 2 feature.
+[FIX]   JwtAuthenticationService.cs — Sửa signature ResetPassword dùng alias đúng (ResetPasswordModel).
+[DOCS]  CLAUDE.md           — Thêm DEC-007, cập nhật active_context sau merge.
+```
+
+[DEC-007] 2026-05-26 | GiamSatApi.cs merge thủ công + NSwag tắt tạm | Claude Code
+→ Lý do: revert1 có FT14-16, main có temperature types — NSwag chỉ gen từ 1 swagger.json nên không thể tự merge.
+→ Action: sau khi chạy API đủ cả 2 feature, tái sinh swagger.json → bật lại NSwag.
 
 ---
 
