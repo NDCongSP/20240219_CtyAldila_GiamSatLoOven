@@ -1,14 +1,9 @@
 @page "/admin/logs"
 @implements IAsyncDisposable
-@using GiamSat.Models
 @using GiamSat.UI.Services
 @using Microsoft.AspNetCore.SignalR.Client
 @using AppPermissions = GiamSat.Models.AppPermissions
-@using LogEntry = GiamSat.APIClient.LogEntry
-@using LogSummary = GiamSat.APIClient.LogSummary
-@using LogSummaryItem = GiamSat.APIClient.LogSummaryItem
-@using LogFileInfo = GiamSat.APIClient.LogFileInfo
-@using ILogsClient = GiamSat.APIClient.ILogsClient
+@using LogStreamEntry = GiamSat.Models.LogStreamEntry
 @attribute [Authorize(Policy = AppPermissions.System_Logs_View)]
 
 <PageTitle>System Log Viewer</PageTitle>

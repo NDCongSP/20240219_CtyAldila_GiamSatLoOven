@@ -1,5 +1,6 @@
 @page "/autosanding/config"
 @using GiamSat.Models
+@using GiamSat.APIClient
 
 <RadzenRow Gap="1rem">
     <RadzenColumn Size="12">
@@ -17,172 +18,124 @@
                 <RadzenTabs @bind-SelectedIndex="_selectedTab" RenderMode="TabRenderMode.Client">
                     <Tabs>
 
-                        @* ═══════════════════════════════════════════════════════
-                             TAB 1: CẤU HÌNH CHUNG
-                             ═══════════════════════════════════════════════════════ *@
+                        @* ══════════════════════════════════
+                           TAB 1: CẤU HÌNH CHUNG
+                           ══════════════════════════════════ *@
                         <RadzenTabsItem Text="Cấu hình chung" Icon="settings">
                             <RadzenStack Gap="0.75rem" class="rz-pt-3">
 
                                 <RadzenStack Orientation="Orientation.Horizontal"
                                              AlignItems="AlignItems.Center"
                                              JustifyContent="JustifyContent.SpaceBetween">
-                                    <RadzenText TextStyle="TextStyle.Subtitle1">
-                                        Danh sách Part
-                                    </RadzenText>
-                                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-                                        <RadzenButton Icon="add_circle"
-                                                      Text="Thêm part"
-                                                      ButtonStyle="ButtonStyle.Success"
-                                                      Size="ButtonSize.Small"
-                                                      Click="@OnAddPart" />
-                                        <RadzenButton Icon="save"
-                                                      Text="Lưu"
-                                                      ButtonStyle="ButtonStyle.Primary"
-                                                      Size="ButtonSize.Small"
-                                                      Click="@OnSaveConfig"
-                                                      IsBusy="@_isSaving" />
-                                    </RadzenStack>
+                                    <RadzenText TextStyle="TextStyle.Subtitle1">Danh sách Part</RadzenText>
+                                    <RadzenButton Icon="add_circle" Text="Thêm Part"
+                                                  ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Small"
+                                                  Click="@OnAddPart" />
                                 </RadzenStack>
 
                                 @if (_isLoading)
                                 {
-                                    <RadzenProgressBarCircular ShowValue="false"
-                                                               Mode="ProgressBarMode.Indeterminate" />
+                                    <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
                                     <RadzenText>Đang tải dữ liệu...</RadzenText>
+                                }
+                                else if (_parts.Count == 0)
+                                {
+                                    <RadzenAlert AlertStyle="AlertStyle.Info" Shade="Shade.Lighter" AllowClose="false">
+                                        Chưa có part nào. Nhấn "Thêm Part" để tạo mới.
+                                    </RadzenAlert>
                                 }
                                 else
                                 {
-                                    <RadzenDataGrid @ref="_configGrid"
-                                                    Data="@_configs"
-                                                    TItem="AutoSandingConfigModel"
-                                                    AllowPaging="true"
-                                                    PageSize="10"
-                                                    AllowSorting="true"
-                                                    PagerHorizontalAlign="HorizontalAlign.Right"
-                                                    ShowPagingSummary="true"
-                                                    PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)"
-                                                    PageSizeText="Bản ghi / trang"
-                                                    PageSizeOptions="@(new int[]{5,10,20})"
-                                                    class="rz-mt-2">
-                                        <Columns>
+                                    @* Bảng Part kiểu giống Excel *@
+                                    <div style="overflow-x:auto">
+                                        <table class="as-config-table">
+                                            <thead>
+                                                <tr>
+                                                    <th rowspan="2">Item Number</th>
+                                                    <th rowspan="2" style="color:#c62828">Length</th>
+                                                    <th rowspan="2">Freq Target</th>
+                                                    <th rowspan="2" style="color:#c62828">Fre -</th>
+                                                    <th rowspan="2" style="color:#c62828">Fre +</th>
+                                                    <th rowspan="2" style="color:#c62828">Formula-F</th>
+                                                    <th rowspan="2" style="color:#1565c0">A</th>
+                                                    <th rowspan="2" style="color:#1565c0">B</th>
+                                                    <th rowspan="2" style="color:#1565c0">C</th>
+                                                    <th rowspan="2" style="color:#1565c0">D</th>
+                                                    <th colspan="3" class="th-tipod">Diam_LL / Diam_UL / Tip OD LENGTH</th>
+                                                    <th rowspan="2">Hành động</th>
+                                                </tr>
+                                                <tr>
+                                                    <th class="th-tipod">Data Điểm 1</th>
+                                                    <th class="th-tipod">Data Điểm 2</th>
+                                                    <th class="th-tipod">Data Điểm 3</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var p in _parts)
+                                                {
+                                                    <tr>
+                                                        <td class="td-item">@p.PartName</td>
+                                                        <td class="td-red">@p.Length?.ToString("F1")</td>
+                                                        <td>@p.FreqTarget?.ToString("F1")</td>
+                                                        <td class="td-red">@p.Set_Freq_Offset_Low?.ToString("F1")</td>
+                                                        <td class="td-red">@p.Set_Freq_Offset_Hight?.ToString("F1")</td>
+                                                        <td class="td-red">@p.Formula_F?.ToString("F0")</td>
+                                                        <td class="td-blue">@p.A?.ToString("F3")</td>
+                                                        <td class="td-blue">@p.B?.ToString("F3")</td>
+                                                        <td class="td-blue">@p.C?.ToString("F3")</td>
+                                                        <td class="td-blue">@p.D?.ToString("F3")</td>
 
-                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
-                                                                  Property="ItemNumber"
-                                                                  Title="Item Number"
-                                                                  Width="160px" />
+                                                        @* 3 Data Điểm TipOD *@
+                                                        <td class="td-tipod">
+                                                            <div class="tipod-cell">
+                                                                <span>@p.Diam_LL_1?.ToString("F2")</span>
+                                                                <span>@p.Diam_UL_1?.ToString("F2")</span>
+                                                                <span class="tipod-label">@(p.TipOdLength_1 ?? "—")</span>
+                                                            </div>
+                                                        </td>
+                                                        <td class="td-tipod">
+                                                            <div class="tipod-cell">
+                                                                <span>@p.Diam_LL_2?.ToString("F2")</span>
+                                                                <span>@p.Diam_UL_2?.ToString("F2")</span>
+                                                                <span class="tipod-label">@(p.TipOdLength_2 ?? "—")</span>
+                                                            </div>
+                                                        </td>
+                                                        <td class="td-tipod">
+                                                            <div class="tipod-cell">
+                                                                <span>@p.Diam_LL_3?.ToString("F2")</span>
+                                                                <span>@p.Diam_UL_3?.ToString("F2")</span>
+                                                                <span class="tipod-label">@(p.TipOdLength_3 ?? "—")</span>
+                                                            </div>
+                                                        </td>
 
-                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
-                                                                  Property="Length"
-                                                                  Title="Length (mm)"
-                                                                  Width="110px"
-                                                                  TextAlign="TextAlign.Center" />
-
-                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
-                                                                  Property="FreqTarget"
-                                                                  Title="Freq Target (CPM)"
-                                                                  Width="140px"
-                                                                  TextAlign="TextAlign.Center" />
-
-                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
-                                                                  Title="Dung sai (-/+)"
-                                                                  Width="130px"
-                                                                  TextAlign="TextAlign.Center">
-                                                <Template Context="item">
-                                                    <span>-@item.ToleranceLow / +@item.ToleranceHigh</span>
-                                                </Template>
-                                            </RadzenDataGridColumn>
-
-                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
-                                                                  Title="Diam LL / UL"
-                                                                  Width="130px"
-                                                                  TextAlign="TextAlign.Center">
-                                                <Template Context="item">
-                                                    <span>@item.DiamLL / @item.DiamUL</span>
-                                                </Template>
-                                            </RadzenDataGridColumn>
-
-                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
-                                                                  Property="TipOdLength"
-                                                                  Title="Tip OD Length"
-                                                                  Width="180px" />
-
-                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
-                                                                  Property="FormulaF"
-                                                                  Title="Formula F"
-                                                                  Width="100px"
-                                                                  TextAlign="TextAlign.Center" />
-
-                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
-                                                                  Title="A"
-                                                                  Width="80px"
-                                                                  TextAlign="TextAlign.Center">
-                                                <Template Context="item">
-                                                    <span style="color: var(--rz-primary)">@item.A.ToString("F3")</span>
-                                                </Template>
-                                            </RadzenDataGridColumn>
-
-                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
-                                                                  Title="B"
-                                                                  Width="80px"
-                                                                  TextAlign="TextAlign.Center">
-                                                <Template Context="item">
-                                                    <span style="color: var(--rz-primary)">@item.B.ToString("F3")</span>
-                                                </Template>
-                                            </RadzenDataGridColumn>
-
-                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
-                                                                  Title="C"
-                                                                  Width="80px"
-                                                                  TextAlign="TextAlign.Center">
-                                                <Template Context="item">
-                                                    <span style="color: var(--rz-success)">@item.C.ToString("F3")</span>
-                                                </Template>
-                                            </RadzenDataGridColumn>
-
-                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
-                                                                  Title="D"
-                                                                  Width="80px"
-                                                                  TextAlign="TextAlign.Center">
-                                                <Template Context="item">
-                                                    <span style="color: var(--rz-success)">@item.D.ToString("F3")</span>
-                                                </Template>
-                                            </RadzenDataGridColumn>
-
-                                            <RadzenDataGridColumn TItem="AutoSandingConfigModel"
-                                                                  Title="Hành động"
-                                                                  Width="120px"
-                                                                  TextAlign="TextAlign.Center"
-                                                                  Frozen="true"
-                                                                  FrozenPosition="FrozenColumnPosition.Right">
-                                                <Template Context="item">
-                                                    <RadzenStack Orientation="Orientation.Horizontal"
-                                                                 Gap="0.4rem"
-                                                                 JustifyContent="JustifyContent.Center">
-                                                        <RadzenButton Icon="edit"
-                                                                      ButtonStyle="ButtonStyle.Primary"
-                                                                      Size="ButtonSize.Small"
-                                                                      Variant="Variant.Flat"
-                                                                      Click="@(() => OnEditPart(item))"
-                                                                      title="Chỉnh sửa" />
-                                                        <RadzenButton Icon="delete"
-                                                                      ButtonStyle="ButtonStyle.Danger"
-                                                                      Size="ButtonSize.Small"
-                                                                      Variant="Variant.Flat"
-                                                                      Click="@(() => OnDeletePart(item))"
-                                                                      title="Xóa" />
-                                                    </RadzenStack>
-                                                </Template>
-                                            </RadzenDataGridColumn>
-
-                                        </Columns>
-                                    </RadzenDataGrid>
+                                                        <td class="td-action">
+                                                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.3rem" JustifyContent="JustifyContent.Center">
+                                                                <RadzenButton Icon="edit"
+                                                                              ButtonStyle="ButtonStyle.Primary"
+                                                                              Size="ButtonSize.Small"
+                                                                              Variant="Variant.Flat"
+                                                                              Click="@(() => OnEditPart(p))"
+                                                                              title="Chỉnh sửa" />
+                                                                <RadzenButton Icon="delete"
+                                                                              ButtonStyle="ButtonStyle.Danger"
+                                                                              Size="ButtonSize.Small"
+                                                                              Variant="Variant.Flat"
+                                                                              Click="@(() => OnDeletePart(p))"
+                                                                              title="Xóa" />
+                                                            </RadzenStack>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 }
                             </RadzenStack>
                         </RadzenTabsItem>
 
-                        @* ═══════════════════════════════════════════════════════
-                             TAB 2: TÍNH ABCD
-                             ═══════════════════════════════════════════════════════ *@
+                        @* ══════════════════════════════════
+                           TAB 2: TÍNH ABCD
+                           ══════════════════════════════════ *@
                         <RadzenTabsItem Text="Tính A,B,C,D" Icon="calculate">
                             <RadzenStack Gap="1rem" class="rz-pt-3">
 
@@ -191,8 +144,8 @@
                                     <RadzenColumn Size="12" SizeMD="4">
                                         <RadzenFormField Text="Chọn Part" Variant="Variant.Outlined" Style="width:100%">
                                             <RadzenDropDown @bind-Value="_selectedPartId"
-                                                            Data="@_configs"
-                                                            TextProperty="ItemNumber"
+                                                            Data="@_parts"
+                                                            TextProperty="PartName"
                                                             ValueProperty="Id"
                                                             Placeholder="-- Chọn part --"
                                                             Style="width:100%"
@@ -200,52 +153,174 @@
                                         </RadzenFormField>
                                     </RadzenColumn>
                                     <RadzenColumn Size="12" SizeMD="8">
-                                        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-                                            <RadzenButton Icon="add"
-                                                          Text="Thêm dòng"
-                                                          ButtonStyle="ButtonStyle.Light"
-                                                          Size="ButtonSize.Small"
-                                                          Click="@OnAddTestRow" />
-                                            <RadzenButton Icon="delete_sweep"
-                                                          Text="Xóa dòng cuối"
-                                                          ButtonStyle="ButtonStyle.Light"
-                                                          Size="ButtonSize.Small"
-                                                          Click="@OnRemoveLastRow" />
-                                            <RadzenButton Icon="data_object"
-                                                          Text="Fake Data"
-                                                          ButtonStyle="ButtonStyle.Light"
-                                                          Size="ButtonSize.Small"
-                                                          Click="@OnLoadFakeData" />
-                                            <RadzenButton Icon="functions"
-                                                          Text="Tính A,B,C,D"
-                                                          ButtonStyle="ButtonStyle.Warning"
-                                                          Size="ButtonSize.Medium"
-                                                          Click="@OnCalculateABCD" />
+                                        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" style="flex-wrap:wrap">
+                                            <RadzenButton Icon="add" Text="Thêm dòng" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" Click="@OnAddTestRow" />
+                                            <RadzenButton Icon="delete_sweep" Text="Xóa dòng cuối" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" Click="@OnRemoveLastRow" />
+                                            <RadzenButton Icon="data_object" Text="Fake Data" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" Click="@OnLoadFakeData" />
+                                            <RadzenButton Icon="functions" Text="Tính A,B,C,D" ButtonStyle="ButtonStyle.Warning" Size="ButtonSize.Medium" Click="@OnCalculateABCD" />
                                             @if (_abcdCalculated)
                                             {
-                                                <RadzenButton Icon="upload"
-                                                              Text="Áp dụng vào Part"
-                                                              ButtonStyle="ButtonStyle.Success"
-                                                              Size="ButtonSize.Medium"
-                                                              Click="@OnApplyAbcdToPart" />
+                                                <RadzenButton Icon="save" Text="Áp dụng &amp; Lưu DB"
+                                                              ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium"
+                                                              Click="@OnApplyAbcdToPart" IsBusy="@_isSaving" />
                                             }
                                         </RadzenStack>
                                     </RadzenColumn>
                                 </RadzenRow>
 
+                                @* Hướng dẫn quy trình *@
+                                <RadzenCard Style="border-left: 4px solid var(--rz-info); background: var(--rz-info-lighter)">
+                                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                                                 Gap="0.5rem" style="cursor:pointer" @onclick="@(() => _showGuide = !_showGuide)">
+                                        <RadzenIcon Icon="menu_book" Style="color:var(--rz-info)" />
+                                        <RadzenText TextStyle="TextStyle.Subtitle2" Style="color:var(--rz-info); margin:0">
+                                            Hướng dẫn quy trình tìm tham số A, B, C, D
+                                        </RadzenText>
+                                        <RadzenIcon Icon="@(_showGuide ? "expand_less" : "expand_more")" Style="color:var(--rz-info); margin-left:auto" />
+                                    </RadzenStack>
+                                    @if (_showGuide)
+                                    {
+                                        <hr style="border-color:var(--rz-info-light); margin:0.5rem 0" />
+                                        <div class="guide-body">
+
+                                            @* BƯỚC 1 *@
+                                            <div class="guide-step">
+                                                <span class="guide-badge" style="background:var(--rz-warning)">1</span>
+                                                <div style="flex:1">
+                                                    <strong>Sand lần 1 — Thu thập Fre1 &amp; Stiffness Z</strong>
+                                                    <p class="guide-p">Chạy từng shaft qua máy sand với <em>1 tốc độ belt cố định</em>. Sau khi sand xong, đo ngay:</p>
+                                                    <ul class="guide-ul">
+                                                        <li><em style="color:#e65100">Fre1 (CPM)</em> – tần số dao động của shaft đo bằng thiết bị rung.</li>
+                                                        <li><em style="color:#e65100">Stiffness Z (Kg)</em> – độ cứng đo theo chiều Z (lực / độ võng).</li>
+                                                    </ul>
+                                                    <p class="guide-p">Nhập cả hai giá trị vào bảng. Mỗi shaft = 1 dòng.</p>
+                                                </div>
+                                            </div>
+
+                                            @* BƯỚC 2 *@
+                                            <div class="guide-step">
+                                                <span class="guide-badge" style="background:var(--rz-info)">2</span>
+                                                <div style="flex:1">
+                                                    <strong>Sand lần 2 — Thu thập RPM, Fre2 &amp; Stiffness Y</strong>
+                                                    <p class="guide-p">Sand lại các shaft theo từng mức tốc độ belt tăng dần (VD: 100, 200, 300, 400, 500 RPM — cứ 2 shaft/mức). Sau mỗi lần sand, đo:</p>
+                                                    <ul class="guide-ul">
+                                                        <li><em style="color:#0d47a1">RPM</em> – tốc độ belt đã dùng.</li>
+                                                        <li><em style="color:#1b5e20">Fre2 (CPM)</em> – tần số dao động sau sand lần 2.</li>
+                                                        <li><em style="color:#1b5e20">Stiffness Y (Kg)</em> – độ cứng theo chiều Y sau sand lần 2.</li>
+                                                    </ul>
+                                                    <p class="guide-p">Cột <em style="color:#6a1b9a"><strong>Freq Diff S</strong> = Fre1 − Fre2</em> được tính tự động — đây là lượng tần số thay đổi do sand.</p>
+                                                </div>
+                                            </div>
+
+                                            @* BƯỚC 3 - TÍNH A, B *@
+                                            <div class="guide-step">
+                                                <span class="guide-badge" style="background:var(--rz-primary)">3a</span>
+                                                <div style="flex:1">
+                                                    <strong>Tính A, B — Hồi quy tuyến tính: Y = A·Z + B</strong>
+                                                    <p class="guide-p">
+                                                        Mục tiêu: tìm đường thẳng khớp nhất với tập dữ liệu <em>(Stiffness Y → Fre2)</em>.<br />
+                                                        Đặt: <code>x = Stiffness Y (Kg)</code>, <code>y = Fre2 (CPM)</code>, <code>n = số dòng dữ liệu</code>.
+                                                    </p>
+                                                    <div class="guide-math-block">
+                                                        <div class="guide-math-title">Công thức hồi quy tuyến tính (Ordinary Least Squares):</div>
+                                                        <div class="guide-math-row">
+                                                            <span class="guide-math-label" style="color:var(--rz-primary)">A (slope)</span>
+                                                            <span class="guide-math-eq">= <strong>(n·Σ(x·y) − Σx·Σy) / (n·Σx² − (Σx)²)</strong></span>
+                                                        </div>
+                                                        <div class="guide-math-row">
+                                                            <span class="guide-math-label" style="color:var(--rz-primary)">B (intercept)</span>
+                                                            <span class="guide-math-eq">= <strong>(Σy − A·Σx) / n</strong></span>
+                                                        </div>
+                                                        <div class="guide-math-row">
+                                                            <span class="guide-math-label">R² (độ khớp)</span>
+                                                            <span class="guide-math-eq">= <strong>1 − SS<sub>res</sub>/SS<sub>tot</sub></strong> &nbsp;|&nbsp; SS<sub>tot</sub> = Σ(y−ȳ)² &nbsp;|&nbsp; SS<sub>res</sub> = Σ(y−(A·x+B))²</span>
+                                                        </div>
+                                                    </div>
+                                                    <p class="guide-p guide-example">
+                                                        <strong>Ví dụ (2 dòng):</strong> x=[2.546, 2.526], y=[308.1, 306.3], n=2<br />
+                                                        Σx=5.072 | Σy=614.4 | Σxy=2.546×308.1+2.526×306.3=1562.3+773.3=... → A≈102, B≈46<br />
+                                                        <em>Nghĩa là: mỗi kg Stiffness tăng thêm → Fre2 tăng ~102 CPM.</em>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            @* BƯỚC 3b - TÍNH C, D *@
+                                            <div class="guide-step">
+                                                <span class="guide-badge" style="background:var(--rz-success)">3b</span>
+                                                <div style="flex:1">
+                                                    <strong>Tính C, D — Hồi quy tuyến tính: R = C·S + D</strong>
+                                                    <p class="guide-p">
+                                                        Mục tiêu: tìm mối quan hệ giữa <em>lượng tần số thay đổi → tốc độ belt cần thiết</em>.<br />
+                                                        Đặt: <code>x = Freq Diff S = Fre1−Fre2 (CPM)</code>, <code>y = RPM</code>, <code>n = số dòng</code>.
+                                                    </p>
+                                                    <div class="guide-math-block">
+                                                        <div class="guide-math-title">Cùng công thức OLS, nhưng trên tập dữ liệu khác:</div>
+                                                        <div class="guide-math-row">
+                                                            <span class="guide-math-label" style="color:var(--rz-success)">C (slope)</span>
+                                                            <span class="guide-math-eq">= <strong>(n·Σ(S·R) − ΣS·ΣR) / (n·ΣS² − (ΣS)²)</strong></span>
+                                                        </div>
+                                                        <div class="guide-math-row">
+                                                            <span class="guide-math-label" style="color:var(--rz-success)">D (intercept)</span>
+                                                            <span class="guide-math-eq">= <strong>(ΣR − C·ΣS) / n</strong></span>
+                                                        </div>
+                                                    </div>
+                                                    <p class="guide-p guide-example">
+                                                        <strong>Ý nghĩa thực tế:</strong> Biết shaft cần sand thêm S CPM, hệ thống tính ngược R = C·S + D để chọn đúng tốc độ belt.<br />
+                                                        <em>Ví dụ: S=5 CPM, C=48, D=−40 → R = 48×5+(−40) = 200 RPM.</em>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            @* BƯỚC 3c - F *@
+                                            <div class="guide-step">
+                                                <span class="guide-badge" style="background:var(--rz-warning-dark)">3c</span>
+                                                <div style="flex:1">
+                                                    <strong>Hệ số F — Bù hao mòn belt theo số shaft đã mài (X)</strong>
+                                                    <p class="guide-p">Belt càng mòn, hiệu suất sand càng giảm → cần tăng tốc độ để bù. Công thức đa thức bậc 3:</p>
+                                                    <div class="guide-math-block">
+                                                        <div class="guide-math-row">
+                                                            <span class="guide-math-label" style="color:var(--rz-warning-dark)">F(X)</span>
+                                                            <span class="guide-math-eq">= <strong>(−0.0006·X³ + 0.3·X² − 72.2·X) × (−0.001)</strong></span>
+                                                        </div>
+                                                        <div class="guide-math-row">
+                                                            <span class="guide-math-label">X</span>
+                                                            <span class="guide-math-eq">= số shaft đã mài kể từ lần thay belt</span>
+                                                        </div>
+                                                    </div>
+                                                    <p class="guide-p guide-example">
+                                                        <em>X=0 → F=0 (belt mới, không bù). X=100 → F tăng dần → RPM được cộng thêm F để giữ chất lượng sand ổn định.</em>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            @* BƯỚC 4 *@
+                                            <div class="guide-step">
+                                                <span class="guide-badge" style="background:var(--rz-danger)">4</span>
+                                                <div style="flex:1">
+                                                    <strong>Kiểm tra R² và lưu DB</strong>
+                                                    <ul class="guide-ul">
+                                                        <li><strong>R² &gt; 0.95</strong>: dữ liệu đủ tuyến tính, A/B/C/D đáng tin cậy → nhấn <strong>"Áp dụng &amp; Lưu DB"</strong>.</li>
+                                                        <li><strong>R² = 0.80–0.95</strong>: chấp nhận được nhưng nên đo thêm dữ liệu.</li>
+                                                        <li><strong>R² &lt; 0.80</strong>: dữ liệu nhiễu, kiểm tra lại phép đo trước khi lưu.</li>
+                                                    </ul>
+                                                    <p class="guide-p">Sau khi lưu, hệ thống sẽ dùng công thức <code>RPM = C·(FreqTarget − FreqMeasured) + D + F(X)</code> để tự động điều chỉnh tốc độ belt cho part này.</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    }
+                                </RadzenCard>
+
                                 @* Bảng nhập dữ liệu test *@
                                 <RadzenCard class="rz-background-color-base-200 rz-p-2">
-                                    <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-2">
-                                        Dữ liệu đo test (Sand 1 → Sand 2)
-                                    </RadzenText>
-
+                                    <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-2">Dữ liệu đo test (Sand 1 → Sand 2)</RadzenText>
                                     <div style="overflow-x:auto">
                                         <table class="as-test-table">
                                             <thead>
                                                 <tr>
                                                     <th rowspan="2" class="col-idx">#</th>
                                                     <th colspan="2" class="group-sand1">1st After Sanding</th>
-                                                    <th rowspan="2" class="group-rpm">Fix Belt<br/>Rotation (RPM)</th>
+                                                    <th rowspan="2" class="group-rpm">Fix Belt<br />Rotation (RPM)</th>
                                                     <th colspan="3" class="group-sand2">Formula calculation – 2nd After Sanding</th>
                                                 </tr>
                                                 <tr>
@@ -253,7 +328,7 @@
                                                     <th class="group-sand1">Stiffness Z (Kg)</th>
                                                     <th class="group-sand2">Fre2 (CPM)</th>
                                                     <th class="group-sand2">Stiffness Y (Kg)</th>
-                                                    <th class="group-sand2">Freq Diff S<br/>(Fre1–Fre2)</th>
+                                                    <th class="group-sand2">Freq Diff S<br />(Fre1–Fre2)</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -261,39 +336,12 @@
                                                 {
                                                     <tr>
                                                         <td class="col-idx">@row.RowIndex</td>
-                                                        <td>
-                                                            <RadzenNumeric @bind-Value="row.Fre1"
-                                                                           Format="F1"
-                                                                           Style="width:90px"
-                                                                           TValue="double" />
-                                                        </td>
-                                                        <td>
-                                                            <RadzenNumeric @bind-Value="row.StiffnessZ"
-                                                                           Format="F3"
-                                                                           Style="width:90px"
-                                                                           TValue="double" />
-                                                        </td>
-                                                        <td>
-                                                            <RadzenNumeric @bind-Value="row.BeltRotationRpm"
-                                                                           Format="F0"
-                                                                           Style="width:80px"
-                                                                           TValue="double" />
-                                                        </td>
-                                                        <td>
-                                                            <RadzenNumeric @bind-Value="row.Fre2"
-                                                                           Format="F1"
-                                                                           Style="width:90px"
-                                                                           TValue="double" />
-                                                        </td>
-                                                        <td>
-                                                            <RadzenNumeric @bind-Value="row.StiffnessY"
-                                                                           Format="F3"
-                                                                           Style="width:90px"
-                                                                           TValue="double" />
-                                                        </td>
-                                                        <td class="col-diff">
-                                                            @row.FreqDiff.ToString("F1")
-                                                        </td>
+                                                        <td><RadzenNumeric @bind-Value="row.Fre1" Format="F1" Style="width:90px" TValue="double" /></td>
+                                                        <td><RadzenNumeric @bind-Value="row.StiffnessZ" Format="F3" Style="width:90px" TValue="double" /></td>
+                                                        <td><RadzenNumeric @bind-Value="row.BeltRotationRpm" Format="F0" Style="width:80px" TValue="double" /></td>
+                                                        <td><RadzenNumeric @bind-Value="row.Fre2" Format="F1" Style="width:90px" TValue="double" /></td>
+                                                        <td><RadzenNumeric @bind-Value="row.StiffnessY" Format="F3" Style="width:90px" TValue="double" /></td>
+                                                        <td class="col-diff">@row.FreqDiff.ToString("F1")</td>
                                                     </tr>
                                                 }
                                             </tbody>
@@ -305,149 +353,58 @@
                                 @if (_abcdCalculated)
                                 {
                                     <RadzenRow Gap="1rem">
-                                        @* Kết quả số *@
                                         <RadzenColumn Size="12" SizeMD="4">
                                             <RadzenCard class="rz-border-radius-6" Style="border-left: 4px solid var(--rz-primary)">
-                                                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-3">
-                                                    📐 Kết quả tính toán
-                                                </RadzenText>
-
+                                                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-mb-3">📐 Kết quả tính toán</RadzenText>
                                                 <RadzenStack Gap="0.5rem">
                                                     <RadzenRow>
-                                                        <RadzenColumn Size="6">
-                                                            <RadzenText TextStyle="TextStyle.Caption" style="color:var(--rz-text-secondary-color)">
-                                                                Stiffness vs Frequency
-                                                            </RadzenText>
-                                                            <RadzenText TextStyle="TextStyle.Body2" style="font-family:monospace">
-                                                                Y = A·Z + B
-                                                            </RadzenText>
-                                                        </RadzenColumn>
-                                                        <RadzenColumn Size="6">
-                                                            <RadzenText TextStyle="TextStyle.Caption" style="color:var(--rz-text-secondary-color)">
-                                                                Belt Rotation vs Freq Diff
-                                                            </RadzenText>
-                                                            <RadzenText TextStyle="TextStyle.Body2" style="font-family:monospace">
-                                                                R = C·S + D
-                                                            </RadzenText>
-                                                        </RadzenColumn>
+                                                        <RadzenColumn Size="6"><RadzenText TextStyle="TextStyle.Caption" style="color:var(--rz-text-secondary-color)">Stiffness vs Frequency</RadzenText><RadzenText TextStyle="TextStyle.Body2" style="font-family:monospace">Y = A·Z + B</RadzenText></RadzenColumn>
+                                                        <RadzenColumn Size="6"><RadzenText TextStyle="TextStyle.Caption" style="color:var(--rz-text-secondary-color)">Belt Rotation vs Freq Diff</RadzenText><RadzenText TextStyle="TextStyle.Body2" style="font-family:monospace">R = C·S + D</RadzenText></RadzenColumn>
                                                     </RadzenRow>
-
                                                     <RadzenRow class="rz-mt-2">
-                                                        <RadzenColumn Size="3">
-                                                            <div class="abcd-box abcd-a">
-                                                                <span class="abcd-label">A</span>
-                                                                <span class="abcd-value">@_resultAB.Slope.ToString("F3")</span>
-                                                            </div>
-                                                        </RadzenColumn>
-                                                        <RadzenColumn Size="3">
-                                                            <div class="abcd-box abcd-b">
-                                                                <span class="abcd-label">B</span>
-                                                                <span class="abcd-value">@_resultAB.Intercept.ToString("F3")</span>
-                                                            </div>
-                                                        </RadzenColumn>
-                                                        <RadzenColumn Size="3">
-                                                            <div class="abcd-box abcd-c">
-                                                                <span class="abcd-label">C</span>
-                                                                <span class="abcd-value">@_resultCD.Slope.ToString("F3")</span>
-                                                            </div>
-                                                        </RadzenColumn>
-                                                        <RadzenColumn Size="3">
-                                                            <div class="abcd-box abcd-d">
-                                                                <span class="abcd-label">D</span>
-                                                                <span class="abcd-value">@_resultCD.Intercept.ToString("F3")</span>
-                                                            </div>
-                                                        </RadzenColumn>
+                                                        <RadzenColumn Size="3"><div class="abcd-box abcd-a"><span class="abcd-label">A</span><span class="abcd-value">@_resultAB.Slope.ToString("F3")</span></div></RadzenColumn>
+                                                        <RadzenColumn Size="3"><div class="abcd-box abcd-b"><span class="abcd-label">B</span><span class="abcd-value">@_resultAB.Intercept.ToString("F3")</span></div></RadzenColumn>
+                                                        <RadzenColumn Size="3"><div class="abcd-box abcd-c"><span class="abcd-label">C</span><span class="abcd-value">@_resultCD.Slope.ToString("F3")</span></div></RadzenColumn>
+                                                        <RadzenColumn Size="3"><div class="abcd-box abcd-d"><span class="abcd-label">D</span><span class="abcd-value">@_resultCD.Intercept.ToString("F3")</span></div></RadzenColumn>
                                                     </RadzenRow>
-
                                                     <RadzenRow class="rz-mt-1">
-                                                        <RadzenColumn Size="6">
-                                                            <RadzenText TextStyle="TextStyle.Caption">
-                                                                R² = <strong>@_resultAB.R2.ToString("F4")</strong>
-                                                            </RadzenText>
-                                                        </RadzenColumn>
-                                                        <RadzenColumn Size="6">
-                                                            <RadzenText TextStyle="TextStyle.Caption">
-                                                                R² = <strong>@_resultCD.R2.ToString("F4")</strong>
-                                                            </RadzenText>
-                                                        </RadzenColumn>
+                                                        <RadzenColumn Size="6"><RadzenText TextStyle="TextStyle.Caption">R² = <strong>@_resultAB.R2.ToString("F4")</strong></RadzenText></RadzenColumn>
+                                                        <RadzenColumn Size="6"><RadzenText TextStyle="TextStyle.Caption">R² = <strong>@_resultCD.R2.ToString("F4")</strong></RadzenText></RadzenColumn>
                                                     </RadzenRow>
-
                                                     <RadzenRow class="rz-mt-2">
                                                         <RadzenColumn Size="12">
-                                                            <RadzenAlert AlertStyle="AlertStyle.Info"
-                                                                         Shade="Shade.Lighter"
-                                                                         AllowClose="false"
-                                                                         Size="AlertSize.ExtraSmall">
-                                                                <strong>Công thức F (Belt wear):</strong><br />
-                                                                F = (−0.0006·X³ + 0.3·X² − 72.2·X) × (−0.001)
+                                                            <RadzenAlert AlertStyle="AlertStyle.Info" Shade="Shade.Lighter" AllowClose="false" Size="AlertSize.ExtraSmall">
+                                                                <strong>Công thức F (Belt wear):</strong><br />F = (−0.0006·X³ + 0.3·X² − 72.2·X) × (−0.001)
                                                             </RadzenAlert>
                                                         </RadzenColumn>
                                                     </RadzenRow>
                                                 </RadzenStack>
                                             </RadzenCard>
                                         </RadzenColumn>
-
-                                        @* Biểu đồ Y = A*Z + B *@
                                         <RadzenColumn Size="12" SizeMD="4">
                                             <RadzenCard>
-                                                <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-2">
-                                                    Stiffness vs Frequency (Y = A·Z + B)
-                                                </RadzenText>
+                                                <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-2">Stiffness vs Frequency (Y = A·Z + B)</RadzenText>
                                                 <RadzenChart Style="height:220px">
-                                                    <RadzenScatterSeries Data="@_chartABPoints"
-                                                                         CategoryProperty="X"
-                                                                         ValueProperty="Y"
-                                                                         Title="Đo thực tế"
-                                                                         Fill="var(--rz-primary)">
-                                                        <TooltipTemplate Context="pt">
-                                                            Z=@pt.X.ToString("F3") kg → Y=@pt.Y.ToString("F1") CPM
-                                                        </TooltipTemplate>
+                                                    <RadzenScatterSeries Data="@_chartABPoints" CategoryProperty="X" ValueProperty="Y" Title="Đo thực tế" Fill="var(--rz-primary)">
+                                                        <TooltipTemplate Context="pt">Z=@pt.X.ToString("F3") → Y=@pt.Y.ToString("F1")</TooltipTemplate>
                                                     </RadzenScatterSeries>
-                                                    <RadzenLineSeries Data="@_trendABPoints"
-                                                                      CategoryProperty="X"
-                                                                      ValueProperty="Y"
-                                                                      Title="Y = A·Z + B"
-                                                                      Stroke="var(--rz-danger)"
-                                                                      StrokeWidth="2" />
-                                                    <RadzenCategoryAxis>
-                                                        <RadzenAxisTitle Text="Stiffness Z (kg)" />
-                                                    </RadzenCategoryAxis>
-                                                    <RadzenValueAxis>
-                                                        <RadzenAxisTitle Text="Frequency (CPM)" />
-                                                    </RadzenValueAxis>
+                                                    <RadzenLineSeries Data="@_trendABPoints" CategoryProperty="X" ValueProperty="Y" Title="Y = A·Z + B" Stroke="var(--rz-danger)" StrokeWidth="2" />
+                                                    <RadzenCategoryAxis><RadzenAxisTitle Text="Stiffness Z (kg)" /></RadzenCategoryAxis>
+                                                    <RadzenValueAxis><RadzenAxisTitle Text="Frequency (CPM)" /></RadzenValueAxis>
                                                     <RadzenLegend Position="LegendPosition.Bottom" />
                                                 </RadzenChart>
                                             </RadzenCard>
                                         </RadzenColumn>
-
-                                        @* Biểu đồ R = C*S + D *@
                                         <RadzenColumn Size="12" SizeMD="4">
                                             <RadzenCard>
-                                                <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-2">
-                                                    Belt Rotation vs Freq Diff (R = C·S + D)
-                                                </RadzenText>
+                                                <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-2">Belt Rotation vs Freq Diff (R = C·S + D)</RadzenText>
                                                 <RadzenChart Style="height:220px">
-                                                    <RadzenScatterSeries Data="@_chartCDPoints"
-                                                                         CategoryProperty="X"
-                                                                         ValueProperty="Y"
-                                                                         Title="Đo thực tế"
-                                                                         Fill="var(--rz-success)">
-                                                        <TooltipTemplate Context="pt">
-                                                            S=@pt.X.ToString("F1") → R=@pt.Y.ToString("F0") RPM
-                                                        </TooltipTemplate>
+                                                    <RadzenScatterSeries Data="@_chartCDPoints" CategoryProperty="X" ValueProperty="Y" Title="Đo thực tế" Fill="var(--rz-success)">
+                                                        <TooltipTemplate Context="pt">S=@pt.X.ToString("F1") → R=@pt.Y.ToString("F0")</TooltipTemplate>
                                                     </RadzenScatterSeries>
-                                                    <RadzenLineSeries Data="@_trendCDPoints"
-                                                                      CategoryProperty="X"
-                                                                      ValueProperty="Y"
-                                                                      Title="R = C·S + D"
-                                                                      Stroke="var(--rz-danger)"
-                                                                      StrokeWidth="2" />
-                                                    <RadzenCategoryAxis>
-                                                        <RadzenAxisTitle Text="Freq Diff S (CPM)" />
-                                                    </RadzenCategoryAxis>
-                                                    <RadzenValueAxis>
-                                                        <RadzenAxisTitle Text="Belt Rotation R (RPM)" />
-                                                    </RadzenValueAxis>
+                                                    <RadzenLineSeries Data="@_trendCDPoints" CategoryProperty="X" ValueProperty="Y" Title="R = C·S + D" Stroke="var(--rz-danger)" StrokeWidth="2" />
+                                                    <RadzenCategoryAxis><RadzenAxisTitle Text="Freq Diff S (CPM)" /></RadzenCategoryAxis>
+                                                    <RadzenValueAxis><RadzenAxisTitle Text="Belt Rotation R (RPM)" /></RadzenValueAxis>
                                                     <RadzenLegend Position="LegendPosition.Bottom" />
                                                 </RadzenChart>
                                             </RadzenCard>
@@ -467,47 +424,50 @@
 </RadzenRow>
 
 <style>
-    /* ── Bảng nhập test data ── */
-    .as-test-table {
-        border-collapse: collapse;
-        width: 100%;
-        font-size: 0.82rem;
-    }
+    /* ── Bảng cấu hình chung ── */
+    .as-config-table { border-collapse: collapse; width: 100%; font-size: 0.82rem; }
+    .as-config-table th, .as-config-table td { border: 1px solid var(--rz-base-300); padding: 5px 8px; text-align: center; vertical-align: middle; white-space: nowrap; }
+    .as-config-table thead th { background: var(--rz-base-200); font-weight: 600; }
+    .th-tipod { background: #e8f5e9 !important; color: #1b5e20; }
+    .td-item  { font-weight: 600; text-align: left; }
+    .td-red   { color: #c62828; font-weight: 600; }
+    .td-blue  { color: #1565c0; font-weight: 600; }
+    .td-tipod { background: #f1f8e9; min-width: 130px; }
+    .td-action { width: 80px; }
+    .tipod-cell { display: flex; flex-direction: column; gap: 2px; align-items: center; font-size: 0.8rem; }
+    .tipod-label { color: #2e7d32; font-style: italic; }
 
-    .as-test-table th,
-    .as-test-table td {
-        border: 1px solid var(--rz-base-300);
-        padding: 4px 8px;
-        text-align: center;
-        white-space: nowrap;
-        vertical-align: middle;
-    }
-
-    .as-test-table thead th {
-        background: var(--rz-base-200);
-        font-weight: 600;
-    }
-
+    /* ── Bảng test data ── */
+    .as-test-table { border-collapse: collapse; width: 100%; font-size: 0.82rem; }
+    .as-test-table th, .as-test-table td { border: 1px solid var(--rz-base-300); padding: 4px 8px; text-align: center; white-space: nowrap; vertical-align: middle; }
+    .as-test-table thead th { background: var(--rz-base-200); font-weight: 600; }
     .group-sand1 { background: #fff3e0 !important; color: #e65100; }
     .group-sand2 { background: #e8f5e9 !important; color: #1b5e20; }
     .group-rpm   { background: #e3f2fd !important; color: #0d47a1; }
     .col-idx     { background: var(--rz-base-300) !important; width: 36px; font-weight: 600; }
     .col-diff    { background: #f3e5f5 !important; color: #6a1b9a; font-weight: 600; }
 
-    /* ── Ô kết quả ABCD ── */
-    .abcd-box {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px;
-        padding: 8px 4px;
-        height: 70px;
-    }
+    /* ── ABCD result boxes ── */
+    .abcd-box { display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; padding: 8px 4px; height: 70px; }
     .abcd-label { font-size: 1.1rem; font-weight: 700; line-height: 1; }
     .abcd-value { font-size: 0.9rem; font-family: monospace; margin-top: 4px; }
     .abcd-a { background: #e3f2fd; color: #1565c0; }
     .abcd-b { background: #e8f5e9; color: #2e7d32; }
     .abcd-c { background: #fff3e0; color: #e65100; }
     .abcd-d { background: #f3e5f5; color: #6a1b9a; }
+
+    /* ── Hướng dẫn ── */
+    .guide-body { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem; font-size: 0.85rem; }
+    .guide-step { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; background: rgba(255,255,255,0.75); border-radius: 8px; line-height: 1.6; }
+    .guide-badge { flex-shrink: 0; min-width: 32px; height: 32px; border-radius: 50%; color: #fff; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; margin-top: 2px; padding: 0 4px; }
+    .guide-p { margin: 0.3rem 0 0.2rem; line-height: 1.6; }
+    .guide-ul { margin: 0.25rem 0 0.25rem 1.25rem; padding: 0; line-height: 1.7; }
+    .guide-math-block { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 0.6rem 0.85rem; margin: 0.4rem 0; font-family: Consolas, monospace; font-size: 0.83rem; }
+    .guide-math-title { font-weight: 600; font-family: inherit; margin-bottom: 0.35rem; color: #444; font-size: 0.8rem; }
+    .guide-math-row { display: flex; align-items: baseline; gap: 0.75rem; padding: 0.15rem 0; }
+    .guide-math-label { min-width: 120px; font-weight: 700; flex-shrink: 0; }
+    .guide-math-eq { color: #1a1a2e; }
+    .guide-example { background: #fffde7; border-left: 3px solid #f9a825; border-radius: 4px; padding: 0.4rem 0.6rem; font-size: 0.82rem; color: #555; }
+    .guide-formula-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .guide-formula-box { flex: 1 1 180px; border: 2px solid; border-radius: 8px; padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.85); font-size: 0.83rem; line-height: 1.5; }
 </style>

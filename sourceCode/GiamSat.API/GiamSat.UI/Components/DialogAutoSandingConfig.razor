@@ -1,0 +1,156 @@
+@using GiamSat.APIClient
+
+<RadzenTemplateForm Data="@_model" Submit="@((FT14_TipOdFreq args) => { Submit(args); })">
+    <RadzenStack Gap="0.75rem">
+
+        @* ── Thông tin chung ── *@
+        <RadzenFieldset Text="Thông tin Part">
+            <div class="row g-3">
+
+                <div class="col-12 col-md-6">
+                    <RadzenFormField Text="Item Number (PartName) *" Style="width:100%">
+                        <RadzenTextBox @bind-Value="@_model.PartName" Placeholder="VD: AU228-IR-7" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <RadzenFormField Text="Length (mm)" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.Length" TValue="double?" Format="F1" Min="0" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <RadzenFormField Text="Freq Target (CPM)" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.FreqTarget" TValue="double?" Format="F1" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <RadzenFormField Text="Formula F" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.Formula_F" TValue="double?" Format="F0" Min="1" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <RadzenFormField Text="Fre Offset Low (-)" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.Set_Freq_Offset_Low" TValue="double?" Format="F2" Min="0" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <RadzenFormField Text="Fre Offset High (+)" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.Set_Freq_Offset_Hight" TValue="double?" Format="F2" Min="0" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+
+            </div>
+        </RadzenFieldset>
+
+        @* ── Tham số ABCD ── *@
+        <RadzenFieldset Text="Tham số A, B, C, D">
+            <RadzenAlert AlertStyle="AlertStyle.Info" Shade="Shade.Lighter" AllowClose="false" Size="AlertSize.ExtraSmall">
+                <strong>Y = A·Z + B</strong> (Stiffness vs Frequency) &nbsp;|&nbsp;
+                <strong>R = C·S + D</strong> (Belt Rotation vs Freq Diff)
+            </RadzenAlert>
+            <div class="row g-3 rz-mt-1">
+                <div class="col-6 col-md-3">
+                    <RadzenFormField Text="A" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.A" TValue="double?" Format="F4" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+                <div class="col-6 col-md-3">
+                    <RadzenFormField Text="B" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.B" TValue="double?" Format="F4" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+                <div class="col-6 col-md-3">
+                    <RadzenFormField Text="C" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.C" TValue="double?" Format="F4" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+                <div class="col-6 col-md-3">
+                    <RadzenFormField Text="D" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.D" TValue="double?" Format="F4" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+            </div>
+        </RadzenFieldset>
+
+        @* ── 3 Data Điểm TipOD ── *@
+        <RadzenFieldset Text="Thông số TipOD (3 Data Điểm)">
+            <div class="row g-3">
+
+                @* Data Điểm 1 *@
+                <div class="col-12">
+                    <RadzenText TextStyle="TextStyle.Caption" Style="color:var(--rz-success); font-weight:600">▶ Data Điểm 1</RadzenText>
+                </div>
+                <div class="col-4">
+                    <RadzenFormField Text="Diam LL 1 (mm)" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.Diam_LL_1" TValue="double?" Format="F2" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+                <div class="col-4">
+                    <RadzenFormField Text="Diam UL 1 (mm)" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.Diam_UL_1" TValue="double?" Format="F2" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+                <div class="col-4">
+                    <RadzenFormField Text="Tip OD Length 1" Style="width:100%">
+                        <RadzenTextBox @bind-Value="@_model.TipOdLength_1" Placeholder="VD: UPT TOD 76MM" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+
+                @* Data Điểm 2 *@
+                <div class="col-12">
+                    <RadzenText TextStyle="TextStyle.Caption" Style="color:var(--rz-success); font-weight:600">▶ Data Điểm 2</RadzenText>
+                </div>
+                <div class="col-4">
+                    <RadzenFormField Text="Diam LL 2 (mm)" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.Diam_LL_2" TValue="double?" Format="F2" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+                <div class="col-4">
+                    <RadzenFormField Text="Diam UL 2 (mm)" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.Diam_UL_2" TValue="double?" Format="F2" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+                <div class="col-4">
+                    <RadzenFormField Text="Tip OD Length 2" Style="width:100%">
+                        <RadzenTextBox @bind-Value="@_model.TipOdLength_2" Placeholder="VD: UPT TOD 25MM" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+
+                @* Data Điểm 3 *@
+                <div class="col-12">
+                    <RadzenText TextStyle="TextStyle.Caption" Style="color:var(--rz-success); font-weight:600">▶ Data Điểm 3</RadzenText>
+                </div>
+                <div class="col-4">
+                    <RadzenFormField Text="Diam LL 3 (mm)" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.Diam_LL_3" TValue="double?" Format="F2" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+                <div class="col-4">
+                    <RadzenFormField Text="Diam UL 3 (mm)" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.Diam_UL_3" TValue="double?" Format="F2" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+                <div class="col-4">
+                    <RadzenFormField Text="Tip OD Length 3" Style="width:100%">
+                        <RadzenTextBox @bind-Value="@_model.TipOdLength_3" Placeholder="(nếu có)" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+
+            </div>
+        </RadzenFieldset>
+
+        @* ── Nút hành động ── *@
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem">
+            <RadzenButton Text="Hủy" ButtonStyle="ButtonStyle.Light" Click="@(() => _dialogService.Close())" />
+            <RadzenButton Text="@(_isEdit ? "Cập nhật" : "Thêm")"
+                          ButtonStyle="ButtonStyle.Primary"
+                          Icon="@(_isEdit ? "save" : "add")"
+                          Type="Submit" />
+        </RadzenStack>
+
+    </RadzenStack>
+</RadzenTemplateForm>

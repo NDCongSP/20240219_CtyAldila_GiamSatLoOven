@@ -458,6 +458,202 @@ namespace GiamSat.API.Migrations
                     b.ToTable("FT13");
                 });
 
+            modelBuilder.Entity("GiamSat.Models.FT14_TipOdFreq", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double?>("A")
+                        .HasColumnType("float");
+
+                    b.Property<bool?>("Actived")
+                        .HasColumnType("bit");
+
+                    b.Property<double?>("B")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("C")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedMachine")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("D")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Diam_LL_1")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Diam_LL_2")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Diam_LL_3")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Diam_UL_1")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Diam_UL_2")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Diam_UL_3")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Formula_F")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("FreqTarget")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Length")
+                        .HasColumnType("float");
+
+                    b.Property<string>("PartName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Set_Freq_Offset_Hight")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Set_Freq_Offset_Low")
+                        .HasColumnType("float");
+
+                    b.Property<string>("TipOdLength_1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TipOdLength_2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TipOdLength_3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdateddAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FT14");
+                });
+
+            modelBuilder.Entity("GiamSat.Models.FT15_SandingRealtime", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("C001_Data")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("C001");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FT15");
+                });
+
+            modelBuilder.Entity("GiamSat.Models.FT16_SandingLogData", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedMachine")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Diam_LL_1")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Diam_LL_2")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Diam_LL_3")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("Diam_Reading_1")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Diam_Reading_2")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Diam_Reading_3")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("Diam_UL_1")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Diam_UL_2")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Diam_UL_3")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Formula")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LogType")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("MotorSandingSpeed")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("OK_NG_OD_1")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("OK_NG_OD_2")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("OK_NG_OD_3")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("OK_NG_SpineB")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Part")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("SandingMode")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ShaftNum")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("SpineA")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("SpineB")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("SpineTarget")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Spine_Hight")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Spine_Low")
+                        .HasColumnType("float");
+
+                    b.Property<string>("TipOdLength_1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TipOdLength_2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TipOdLength_3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Work")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FT16");
+                });
+
             modelBuilder.Entity("GiamSat.Models.Permissions", b =>
                 {
                     b.Property<Guid>("Id")

@@ -81,6 +81,19 @@
         </RadzenPanelMenuItem>
     }
 
+    @* Auto Sanding *@
+    <RadzenPanelMenuItem Text="Auto Sanding"
+                         Icon="construction"
+                         Expanded="false">
+        <ChildContent>
+            <RadzenPanelMenuItem Text="Cấu hình"
+                                 Icon="tune"
+                                 Path="/autosanding/config"
+                                 Match="NavLinkMatch.All" />
+        </ChildContent>
+    </RadzenPanelMenuItem>
+
+    @* Giám sát nhiệt độ *@
     <RadzenPanelMenuItem Text="Giám sát nhiệt độ"
                          Icon="thermostat"
                          Expanded="false">
