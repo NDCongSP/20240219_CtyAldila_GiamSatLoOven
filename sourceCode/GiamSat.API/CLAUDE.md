@@ -271,14 +271,17 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "GiamSatApi.cs đã tái sinh tự động đầy đủ. Solution build sạch 0 error."
+  current_task:     "Fix FT14 không load data — đã sửa 3 file (filter + dialog clone + service), build 0 error."
   related_files:
-    - "GiamSat.APIClient/ApiClient/GiamSatApi.cs"       # tái sinh bởi NSwag — 15640 dòng, đủ cả temperature + sanding
-    - "GiamSat.APIClient/ApiClient/swagger.json"        # 111 endpoints từ running API
+    - "GiamSat.UI/Pages/AutoSandingConfig.razor.cs"           # FIX: Actived!=false + error notify khi Succeeded=false
+    - "GiamSat.UI/Components/DialogAutoSandingConfig.razor.cs" # FIX: thêm Length + UpdateddAt vào clone
+    - "GiamSat.API/Services/SFT14.cs"                         # FIX: ToListAsync + AsNoTracking
   blocked_by:       null
   next_step:
-    - "Kiểm tra UI: navigate /temperature/dashboard, /temperature/config, /temperature/report"
-    - "Nếu cần thêm tính năng mới: thêm entity → interface → service → controller → DI → migration"
+    - "Test trang /autosanding/config — xem notification lỗi có hiện khi API không trả về data không"
+    - "Nếu API vẫn không gọi được: kiểm tra appsettings AppSettings:ApiBaseUrl đang trỏ đúng host chưa"
+    - "Nếu 401 Unauthorized: kiểm tra JWT token còn hạn, user có quyền truy cập FT14 không"
+    - "DB check: SELECT COUNT(*), SUM(CASE WHEN Actived IS NULL THEN 1 ELSE 0 END) FROM FT14"
   last_session:     "2026-05-26"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
@@ -317,6 +320,20 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-05-26] — Session: Fix FT14 data không hiển thị
+
+```
+[FIX]  AutoSandingConfig.razor.cs  — LoadData(): đổi filter Actived==true → Actived!=false
+                                      (records có Actived=NULL trong DB bị lọc mất → không hiện data)
+                                      Thêm error notification khi result.Succeeded==false
+[FIX]  DialogAutoSandingConfig.razor.cs — Thêm 2 field bị thiếu khi clone model:
+                                          Length (mất khi Edit → lưu lại 0/null)
+                                          UpdateddAt (mất timestamp update)
+[FIX]  SFT14.cs — GetAll(): đổi ToList() đồng bộ → await ToListAsync() + AsNoTracking()
+```
 
 ---
 

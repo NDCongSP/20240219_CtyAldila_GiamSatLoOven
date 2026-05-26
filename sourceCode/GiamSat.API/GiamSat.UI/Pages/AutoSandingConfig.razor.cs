@@ -47,9 +47,13 @@ namespace GiamSat.UI.Pages
 
                 var result = await _fT14Client.GetAllAsync();
                 if (result.Succeeded && result.Data != null)
-                    _parts = result.Data.Where(x => x.Actived == true).OrderBy(x => x.PartName).ToList();
+                    _parts = result.Data.Where(x => x.Actived != false).OrderBy(x => x.PartName).ToList();
                 else
+                {
                     _parts = new List<FT14_TipOdFreq>();
+                    var msg = result?.Messages != null ? string.Join(", ", result.Messages) : "API trả về lỗi không xác định";
+                    _notificationService.Notify(NotificationSeverity.Error, "Lỗi tải dữ liệu FT14", msg);
+                }
             }
             catch (Exception ex)
             {

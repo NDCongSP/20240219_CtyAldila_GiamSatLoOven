@@ -26,7 +26,8 @@ namespace GiamSat.API
         {
             try
             {
-                return await Result<List<FT14_TipOdFreq>>.SuccessAsync(_context.FT14_TipOdFreqs.ToList());
+                var data = await _context.FT14_TipOdFreqs.AsNoTracking().ToListAsync();
+                return await Result<List<FT14_TipOdFreq>>.SuccessAsync(data);
             }
             catch (Exception ex)
             {
