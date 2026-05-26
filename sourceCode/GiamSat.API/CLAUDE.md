@@ -271,16 +271,14 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "Service layer temperature monitoring (ISFT10/11) đã xong. Sẵn sàng bước tiếp."
+  current_task:     "GiamSatApi.cs đã tái sinh tự động đầy đủ. Solution build sạch 0 error."
   related_files:
-    - "GiamSat.APIClient/ApiClient/GiamSatApi.cs"       # merge thủ công — FT14/15/16 + temperature
-    - "GiamSat.APIClient/GiamSat.APIClient.csproj"      # NSwag target đã tắt
-    - "GiamSat.API/Services/SFT10.cs"                   # TemperatureConfig service (FT10)
-    - "GiamSat.API/Services/SFT11.cs"                   # TemperatureData service (FT11/12/13)
+    - "GiamSat.APIClient/ApiClient/GiamSatApi.cs"       # tái sinh bởi NSwag — 15640 dòng, đủ cả temperature + sanding
+    - "GiamSat.APIClient/ApiClient/swagger.json"        # 111 endpoints từ running API
   blocked_by:       null
   next_step:
-    - "Chạy API → swagger.json sẽ chứa đủ cả temperature + sanding endpoints → copy vào APIClient → bật lại NSwag target → build để tái sinh GiamSatApi.cs tự động"
     - "Kiểm tra UI: navigate /temperature/dashboard, /temperature/config, /temperature/report"
+    - "Nếu cần thêm tính năng mới: thêm entity → interface → service → controller → DI → migration"
   last_session:     "2026-05-26"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
@@ -319,6 +317,18 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-05-26] — Session: Tái sinh GiamSatApi.cs qua NSwag
+
+```
+[CHORE] swagger.json        — Regenerate từ running API (http://localhost:64665) — 111 endpoints,
+                              bao gồm /api/TemperatureConfig, /api/TemperatureData/*, /api/FT15, /api/FT16
+[CHORE] GiamSatApi.cs       — Tái sinh tự động bởi NSwag (14.0.7) — 15640 dòng:
+                              ITemperatureConfigClient, ITemperatureDataClient, IFT15Client, IFT16Client
+[CHORE] GiamSat.APIClient.csproj — Bật lại NSwag target (tắt tạm trong DEC-007, nay không cần merge thủ công nữa)
+```
 
 ---
 
