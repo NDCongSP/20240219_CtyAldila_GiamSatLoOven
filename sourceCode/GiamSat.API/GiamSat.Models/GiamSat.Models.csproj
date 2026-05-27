@@ -2,21 +2,23 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net7.0;net48</TargetFrameworks>
+		<!-- net48 không tương thích với browser-wasm (Blazor WebAssembly publish) -->
+		<TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'browser-wasm'">net7.0</TargetFrameworks>
 		<LangVersion>9.0</LangVersion>
 		<Nullable>enable</Nullable>
 		<NoWarn>$(NoWarn);CS8618</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DevExpress.Reporting.Core" Version="23.1.6" />
 		<PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.14" />
 		<PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="10.0.6" />
+		<PackageReference Include="RestEase" Version="1.6.4" />
 		<PackageReference Include="RestEase.HttpClientFactory" Version="1.6.4" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 		<PackageReference Include="System.Text.Json" Version="7.0.4" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
 	  <Reference Include="System.Windows.Forms">
 	    <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Windows.Forms.dll</HintPath>
 	  </Reference>

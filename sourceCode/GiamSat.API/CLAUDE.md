@@ -278,10 +278,7 @@ active_context:
     - "GiamSat.API/Services/SFT14.cs"                         # FIX: ToListAsync + AsNoTracking
   blocked_by:       null
   next_step:
-    - "Test trang /autosanding/config — xem notification lỗi có hiện khi API không trả về data không"
-    - "Nếu API vẫn không gọi được: kiểm tra appsettings AppSettings:ApiBaseUrl đang trỏ đúng host chưa"
-    - "Nếu 401 Unauthorized: kiểm tra JWT token còn hạn, user có quyền truy cập FT14 không"
-    - "DB check: SELECT COUNT(*), SUM(CASE WHEN Actived IS NULL THEN 1 ELSE 0 END) FROM FT14"
+    - publish web UI, hiện tại chạy debug thì ok hết nhưng khi publish web UI thì ko đưuọc, do trong project GiamSat.Models sử đụng net 7.0 và net48(dùng cho các project winform), nên nó báo lỗi, xử lý task này để chạy đưuọc cho winform và cả web
   last_session:     "2026-05-26"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
