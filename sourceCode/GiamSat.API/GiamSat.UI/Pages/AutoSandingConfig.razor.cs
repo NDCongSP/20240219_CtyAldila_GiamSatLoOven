@@ -3,7 +3,8 @@ using GiamSat.Models;
 using GiamSat.UI.Components;
 using Microsoft.AspNetCore.Components;
 using Radzen;
-using FT14_TipOdFreq = GiamSat.APIClient.FT14_TipOdFreq;
+using FT14_TipOdFreq      = GiamSat.APIClient.FT14_TipOdFreq;
+using AutoSandingTestRow  = GiamSat.Models.AutoSandingTestRow;
 
 namespace GiamSat.UI.Pages
 {
@@ -13,6 +14,7 @@ namespace GiamSat.UI.Pages
         private int  _selectedTab    = 0;
         private bool _isLoading      = true;
         private bool _isSaving       = false;
+        private bool _isLoadingCalc  = false;
         private bool _abcdCalculated = false;
         private bool _showGuide      = false;
 
@@ -24,6 +26,16 @@ namespace GiamSat.UI.Pages
         private List<AutoSandingTestRow> _testRows = new();
         private LinearRegressionResult _resultAB = new();
         private LinearRegressionResult _resultCD = new();
+
+        // Tab 2 – form load data từ external DB
+        private string  _work         = string.Empty;
+        private double  _offsetFre1   = 0;
+        private double  _offsetFre2   = 0;
+        private double  _offsetSpine  = 0;
+        private int     _formular     = 1;
+        private double  _motorFrom    = 100;
+        private double  _motorTo      = 500;
+        private double  _motorStep    = 100;
 
         // Chart data
         private List<ChartPoint> _chartABPoints = new();
@@ -213,6 +225,63 @@ namespace GiamSat.UI.Pages
             _abcdCalculated = false;
             _notificationService.Notify(NotificationSeverity.Info, "Fake Data", "Đã nạp 10 dòng dữ liệu mẫu từ slide 14.");
             StateHasChanged();
+        }
+
+        private async Task OnLoadDataFromDB()
+        {
+            var partName = _parts.FirstOrDefault(p => p.Id == _selectedPartId)?.PartName;
+            if (string.IsNullOrWhiteSpace(partName))
+            {
+                _notificationService.Notify(NotificationSeverity.Warning, "Chưa chọn Part", "Vui lòng chọn Part trước khi load data.");
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(_work))
+            {
+                _notificationService.Notify(NotificationSeverity.Warning, "Thiếu Work Order", "Vui lòng nhập Work Order.");
+                return;
+            }
+
+            try
+            {
+                _isLoadingCalc = true;
+                _abcdCalculated = false;
+                StateHasChanged();
+
+                var result = await _ft14CalcDataClient.GetCalcDataAsync(
+                    partName, _work,
+                    _offsetFre1, _offsetFre2,
+                    _motorFrom, _motorTo, _motorStep);
+
+                if (!result.Succeeded || result.Data == null)
+                {
+                    var msg = result.Messages != null ? string.Join(", ", result.Messages) : "Lỗi không xác định từ API";
+                    _notificationService.Notify(NotificationSeverity.Error, "Lỗi load data", msg);
+                    return;
+                }
+
+                // Map từ APIClient DTO → Models để dùng computed FreqDiff
+                _testRows = result.Data.Select((r, idx) => new AutoSandingTestRow
+                {
+                    RowIndex        = idx + 1,
+                    Fre1            = r.Fre1,
+                    StiffnessZ      = r.StiffnessZ,
+                    BeltRotationRpm = r.BeltRotationRpm,
+                    Fre2            = r.Fre2,
+                    StiffnessY      = r.StiffnessY,
+                }).ToList();
+
+                _notificationService.Notify(NotificationSeverity.Success, "Load thành công",
+                    $"Đã load {_testRows.Count} dòng từ DB (Part={partName}, Work={_work}). Kiểm tra StiffnessZ/Y rồi nhấn Tính A,B,C,D.");
+            }
+            catch (Exception ex)
+            {
+                _notificationService.Notify(NotificationSeverity.Error, "Lỗi", ex.Message);
+            }
+            finally
+            {
+                _isLoadingCalc = false;
+                StateHasChanged();
+            }
         }
 
         private void OnCalculateABCD()

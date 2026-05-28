@@ -15,7 +15,7 @@ CREATE NONCLUSTERED INDEX IX_FT09_CreatedAt
 ON FT09 (CreatedAt);
 -----------------------------------------------------------------------------------------------------------------------
 DB:
-Server=192.168.96.822;Database=oven;User Id=mfg;Password=Mfg@321!;TrustServerCertificate=True;
+Server=Server=192.168.96.22;Database=oven;User Id=mfg;Password=Mfg@321!;TrustServerCertificate=True;
 
 Kiến trúc hệ thống:
 |---Web
@@ -51,8 +51,13 @@ Cai moi truong de publish IIS:
 - Hosting bundle
 - URL Rewrite Module 2.1
 
+server host: 192.168.96.22
 Web API port 8082
 web UI port 8083
+
+ip pc host production: 192.168.106.40
+API port 8082
+UI port 8083
 
 
  item.ProfileStepType_CurrentStatus = e.NewValue == "1" ? EnumProfileStepType.RampTime

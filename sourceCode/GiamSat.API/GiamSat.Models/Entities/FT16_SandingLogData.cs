@@ -26,11 +26,9 @@ namespace GiamSat.Models
         public int? Formula { get; set; } = null;
 
         /// <summary>
-        /// 1- all
-        /// 2- 5 cây
-        /// 3- không lưu
+        /// Chế độ log data vào bảng data log FT16.
         /// </summary>
-        public int? LogType { get; set; } = null;
+        public EnumSandingLogType? LogType { get; set; } = EnumSandingLogType.Log_All;
 
         public int? ShaftNum { get; set; } = null;
 
@@ -64,6 +62,9 @@ namespace GiamSat.Models
         /// <summary>
         /// Báo cho biết log này được tạo ra trong chế độ nào của máy mài, ví dụ như chế độ sản xuất, chế độ test, chế độ demo, v.v. Tùy vào từng loại máy mài mà sẽ có các chế độ khác nhau, và mỗi chế độ sẽ có cách xử lý dữ liệu log khác nhau. Ví dụ như trong chế độ sản xuất thì sẽ lưu tất cả các log, còn trong chế độ test thì chỉ lưu một số log nhất định, còn trong chế độ demo thì không lưu log nào cả.
         /// Khi tinh ABCD thì đọc với mode Test.
+        /// AUTO_MANUAL tag.
+        /// 
+        /// 
         /// </summary>
         public EnumSandingMode? SandingMode { get; set; } = EnumSandingMode.Production;
     }

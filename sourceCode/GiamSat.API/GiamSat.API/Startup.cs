@@ -52,10 +52,20 @@ namespace GiamSat.API
            options.UseSqlServer(
                Configuration.GetConnectionString("ConnStr"),
                sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
-                   maxRetryCount: 5, // Maximum number of retry attempts
-                   maxRetryDelay: TimeSpan.FromSeconds(10), // Maximum delay between retries
-                   errorNumbersToAdd: null // List of additional SQL error numbers to consider transient
+                   maxRetryCount: 5,
+                   maxRetryDelay: TimeSpan.FromSeconds(10),
+                   errorNumbersToAdd: null
                )));
+
+            // External DB — chứa dữ liệu đo tần số Auto Fre (Fre1/Fre2) cho tính ABCD
+            services.AddDbContext<FreMeasurementDbContext>(options =>
+               options.UseSqlServer(
+                   Configuration.GetConnectionString("ConnStrExternal"),
+                   sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(
+                       maxRetryCount: 3,
+                       maxRetryDelay: TimeSpan.FromSeconds(5),
+                       errorNumbersToAdd: null
+                   )));
             //_context.Database.SetCommandTimeout(TimeSpan.FromSeconds(300));
 
             #region khoi tao data
@@ -262,6 +272,7 @@ namespace GiamSat.API
             services.AddScoped<ISFT10, SFT10>();
             services.AddScoped<ISFT11, SFT11>();
             services.AddScoped<ISFT14, SFT14>();
+            services.AddScoped<ISFT14_CalcData, SFT14_CalcData>();
             services.AddScoped<ISFT15, SFT15>();
             services.AddScoped<ISFT16, SFT16>();
             services.AddScoped<SCommon>();
