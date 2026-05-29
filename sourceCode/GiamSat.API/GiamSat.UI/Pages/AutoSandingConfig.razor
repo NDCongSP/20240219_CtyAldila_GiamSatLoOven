@@ -1,6 +1,8 @@
 @page "/autosanding/config"
 @using GiamSat.Models
 @using GiamSat.APIClient
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Policy = AppPermissions.Sanding_Config_View)]
 
 <RadzenRow Gap="1rem">
     <RadzenColumn Size="12">

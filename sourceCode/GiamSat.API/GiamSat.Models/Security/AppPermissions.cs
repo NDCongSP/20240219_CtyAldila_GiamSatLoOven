@@ -49,6 +49,14 @@ namespace GiamSat.Models
         public const string Temperature_Report_View = "Temperature_Report.View";
         public const string Temperature_Report_Export = "Temperature_Report.Export";
 
+        // SANDING
+        public const string Sanding_Config_View = "Sanding_Config.View";
+        public const string Sanding_Config_Create = "Sanding_Config.Create";
+        public const string Sanding_Config_Edit = "Sanding_Config.Edit";
+        public const string Sanding_Config_Delete = "Sanding_Config.Delete";
+
+        public const string Sanding_Report_View = "Sanding_Report.View";
+
         /// <summary>
         /// Gets all defined permission codes automatically using reflection.
         /// </summary>
