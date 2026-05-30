@@ -271,19 +271,13 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "DONE — Fix lỗi tạo role (400 validation error) và seed permission cho phân hệ Sanding"
+  current_task:     "DONE — Fix logic phân bổ row: totalRows = rpmSteps×2, điền data theo ShaftNum tăng dần"
   related_files:
-    - "GiamSat.Models/IdentityAdminDtos.cs"                          # FIX: đổi Id và Claims trong IdentityRoleDto thành nullable để không bị lỗi 400 Validation
-    - "GiamSat.Models/Enums/AppModule.cs"                            # FEAT: thêm Sanding_Config, Sanding_Report vào AppModule enum
-    - "GiamSat.Models/Security/AppPermissions.cs"                    # FEAT: thêm hằng số phân quyền Sanding_*
-    - "GiamSat.API/PermissionSeeder.cs"                              # FEAT: cấu hình hạt giống (seed) dữ liệu cho phân hệ Sanding
-    - "GiamSat.UI/Shared/NavMenu.razor"                               # FEAT: wrap menu Auto Sanding bằng AuthorizeView
-    - "GiamSat.UI/Pages/AutoSandingConfig.razor"                     # FEAT: bảo vệ trang cấu hình Sanding bằng [Authorize]
+    - "GiamSat.API/Services/SFT14_CalcData.cs"  # FIX: totalRows=rpmValues.Count*2; mỗi RPM 2 row (rowIdx/2); dừng khi đủ totalRows
   blocked_by:       ""
   next_step:
-    - Chạy ứng dụng, vào trang Quản lý Role & Permission và bấm "Seed" hoặc chạy database update seeder để tạo các quyền Sanding
-    - Test tạo role mới từ UI để xác nhận không còn lỗi 400
-  last_session:     "2026-05-29"
+    - Seeding data trong bảng FT16 theo part 
+  last_session:     "2026-05-31"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
     - "Production appsettings có khác với appsettings.json không? Đang deploy ở đâu?"
@@ -321,6 +315,46 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-05-31] — Session: Fix logic phân bổ row theo bước nhảy RPM
+
+```
+[FIX]  SFT14_CalcData.cs  — Đổi cách tính số row: totalRows = rpmValues.Count × 2 (2 row/bước nhảy)
+                             Vd: From=100, To=500, Step=100 → 5 bước → 10 rows
+                             RPM gán theo rowIdx/2: row 0-1 → rpm[0], row 2-3 → rpm[1], ...
+                             Dừng điền khi đạt totalRows (không phụ thuộc vào số record Fre1 trong DB)
+```
+
+---
+
+### [2026-05-31] — Session: Fix schema FreMeasurementRecord khớp DB thực tế
+
+```
+[FIX]  FreMeasurementRecord.cs  — Đổi kiểu Id từ long (Int64) → int (Int32)
+                                   ShaftNum: int → int? (DB cho phép null)
+                                   BSL, Weight, Reading, UL, LL: double? → string? (DB lưu nvarchar(50))
+                                   Thêm IsCalib int? (có trong DB nhưng thiếu trong entity)
+[FIX]  SFT14_CalcData.cs        — Thêm ParseReading(string?) để parse nvarchar→double (InvariantCulture)
+                                   Lọc ShaftNum != null trước khi query, xử lý .HasValue trong loop/dictionary
+                                   Nguyên nhân: bảng DatalogFrequency trong external DB dùng int, không phải bigint
+                                   Lỗi runtime: "Unable to cast object of type 'System.Int32' to type 'System.Int64'"
+```
+
+---
+
+### [2026-05-30] — Session: Tab 2 AutoSanding — bỏ StiffnessZ, StiffnessY từ FT16, Part searchable
+
+```
+[FIX]  AutoSandingConfigModel.cs   — Bỏ property StiffnessZ khỏi AutoSandingTestRow (không dùng nữa)
+[FIX]  FT14CalcDataClient.cs       — Bỏ StiffnessZ khỏi DTO AutoSandingTestRow trong APIClient
+[FEAT] SFT14_CalcData.cs           — Inject ApplicationDbContext; query FT16.SpineB (SandingMode=Test, Part+Work)
+                                     và khớp StiffnessY theo ShaftNum với Fre1 records từ external DB
+[FIX]  AutoSandingConfig.razor     — Part dropdown: thêm AllowFiltering=true + CaseInsensitive để search được
+                                     Bảng dữ liệu: bỏ cột "Stiffness Z" (header + data cell)
+[FIX]  AutoSandingConfig.razor.cs  — Fake data: bỏ StiffnessZ; mapping OnLoadDataFromDB: bỏ StiffnessZ
+```
 
 ---
 

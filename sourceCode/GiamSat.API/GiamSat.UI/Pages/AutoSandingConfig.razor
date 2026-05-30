@@ -154,6 +154,8 @@
                                                                 TextProperty="PartName"
                                                                 ValueProperty="Id"
                                                                 Placeholder="-- Chọn part --"
+                                                                AllowFiltering="true"
+                                                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                                                 Style="width:100%"
                                                                 Change="@OnPartSelected" />
                                             </RadzenFormField>
@@ -382,13 +384,12 @@
                                             <thead>
                                                 <tr>
                                                     <th rowspan="2" class="col-idx">#</th>
-                                                    <th colspan="2" class="group-sand1">1st After Sanding</th>
+                                                    <th class="group-sand1">1st After Sanding</th>
                                                     <th rowspan="2" class="group-rpm">Fix Belt<br />Rotation (RPM)</th>
                                                     <th colspan="3" class="group-sand2">Formula calculation – 2nd After Sanding</th>
                                                 </tr>
                                                 <tr>
                                                     <th class="group-sand1">Fre1 (CPM)</th>
-                                                    <th class="group-sand1">Stiffness Z (Kg)</th>
                                                     <th class="group-sand2">Fre2 (CPM)</th>
                                                     <th class="group-sand2">Stiffness Y (Kg)</th>
                                                     <th class="group-sand2">Freq Diff S<br />(Fre1–Fre2)</th>
@@ -400,7 +401,6 @@
                                                     <tr>
                                                         <td class="col-idx">@row.RowIndex</td>
                                                         <td><RadzenNumeric @bind-Value="row.Fre1" Format="F1" Style="width:90px" TValue="double" /></td>
-                                                        <td><RadzenNumeric @bind-Value="row.StiffnessZ" Format="F3" Style="width:90px" TValue="double" /></td>
                                                         <td><RadzenNumeric @bind-Value="row.BeltRotationRpm" Format="F0" Style="width:80px" TValue="double" /></td>
                                                         <td><RadzenNumeric @bind-Value="row.Fre2" Format="F1" Style="width:90px" TValue="double" /></td>
                                                         <td><RadzenNumeric @bind-Value="row.StiffnessY" Format="F3" Style="width:90px" TValue="double" /></td>

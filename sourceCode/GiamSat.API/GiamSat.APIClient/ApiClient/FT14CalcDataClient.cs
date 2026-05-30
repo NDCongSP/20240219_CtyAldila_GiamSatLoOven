@@ -11,9 +11,6 @@ namespace GiamSat.APIClient
         [System.Text.Json.Serialization.JsonPropertyName("fre1")]
         public double Fre1 { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("stiffnessZ")]
-        public double StiffnessZ { get; set; }
-
         [System.Text.Json.Serialization.JsonPropertyName("beltRotationRpm")]
         public double BeltRotationRpm { get; set; }
 

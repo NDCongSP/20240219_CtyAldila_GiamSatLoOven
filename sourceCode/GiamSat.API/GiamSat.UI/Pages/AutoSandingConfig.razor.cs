@@ -211,16 +211,16 @@ namespace GiamSat.UI.Pages
         {
             _testRows = new List<AutoSandingTestRow>
             {
-                new() { RowIndex=1,  Fre1=308.9, StiffnessZ=2.559, BeltRotationRpm=100, Fre2=308.1, StiffnessY=2.546 },
-                new() { RowIndex=2,  Fre1=309.4, StiffnessZ=2.566, BeltRotationRpm=100, Fre2=308.6, StiffnessY=2.552 },
-                new() { RowIndex=3,  Fre1=309.3, StiffnessZ=2.580, BeltRotationRpm=200, Fre2=306.3, StiffnessY=2.526 },
-                new() { RowIndex=4,  Fre1=309.5, StiffnessZ=2.574, BeltRotationRpm=200, Fre2=306.8, StiffnessY=2.526 },
-                new() { RowIndex=5,  Fre1=308.3, StiffnessZ=2.529, BeltRotationRpm=300, Fre2=303.2, StiffnessY=2.436 },
-                new() { RowIndex=6,  Fre1=309.1, StiffnessZ=2.527, BeltRotationRpm=300, Fre2=302.9, StiffnessY=2.445 },
-                new() { RowIndex=7,  Fre1=306.6, StiffnessZ=2.529, BeltRotationRpm=400, Fre2=300.0, StiffnessY=2.398 },
-                new() { RowIndex=8,  Fre1=307.4, StiffnessZ=2.521, BeltRotationRpm=400, Fre2=299.4, StiffnessY=2.366 },
-                new() { RowIndex=9,  Fre1=307.9, StiffnessZ=2.531, BeltRotationRpm=500, Fre2=298.3, StiffnessY=2.372 },
-                new() { RowIndex=10, Fre1=307.8, StiffnessZ=2.542, BeltRotationRpm=500, Fre2=298.7, StiffnessY=2.364 },
+                new() { RowIndex=1,  Fre1=308.9, BeltRotationRpm=100, Fre2=308.1, StiffnessY=2.546 },
+                new() { RowIndex=2,  Fre1=309.4, BeltRotationRpm=100, Fre2=308.6, StiffnessY=2.552 },
+                new() { RowIndex=3,  Fre1=309.3, BeltRotationRpm=200, Fre2=306.3, StiffnessY=2.526 },
+                new() { RowIndex=4,  Fre1=309.5, BeltRotationRpm=200, Fre2=306.8, StiffnessY=2.526 },
+                new() { RowIndex=5,  Fre1=308.3, BeltRotationRpm=300, Fre2=303.2, StiffnessY=2.436 },
+                new() { RowIndex=6,  Fre1=309.1, BeltRotationRpm=300, Fre2=302.9, StiffnessY=2.445 },
+                new() { RowIndex=7,  Fre1=306.6, BeltRotationRpm=400, Fre2=300.0, StiffnessY=2.398 },
+                new() { RowIndex=8,  Fre1=307.4, BeltRotationRpm=400, Fre2=299.4, StiffnessY=2.366 },
+                new() { RowIndex=9,  Fre1=307.9, BeltRotationRpm=500, Fre2=298.3, StiffnessY=2.372 },
+                new() { RowIndex=10, Fre1=307.8, BeltRotationRpm=500, Fre2=298.7, StiffnessY=2.364 },
             };
             _abcdCalculated = false;
             _notificationService.Notify(NotificationSeverity.Info, "Fake Data", "Đã nạp 10 dòng dữ liệu mẫu từ slide 14.");
@@ -264,14 +264,13 @@ namespace GiamSat.UI.Pages
                 {
                     RowIndex        = idx + 1,
                     Fre1            = r.Fre1,
-                    StiffnessZ      = r.StiffnessZ,
                     BeltRotationRpm = r.BeltRotationRpm,
                     Fre2            = r.Fre2,
                     StiffnessY      = r.StiffnessY,
                 }).ToList();
 
                 _notificationService.Notify(NotificationSeverity.Success, "Load thành công",
-                    $"Đã load {_testRows.Count} dòng từ DB (Part={partName}, Work={_work}). Kiểm tra StiffnessZ/Y rồi nhấn Tính A,B,C,D.");
+                    $"Đã load {_testRows.Count} dòng từ DB (Part={partName}, Work={_work}). Kiểm tra StiffnessY rồi nhấn Tính A,B,C,D.");
             }
             catch (Exception ex)
             {

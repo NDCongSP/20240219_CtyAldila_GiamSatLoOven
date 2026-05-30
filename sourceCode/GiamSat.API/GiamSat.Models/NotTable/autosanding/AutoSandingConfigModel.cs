@@ -63,24 +63,18 @@ namespace GiamSat.Models
     {
         public int RowIndex { get; set; }
 
-        // -- Sand lần 1 -------------------------------------------------------
-        /// <summary>Fre1: Tần số đo sau sand lần 1 (CPM)</summary>
+        /// <summary>Fre1 (CPM) — Station="Auto Fre No.1", Reading từ external DB</summary>
         public double Fre1 { get; set; }
 
-        /// <summary>Z: Độ cứng đo sau sand lần 1 (Kg)</summary>
-        public double StiffnessZ { get; set; }
-
-        // -- Sand lần 2 -------------------------------------------------------
         /// <summary>Tốc độ motor cố định khi sand lần 2 (RPM)</summary>
         public double BeltRotationRpm { get; set; }
 
-        /// <summary>Fre2: Tần số đo sau sand lần 2 (CPM)</summary>
+        /// <summary>Fre2 (CPM) — Station="Auto Fre No.2", Reading từ external DB</summary>
         public double Fre2 { get; set; }
 
-        /// <summary>Y: Độ cứng đo sau sand lần 2 (Kg)</summary>
+        /// <summary>Stiffness Y (Kg) — FT16.SpineB với SandingMode=Test, khớp ShaftNum</summary>
         public double StiffnessY { get; set; }
 
-        // -- Tính tự động -------------------------------------------------------
         /// <summary>S = Fre1 – Fre2</summary>
         public double FreqDiff => Math.Round(Fre1 - Fre2, 3);
     }
