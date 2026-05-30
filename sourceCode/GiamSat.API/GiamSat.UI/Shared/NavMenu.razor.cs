@@ -19,6 +19,7 @@ namespace GiamSat.UI.Shared
         private OvensInfo _ovensInfo = new OvensInfo();
         private bool _hasAnyOvenPermission = false;
         private bool _hasAnyRevoPermission = false;
+        private bool _hasAnySandingPermission = false;
         protected override async Task OnInitializedAsync()
         {
             try
@@ -81,6 +82,7 @@ namespace GiamSat.UI.Shared
 
                     _hasAnyOvenPermission = permClaims.Any(p => p.StartsWith("Oven_"));
                     _hasAnyRevoPermission = permClaims.Any(p => p.StartsWith("Revo_"));
+                    _hasAnySandingPermission = permClaims.Any(p => p.StartsWith("Sanding_"));
                 }
             }
             catch { /* ignore */ }

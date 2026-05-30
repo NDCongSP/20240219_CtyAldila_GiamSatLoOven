@@ -11,7 +11,7 @@
   "IsReadOnly": true,
   "Enabled": true,
   "CreatedDate": "2026-04-26T11:12:11.2899457+07:00",
-  "ModifiedDate": "2026-04-26T11:37:41.5727388+07:00",
+  "ModifiedDate": "2026-05-28T22:14:18.7474512+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -31,13 +31,13 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-04-26T11:13:22.8833147+07:00",
-  "ModifiedDate": "2026-04-26T11:37:41.5727388+07:00",
+  "ModifiedDate": "2026-05-28T22:14:18.7474512+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
   "Parameters": {
     "IpAddress": "192.168.1.100",
-    "Port": "506",
+    "Port": "502",
     "DelayBetweenPool": "5",
     "ScanRate": "100"
   }
@@ -51,7 +51,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-04-26T11:13:52.8935771+07:00",
-  "ModifiedDate": "2026-04-26T11:37:41.5727388+07:00",
+  "ModifiedDate": "2026-05-28T22:14:18.7474512+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -612,8 +612,8 @@
   "Tags": []
 },
     {
-  "Name": "Trigger_NewPartInfo1",
-  "Description": null,
+  "Name": "Set_Trigger_NewPartInfo1",
+  "Description": "PC set to 1, bao cho PLC biet da truyen thong so cai dat moi xuong thanh cong, PLC thuc hien xong reset ve 0.",
   "ItemType": "Tag",
   "IsReadOnly": false,
   "Enabled": true,
@@ -1611,7 +1611,7 @@
   "Tags": []
 },
     {
-  "Name": "Set_Auto_Manual",
+  "Name": "Auto_Manual",
   "Description": null,
   "ItemType": "Tag",
   "IsReadOnly": false,

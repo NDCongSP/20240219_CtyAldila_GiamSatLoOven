@@ -271,15 +271,19 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "Fix FT14 không load data — đã sửa 3 file (filter + dialog clone + service), build 0 error."
+  current_task:     "DONE — Fix lỗi tạo role (400 validation error) và seed permission cho phân hệ Sanding"
   related_files:
-    - "GiamSat.UI/Pages/AutoSandingConfig.razor.cs"           # FIX: Actived!=false + error notify khi Succeeded=false
-    - "GiamSat.UI/Components/DialogAutoSandingConfig.razor.cs" # FIX: thêm Length + UpdateddAt vào clone
-    - "GiamSat.API/Services/SFT14.cs"                         # FIX: ToListAsync + AsNoTracking
-  blocked_by:       null
+    - "GiamSat.Models/IdentityAdminDtos.cs"                          # FIX: đổi Id và Claims trong IdentityRoleDto thành nullable để không bị lỗi 400 Validation
+    - "GiamSat.Models/Enums/AppModule.cs"                            # FEAT: thêm Sanding_Config, Sanding_Report vào AppModule enum
+    - "GiamSat.Models/Security/AppPermissions.cs"                    # FEAT: thêm hằng số phân quyền Sanding_*
+    - "GiamSat.API/PermissionSeeder.cs"                              # FEAT: cấu hình hạt giống (seed) dữ liệu cho phân hệ Sanding
+    - "GiamSat.UI/Shared/NavMenu.razor"                               # FEAT: wrap menu Auto Sanding bằng AuthorizeView
+    - "GiamSat.UI/Pages/AutoSandingConfig.razor"                     # FEAT: bảo vệ trang cấu hình Sanding bằng [Authorize]
+  blocked_by:       ""
   next_step:
-    - publish web UI, hiện tại chạy debug thì ok hết nhưng khi publish web UI thì ko đưuọc, do trong project GiamSat.Models sử đụng net 7.0 và net48(dùng cho các project winform), nên nó báo lỗi, xử lý task này để chạy đưuọc cho winform và cả web
-  last_session:     "2026-05-26"
+    - Chạy ứng dụng, vào trang Quản lý Role & Permission và bấm "Seed" hoặc chạy database update seeder để tạo các quyền Sanding
+    - Test tạo role mới từ UI để xác nhận không còn lỗi 400
+  last_session:     "2026-05-29"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
     - "Production appsettings có khác với appsettings.json không? Đang deploy ở đâu?"
@@ -317,6 +321,43 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-05-29] — Session: Fix lỗi tạo role và seed permission cho phân hệ Sanding
+
+```
+[FIX]  IdentityAdminDtos.cs              — Đổi kiểu dữ liệu của thuộc tính Id và Claims trong class IdentityRoleDto thành nullable (string? và List<string>?) để tránh lỗi Model Validation 400 Bad Request từ API.
+[FEAT] AppModule.cs                      — Thêm Sanding_Config và Sanding_Report vào enum AppModule.
+[FEAT] AppPermissions.cs                 — Thêm các hằng số phân quyền mới cho Sanding (Sanding_Config_*, Sanding_Report_View).
+[FEAT] PermissionSeeder.cs               — Thêm seeding data cho phân hệ Sanding (Sanding_Config.View/Create/Edit/Delete và Sanding_Report.View).
+[FEAT] NavMenu.razor & NavMenu.razor.cs  — Phân quyền hiển thị menu Auto Sanding dựa trên quyền Sanding.
+[FEAT] AutoSandingConfig.razor           — Enforce quyền Sanding_Config_View thông qua thuộc tính [Authorize].
+[FIX]  PermissionDialog.razor            — Sửa kiểu parameter Model từ APIClient.Permissions thành GiamSat.Models.Permissions để tránh lỗi runtime cast exception khi mở dialog từ PermissionsManager.razor.
+```
+
+---
+
+### [2026-05-28] — Session: Tab 2 AutoSanding — Load data từ external DB
+
+```
+[FEAT]  FreMeasurementRecord.cs          — Entity mới map bảng "FreMeasurement" trong external SQL Server DB
+                                           Cột quan trọng: Station, ShaftNum, Part, WorkOrder, Reading
+                                           Station = "Auto Fre No.1" → Fre1 | "Auto Fre No.2" → Fre2
+[FEAT]  FreMeasurementDbContext.cs        — DbContext riêng kết nối external DB qua ConnStrExternal
+[FEAT]  ISFT14_CalcData.cs               — Interface: GetCalcDataAsync(part, work, offsets, motorFrom/To/Step)
+[FEAT]  SFT14_CalcData.cs                — Service: query external DB, khớp Fre1/Fre2 theo ShaftNum,
+                                           phân bổ RPM: ceil(count / rpmCount) shafts per RPM level
+[FEAT]  FT14Controller.cs               — Endpoint mới: GET /api/FT14/calcdata (query params)
+[CHORE] appsettings.json                 — Thêm ConnStrExternal (placeholder — user cần điền thực)
+[CHORE] Startup.cs                       — DI: AddDbContext<FreMeasurementDbContext> + AddScoped<ISFT14_CalcData>
+[FEAT]  FT14CalcDataClient.cs            — File mới trong GiamSat.APIClient: IFT14CalcDataClient + FT14CalcDataClient
+                                           (tạo file riêng thay vì edit GiamSatApi.cs 15640 dòng — Edit tool không reliable)
+[CHORE] _Imports.razor                   — Thêm @inject IFT14CalcDataClient _ft14CalcDataClient
+[FEAT]  AutoSandingConfig.razor.cs       — Thêm fields: _work, _offsetFre1/2, _offsetSpine, _formular, motor from/to/step
+                                           Thêm method OnLoadDataFromDB() gọi _ft14CalcDataClient.GetCalcDataAsync()
+[FEAT]  AutoSandingConfig.razor          — UI Tab 2: form Work/Offset/Formular/Motor (3 rows) + Load Data từ DB button
+```
 
 ---
 

@@ -82,16 +82,21 @@
     }
 
     @* Auto Sanding *@
-    <RadzenPanelMenuItem Text="Auto Sanding"
-                         Icon="construction"
-                         Expanded="false">
-        <ChildContent>
-            <RadzenPanelMenuItem Text="Cấu hình"
-                                 Icon="tune"
-                                 Path="/autosanding/config"
-                                 Match="NavLinkMatch.All" />
-        </ChildContent>
-    </RadzenPanelMenuItem>
+    @if (_hasAnySandingPermission)
+    {
+        <RadzenPanelMenuItem Text="Auto Sanding"
+                             Icon="construction"
+                             Expanded="false">
+            <ChildContent>
+                <AuthorizeView Policy="@AppPermissions.Sanding_Config_View">
+                    <RadzenPanelMenuItem Text="Cấu hình"
+                                         Icon="tune"
+                                         Path="/autosanding/config"
+                                         Match="NavLinkMatch.All" />
+                </AuthorizeView>
+            </ChildContent>
+        </RadzenPanelMenuItem>
+    }
 
     @* Giám sát nhiệt độ *@
     <RadzenPanelMenuItem Text="Giám sát nhiệt độ"
