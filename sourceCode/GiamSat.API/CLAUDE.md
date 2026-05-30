@@ -271,25 +271,19 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "DONE — Tab 2 AutoSanding load data từ external DB. All 3 projects build 0 errors."
+  current_task:     "DONE — Fix lỗi tạo role (400 validation error) và seed permission cho phân hệ Sanding"
   related_files:
-    - "GiamSat.Models/Entities/FreMeasurementRecord.cs"              # FEAT: entity map bảng external DB
-    - "GiamSat.API/DbContext/FreMeasurementDbContext.cs"             # FEAT: DbContext riêng cho external DB
-    - "GiamSat.Models/Services/ISFT14_CalcData.cs"                   # FEAT: interface GetCalcDataAsync
-    - "GiamSat.API/Services/SFT14_CalcData.cs"                       # FEAT: service query Fre1/Fre2 + RPM assignment
-    - "GiamSat.API/Controllers/FT14Controller.cs"                    # FEAT: endpoint GET /api/FT14/calcdata
-    - "GiamSat.API/appsettings.json"                                 # CHORE: thêm ConnStrExternal (placeholder)
-    - "GiamSat.API/Startup.cs"                                       # CHORE: DI FreMeasurementDbContext + ISFT14_CalcData
-    - "GiamSat.APIClient/ApiClient/FT14CalcDataClient.cs"            # FEAT: IFT14CalcDataClient + FT14CalcDataClient (file riêng)
-    - "GiamSat.UI/_Imports.razor"                                    # CHORE: inject IFT14CalcDataClient
-    - "GiamSat.UI/Pages/AutoSandingConfig.razor.cs"                  # FEAT: state + OnLoadDataFromDB()
-    - "GiamSat.UI/Pages/AutoSandingConfig.razor"                     # FEAT: form Work/Offset/Formular/Motor + Load Data button
-  blocked_by:       "User cần điền ConnStrExternal trong appsettings.json với thông tin SQL Server thực tế"
+    - "GiamSat.Models/IdentityAdminDtos.cs"                          # FIX: đổi Id và Claims trong IdentityRoleDto thành nullable để không bị lỗi 400 Validation
+    - "GiamSat.Models/Enums/AppModule.cs"                            # FEAT: thêm Sanding_Config, Sanding_Report vào AppModule enum
+    - "GiamSat.Models/Security/AppPermissions.cs"                    # FEAT: thêm hằng số phân quyền Sanding_*
+    - "GiamSat.API/PermissionSeeder.cs"                              # FEAT: cấu hình hạt giống (seed) dữ liệu cho phân hệ Sanding
+    - "GiamSat.UI/Shared/NavMenu.razor"                               # FEAT: wrap menu Auto Sanding bằng AuthorizeView
+    - "GiamSat.UI/Pages/AutoSandingConfig.razor"                     # FEAT: bảo vệ trang cấu hình Sanding bằng [Authorize]
+  blocked_by:       ""
   next_step:
-    - Điền ConnStrExternal vào appsettings.json với server/DB/user/password thực
-    - Kiểm tra tên bảng trong FreMeasurementRecord (hiện là "FreMeasurement") khớp với tên bảng ngoài
-    - Test luồng: chọn Part → nhập Work → nhấn Load Data từ DB → kiểm tra data hiển thị
-  last_session:     "2026-05-28"
+    - Chạy ứng dụng, vào trang Quản lý Role & Permission và bấm "Seed" hoặc chạy database update seeder để tạo các quyền Sanding
+    - Test tạo role mới từ UI để xác nhận không còn lỗi 400
+  last_session:     "2026-05-29"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
     - "Production appsettings có khác với appsettings.json không? Đang deploy ở đâu?"
@@ -327,6 +321,20 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-05-29] — Session: Fix lỗi tạo role và seed permission cho phân hệ Sanding
+
+```
+[FIX]  IdentityAdminDtos.cs              — Đổi kiểu dữ liệu của thuộc tính Id và Claims trong class IdentityRoleDto thành nullable (string? và List<string>?) để tránh lỗi Model Validation 400 Bad Request từ API.
+[FEAT] AppModule.cs                      — Thêm Sanding_Config và Sanding_Report vào enum AppModule.
+[FEAT] AppPermissions.cs                 — Thêm các hằng số phân quyền mới cho Sanding (Sanding_Config_*, Sanding_Report_View).
+[FEAT] PermissionSeeder.cs               — Thêm seeding data cho phân hệ Sanding (Sanding_Config.View/Create/Edit/Delete và Sanding_Report.View).
+[FEAT] NavMenu.razor & NavMenu.razor.cs  — Phân quyền hiển thị menu Auto Sanding dựa trên quyền Sanding.
+[FEAT] AutoSandingConfig.razor           — Enforce quyền Sanding_Config_View thông qua thuộc tính [Authorize].
+[FIX]  PermissionDialog.razor            — Sửa kiểu parameter Model từ APIClient.Permissions thành GiamSat.Models.Permissions để tránh lỗi runtime cast exception khi mở dialog từ PermissionsManager.razor.
+```
 
 ---
 

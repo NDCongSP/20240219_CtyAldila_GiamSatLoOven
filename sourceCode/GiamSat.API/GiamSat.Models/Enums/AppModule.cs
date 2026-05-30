@@ -12,6 +12,9 @@ namespace GiamSat.Models.Enums
         Revo_Report,
         Revo_Settings,
         
-        Common
+        Common,
+        
+        Sanding_Config,
+        Sanding_Report
     }
 }

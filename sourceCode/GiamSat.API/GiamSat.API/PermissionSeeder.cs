@@ -45,7 +45,14 @@ namespace GiamSat.API
             ("Temperature_Config", "Edit", "Sửa Cấu hình Nhiệt độ"),
             ("Temperature_Config", "Delete", "Xóa Cấu hình Nhiệt độ"),
             ("Temperature_Report", "View", "Xem báo cáo Nhiệt độ"),
-            ("Temperature_Report", "Export", "Xuất file báo cáo Nhiệt độ")
+            ("Temperature_Report", "Export", "Xuất file báo cáo Nhiệt độ"),
+
+            // SANDING MODULE
+            ("Sanding_Config", "View", "Xem trang Cấu hình Sanding"),
+            ("Sanding_Config", "Create", "Thêm cấu hình Sanding"),
+            ("Sanding_Config", "Edit", "Sửa cấu hình Sanding"),
+            ("Sanding_Config", "Delete", "Xóa cấu hình Sanding"),
+            ("Sanding_Report", "View", "Xem báo cáo Sanding")
         };
 
         public static async Task SeedAsync(ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager)
