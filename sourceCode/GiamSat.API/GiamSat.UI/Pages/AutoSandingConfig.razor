@@ -145,9 +145,9 @@
                                 <RadzenCard class="rz-background-color-base-100 rz-p-3" style="border-left:4px solid var(--rz-primary)">
                                     <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-2" style="color:var(--rz-primary)">Tham số load dữ liệu từ DB</RadzenText>
 
-                                    @* Dòng 1: Part + Work + Formular *@
+                                    @* Dòng 1: Part + Formular *@
                                     <RadzenRow Gap="0.75rem" class="rz-mb-2">
-                                        <RadzenColumn Size="12" SizeMD="4">
+                                        <RadzenColumn Size="12" SizeMD="8">
                                             <RadzenFormField Text="Chọn Part" Variant="Variant.Outlined" Style="width:100%">
                                                 <RadzenDropDown @bind-Value="_selectedPartId"
                                                                 Data="@_parts"
@@ -161,15 +161,29 @@
                                             </RadzenFormField>
                                         </RadzenColumn>
                                         <RadzenColumn Size="12" SizeMD="4">
-                                            <RadzenFormField Text="Work Order" Variant="Variant.Outlined" Style="width:100%">
-                                                <RadzenTextBox @bind-Value="_work" Placeholder="VD: 1794406" Style="width:100%" />
-                                            </RadzenFormField>
-                                        </RadzenColumn>
-                                        <RadzenColumn Size="12" SizeMD="4">
                                             <RadzenFormField Text="Formular" Variant="Variant.Outlined" Style="width:100%">
                                                 <RadzenDropDown @bind-Value="_formular"
                                                                 Data="@(new[]{1,2,3})"
                                                                 Style="width:100%" />
+                                            </RadzenFormField>
+                                        </RadzenColumn>
+                                    </RadzenRow>
+
+                                    @* Dòng 1b: Work Order Fre1 / Fre2 / Spine (mỗi nguồn có work riêng) *@
+                                    <RadzenRow Gap="0.75rem" class="rz-mb-2">
+                                        <RadzenColumn Size="12" SizeMD="4">
+                                            <RadzenFormField Text="Work Fre1 (*)" Variant="Variant.Outlined" Style="width:100%">
+                                                <RadzenTextBox @bind-Value="_workFre1" Placeholder="VD: 1794406" Style="width:100%" />
+                                            </RadzenFormField>
+                                        </RadzenColumn>
+                                        <RadzenColumn Size="12" SizeMD="4">
+                                            <RadzenFormField Text="Work Fre2 (để trống = dùng Fre1)" Variant="Variant.Outlined" Style="width:100%">
+                                                <RadzenTextBox @bind-Value="_workFre2" Placeholder="Để trống nếu cùng work Fre1" Style="width:100%" />
+                                            </RadzenFormField>
+                                        </RadzenColumn>
+                                        <RadzenColumn Size="12" SizeMD="4">
+                                            <RadzenFormField Text="Work Spine (để trống = dùng Fre1)" Variant="Variant.Outlined" Style="width:100%">
+                                                <RadzenTextBox @bind-Value="_workSpine" Placeholder="Để trống nếu cùng work Fre1" Style="width:100%" />
                                             </RadzenFormField>
                                         </RadzenColumn>
                                     </RadzenRow>

@@ -271,14 +271,19 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "DONE — Lưu Formula_F khi nhấn Áp dụng & Lưu DB"
+  current_task:     "DONE — Tách Work Order thành workFre1/workFre2/workSpine riêng biệt"
   related_files:
-    - "GiamSat.UI/Pages/AutoSandingConfig.razor.cs"  # FIX: thêm part.Formula_F = _formular vào OnApplyAbcdToPart
+    - "GiamSat.Models/Services/ISFT14_CalcData.cs"          # BREAK: thêm workFre1/workFre2/workSpine thay work
+    - "GiamSat.API/Services/SFT14_CalcData.cs"              # FEAT: query Fre1/Fre2/Spine mỗi nguồn dùng work riêng; fallback về workFre1 nếu để trống
+    - "GiamSat.API/Controllers/FT14Controller.cs"           # BREAK: params workFre1, workFre2="", workSpine=""
+    - "GiamSat.APIClient/ApiClient/FT14CalcDataClient.cs"   # BREAK: cập nhật interface + HTTP client
+    - "GiamSat.UI/Pages/AutoSandingConfig.razor"            # FEAT: 3 TextBox Work Fre1/Fre2/Spine (Fre2/Spine có thể để trống)
+    - "GiamSat.UI/Pages/AutoSandingConfig.razor.cs"         # FIX: _work → _workFre1/_workFre2/_workSpine
   blocked_by:       ""
   next_step:
-    - Test luồng đầy đủ: chọn Part → chọn Formular → Load Data → Tính ABCD → Áp dụng & Lưu DB
-    - Kiểm tra Tab 1 cột Formula-F cập nhật đúng sau khi lưu
-  last_session:     "2026-05-31"
+    - Test: nhập WorkFre1 (bắt buộc), để trống WorkFre2 + WorkSpine → service fallback về WorkFre1
+    - Hoặc nhập từng work khác nhau cho từng nguồn data
+  last_session:     "2026-06-01"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
     - "Production appsettings có khác với appsettings.json không? Đang deploy ở đâu?"
@@ -316,6 +321,19 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-06-01] — Session: Tách Work Order thành workFre1/workFre2/workSpine
+
+```
+[BREAK] ISFT14_CalcData.cs          — Đổi param work → workFre1, workFre2, workSpine
+[FEAT]  SFT14_CalcData.cs           — Fre1 dùng workFre1; Fre2 dùng workFre2 (fallback workFre1); Spine dùng workSpine (fallback workFre1)
+[BREAK] FT14Controller.cs           — Params: workFre1 (required), workFre2="" , workSpine="" (optional)
+[BREAK] FT14CalcDataClient.cs       — Interface + HTTP query string: workFre1/workFre2/workSpine
+[FEAT]  AutoSandingConfig.razor     — 3 TextBox thay cho 1 Work Order; Fre2/Spine có placeholder "để trống = dùng Fre1"
+[FIX]   AutoSandingConfig.razor.cs  — _work → _workFre1, _workFre2, _workSpine
+```
 
 ---
 

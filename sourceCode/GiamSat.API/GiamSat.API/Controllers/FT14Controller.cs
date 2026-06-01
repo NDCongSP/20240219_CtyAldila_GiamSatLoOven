@@ -27,14 +27,16 @@ namespace GiamSat.API.Controllers
         [HttpGet("calcdata")]
         public async Task<Result<List<AutoSandingTestRow>>> GetCalcData(
             [FromQuery] string part,
-            [FromQuery] string work,
+            [FromQuery] string workFre1,
+            [FromQuery] string workFre2  = "",
+            [FromQuery] string workSpine = "",
             [FromQuery] double offsetFre1 = 0,
             [FromQuery] double offsetFre2 = 0,
             [FromQuery] double motorFrom  = 100,
             [FromQuery] double motorTo    = 500,
             [FromQuery] double motorStep  = 100)
         {
-            return await _calcDataService.GetCalcDataAsync(part, work, offsetFre1, offsetFre2, motorFrom, motorTo, motorStep);
+            return await _calcDataService.GetCalcDataAsync(part, workFre1, workFre2, workSpine, offsetFre1, offsetFre2, motorFrom, motorTo, motorStep);
         }
     }
 }

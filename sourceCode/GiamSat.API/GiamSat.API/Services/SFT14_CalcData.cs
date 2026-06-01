@@ -41,7 +41,9 @@ namespace GiamSat.API
 
         public async Task<Result<List<AutoSandingTestRow>>> GetCalcDataAsync(
             string part,
-            string work,
+            string workFre1,
+            string workFre2,
+            string workSpine,
             double offsetFre1,
             double offsetFre2,
             double motorFrom,
@@ -50,13 +52,15 @@ namespace GiamSat.API
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(part) || string.IsNullOrWhiteSpace(work))
-                    return await Result<List<AutoSandingTestRow>>.FailAsync("Part và Work Order không được để trống.");
+                if (string.IsNullOrWhiteSpace(part))
+                    return await Result<List<AutoSandingTestRow>>.FailAsync("Part không được để trống.");
+                if (string.IsNullOrWhiteSpace(workFre1))
+                    return await Result<List<AutoSandingTestRow>>.FailAsync("Work Order Fre1 không được để trống.");
 
                 // ── Fre1 từ external DB ──────────────────────────────────────
                 var fre1Records = await _extContext.FreMeasurements
                     .AsNoTracking()
-                    .Where(r => r.Part == part && r.WorkOrder == work
+                    .Where(r => r.Part == part && r.WorkOrder == workFre1
                              && r.Station == StationFre1
                              && r.Reading != null && r.ShaftNum != null)
                     .OrderBy(r => r.ShaftNum)
@@ -64,12 +68,13 @@ namespace GiamSat.API
 
                 if (fre1Records.Count == 0)
                     return await Result<List<AutoSandingTestRow>>.FailAsync(
-                        $"Không tìm thấy dữ liệu Fre1 (Station='{StationFre1}') cho Part='{part}', Work='{work}'.");
+                        $"Không tìm thấy dữ liệu Fre1 (Station='{StationFre1}') cho Part='{part}', WorkFre1='{workFre1}'.");
 
-                // ── Fre2 từ external DB ──────────────────────────────────────
+                // ── Fre2 từ external DB (workFre2 có thể khác workFre1) ──────
+                var effectiveWorkFre2 = string.IsNullOrWhiteSpace(workFre2) ? workFre1 : workFre2;
                 var fre2Records = await _extContext.FreMeasurements
                     .AsNoTracking()
-                    .Where(r => r.Part == part && r.WorkOrder == work
+                    .Where(r => r.Part == part && r.WorkOrder == effectiveWorkFre2
                              && r.Station == StationFre2
                              && r.Reading != null && r.ShaftNum != null)
                     .OrderBy(r => r.ShaftNum)
@@ -81,9 +86,10 @@ namespace GiamSat.API
                     .ToDictionary(r => r.ShaftNum!.Value, r => ParseReading(r.Reading));
 
                 // ── StiffnessY từ FT16 main DB (SandingMode=Test) ────────────
+                var effectiveWorkSpine = string.IsNullOrWhiteSpace(workSpine) ? workFre1 : workSpine;
                 var ft16Records = await _mainContext.FT16_SandingLogDatas
                     .AsNoTracking()
-                    .Where(r => r.Part == part && r.Work == work
+                    .Where(r => r.Part == part && r.Work == effectiveWorkSpine
                              && r.SandingMode == EnumSandingMode.Test
                              && r.ShaftNum != null)
                     .ToListAsync();

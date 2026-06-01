@@ -28,7 +28,9 @@ namespace GiamSat.UI.Pages
         private LinearRegressionResult _resultCD = new();
 
         // Tab 2 – form load data từ external DB
-        private string  _work         = string.Empty;
+        private string  _workFre1     = string.Empty;
+        private string  _workFre2     = string.Empty;
+        private string  _workSpine    = string.Empty;
         private double  _offsetFre1   = 0;
         private double  _offsetFre2   = 0;
         private double  _offsetSpine  = 0;
@@ -235,9 +237,9 @@ namespace GiamSat.UI.Pages
                 _notificationService.Notify(NotificationSeverity.Warning, "Chưa chọn Part", "Vui lòng chọn Part trước khi load data.");
                 return;
             }
-            if (string.IsNullOrWhiteSpace(_work))
+            if (string.IsNullOrWhiteSpace(_workFre1))
             {
-                _notificationService.Notify(NotificationSeverity.Warning, "Thiếu Work Order", "Vui lòng nhập Work Order.");
+                _notificationService.Notify(NotificationSeverity.Warning, "Thiếu Work Fre1", "Vui lòng nhập Work Order cho Fre1.");
                 return;
             }
 
@@ -248,7 +250,7 @@ namespace GiamSat.UI.Pages
                 StateHasChanged();
 
                 var result = await _ft14CalcDataClient.GetCalcDataAsync(
-                    partName, _work,
+                    partName, _workFre1, _workFre2, _workSpine,
                     _offsetFre1, _offsetFre2,
                     _motorFrom, _motorTo, _motorStep);
 
@@ -270,7 +272,7 @@ namespace GiamSat.UI.Pages
                 }).ToList();
 
                 _notificationService.Notify(NotificationSeverity.Success, "Load thành công",
-                    $"Đã load {_testRows.Count} dòng từ DB (Part={partName}, Work={_work}). Kiểm tra StiffnessY rồi nhấn Tính A,B,C,D.");
+                    $"Đã load {_testRows.Count} dòng từ DB (Part={partName}, WorkFre1={_workFre1}). Kiểm tra StiffnessY rồi nhấn Tính A,B,C,D.");
             }
             catch (Exception ex)
             {
