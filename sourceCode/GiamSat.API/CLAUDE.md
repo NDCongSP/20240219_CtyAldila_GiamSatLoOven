@@ -271,12 +271,13 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "DONE — Fix logic phân bổ row: totalRows = rpmSteps×2, điền data theo ShaftNum tăng dần"
+  current_task:     "DONE — Lưu Formula_F khi nhấn Áp dụng & Lưu DB"
   related_files:
-    - "GiamSat.API/Services/SFT14_CalcData.cs"  # FIX: totalRows=rpmValues.Count*2; mỗi RPM 2 row (rowIdx/2); dừng khi đủ totalRows
+    - "GiamSat.UI/Pages/AutoSandingConfig.razor.cs"  # FIX: thêm part.Formula_F = _formular vào OnApplyAbcdToPart
   blocked_by:       ""
   next_step:
-    - Seeding data trong bảng FT16 theo part 
+    - Test luồng đầy đủ: chọn Part → chọn Formular → Load Data → Tính ABCD → Áp dụng & Lưu DB
+    - Kiểm tra Tab 1 cột Formula-F cập nhật đúng sau khi lưu
   last_session:     "2026-05-31"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
@@ -315,6 +316,26 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-05-31] — Session: Lưu Formula_F khi Áp dụng & Lưu DB
+
+```
+[FIX]  AutoSandingConfig.razor.cs  — OnApplyAbcdToPart(): thêm part.Formula_F = _formular
+                                      Notification message cập nhật thêm Formula={_formular}
+```
+
+---
+
+### [2026-05-31] — Session: Tạo SQL seed script FT16 test data
+
+```
+[FEAT] sql/seed_FT16_test_data.sql  — INSERT 10 records vào FT16: Part=AX181-IS-1, Work=1794406
+                                       SandingMode=2 (Test), ShaftNum 1-10, SpineB = stiffness mẫu
+                                       Dùng để test StiffnessY từ endpoint /api/FT14/calcdata
+                                       Lưu ý: ShaftNum phải khớp với ShaftNum trong DatalogFrequency
+```
 
 ---
 

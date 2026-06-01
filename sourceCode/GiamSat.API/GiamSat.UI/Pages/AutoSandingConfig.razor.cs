@@ -321,13 +321,14 @@ namespace GiamSat.UI.Pages
                 part.B           = Math.Round(_resultAB.Intercept,  3);
                 part.C           = Math.Round(_resultCD.Slope,     3);
                 part.D           = Math.Round(_resultCD.Intercept,  3);
+                part.Formula_F   = _formular;
                 part.UpdateddAt  = DateTime.Now;
 
                 var result = await _fT14Client.UpdateAsync(part);
                 if (result.Succeeded)
                 {
                     _notificationService.Notify(NotificationSeverity.Success, "Đã lưu DB",
-                        $"A={part.A}, B={part.B}, C={part.C}, D={part.D} → part \"{part.PartName}\".");
+                        $"Formula={_formular} | A={part.A}, B={part.B}, C={part.C}, D={part.D} → part \"{part.PartName}\".");
                     await LoadData();
                 }
                 else
