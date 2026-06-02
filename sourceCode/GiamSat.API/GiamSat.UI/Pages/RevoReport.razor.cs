@@ -379,7 +379,9 @@ namespace GiamSat.UI.Pages
                 EndedAt = v.EndedAt,
                 TotalTime = TimeSpan.FromSeconds(Math.Max(0, v.TotalTimeSeconds)),
                 HighlightIncomplete = v.HighlightIncomplete
-            }).ToList();
+            })
+            .OrderByDescending(x => x.Hour)
+            .ToList();
         }
 
         private async Task OnExportExcel()
@@ -794,7 +796,7 @@ namespace GiamSat.UI.Pages
                         MachineStats = machineStats
                     };
                 })
-                .OrderBy(x => x.StartedAt ?? DateTime.MinValue)
+                .OrderByDescending(x => x.Hour)
                 .ToList();
         }
 

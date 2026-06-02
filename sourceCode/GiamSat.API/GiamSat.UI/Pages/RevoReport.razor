@@ -223,7 +223,11 @@
                                         PageSizeText="Bản ghi trên trang"
                                         PageSizeOptions="@(new int[] { 10, 20, 50, 100 })">
                             <Columns>
-                                <RadzenDataGridColumn TItem="RevoHourRow" Property="HourRange" Title="Giờ" Width="210px" />
+                                <RadzenDataGridColumn TItem="RevoHourRow" Property="Hour" Title="Giờ" Width="210px" SortOrder="SortOrder.Descending">
+                                    <Template Context="data">
+                                        @data.HourRange
+                                    </Template>
+                                </RadzenDataGridColumn>
                                 @foreach (var revo in _revoList)
                                 {
                                     <RadzenDataGridColumn TItem="RevoHourRow" Title="@revo.Name" TextAlign="TextAlign.Center">
