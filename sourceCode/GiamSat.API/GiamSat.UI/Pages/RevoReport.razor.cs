@@ -248,7 +248,7 @@ namespace GiamSat.UI.Pages
                 {
                     RevoReportMode.ByStep => await TryLoadStepViewAsync(http, filterModel),
                     RevoReportMode.ByShaft => await TryLoadShaftViewAsync(http, filterModel),
-                    RevoReportMode.ByHour => await TryLoadHourViewAsync(http, filterModel),
+                    RevoReportMode.ByHour => false, // Always compute on client for ByHour mode
                     _ => false
                 };
 
@@ -401,7 +401,8 @@ namespace GiamSat.UI.Pages
                     _reportGridsFromDatabase,
                     _stepRows,
                     _shaftRows,
-                    _hourRows);
+                    _hourRows,
+                    _revoList);
                 var filename = $"BaoCao_REVO_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
                 
                 await _js.InvokeVoidAsync("BlazorDownloadFile", filename, excelBytes);
@@ -763,6 +764,22 @@ namespace GiamSat.UI.Pages
                         && fh == g.Key);
                     var incompleteInHour = distinctInHour.Count(sn => !finishedShafts.Contains(sn));
 
+                    var machineStats = new Dictionary<int, RevoHourStats>();
+                    foreach (var revo in _revoList)
+                    {
+                        var mRows = g.Where(x => x.Row.RevoId == revo.Id).ToList();
+                        var mDistinctShafts = mRows.Where(x => x.Row.ShaftNum.HasValue).Select(x => x.Row.ShaftNum!.Value).Distinct().ToList();
+                        var mFinishedInHour = mDistinctShafts.Count(sn =>
+                            finishedShafts.Contains(sn)
+                            && firstHourByShaft.TryGetValue(sn, out var fh)
+                            && fh == g.Key);
+                        machineStats[revo.Id] = new RevoHourStats
+                        {
+                            TotalShafts = mDistinctShafts.Count,
+                            FinishedShafts = mFinishedInHour
+                        };
+                    }
+
                     return new RevoHourRow
                     {
                         Hour = g.Key,
@@ -773,7 +790,8 @@ namespace GiamSat.UI.Pages
                         StartedAt = start,
                         EndedAt = end,
                         TotalTime = totalTime,
-                        HighlightIncomplete = _shaftScope == RevoShaftScopeKind.Total && incompleteInHour > 0
+                        HighlightIncomplete = _shaftScope == RevoShaftScopeKind.Total && incompleteInHour > 0,
+                        MachineStats = machineStats
                     };
                 })
                 .OrderBy(x => x.StartedAt ?? DateTime.MinValue)
@@ -856,6 +874,12 @@ namespace GiamSat.UI.Pages
             public bool HighlightIncomplete { get; set; }
         }
 
+        public class RevoHourStats
+        {
+            public int TotalShafts { get; set; }
+            public int FinishedShafts { get; set; }
+        }
+
         public class RevoHourRow
         {
             public DateTime Hour { get; set; }
@@ -868,6 +892,16 @@ namespace GiamSat.UI.Pages
             public TimeSpan TotalTime { get; set; }
             public string TotalHoursText => $"{(int)TotalTime.TotalHours:D2}:{TotalTime.Minutes:D2}:{TotalTime.Seconds:D2}";
             public bool HighlightIncomplete { get; set; }
+            public Dictionary<int, RevoHourStats> MachineStats { get; set; } = new();
+
+            public RevoHourStats GetMachineStats(int revoId)
+            {
+                if (MachineStats != null && MachineStats.TryGetValue(revoId, out var stats))
+                {
+                    return stats;
+                }
+                return new RevoHourStats { TotalShafts = 0, FinishedShafts = 0 };
+            }
         }
 
         public class RevoDropdownModel
