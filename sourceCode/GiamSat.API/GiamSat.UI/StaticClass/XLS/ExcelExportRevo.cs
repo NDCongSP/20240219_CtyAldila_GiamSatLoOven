@@ -127,8 +127,8 @@ namespace GiamSat.UI
                 ws.Cell(outRow, 6).Value = r.Rev ?? "N/A";
                 ws.Cell(outRow, 7).Value = r.Mandrel ?? "N/A";
                 ws.Cell(outRow, 8).Value = r.StepDisplay;
-                ws.Cell(outRow, 9).Value = r.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
-                ws.Cell(outRow, 10).Value = r.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
+                ws.Cell(outRow, 9).Value = r.StartedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
+                ws.Cell(outRow, 10).Value = r.EndedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
                 ws.Cell(outRow, 11).Value = r.DurationText;
                 if (r.HighlightIncomplete)
                     ws.Range(outRow, 1, outRow, colCount).Style.Fill.SetBackgroundColor(WarningFill);
@@ -159,8 +159,8 @@ namespace GiamSat.UI
                 ws.Cell(outRow, 4).Value = r.Work ?? "N/A";
                 ws.Cell(outRow, 5).Value = r.Mandrel ?? "N/A";
                 ws.Cell(outRow, 6).Value = r.StepCount;
-                ws.Cell(outRow, 7).Value = r.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
-                ws.Cell(outRow, 8).Value = r.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
+                ws.Cell(outRow, 7).Value = r.StartedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
+                ws.Cell(outRow, 8).Value = r.EndedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
                 ws.Cell(outRow, 9).Value = r.TotalTimeText;
                 if (r.HighlightIncomplete)
                     ws.Range(outRow, 1, outRow, colCount).Style.Fill.SetBackgroundColor(WarningFill);
@@ -307,8 +307,8 @@ namespace GiamSat.UI
                     ws.Cell(outRow, 6).Value = item.Rev ?? "N/A";
                     ws.Cell(outRow, 7).Value = item.Mandrel ?? "N/A";
                     ws.Cell(outRow, 8).Value = $"{stepName} ({stepIdTxt})";
-                    ws.Cell(outRow, 9).Value = isAutoRolling ? "N/A" : item.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
-                    ws.Cell(outRow, 10).Value = isAutoRolling ? "N/A" : item.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
+                    ws.Cell(outRow, 9).Value = isAutoRolling ? "N/A" : item.StartedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
+                    ws.Cell(outRow, 10).Value = isAutoRolling ? "N/A" : item.EndedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
                     ws.Cell(outRow, 11).Value = durTxt;
 
                     var warn = shaftScope == Pages.RevoReport.RevoShaftScopeKind.Total
@@ -387,8 +387,8 @@ namespace GiamSat.UI
                     ws.Cell(outRow, 4).Value = r.FirstRow.Work ?? "N/A";
                     ws.Cell(outRow, 5).Value = r.FirstRow.Mandrel ?? "N/A";
                     ws.Cell(outRow, 6).Value = r.StepCount;
-                    ws.Cell(outRow, 7).Value = r.StartedAt.HasValue ? r.StartedAt.Value.ToString("dd/MM/yyyy HH:mm:ss") : "N/A";
-                    ws.Cell(outRow, 8).Value = r.EndedAt.HasValue ? r.EndedAt.Value.ToString("dd/MM/yyyy HH:mm:ss") : "N/A";
+                    ws.Cell(outRow, 7).Value = r.StartedAt.HasValue ? r.StartedAt.Value.ToString("yyyy-MM-dd HH:mm:ss") : "N/A";
+                    ws.Cell(outRow, 8).Value = r.EndedAt.HasValue ? r.EndedAt.Value.ToString("yyyy-MM-dd HH:mm:ss") : "N/A";
                     ws.Cell(outRow, 9).Value = FormatDuration(r.TotalTime);
                     var warn = shaftScope == Pages.RevoReport.RevoShaftScopeKind.Total && !finishedShafts.Contains(r.ShaftGuid);
                     if (warn)
@@ -508,7 +508,7 @@ namespace GiamSat.UI
                     return new Pages.RevoReport.RevoHourRow
                     {
                         Hour = g.Key,
-                        HourRange = $"{g.Key:dd/MM/yyyy HH}:00-{g.Key.AddHours(1):HH}:00",
+                        HourRange = $"{g.Key:yyyy-MM-dd HH}:00-{g.Key.AddHours(1):HH}:00",
                         ShaftCount = shaftCount,
                         ShaftCountFinishedInHour = finishedInHour,
                         IncompleteShaftCountInHour = incompleteInHour,

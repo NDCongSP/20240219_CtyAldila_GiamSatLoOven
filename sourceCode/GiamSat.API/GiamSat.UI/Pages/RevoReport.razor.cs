@@ -395,7 +395,7 @@ namespace GiamSat.UI.Pages
                 var excel = new ExcelExportRevo();
                 var excelBytes = excel.GenerateExcelFileAsync(
                     _rawData,
-                    $"{_fromDate:dd/MM/yyyy} đến {_toDate:dd/MM/yyyy}",
+                    $"{_fromDate:yyyy-MM-dd HH:mm:ss} đến {_toDate:yyyy-MM-dd HH:mm:ss}",
                     _reportMode,
                     _shaftFinishedSwitch ? RevoShaftScopeKind.Finished : RevoShaftScopeKind.Total,
                     _reportGridsFromDatabase,
@@ -783,7 +783,7 @@ namespace GiamSat.UI.Pages
                     return new RevoHourRow
                     {
                         Hour = g.Key,
-                        HourRange = $"{g.Key:dd/MM/yyyy HH}:00-{g.Key.AddHours(1):HH}:00",
+                        HourRange = $"{g.Key:yyyy-MM-dd HH}:00-{g.Key.AddHours(1):HH}:00",
                         ShaftCount = shaftCount,
                         ShaftCountFinishedInHour = finishedInHour,
                         IncompleteShaftCountInHour = incompleteInHour,

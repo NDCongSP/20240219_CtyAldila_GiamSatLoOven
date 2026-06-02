@@ -538,6 +538,15 @@ table.rz-grid-table tbody tr.revo-shaft-warn-row > td .rz-cell-data,
     background-color: #FFF3E0 !important;
 }
 
+/* Hourly Report Grid custom styling to match Excel mẫu (Yellow headers) */
+.hourly-report-grid th,
+.hourly-report-grid th .rz-column-title,
+.hourly-report-grid th .rz-cell-filter-label {
+    background-color: #FFF2CC !important;
+    color: #212121 !important;
+    font-weight: 700 !important;
+}
+
 /* Print styles */
 @media print {
 
