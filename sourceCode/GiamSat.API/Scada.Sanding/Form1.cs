@@ -19,10 +19,10 @@ namespace Scada.Sanding
 {
     public partial class Form1 : Form
     {
-        private EasyDriverConnector _easyDriverConnector;
         private ConnectionStatus _easyStatus = ConnectionStatus.Disconnected;
         private CancellationTokenSource _timerCts;
         private Task _timerTask;
+        private System.Windows.Forms.Timer _tagInitTimer;
 
         private string _lastPartName = string.Empty;
         private string _lastWorkOrder = string.Empty;
@@ -34,8 +34,31 @@ namespace Scada.Sanding
             InitializeComponent();
         }
 
-        private async void Form1_Load(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
+            try
+            {
+                easyDriverConnector1.ConnectionStatusChaged += EasyDriverConnector_ConnectionStatusChanged;
+                easyDriverConnector1.Started += EasyDriverConnector_Started;
+                
+                LogEvent("Đang khởi chạy EasyDriverConnector...");
+                easyDriverConnector1.Start();
+
+                if (easyDriverConnector1.IsStarted)
+                {
+                    EasyDriverConnector_Started(null, null);
+                }
+
+                _tagInitTimer = new System.Windows.Forms.Timer();
+                _tagInitTimer.Interval = 2000;
+                _tagInitTimer.Tick += TagInitTimer_Tick;
+                _tagInitTimer.Start();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Lỗi Form_Load EasyDriver");
+                LogEvent("[LỖI] Không thể khởi động EasyDriver: " + ex.Message);
+            }
             try
             {
                 LogEvent("Đang khởi động ứng dụng...");
@@ -46,25 +69,39 @@ namespace Scada.Sanding
                     var constring = dbContext.Database.Connection.ConnectionString;
                     GlobalVariable.ConnectionString = constring;
                     GlobalVariable.IpDbServer = constring.Split(';')[0].Split('=')[1];
-                    LogEvent($"Kết nối CSDL: {GlobalVariable.IpDbServer}");
+                    
+                    var maskedConn = System.Text.RegularExpressions.Regex.Replace(constring, "Password=[^;]+", "Password=******");
+                    LogEvent("Chuỗi kết nối DB: " + maskedConn);
                 }
+
+                // Kiểm tra kết nối CSDL bất đồng bộ
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        using (var db = new ApplicationDbContext())
+                        {
+                            var start = DateTime.Now;
+                            await db.Database.Connection.OpenAsync();
+                            db.Database.Connection.Close();
+                            var ms = (DateTime.Now - start).TotalMilliseconds;
+                            LogEvent("Kết nối CSDL thành công (" + ms.ToString("F0") + " ms).");
+                        }
+                    }
+                    catch (Exception dbEx)
+                    {
+                        Log.Error(dbEx, "Lỗi kết nối CSDL khi khởi tạo");
+                        LogEvent("[LỖI CSDL] Không thể kết nối tới DB: " + dbEx.Message);
+                        if (dbEx.InnerException != null)
+                        {
+                            LogEvent("[LỖI CSDL chi tiết] " + dbEx.InnerException.Message);
+                        }
+                    }
+                });
 
                 // Cập nhật UI ban đầu
                 lblPlcStatusVal.Text = "Disconnected";
                 lblPlcStatusVal.ForeColor = Color.Red;
-
-                // Khởi tạo EasyDriverConnector
-                _easyDriverConnector = new EasyDriverConnector();
-                _easyDriverConnector.ConnectionStatusChaged += EasyDriverConnector_ConnectionStatusChanged;
-                _easyDriverConnector.Started += EasyDriverConnector_Started;
-
-                _easyDriverConnector.BeginInit();
-                _easyDriverConnector.EndInit();
-
-                if (_easyDriverConnector.IsStarted)
-                {
-                    EasyDriverConnector_Started(null, null);
-                }
 
                 // Bắt đầu timer lưu realtime 5s
                 _timerCts = new CancellationTokenSource();
@@ -75,7 +112,7 @@ namespace Scada.Sanding
             catch (Exception ex)
             {
                 Log.Error(ex, "Lỗi khi Load Form1.");
-                LogEvent($"Lỗi khởi động: {ex.Message}");
+                LogEvent("Lỗi khởi động: " + ex.Message);
             }
         }
 
@@ -84,11 +121,11 @@ namespace Scada.Sanding
             try
             {
                 _timerCts?.Cancel();
-                if (_easyDriverConnector != null)
+                if (easyDriverConnector1 != null)
                 {
-                    _easyDriverConnector.ConnectionStatusChaged -= EasyDriverConnector_ConnectionStatusChanged;
-                    _easyDriverConnector.Started -= EasyDriverConnector_Started;
-                    _easyDriverConnector.Stop();
+                    easyDriverConnector1.ConnectionStatusChaged -= EasyDriverConnector_ConnectionStatusChanged;
+                    easyDriverConnector1.Started -= EasyDriverConnector_Started;
+                    easyDriverConnector1.Stop();
                 }
                 LogEvent("Đã dừng kết nối PLC.");
             }
@@ -98,28 +135,78 @@ namespace Scada.Sanding
             }
         }
 
+        private bool _tagsRegistered = false;
+
         private void EasyDriverConnector_ConnectionStatusChanged(object sender, ConnectionStatusChangedEventArgs e)
         {
             _easyStatus = e.NewStatus;
+            bool easyConnected = e.NewStatus == ConnectionStatus.Connected;
+            GlobalVariable.SandingRealtime.EasyDriverConnected = easyConnected;
+            if (!easyConnected)
+            {
+                GlobalVariable.SandingRealtime.PlcConnected = false;
+                GlobalVariable.InvokeIfRequired(this, () =>
+                {
+                    lblPlcStatusVal.Text = "Disconnected";
+                    lblPlcStatusVal.ForeColor = Color.Red;
+                });
+            }
             UpdateFooterStatus();
+            _ = Task.Run(async () => await LogRealtimeDbAsync());
         }
 
-        private async void EasyDriverConnector_Started(object sender, EventArgs e)
+        private int _timerTicks = 0;
+        private void TagInitTimer_Tick(object sender, EventArgs e)
         {
-            await Task.Delay(1000);
-            LogEvent("EasyDriver Connector đã Started. Đang kết nối các Tags...");
+            _timerTicks++;
+            if (easyDriverConnector1 != null)
+            {
+                try
+                {
+                    var allTags = easyDriverConnector1.GetAllTags();
+                    int tagCount = allTags != null ? allTags.Count() : 0;
+                    
+                    var tag = easyDriverConnector1.GetTag(string.Format("{0}/PartName_1", _basePath));
+                    if (tag != null && !_tagsRegistered)
+                    {
+                        _tagInitTimer.Stop();
+                        try
+                        {
+                            RegisterTagEvents();
+                            _tagsRegistered = true;
+                            LogEvent("Đăng ký sự kiện Tags thành công.");
+                            ProcessPartWorkChange();
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Lỗi khi đăng ký Tags.");
+                            LogEvent("Lỗi đăng ký Tags: " + ex.Message);
+                        }
+                    }
+                    else if (!_tagsRegistered)
+                    {
+                        if (tagCount > 0)
+                        {
+                            var sample = allTags.FirstOrDefault(t => t.Path.Contains("PartName_1")) ?? allTags.FirstOrDefault();
+                            LogEvent("Không tìm thấy tag '" + _basePath + "/PartName_1'. Tag gần nhất: " + (sample != null ? sample.Path : "null"));
+                            _tagInitTimer.Stop();
+                        }
+                        else if (_timerTicks >= 10 && _timerTicks % 5 == 0)
+                        {
+                            LogEvent("Vẫn chưa nhận được danh sách Tags nào từ EasyDriver Server!");
+                        }
+                    }
+                }
+                catch (Exception tagEx)
+                {
+                    Log.Error(tagEx, "Exception khi quét tag");
+                }
+            }
+        }
 
-            try
-            {
-                // Đăng ký sự kiện ValueChanged cho tất cả các tags
-                RegisterTagEvents();
-                LogEvent("Đăng ký sự kiện Tags thành công.");
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Lỗi khi đăng ký Tags ValueChanged.");
-                LogEvent($"Lỗi đăng ký Tags: {ex.Message}");
-            }
+        private void EasyDriverConnector_Started(object sender, EventArgs e)
+        {
+            LogEvent("EasyDriver Connector đã Started.");
         }
 
         private void RegisterTagEvents()
@@ -146,7 +233,7 @@ namespace Scada.Sanding
 
             foreach (var name in tags)
             {
-                var tag = _easyDriverConnector.GetTag($"{_basePath}/{name}");
+                var tag = easyDriverConnector1.GetTag($"{_basePath}/{name}");
                 if (tag != null)
                 {
                     tag.ValueChanged += Tag_ValueChanged;
@@ -156,6 +243,20 @@ namespace Scada.Sanding
                     Tag_ValueChanged(tag, new TagValueChangedEventArgs(tag, "", tag.Value));
                 }
             }
+
+            // Explicitly check and initialize PLC connection status at startup
+            var partName1Tag = easyDriverConnector1.GetTag($"{_basePath}/PartName_1");
+            if (partName1Tag != null)
+            {
+                bool plcConnected = partName1Tag.Quality == Quality.Good;
+                GlobalVariable.SandingRealtime.PlcConnected = plcConnected;
+                GlobalVariable.InvokeIfRequired(this, () =>
+                {
+                    lblPlcStatusVal.Text = plcConnected ? "Connected" : "Disconnected";
+                    lblPlcStatusVal.ForeColor = plcConnected ? Color.ForestGreen : Color.Red;
+                });
+                UpdateFooterStatus();
+            }
         }
 
         private void Tag_QualityChanged(object sender, TagQualityChangedEventArgs e)
@@ -164,13 +265,15 @@ namespace Scada.Sanding
             {
                 bool plcConnected = e.NewQuality == Quality.Good;
                 GlobalVariable.SandingRealtime.PlcConnected = plcConnected;
+                GlobalVariable.SandingRealtime.EasyDriverConnected = (easyDriverConnector1 != null && easyDriverConnector1.ConnectionStatus == ConnectionStatus.Connected);
 
                 GlobalVariable.InvokeIfRequired(this, () =>
                 {
                     lblPlcStatusVal.Text = plcConnected ? "Connected" : "Disconnected";
-                    lblPlcStatusVal.ForeColor = plcConnected ? Color.Lime : Color.Red;
+                    lblPlcStatusVal.ForeColor = plcConnected ? Color.ForestGreen : Color.Red;
                 });
                 UpdateFooterStatus();
+                _ = Task.Run(async () => await LogRealtimeDbAsync());
             }
         }
 
@@ -189,6 +292,11 @@ namespace Scada.Sanding
                 {
                     UpdateUIFromTag(name, val);
                 });
+
+                if (name.StartsWith("Set_"))
+                {
+                    return;
+                }
 
                 // Process special triggers
                 if (name.StartsWith("PartName_") || name.StartsWith("Work_"))
@@ -294,7 +402,7 @@ namespace Scada.Sanding
                 case "OK_NG_Sanding":
                     int okNg = ParseInt(val);
                     lblOkNgSandingVal.Text = okNg == 1 ? "OK" : okNg == 2 ? "NG" : "--";
-                    lblOkNgSandingVal.ForeColor = okNg == 1 ? Color.Lime : okNg == 2 ? Color.Red : Color.White;
+                    lblOkNgSandingVal.ForeColor = okNg == 1 ? Color.ForestGreen : okNg == 2 ? Color.Red : Color.Black;
                     break;
                 case "Diam_Reading_1":
                 case "OK_NG_OD_1":
@@ -307,6 +415,48 @@ namespace Scada.Sanding
                 case "Diam_Reading_3":
                 case "OK_NG_OD_3":
                     UpdateDiamUI(3);
+                    break;
+                case "Shaft_Num_Sanding":
+                    lblShaftNumSandingVal.Text = val;
+                    break;
+                case "Shaft_Num_OD":
+                    lblShaftNumOdVal.Text = val;
+                    break;
+                case "Set_Freq_Target":
+                    lblSetFreqTargetVal.Text = val;
+                    break;
+                case "Set_Freq_Offset_Low":
+                    lblSetFreqOffsetLowVal.Text = val;
+                    break;
+                case "Set_Freq_Offset_Hight":
+                    lblSetFreqOffsetHighVal.Text = val;
+                    break;
+                case "Set_Formula_F":
+                    lblSetFormulaFVal.Text = val;
+                    break;
+                case "Set_A":
+                    lblSetAVal.Text = val;
+                    break;
+                case "Set_B":
+                    lblSetBVal.Text = val;
+                    break;
+                case "Set_C":
+                    lblSetCVal.Text = val;
+                    break;
+                case "Set_D":
+                    lblSetDVal.Text = val;
+                    break;
+                case "Set_Shaft_Length":
+                    lblSetShaftLengthVal.Text = val;
+                    break;
+                case "Set_Tip_OD_Length_1":
+                    lblSetTipOdLength1Val.Text = ParseDouble(val).ToString("F3");
+                    break;
+                case "Set_Tip_OD_Length_2":
+                    lblSetTipOdLength2Val.Text = ParseDouble(val).ToString("F3");
+                    break;
+                case "Set_Tip_OD_Length_3":
+                    lblSetTipOdLength3Val.Text = ParseDouble(val).ToString("F3");
                     break;
             }
         }
@@ -325,7 +475,7 @@ namespace Scada.Sanding
                 ll = model.Set_Diam_LL_1;
                 ul = model.Set_Diam_UL_1;
                 lblDiam1.Text = $"OD 1: {reading:F2} mm [LL: {ll} / UL: {ul}]";
-                lblDiam1.ForeColor = okNg == 1 ? Color.Lime : okNg == 2 ? Color.Red : Color.White;
+                lblDiam1.ForeColor = okNg == 1 ? Color.ForestGreen : okNg == 2 ? Color.Red : Color.Black;
             }
             else if (index == 2)
             {
@@ -334,7 +484,7 @@ namespace Scada.Sanding
                 ll = model.Set_Diam_LL_2;
                 ul = model.Set_Diam_UL_2;
                 lblDiam2.Text = $"OD 2: {reading:F2} mm [LL: {ll} / UL: {ul}]";
-                lblDiam2.ForeColor = okNg == 1 ? Color.Lime : okNg == 2 ? Color.Red : Color.White;
+                lblDiam2.ForeColor = okNg == 1 ? Color.ForestGreen : okNg == 2 ? Color.Red : Color.Black;
             }
             else if (index == 3)
             {
@@ -343,7 +493,7 @@ namespace Scada.Sanding
                 ll = model.Set_Diam_LL_3;
                 ul = model.Set_Diam_UL_3;
                 lblDiam3.Text = $"OD 3: {reading:F2} mm [LL: {ll} / UL: {ul}]";
-                lblDiam3.ForeColor = okNg == 1 ? Color.Lime : okNg == 2 ? Color.Red : Color.White;
+                lblDiam3.ForeColor = okNg == 1 ? Color.ForestGreen : okNg == 2 ? Color.Red : Color.Black;
             }
         }
 
@@ -355,10 +505,10 @@ namespace Scada.Sanding
 
             for (int i = 1; i <= 10; i++)
             {
-                var tagPart = _easyDriverConnector.GetTag($"{_basePath}/PartName_{i}");
+                var tagPart = easyDriverConnector1.GetTag($"{_basePath}/PartName_{i}");
                 partRegs[i - 1] = tagPart != null ? ParseInt(tagPart.Value) : 0;
 
-                var tagWork = _easyDriverConnector.GetTag($"{_basePath}/Work_{i}");
+                var tagWork = easyDriverConnector1.GetTag($"{_basePath}/Work_{i}");
                 workRegs[i - 1] = tagWork != null ? ParseInt(tagWork.Value) : 0;
             }
 
@@ -648,9 +798,23 @@ namespace Scada.Sanding
         {
             try
             {
+                var model = GlobalVariable.SandingRealtime;
+                model.EasyDriverConnected = (easyDriverConnector1 != null && easyDriverConnector1.ConnectionStatus == ConnectionStatus.Connected);
+                if (!model.EasyDriverConnected)
+                {
+                    model.PlcConnected = false;
+                }
+                else
+                {
+                    var partName1Tag = easyDriverConnector1.GetTag($"{_basePath}/PartName_1");
+                    model.PlcConnected = partName1Tag != null && partName1Tag.Quality == Quality.Good;
+                }
+
+                UpdateFooterStatus();
+
                 using (var db = new ApplicationDbContext())
                 {
-                    var dataJson = JsonConvert.SerializeObject(GlobalVariable.SandingRealtime);
+                    var dataJson = JsonConvert.SerializeObject(model);
 
                     var record = await db.FT15_SandingRealtimes.FirstOrDefaultAsync();
                     if (record != null)
@@ -682,9 +846,9 @@ namespace Scada.Sanding
 
         private async Task WriteTagAsync(string tagName, string value)
         {
-            if (_easyDriverConnector != null && _easyDriverConnector.IsStarted)
+            if (easyDriverConnector1 != null && easyDriverConnector1.IsStarted)
             {
-                var tag = _easyDriverConnector.GetTag($"{_basePath}/{tagName}");
+                var tag = easyDriverConnector1.GetTag($"{_basePath}/{tagName}");
                 if (tag != null)
                 {
                     await tag.WriteAsync(value, WritePiority.High);
@@ -700,21 +864,17 @@ namespace Scada.Sanding
         {
             GlobalVariable.InvokeIfRequired(this, () =>
             {
-                lblFooterStatus.Text = $"EasyDriver Status: {_easyStatus} | PLC Status: {(GlobalVariable.SandingRealtime.PlcConnected ? "Connected" : "Disconnected")} | DB Server: {GlobalVariable.IpDbServer}";
+                bool plcConnected = GlobalVariable.SandingRealtime.PlcConnected;
+                lblPlcStatusVal.Text = plcConnected ? "Connected" : "Disconnected";
+                lblPlcStatusVal.ForeColor = plcConnected ? Color.ForestGreen : Color.Red;
+                lblFooterStatus.Text = $"EasyDriver Status: {_easyStatus} | PLC Status: {(plcConnected ? "Connected" : "Disconnected")} | DB Server: {GlobalVariable.IpDbServer}";
             });
         }
 
         private void LogEvent(string message)
         {
-            GlobalVariable.InvokeIfRequired(this, () =>
-            {
-                string timestamp = DateTime.Now.ToString("HH:mm:ss");
-                lstEvents.Items.Insert(0, $"[{timestamp}] {message}");
-                if (lstEvents.Items.Count > 100)
-                {
-                    lstEvents.Items.RemoveAt(100);
-                }
-            });
+            Log.Information($"[SCADA] {message}");
+            System.Diagnostics.Debug.WriteLine($"[SCADA] {message}");
         }
 
         private int ParseInt(string val)

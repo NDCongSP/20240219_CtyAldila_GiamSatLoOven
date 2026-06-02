@@ -1,10 +1,15 @@
 using System;
 
-namespace Scada.Sanding.Models
+namespace GiamSat.Models
 {
     public class SandingRealtimeModel
     {
+        public int SandingId { get; set; } = 1;
+        public string SandingName { get; set; } = "Auto Sanding";
+        public string? Path { get; set; } = "Local Station/Channel1/Device1";
+
         public bool PlcConnected { get; set; }
+        public bool EasyDriverConnected { get; set; }
         public DateTime LastUpdated { get; set; }
 
         public string PartName { get; set; } = string.Empty;
