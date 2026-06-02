@@ -88,6 +88,7 @@ Revo
     |   |-IP:192.168.1.220
 
 máy này cần lập trình PLC
+
 đọc part word từ file access, sau đó lấy thồn tin về góc quay và tốc độ quay/2 truyền xuống PLC hoạt động. rồi lấy thông tin phản hồi START/STOP STEP từ PLC để log vào DB thời gian chạy dừng của các bước theo PART + WORK
 -------------------------------------------------------------------------------------------
 Auto rolling: HMI GOT2000, PLC-Q series
@@ -119,3 +120,19 @@ Chay chung EasyDriver với lò Oven
     - VT1, VT2, VT3, VT4, VT5, VT6, VT7, VT14
  Channel2 - IP: 192.168.106.37 - LORA CH 14 - COM26
     - VT8, VT9, VT10, VT11, VT12, VT13, VT15, VT16
+
+-----------------------------------------------------------------------
+-----------------------------------------------------------------------
+AUTO SANDING
+-----------------------------------------------------------------------
+--Frequency min max
+select Freq_LL,Freq_UL, * from part where id = 10933
+
+--TIP OD
+select * from PartZM _pz
+	left join ZMmeasType _zt on _zt.ID = _pz.ZMID
+ where _pz.PartID =10933;
+
+
+--LEnght
+select  * from [PartNewSetting] where PartId = 10933
