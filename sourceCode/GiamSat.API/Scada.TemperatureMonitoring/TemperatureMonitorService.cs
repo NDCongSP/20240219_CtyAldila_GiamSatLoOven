@@ -38,6 +38,9 @@ namespace Scada.TemperatureMonitoring
                     {
                         tagPv.ValueChanged -= TagPv_ValueChanged;
                         tagPv.ValueChanged += TagPv_ValueChanged;
+
+                        tagPv.QualityChanged -= TagPv_QualityChanged;
+                        tagPv.QualityChanged += TagPv_QualityChanged;
                     }
                 }
             }
@@ -67,6 +70,15 @@ namespace Scada.TemperatureMonitoring
             }
         }
 
+        private void TagPv_QualityChanged(object sender, TagQualityChangedEventArgs e)
+        {
+            if (sender is ITag tag)
+            {
+                string pathPrefix = tag.Path.Substring(0, tag.Path.LastIndexOf('/'));
+                OnDeviceUpdated?.Invoke(pathPrefix, tag.Value, e.NewQuality);
+            }
+        }
+
         public async Task StartTasksAsync(CancellationToken token)
         {
             var t1 = Task.Run(() => TaskRealtimeLogAsync(token));
@@ -83,22 +95,34 @@ namespace Scada.TemperatureMonitoring
             {
                 try
                 {
-                    if (_driver.IsStarted && _config?.LocationsConfig != null && _config.LocationsConfig.Count > 0)
+                    if (_config?.LocationsConfig != null && _config.LocationsConfig.Count > 0)
                     {
                         var realtimeModels = new List<TemperatureRealtimeModel>();
+                        bool easyConnected = _driver != null && _driver.IsStarted && _driver.ConnectionStatus == ConnectionStatus.Connected;
+
                         foreach (var config in _config.LocationsConfig)
                         {
-                            string pvValueStr = _driver.GetTag($"{config.Path}/PV")?.Value;
                             double pv = 0;
-                            double.TryParse(pvValueStr, out pv);
+                            bool plcConnected = false;
+
+                            if (easyConnected)
+                            {
+                                var tagPv = _driver.GetTag($"{config.Path}/PV");
+                                if (tagPv != null)
+                                {
+                                    string pvValueStr = tagPv.Value;
+                                    double.TryParse(pvValueStr, out pv);
+                                    plcConnected = tagPv.Quality == Quality.Good;
+                                }
+                            }
 
                             realtimeModels.Add(new TemperatureRealtimeModel
                             {
                                 Id = config.Id ?? 0,
                                 Name = config.Name,
                                 Path = config.Path,
-                                Status = true,
-                                ConnectionStatus = _driver.IsStarted,
+                                Status = plcConnected,
+                                ConnectionStatus = easyConnected,
                                 PV = pv,
                                 Config = config
                             });

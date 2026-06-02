@@ -46,8 +46,21 @@ else
                                 var isAlarm = calibratedPv > highLevel || calibratedPv < lowLevel;
                             }
                             <RadzenText TextStyle="TextStyle.Caption" class="rz-display-flex rz-mt-4 rz-mb-0">Trạng thái</RadzenText>
-                            <RadzenBadge BadgeStyle="@(isAlarm ? BadgeStyle.Danger : BadgeStyle.Success)" 
-                                         Text="@(isAlarm ? "BÁO ĐỘNG" : "Bình thường")" />
+                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.25rem" Wrap="FlexWrap.Wrap">
+                                @if (!_displayInfo.ConnectionStatus)
+                                {
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="MẤT KẾT NỐI SERVER" />
+                                }
+                                else if (!_displayInfo.Status)
+                                {
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="MẤT KẾT NỐI PLC" />
+                                }
+                                else
+                                {
+                                    <RadzenBadge BadgeStyle="@(isAlarm ? BadgeStyle.Danger : BadgeStyle.Success)" 
+                                                 Text="@(isAlarm ? "BÁO ĐỘNG" : "Bình thường")" />
+                                }
+                            </RadzenStack>
                         </RadzenColumn>
                     </RadzenRow>
                 </RadzenFieldset>
