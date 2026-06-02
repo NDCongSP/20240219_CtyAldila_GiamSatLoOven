@@ -1,6 +1,7 @@
 @page "/autosanding/config"
 @using GiamSat.Models
 @using GiamSat.APIClient
+@using FT14_TipOdFreq = GiamSat.APIClient.FT14_TipOdFreq
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize(Policy = AppPermissions.Sanding_Config_View)]
 
@@ -28,110 +29,132 @@
 
                                 <RadzenStack Orientation="Orientation.Horizontal"
                                              AlignItems="AlignItems.Center"
-                                             JustifyContent="JustifyContent.SpaceBetween">
+                                             JustifyContent="JustifyContent.SpaceBetween"
+                                             style="flex-wrap:wrap" Gap="0.4rem">
                                     <RadzenText TextStyle="TextStyle.Subtitle1">Danh sách Part</RadzenText>
-                                    <RadzenButton Icon="add_circle" Text="Thêm Part"
-                                                  ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Small"
-                                                  Click="@OnAddPart" />
+                                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.4rem" AlignItems="AlignItems.Center">
+                                        <RadzenButton Icon="file_download" Text="Export Excel"
+                                                      ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Small"
+                                                      Click="@OnExportExcel" IsBusy="@_isExporting" BusyText="Đang xuất..." />
+                                        <RadzenButton Icon="file_upload" Text="Import Excel"
+                                                      ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small"
+                                                      Click="@OnImportClick" IsBusy="@_isImporting" BusyText="Đang nhập..." />
+                                        <RadzenButton Icon="add_circle" Text="Thêm Part"
+                                                      ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Small"
+                                                      Click="@OnAddPart" />
+                                    </RadzenStack>
                                 </RadzenStack>
+                                @* Hidden file input for import *@
+                                <InputFile id="ft14ImportInput" style="display:none"
+                                           OnChange="@OnImportFileSelected" accept=".xlsx" />
 
-                                @if (_isLoading)
-                                {
-                                    <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
-                                    <RadzenText>Đang tải dữ liệu...</RadzenText>
-                                }
-                                else if (_parts.Count == 0)
-                                {
-                                    <RadzenAlert AlertStyle="AlertStyle.Info" Shade="Shade.Lighter" AllowClose="false">
-                                        Chưa có part nào. Nhấn "Thêm Part" để tạo mới.
-                                    </RadzenAlert>
-                                }
-                                else
-                                {
-                                    @* Bảng Part kiểu giống Excel *@
-                                    <div style="overflow-x:auto">
-                                        <table class="as-config-table">
-                                            <thead>
-                                                <tr>
-                                                    <th rowspan="2">Item Number</th>
-                                                    <th rowspan="2" style="color:#c62828">Length</th>
-                                                    <th rowspan="2">Freq Target</th>
-                                                    <th rowspan="2" style="color:#c62828">Fre -</th>
-                                                    <th rowspan="2" style="color:#c62828">Fre +</th>
-                                                    <th rowspan="2" style="color:#c62828">Formula-F</th>
-                                                    <th rowspan="2" style="color:#1565c0">A</th>
-                                                    <th rowspan="2" style="color:#1565c0">B</th>
-                                                    <th rowspan="2" style="color:#1565c0">C</th>
-                                                    <th rowspan="2" style="color:#1565c0">D</th>
-                                                    <th colspan="3" class="th-tipod">Diam_LL / Diam_UL / Tip OD LENGTH</th>
-                                                    <th rowspan="2">Hành động</th>
-                                                </tr>
-                                                <tr>
-                                                    <th class="th-tipod">Data Điểm 1</th>
-                                                    <th class="th-tipod">Data Điểm 2</th>
-                                                    <th class="th-tipod">Data Điểm 3</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var p in _parts)
-                                                {
-                                                    <tr>
-                                                        <td class="td-item">@p.PartName</td>
-                                                        <td class="td-red">@p.Length?.ToString("F1")</td>
-                                                        <td>@p.FreqTarget?.ToString("F1")</td>
-                                                        <td class="td-red">@p.Set_Freq_Offset_Low?.ToString("F1")</td>
-                                                        <td class="td-red">@p.Set_Freq_Offset_Hight?.ToString("F1")</td>
-                                                        <td class="td-red">@p.Formula_F?.ToString("F0")</td>
-                                                        <td class="td-blue">@p.A?.ToString("F3")</td>
-                                                        <td class="td-blue">@p.B?.ToString("F3")</td>
-                                                        <td class="td-blue">@p.C?.ToString("F3")</td>
-                                                        <td class="td-blue">@p.D?.ToString("F3")</td>
+                                <RadzenDataGrid Data="@_parts" TItem="FT14_TipOdFreq"
+                                                IsLoading="@_isLoading"
+                                                AllowSorting="true"
+                                                AllowFiltering="true"
+                                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                                FilterMode="FilterMode.SimpleWithMenu"
+                                                AllowPaging="true" PageSize="10"
+                                                PageSizeOptions="@(new int[]{5,10,20,50})"
+                                                ShowPagingSummary="true"
+                                                PagingSummaryFormat="Hiển thị trang {0}/{1} (Tổng {2} bản ghi)"
+                                                EmptyText="Chưa có part nào. Nhấn &quot;Thêm Part&quot; để tạo mới."
+                                                Density="Density.Compact"
+                                                class="rz-shadow-2">
+                                    <Columns>
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="PartName" Title="Item Number" Width="130px" Frozen="true" />
 
-                                                        @* 3 Data Điểm TipOD *@
-                                                        <td class="td-tipod">
-                                                            <div class="tipod-cell">
-                                                                <span>@p.Diam_LL_1?.ToString("F2")</span>
-                                                                <span>@p.Diam_UL_1?.ToString("F2")</span>
-                                                                <span class="tipod-label">@(p.TipOdLength_1 ?? "—")</span>
-                                                            </div>
-                                                        </td>
-                                                        <td class="td-tipod">
-                                                            <div class="tipod-cell">
-                                                                <span>@p.Diam_LL_2?.ToString("F2")</span>
-                                                                <span>@p.Diam_UL_2?.ToString("F2")</span>
-                                                                <span class="tipod-label">@(p.TipOdLength_2 ?? "—")</span>
-                                                            </div>
-                                                        </td>
-                                                        <td class="td-tipod">
-                                                            <div class="tipod-cell">
-                                                                <span>@p.Diam_LL_3?.ToString("F2")</span>
-                                                                <span>@p.Diam_UL_3?.ToString("F2")</span>
-                                                                <span class="tipod-label">@(p.TipOdLength_3 ?? "—")</span>
-                                                            </div>
-                                                        </td>
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="Length" Width="80px">
+                                            <HeaderTemplate><span style="color:#c62828">Length</span></HeaderTemplate>
+                                            <Template Context="p">@p.Length?.ToString("F1")</Template>
+                                        </RadzenDataGridColumn>
 
-                                                        <td class="td-action">
-                                                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.3rem" JustifyContent="JustifyContent.Center">
-                                                                <RadzenButton Icon="edit"
-                                                                              ButtonStyle="ButtonStyle.Primary"
-                                                                              Size="ButtonSize.Small"
-                                                                              Variant="Variant.Flat"
-                                                                              Click="@(() => OnEditPart(p))"
-                                                                              title="Chỉnh sửa" />
-                                                                <RadzenButton Icon="delete"
-                                                                              ButtonStyle="ButtonStyle.Danger"
-                                                                              Size="ButtonSize.Small"
-                                                                              Variant="Variant.Flat"
-                                                                              Click="@(() => OnDeletePart(p))"
-                                                                              title="Xóa" />
-                                                            </RadzenStack>
-                                                        </td>
-                                                    </tr>
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                }
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="FreqTarget" Title="Freq Target" Width="95px">
+                                            <Template Context="p">@p.FreqTarget?.ToString("F1")</Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="Set_Freq_Offset_Low" Width="65px">
+                                            <HeaderTemplate><span style="color:#c62828">Fre -</span></HeaderTemplate>
+                                            <Template Context="p">@p.Set_Freq_Offset_Low?.ToString("F1")</Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="Set_Freq_Offset_Hight" Width="65px">
+                                            <HeaderTemplate><span style="color:#c62828">Fre +</span></HeaderTemplate>
+                                            <Template Context="p">@p.Set_Freq_Offset_Hight?.ToString("F1")</Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="Formula_F" Width="85px">
+                                            <HeaderTemplate><span style="color:#c62828">Formula-F</span></HeaderTemplate>
+                                            <Template Context="p">@p.Formula_F?.ToString("F0")</Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="A" Width="65px">
+                                            <HeaderTemplate><span style="color:#1565c0;font-weight:700">A</span></HeaderTemplate>
+                                            <Template Context="p">@p.A?.ToString("F3")</Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="B" Width="65px">
+                                            <HeaderTemplate><span style="color:#1565c0;font-weight:700">B</span></HeaderTemplate>
+                                            <Template Context="p">@p.B?.ToString("F3")</Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="C" Width="65px">
+                                            <HeaderTemplate><span style="color:#1565c0;font-weight:700">C</span></HeaderTemplate>
+                                            <Template Context="p">@p.C?.ToString("F3")</Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="D" Width="65px">
+                                            <HeaderTemplate><span style="color:#1565c0;font-weight:700">D</span></HeaderTemplate>
+                                            <Template Context="p">@p.D?.ToString("F3")</Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Title="Data Điểm 1" Sortable="false" Filterable="false" Width="130px">
+                                            <Template Context="p">
+                                                <div style="line-height:1.4">
+                                                    <div>@p.Diam_LL_1?.ToString("F2") / @p.Diam_UL_1?.ToString("F2")</div>
+                                                    <small style="color:var(--rz-success)">@(p.TipOdLength_1 ?? "—")</small>
+                                                </div>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Title="Data Điểm 2" Sortable="false" Filterable="false" Width="130px">
+                                            <Template Context="p">
+                                                <div style="line-height:1.4">
+                                                    <div>@p.Diam_LL_2?.ToString("F2") / @p.Diam_UL_2?.ToString("F2")</div>
+                                                    <small style="color:var(--rz-success)">@(p.TipOdLength_2 ?? "—")</small>
+                                                </div>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Title="Data Điểm 3" Sortable="false" Filterable="false" Width="130px">
+                                            <Template Context="p">
+                                                <div style="line-height:1.4">
+                                                    <div>@p.Diam_LL_3?.ToString("F2") / @p.Diam_UL_3?.ToString("F2")</div>
+                                                    <small style="color:var(--rz-success)">@(p.TipOdLength_3 ?? "—")</small>
+                                                </div>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Title="Hành động" Sortable="false" Filterable="false" Width="90px" TextAlign="TextAlign.Center">
+                                            <Template Context="p">
+                                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.3rem" JustifyContent="JustifyContent.Center">
+                                                    <RadzenButton Icon="edit"
+                                                                  ButtonStyle="ButtonStyle.Primary"
+                                                                  Size="ButtonSize.Small"
+                                                                  Variant="Variant.Flat"
+                                                                  Click="@(() => OnEditPart(p))"
+                                                                  title="Chỉnh sửa" />
+                                                    <RadzenButton Icon="delete"
+                                                                  ButtonStyle="ButtonStyle.Danger"
+                                                                  Size="ButtonSize.Small"
+                                                                  Variant="Variant.Flat"
+                                                                  Click="@(() => OnDeletePart(p))"
+                                                                  title="Xóa" />
+                                                </RadzenStack>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+                                    </Columns>
+                                </RadzenDataGrid>
                             </RadzenStack>
                         </RadzenTabsItem>
 
@@ -145,29 +168,45 @@
                                 <RadzenCard class="rz-background-color-base-100 rz-p-3" style="border-left:4px solid var(--rz-primary)">
                                     <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-2" style="color:var(--rz-primary)">Tham số load dữ liệu từ DB</RadzenText>
 
-                                    @* Dòng 1: Part + Work + Formular *@
+                                    @* Dòng 1: Part + Formular *@
                                     <RadzenRow Gap="0.75rem" class="rz-mb-2">
-                                        <RadzenColumn Size="12" SizeMD="4">
+                                        <RadzenColumn Size="12" SizeMD="8">
                                             <RadzenFormField Text="Chọn Part" Variant="Variant.Outlined" Style="width:100%">
                                                 <RadzenDropDown @bind-Value="_selectedPartId"
                                                                 Data="@_parts"
                                                                 TextProperty="PartName"
                                                                 ValueProperty="Id"
                                                                 Placeholder="-- Chọn part --"
+                                                                AllowFiltering="true"
+                                                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                                                 Style="width:100%"
                                                                 Change="@OnPartSelected" />
                                             </RadzenFormField>
                                         </RadzenColumn>
                                         <RadzenColumn Size="12" SizeMD="4">
-                                            <RadzenFormField Text="Work Order" Variant="Variant.Outlined" Style="width:100%">
-                                                <RadzenTextBox @bind-Value="_work" Placeholder="VD: 1794406" Style="width:100%" />
+                                            <RadzenFormField Text="Formular (số)" Variant="Variant.Outlined" Style="width:100%">
+                                                <RadzenNumeric @bind-Value="_formular"
+                                                               TValue="int" Min="1" Format="0"
+                                                               Style="width:100%" />
+                                            </RadzenFormField>
+                                        </RadzenColumn>
+                                    </RadzenRow>
+
+                                    @* Dòng 1b: Work Order Fre1 / Fre2 / Spine (mỗi nguồn có work riêng) *@
+                                    <RadzenRow Gap="0.75rem" class="rz-mb-2">
+                                        <RadzenColumn Size="12" SizeMD="4">
+                                            <RadzenFormField Text="Work Fre1 (*)" Variant="Variant.Outlined" Style="width:100%">
+                                                <RadzenTextBox @bind-Value="_workFre1" Placeholder="VD: 1794406" Style="width:100%" />
                                             </RadzenFormField>
                                         </RadzenColumn>
                                         <RadzenColumn Size="12" SizeMD="4">
-                                            <RadzenFormField Text="Formular" Variant="Variant.Outlined" Style="width:100%">
-                                                <RadzenDropDown @bind-Value="_formular"
-                                                                Data="@(new[]{1,2,3})"
-                                                                Style="width:100%" />
+                                            <RadzenFormField Text="Work Fre2 (để trống = dùng Fre1)" Variant="Variant.Outlined" Style="width:100%">
+                                                <RadzenTextBox @bind-Value="_workFre2" Placeholder="Để trống nếu cùng work Fre1" Style="width:100%" />
+                                            </RadzenFormField>
+                                        </RadzenColumn>
+                                        <RadzenColumn Size="12" SizeMD="4">
+                                            <RadzenFormField Text="Work Spine (để trống = dùng Fre1)" Variant="Variant.Outlined" Style="width:100%">
+                                                <RadzenTextBox @bind-Value="_workSpine" Placeholder="Để trống nếu cùng work Fre1" Style="width:100%" />
                                             </RadzenFormField>
                                         </RadzenColumn>
                                     </RadzenRow>
@@ -382,13 +421,12 @@
                                             <thead>
                                                 <tr>
                                                     <th rowspan="2" class="col-idx">#</th>
-                                                    <th colspan="2" class="group-sand1">1st After Sanding</th>
+                                                    <th class="group-sand1">1st After Sanding</th>
                                                     <th rowspan="2" class="group-rpm">Fix Belt<br />Rotation (RPM)</th>
                                                     <th colspan="3" class="group-sand2">Formula calculation – 2nd After Sanding</th>
                                                 </tr>
                                                 <tr>
                                                     <th class="group-sand1">Fre1 (CPM)</th>
-                                                    <th class="group-sand1">Stiffness Z (Kg)</th>
                                                     <th class="group-sand2">Fre2 (CPM)</th>
                                                     <th class="group-sand2">Stiffness Y (Kg)</th>
                                                     <th class="group-sand2">Freq Diff S<br />(Fre1–Fre2)</th>
@@ -400,7 +438,6 @@
                                                     <tr>
                                                         <td class="col-idx">@row.RowIndex</td>
                                                         <td><RadzenNumeric @bind-Value="row.Fre1" Format="F1" Style="width:90px" TValue="double" /></td>
-                                                        <td><RadzenNumeric @bind-Value="row.StiffnessZ" Format="F3" Style="width:90px" TValue="double" /></td>
                                                         <td><RadzenNumeric @bind-Value="row.BeltRotationRpm" Format="F0" Style="width:80px" TValue="double" /></td>
                                                         <td><RadzenNumeric @bind-Value="row.Fre2" Format="F1" Style="width:90px" TValue="double" /></td>
                                                         <td><RadzenNumeric @bind-Value="row.StiffnessY" Format="F3" Style="width:90px" TValue="double" /></td>
