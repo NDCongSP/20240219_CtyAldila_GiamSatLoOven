@@ -271,7 +271,7 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "DONE — Tách Work Order thành workFre1/workFre2/workSpine riêng biệt"
+  current_task:     "DONE — Đổi Formular từ dropdown cố định sang RadzenNumeric tự nhập"
   related_files:
     - "GiamSat.Models/Services/ISFT14_CalcData.cs"          # BREAK: thêm workFre1/workFre2/workSpine thay work
     - "GiamSat.API/Services/SFT14_CalcData.cs"              # FEAT: query Fre1/Fre2/Spine mỗi nguồn dùng work riêng; fallback về workFre1 nếu để trống
@@ -281,8 +281,8 @@ active_context:
     - "GiamSat.UI/Pages/AutoSandingConfig.razor.cs"         # FIX: _work → _workFre1/_workFre2/_workSpine
   blocked_by:       ""
   next_step:
-    - Test: nhập WorkFre1 (bắt buộc), để trống WorkFre2 + WorkSpine → service fallback về WorkFre1
-    - Hoặc nhập từng work khác nhau cho từng nguồn data
+    - Test toàn bộ luồng Tab 2: Part → WorkFre1 → Load Data → Tính ABCD → Áp dụng & Lưu DB
+    - Xem xét tính năng tiếp theo
   last_session:     "2026-06-01"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
@@ -321,6 +321,50 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-06-01] — Session: Đổi Formular từ Dropdown sang RadzenNumeric
+
+```
+[FIX] AutoSandingConfig.razor  — Formular: RadzenDropDown {1,2,3} → RadzenNumeric TValue=int, Min=1
+                                  Người dùng có thể nhập bất kỳ số nguyên ≥ 1 thay vì chỉ 1/2/3
+```
+
+---
+
+### [2026-06-01] — Session: Thêm PageSizeOptions và PagingSummary cho DataGrid
+
+```
+[FEAT] AutoSandingConfig.razor  — Thêm PageSizeOptions={5,10,20,50} → dropdown "items per page"
+                                   Bỏ PagerHorizontalAlign → Radzen tự layout: summary trái / pages giữa / size phải
+                                   PagingSummaryFormat: "Hiển thị trang {0}/{1} (Tổng {2} bản ghi)"
+```
+
+---
+
+### [2026-06-01] — Session: Export + Import Excel cho Tab 1 AutoSanding
+
+```
+[FEAT] AutoSandingConfig.razor     — Thêm nút "Export Excel" (Info) và "Import Excel" (Light) vào header
+                                     Thêm hidden <InputFile id="ft14ImportInput"> trigger via JS eval
+[FEAT] AutoSandingConfig.razor.cs  — OnExportExcel(): ClosedXML tạo .xlsx 19 cột, BlazorDownloadFile download
+                                     OnImportClick(): JS trigger hidden input
+                                     OnImportFileSelected(): đọc file, parse rows, Insert/Update theo PartName
+                                     Thêm using ClosedXML.Excel, Microsoft.JSInterop, System.IO, InputFile
+```
+
+---
+
+### [2026-06-01] — Session: Tab 1 Cấu hình chung → RadzenDataGrid
+
+```
+[REFACTOR] AutoSandingConfig.razor  — Thay custom <table class="as-config-table"> bằng RadzenDataGrid
+                                       AllowSorting/AllowFiltering/AllowPaging=true, PageSize=10
+                                       Thêm @using alias FT14_TipOdFreq = GiamSat.APIClient.FT14_TipOdFreq để resolve ambiguous
+                                       Data Điểm 1/2/3: dùng Template với div stacked (LL/UL / label)
+                                       IsLoading bind vào _isLoading; EmptyText thay RadzenAlert
+```
 
 ---
 

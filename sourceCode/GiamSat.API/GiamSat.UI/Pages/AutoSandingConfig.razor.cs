@@ -1,8 +1,12 @@
+using ClosedXML.Excel;
 using GiamSat.APIClient;
 using GiamSat.Models;
 using GiamSat.UI.Components;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.JSInterop;
 using Radzen;
+using System.IO;
 using FT14_TipOdFreq      = GiamSat.APIClient.FT14_TipOdFreq;
 using AutoSandingTestRow  = GiamSat.Models.AutoSandingTestRow;
 
@@ -15,6 +19,8 @@ namespace GiamSat.UI.Pages
         private bool _isLoading      = true;
         private bool _isSaving       = false;
         private bool _isLoadingCalc  = false;
+        private bool _isExporting    = false;
+        private bool _isImporting    = false;
         private bool _abcdCalculated = false;
         private bool _showGuide      = false;
 
@@ -188,6 +194,177 @@ namespace GiamSat.UI.Pages
                 new DialogOptions { Width = "720px", Resizable = true, Draggable = true });
 
             return result as FT14_TipOdFreq;
+        }
+
+        // ── Export / Import Excel ─────────────────────────────────────────────
+        private async Task OnExportExcel()
+        {
+            try
+            {
+                _isExporting = true;
+                StateHasChanged();
+
+                using var wb = new XLWorkbook();
+                var ws = wb.Worksheets.Add("AutoSanding Config");
+
+                var headers = new[]
+                {
+                    "Item Number","Length","Freq Target","Fre-","Fre+","Formula-F",
+                    "A","B","C","D",
+                    "Diam LL 1","Diam UL 1","Tip OD Length 1",
+                    "Diam LL 2","Diam UL 2","Tip OD Length 2",
+                    "Diam LL 3","Diam UL 3","Tip OD Length 3"
+                };
+                for (int i = 0; i < headers.Length; i++)
+                    ws.Cell(1, i + 1).Value = headers[i];
+
+                var hdrRow = ws.Row(1);
+                hdrRow.Style.Font.Bold = true;
+                hdrRow.Style.Fill.BackgroundColor = XLColor.LightBlue;
+
+                int row = 2;
+                foreach (var p in _parts)
+                {
+                    ws.Cell(row, 1).Value  = p.PartName ?? "";
+                    ws.Cell(row, 2).Value  = p.Length ?? 0;
+                    ws.Cell(row, 3).Value  = p.FreqTarget ?? 0;
+                    ws.Cell(row, 4).Value  = p.Set_Freq_Offset_Low ?? 0;
+                    ws.Cell(row, 5).Value  = p.Set_Freq_Offset_Hight ?? 0;
+                    ws.Cell(row, 6).Value  = p.Formula_F ?? 0;
+                    ws.Cell(row, 7).Value  = p.A ?? 0;
+                    ws.Cell(row, 8).Value  = p.B ?? 0;
+                    ws.Cell(row, 9).Value  = p.C ?? 0;
+                    ws.Cell(row, 10).Value = p.D ?? 0;
+                    ws.Cell(row, 11).Value = p.Diam_LL_1 ?? 0;
+                    ws.Cell(row, 12).Value = p.Diam_UL_1 ?? 0;
+                    ws.Cell(row, 13).Value = p.TipOdLength_1 ?? "";
+                    ws.Cell(row, 14).Value = p.Diam_LL_2 ?? 0;
+                    ws.Cell(row, 15).Value = p.Diam_UL_2 ?? 0;
+                    ws.Cell(row, 16).Value = p.TipOdLength_2 ?? "";
+                    ws.Cell(row, 17).Value = p.Diam_LL_3 ?? 0;
+                    ws.Cell(row, 18).Value = p.Diam_UL_3 ?? 0;
+                    ws.Cell(row, 19).Value = p.TipOdLength_3 ?? "";
+                    row++;
+                }
+
+                ws.Columns().AdjustToContents();
+
+                using var ms = new MemoryStream();
+                wb.SaveAs(ms);
+                await _js.InvokeVoidAsync("BlazorDownloadFile",
+                    $"AutoSandingConfig_{DateTime.Now:yyyyMMdd_HHmm}.xlsx", ms.ToArray());
+            }
+            catch (Exception ex)
+            {
+                _notificationService.Notify(NotificationSeverity.Error, "Lỗi Export", ex.Message);
+            }
+            finally
+            {
+                _isExporting = false;
+                StateHasChanged();
+            }
+        }
+
+        private async Task OnImportClick()
+        {
+            await _js.InvokeVoidAsync("eval", "document.getElementById('ft14ImportInput').click()");
+        }
+
+        private async Task OnImportFileSelected(InputFileChangeEventArgs e)
+        {
+            var file = e.File;
+            if (file == null) return;
+
+            try
+            {
+                _isImporting = true;
+                StateHasChanged();
+
+                using var ms = new MemoryStream();
+                await file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024).CopyToAsync(ms);
+                ms.Position = 0;
+
+                using var wb = new XLWorkbook(ms);
+                var ws = wb.Worksheet(1);
+                var dataRows = ws.RowsUsed().Skip(1);
+
+                int inserted = 0, updated = 0, skipped = 0;
+                foreach (var dataRow in dataRows)
+                {
+                    var partName = dataRow.Cell(1).GetString();
+                    if (string.IsNullOrWhiteSpace(partName)) { skipped++; continue; }
+
+                    var existing = _parts.FirstOrDefault(p => p.PartName == partName);
+                    if (existing != null)
+                    {
+                        existing.Length                = dataRow.Cell(2).GetDouble();
+                        existing.FreqTarget            = dataRow.Cell(3).GetDouble();
+                        existing.Set_Freq_Offset_Low   = dataRow.Cell(4).GetDouble();
+                        existing.Set_Freq_Offset_Hight = dataRow.Cell(5).GetDouble();
+                        existing.Formula_F             = dataRow.Cell(6).GetDouble();
+                        existing.A                     = dataRow.Cell(7).GetDouble();
+                        existing.B                     = dataRow.Cell(8).GetDouble();
+                        existing.C                     = dataRow.Cell(9).GetDouble();
+                        existing.D                     = dataRow.Cell(10).GetDouble();
+                        existing.Diam_LL_1             = dataRow.Cell(11).GetDouble();
+                        existing.Diam_UL_1             = dataRow.Cell(12).GetDouble();
+                        existing.TipOdLength_1         = dataRow.Cell(13).GetString();
+                        existing.Diam_LL_2             = dataRow.Cell(14).GetDouble();
+                        existing.Diam_UL_2             = dataRow.Cell(15).GetDouble();
+                        existing.TipOdLength_2         = dataRow.Cell(16).GetString();
+                        existing.Diam_LL_3             = dataRow.Cell(17).GetDouble();
+                        existing.Diam_UL_3             = dataRow.Cell(18).GetDouble();
+                        existing.TipOdLength_3         = dataRow.Cell(19).GetString();
+                        existing.UpdateddAt            = DateTime.Now;
+                        await _fT14Client.UpdateAsync(existing);
+                        updated++;
+                    }
+                    else
+                    {
+                        var newPart = new FT14_TipOdFreq
+                        {
+                            Id                    = Guid.NewGuid(),
+                            PartName              = partName,
+                            CreatedAt             = DateTime.Now,
+                            CreatedMachine        = Environment.MachineName,
+                            Actived               = true,
+                            Length                = dataRow.Cell(2).GetDouble(),
+                            FreqTarget            = dataRow.Cell(3).GetDouble(),
+                            Set_Freq_Offset_Low   = dataRow.Cell(4).GetDouble(),
+                            Set_Freq_Offset_Hight = dataRow.Cell(5).GetDouble(),
+                            Formula_F             = dataRow.Cell(6).GetDouble(),
+                            A                     = dataRow.Cell(7).GetDouble(),
+                            B                     = dataRow.Cell(8).GetDouble(),
+                            C                     = dataRow.Cell(9).GetDouble(),
+                            D                     = dataRow.Cell(10).GetDouble(),
+                            Diam_LL_1             = dataRow.Cell(11).GetDouble(),
+                            Diam_UL_1             = dataRow.Cell(12).GetDouble(),
+                            TipOdLength_1         = dataRow.Cell(13).GetString(),
+                            Diam_LL_2             = dataRow.Cell(14).GetDouble(),
+                            Diam_UL_2             = dataRow.Cell(15).GetDouble(),
+                            TipOdLength_2         = dataRow.Cell(16).GetString(),
+                            Diam_LL_3             = dataRow.Cell(17).GetDouble(),
+                            Diam_UL_3             = dataRow.Cell(18).GetDouble(),
+                            TipOdLength_3         = dataRow.Cell(19).GetString(),
+                        };
+                        await _fT14Client.InsertAsync(newPart);
+                        inserted++;
+                    }
+                }
+
+                _notificationService.Notify(NotificationSeverity.Success, "Import hoàn tất",
+                    $"Thêm mới: {inserted} | Cập nhật: {updated} | Bỏ qua: {skipped}");
+                await LoadData();
+            }
+            catch (Exception ex)
+            {
+                _notificationService.Notify(NotificationSeverity.Error, "Lỗi Import", ex.Message);
+            }
+            finally
+            {
+                _isImporting = false;
+                StateHasChanged();
+            }
         }
 
         // ── Tab 2 – Tính ABCD ────────────────────────────────────────────────
