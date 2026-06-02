@@ -86,28 +86,28 @@
                     @if (!item.ConnectionStatus)
                     {
                         <RadzenAlert Title="MẤT KẾT NỐI" AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" Shade="Shade.Lighter"
-                            Size="AlertSize.Small" class="rz-mt-3 rz-mb-0">
+                            Size="AlertSize.Small" AllowClose="false" class="rz-mt-3 rz-mb-0">
                             Không kết nối được EasyDriver Server!
                         </RadzenAlert>
                     }
                     else if (!item.Status)
                     {
                         <RadzenAlert Title="MẤT KẾT NỐI" AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter"
-                            Size="AlertSize.Small" class="rz-mt-3 rz-mb-0">
+                            Size="AlertSize.Small" AllowClose="false" class="rz-mt-3 rz-mb-0">
                             Mất kết nối thiết bị (PLC)!
                         </RadzenAlert>
                     }
                     else if (isAlarm)
                     {
                         <RadzenAlert Title="BÁO ĐỘNG" AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" Shade="Shade.Lighter"
-                            Size="AlertSize.Small" class="rz-mt-3 rz-mb-0">
+                            Size="AlertSize.Small" AllowClose="false" class="rz-mt-3 rz-mb-0">
                             Nhiệt độ nằm ngoài ngưỡng an toàn!
                         </RadzenAlert>
                     }
                     else
                     {
                         <RadzenAlert Title="Bình thường" AlertStyle="AlertStyle.Success" Variant="Variant.Flat"
-                            Shade="Shade.Lighter" Size="AlertSize.Small" class="rz-mt-3 rz-mb-0">
+                            Shade="Shade.Lighter" Size="AlertSize.Small" AllowClose="false" class="rz-mt-3 rz-mb-0">
                             Thiết bị hoạt động ổn định
                         </RadzenAlert>
                     }
