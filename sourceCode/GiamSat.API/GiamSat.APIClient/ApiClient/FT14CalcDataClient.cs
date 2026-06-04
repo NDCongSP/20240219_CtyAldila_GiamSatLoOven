@@ -11,9 +11,6 @@ namespace GiamSat.APIClient
         [System.Text.Json.Serialization.JsonPropertyName("fre1")]
         public double Fre1 { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("stiffnessZ")]
-        public double StiffnessZ { get; set; }
-
         [System.Text.Json.Serialization.JsonPropertyName("beltRotationRpm")]
         public double BeltRotationRpm { get; set; }
 
@@ -47,7 +44,9 @@ namespace GiamSat.APIClient
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<AutoSandingTestRowListResult> GetCalcDataAsync(
             string? part,
-            string? work,
+            string? workFre1,
+            string? workFre2,
+            string? workSpine,
             double? offsetFre1,
             double? offsetFre2,
             double? motorFrom,
@@ -59,7 +58,9 @@ namespace GiamSat.APIClient
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<AutoSandingTestRowListResult> GetCalcDataAsync(
             string? part,
-            string? work,
+            string? workFre1,
+            string? workFre2,
+            string? workSpine,
             double? offsetFre1,
             double? offsetFre2,
             double? motorFrom,
@@ -99,18 +100,18 @@ namespace GiamSat.APIClient
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<AutoSandingTestRowListResult> GetCalcDataAsync(
-            string? part, string? work,
+            string? part, string? workFre1, string? workFre2, string? workSpine,
             double? offsetFre1, double? offsetFre2,
             double? motorFrom, double? motorTo, double? motorStep)
         {
-            return GetCalcDataAsync(part, work, offsetFre1, offsetFre2, motorFrom, motorTo, motorStep, System.Threading.CancellationToken.None);
+            return GetCalcDataAsync(part, workFre1, workFre2, workSpine, offsetFre1, offsetFre2, motorFrom, motorTo, motorStep, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<AutoSandingTestRowListResult> GetCalcDataAsync(
-            string? part, string? work,
+            string? part, string? workFre1, string? workFre2, string? workSpine,
             double? offsetFre1, double? offsetFre2,
             double? motorFrom, double? motorTo, double? motorStep,
             System.Threading.CancellationToken cancellationToken)
@@ -134,9 +135,17 @@ namespace GiamSat.APIClient
                     {
                         urlBuilder_.Append(System.Uri.EscapeDataString("part")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(part, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
-                    if (work != null)
+                    if (workFre1 != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("work")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(work, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("workFre1")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(workFre1, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (workFre2 != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("workFre2")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(workFre2, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (workSpine != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("workSpine")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(workSpine, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (offsetFre1 != null)
                     {
