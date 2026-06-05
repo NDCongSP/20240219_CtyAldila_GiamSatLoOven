@@ -393,12 +393,7 @@ namespace GiamSat.API.Controllers
                 return StatusCode(StatusCodes.Status200OK, new Response() { Status = "Error", Message = "Not allowed to delete the admin account" });
             }
 
-            // Usage check: Ensure the user is not "in use" (has no roles)
-            var currentRoles = await _userManager.GetRolesAsync(user);
-            if (currentRoles.Any())
-            {
-                return StatusCode(StatusCodes.Status200OK, new Response() { Status = "Error", Message = "Không thể xóa tài khoản đang có vai trò (Role) gán kèm. Vui lòng gỡ hết Role trước." });
-            }
+            // Đã bỏ check Role. Identity UserManager.DeleteAsync sẽ tự động cascade xóa các record trong bảng AspNetUserRoles.
 
             // Xóa tất cả refresh token của user trước khi xóa user
             var userTokens = await _dbContext.FT17_RefreshTokens
