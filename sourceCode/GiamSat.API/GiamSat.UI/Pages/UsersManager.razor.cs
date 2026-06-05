@@ -51,6 +51,8 @@ namespace GiamSat.UI.Pages
                 {
                     UserName = userName,
                     Id = id,
+                    Email = "", // Bổ sung để tránh lỗi validation required từ backend
+                    Roles = new List<string>()
                 });
 
                 if (res.Status == "Success")
