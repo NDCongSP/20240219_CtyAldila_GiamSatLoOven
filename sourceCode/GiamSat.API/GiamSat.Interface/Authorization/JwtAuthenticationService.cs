@@ -1,4 +1,4 @@
-﻿
+
 using Blazored.LocalStorage;
 using GiamSat.APIClient;
 using Microsoft.AspNetCore.Components;
@@ -81,10 +81,8 @@ namespace GiamSat.Interface.Authorization
             var tokenResponse = await _tokenClient.LoginAsync(request);
 
             string token = tokenResponse.Token;
-            string refreshToken = "";
+            string refreshToken = tokenResponse.RefreshToken;
             string sessionId = "";
-            //string refreshToken = tokenResponse.RefreshToken;
-            //string sessionId = tokenResponse.SessionId;
 
             if (string.IsNullOrWhiteSpace(token))
             {
@@ -139,7 +137,7 @@ namespace GiamSat.Interface.Authorization
                 // Check if token needs to be refreshed (when its expiration time is less than 1 minute away)
                 var expTime = GetExpiration(authState.User);
                 var diff = expTime - DateTime.UtcNow;
-                if (diff.TotalMinutes <= 10)
+                if (diff.TotalSeconds <= 5)
                 {
                     //string refreshToken = await GetCachedRefreshTokenAsync();
                     //(bool succeeded, var response) = await TryRefreshTokenAsync(new RefreshTokenRequest { Token = token, RefreshToken = refreshToken });
@@ -192,8 +190,7 @@ namespace GiamSat.Interface.Authorization
         private async ValueTask CacheAuthTokens(string token, string refreshToken, string sessionId)
         {
             await _localStorage.SetItemAsync(StorageConts.AuthToken, token);
-            //await _localStorage.SetItemAsync(StorageConstants.Local.RefreshToken, refreshToken);
-            //await _localStorage.SetItemAsync(StorageConstants.Local.SessionId, sessionId);
+            await _localStorage.SetItemAsync(StorageConts.RefreshToken, refreshToken);
         }
 
         private ValueTask CachePermissions(ICollection<string> permissions) =>
@@ -202,9 +199,7 @@ namespace GiamSat.Interface.Authorization
         private async Task ClearCacheAsync()
         {
             await _localStorage.RemoveItemAsync(StorageConts.AuthToken);
-            //await _localStorage.RemoveItemAsync(StorageConstants.Local.RefreshToken);
-            //await _localStorage.RemoveItemAsync(StorageConstants.Local.SessionId);
-            //await _localStorage.RemoveItemAsync(StorageConstants.Local.Permissions);
+            await _localStorage.RemoveItemAsync(StorageConts.RefreshToken);
         }
 
         private ValueTask<string> GetCachedAuthTokenAsync() =>

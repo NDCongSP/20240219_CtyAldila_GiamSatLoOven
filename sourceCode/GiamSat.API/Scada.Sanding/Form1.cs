@@ -521,6 +521,16 @@ namespace Scada.Sanding
             lblPartNameVal.Text = decodedPartName;
             lblWorkOrderVal.Text = decodedWorkOrder;
 
+            if (decodedPartName != _lastPartName || decodedWorkOrder != _lastWorkOrder)
+            {
+                if (!string.IsNullOrEmpty(_lastPartName) || !string.IsNullOrEmpty(_lastWorkOrder))
+                {
+                    GlobalVariable.Pilot5SandingCount = 0;
+                    GlobalVariable.Pilot5OdCount = 0;
+                    LogEvent($"Đã reset bộ đếm Pilot5 do thay đổi Part/Work.");
+                }
+            }
+
             if (decodedPartName != _lastPartName)
             {
                 LogEvent($"Phát hiện đổi Part Name: '{_lastPartName}' -> '{decodedPartName}'");
@@ -629,15 +639,9 @@ namespace Scada.Sanding
                 {
                     if (style == 2) // Pilot 5
                     {
-                        var loggedShafts = await db.FT16_SandingLogDatas
-                            .Where(x => x.Part == part && x.Work == work && x.ShaftNum != null)
-                            .Select(x => x.ShaftNum.Value)
-                            .Distinct()
-                            .ToListAsync();
-
-                        if (loggedShafts.Count >= 5 && !loggedShafts.Contains(currentShaft))
+                        if (GlobalVariable.Pilot5SandingCount >= 10)
                         {
-                            LogEvent($"[Pilot 5 Limit] Bỏ qua lưu log cho Shaft {currentShaft} (Đã lưu đủ 5 cây khác).");
+                            LogEvent($"[Pilot 5 Limit] Bỏ qua lưu log cho Shaft {currentShaft} (Đã lưu đủ 10 dòng mài).");
                             await WriteTagAsync("Trigger_Log_Sanding", "0");
                             return;
                         }
@@ -668,7 +672,15 @@ namespace Scada.Sanding
                     db.FT16_SandingLogDatas.Add(logData);
                     await db.SaveChangesAsync();
 
-                    LogEvent($"[Thành công] Đã lưu dữ liệu mài Sanding cho Shaft {currentShaft}.");
+                    if (style == 2)
+                    {
+                        GlobalVariable.Pilot5SandingCount++;
+                        LogEvent($"[Pilot 5] Đã lưu log mài thứ {GlobalVariable.Pilot5SandingCount}/10 cho Shaft {currentShaft}.");
+                    }
+                    else
+                    {
+                        LogEvent($"[Thành công] Đã lưu dữ liệu mài Sanding cho Shaft {currentShaft}.");
+                    }
                 }
 
                 // Reset trigger
@@ -704,23 +716,18 @@ namespace Scada.Sanding
                 {
                     if (style == 2) // Pilot 5
                     {
-                        var loggedShafts = await db.FT16_SandingLogDatas
-                            .Where(x => x.Part == part && x.Work == work && x.ShaftNum != null)
-                            .Select(x => x.ShaftNum.Value)
-                            .Distinct()
-                            .ToListAsync();
-
-                        if (loggedShafts.Count >= 5 && !loggedShafts.Contains(currentShaft))
+                        if (GlobalVariable.Pilot5OdCount >= 10)
                         {
-                            LogEvent($"[Pilot 5 Limit] Bỏ qua lưu log OD cho Shaft {currentShaft} (Đã lưu đủ 5 cây khác).");
+                            LogEvent($"[Pilot 5 Limit] Bỏ qua lưu log OD cho Shaft {currentShaft} (Đã lưu đủ 10 dòng OD).");
                             await WriteTagAsync("Trigger_Log_OD", "0");
                             return;
                         }
                     }
 
-                    // Find existing log row matching Part, Work and ShaftNum
+                    // Find existing log row matching Part, Work and ShaftNum that hasn't been updated with OD yet
                     var existingRow = await db.FT16_SandingLogDatas
-                        .FirstOrDefaultAsync(x => x.Part == part && x.Work == work && x.ShaftNum == currentShaft);
+                        .OrderBy(x => x.CreatedAt)
+                        .FirstOrDefaultAsync(x => x.Part == part && x.Work == work && x.ShaftNum == currentShaft && x.OK_NG_OD_1 == null);
 
                     if (existingRow != null)
                     {
@@ -750,7 +757,15 @@ namespace Scada.Sanding
                         }
 
                         await db.SaveChangesAsync();
-                        LogEvent($"[Thành công] Đã cập nhật kết quả đo OD cho Shaft {currentShaft}.");
+                        if (style == 2)
+                        {
+                            GlobalVariable.Pilot5OdCount++;
+                            LogEvent($"[Pilot 5] Đã cập nhật kết quả đo OD thứ {GlobalVariable.Pilot5OdCount}/10 cho Shaft {currentShaft}.");
+                        }
+                        else
+                        {
+                            LogEvent($"[Thành công] Đã cập nhật kết quả đo OD cho Shaft {currentShaft}.");
+                        }
                     }
                     else
                     {
@@ -816,20 +831,20 @@ namespace Scada.Sanding
                 {
                     var dataJson = JsonConvert.SerializeObject(model);
 
-                    var record = await db.FT15_SandingRealtimes.FirstOrDefaultAsync();
-                    if (record != null)
+                    // Lấy và xóa tất cả dòng cũ để đảm bảo bảng chỉ có duy nhất 1 item
+                    var oldRecords = await db.FT15_SandingRealtimes.ToListAsync();
+                    if (oldRecords.Any())
                     {
-                        record.C001_Data = dataJson;
+                        db.FT15_SandingRealtimes.RemoveRange(oldRecords);
                     }
-                    else
+
+                    // Thêm 1 dòng mới
+                    var newRecord = new FT15_SandingRealtime()
                     {
-                        var newRecord = new FT15_SandingRealtime()
-                        {
-                            Id = Guid.NewGuid(),
-                            C001_Data = dataJson
-                        };
-                        db.FT15_SandingRealtimes.Add(newRecord);
-                    }
+                        Id = Guid.NewGuid(),
+                        C001_Data = dataJson
+                    };
+                    db.FT15_SandingRealtimes.Add(newRecord);
 
                     await db.SaveChangesAsync();
                 }

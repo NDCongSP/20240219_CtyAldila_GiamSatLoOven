@@ -10,11 +10,33 @@ using System.Threading.Tasks;
 
 namespace Scada.TemperatureMonitoring
 {
+    /// <summary>
+    /// Cache lưu giá trị PV và Quality mới nhất của từng location (path).
+    /// Được cập nhật ngay lập tức từ TagChange events (không delay).
+    /// Các task định kỳ chỉ đọc cache này thay vì gọi GetTag() lại.
+    /// </summary>
+    internal class TagCache
+    {
+        public double PV { get; set; }
+        public Quality Quality { get; set; } = Quality.Bad;
+        public bool PlcConnected => Quality == Quality.Good;
+    }
+
     public class TemperatureMonitorService
     {
         private readonly TemperatureRepository _repository;
         private readonly EasyDriverConnector _driver;
         private TemperatureConfigsModel _config;
+
+        // === CACHE: TagChange → cập nhật đây, các task chỉ đọc từ đây ===
+        // Key: loc.Path (ví dụ "Local Station/Channel1/Oven1")
+        private readonly Dictionary<string, TagCache> _tagCache
+            = new Dictionary<string, TagCache>(StringComparer.OrdinalIgnoreCase);
+
+        // === ALARM STATE CACHE: track trạng thái alarm trong memory ===
+        // Key: locationId, Value: Id của alarm record đang active (null = không có alarm)
+        private readonly Dictionary<int, Guid?> _activeAlarmIds
+            = new Dictionary<int, Guid?>();
 
         public event Action<string, string, Quality> OnDeviceUpdated;
         public event Action<TemperatureConfigsModel> OnConfigUpdated;
@@ -26,6 +48,10 @@ namespace Scada.TemperatureMonitoring
             _driver = driver;
         }
 
+        /// <summary>
+        /// Đăng ký TagChange events cho tất cả location trong config.
+        /// Đồng thời khởi tạo cache cho từng location.
+        /// </summary>
         public void SetConfig(TemperatureConfigsModel config)
         {
             _config = config;
@@ -33,6 +59,14 @@ namespace Scada.TemperatureMonitoring
             {
                 foreach (var loc in _config.LocationsConfig)
                 {
+                    // Khởi tạo cache entry nếu chưa có
+                    if (!_tagCache.ContainsKey(loc.Path))
+                        _tagCache[loc.Path] = new TagCache();
+
+                    // Khởi tạo alarm state cache nếu chưa có
+                    if (loc.Id.HasValue && !_activeAlarmIds.ContainsKey(loc.Id.Value))
+                        _activeAlarmIds[loc.Id.Value] = null;
+
                     var tagPv = _driver.GetTag($"{loc.Path}/PV");
                     if (tagPv != null)
                     {
@@ -46,26 +80,39 @@ namespace Scada.TemperatureMonitoring
             }
         }
 
+        /// <summary>
+        /// Đọc giá trị hiện tại của tất cả tag lần đầu (sau khi driver started),
+        /// cập nhật vào cache và fire event để UI hiển thị ngay.
+        /// </summary>
         public void TriggerFirstTimeFetch()
         {
-            if (_driver.IsStarted && _config.LocationsConfig != null)
+            if (_driver.IsStarted && _config?.LocationsConfig != null)
             {
                 foreach (var loc in _config.LocationsConfig)
                 {
                     var tagPv = _driver.GetTag($"{loc.Path}/PV");
                     if (tagPv != null)
                     {
+                        // Cập nhật cache ngay lần đầu
+                        UpdateCache(loc.Path, tagPv.Value, tagPv.Quality);
                         OnDeviceUpdated?.Invoke(loc.Path, tagPv.Value, tagPv.Quality);
                     }
                 }
             }
         }
 
+        // =====================================================================
+        // TAG CHANGE HANDLERS — CHỈ CẬP NHẬT CACHE, không gọi DB hay logic phức tạp
+        // =====================================================================
+
         private void TagPv_ValueChanged(object sender, TagValueChangedEventArgs e)
         {
             if (sender is ITag tag)
             {
                 string pathPrefix = tag.Path.Substring(0, tag.Path.LastIndexOf('/'));
+                // Cập nhật cache
+                UpdateCache(pathPrefix, e.NewValue, tag.Quality);
+                // Thông báo UI
                 OnDeviceUpdated?.Invoke(pathPrefix, e.NewValue, tag.Quality);
             }
         }
@@ -75,12 +122,39 @@ namespace Scada.TemperatureMonitoring
             if (sender is ITag tag)
             {
                 string pathPrefix = tag.Path.Substring(0, tag.Path.LastIndexOf('/'));
+                // Cập nhật cache
+                UpdateCache(pathPrefix, tag.Value, e.NewQuality);
+                // Thông báo UI
                 OnDeviceUpdated?.Invoke(pathPrefix, tag.Value, e.NewQuality);
             }
         }
 
+        /// <summary>
+        /// Cập nhật giá trị PV và Quality vào cache theo path.
+        /// Thread-safe: TagChange có thể fire từ thread khác.
+        /// </summary>
+        private void UpdateCache(string path, string valueStr, Quality quality)
+        {
+            if (!_tagCache.TryGetValue(path, out var cache))
+            {
+                cache = new TagCache();
+                _tagCache[path] = cache;
+            }
+            double.TryParse(valueStr, System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out double pv);
+            cache.PV = pv;
+            cache.Quality = quality;
+        }
+
+        // =====================================================================
+        // BACKGROUND TASKS
+        // =====================================================================
+
         public async Task StartTasksAsync(CancellationToken token)
         {
+            // Tải trạng thái alarm hiện tại từ DB một lần khi khởi động
+            await InitAlarmStateFromDbAsync();
+
             var t1 = Task.Run(() => TaskRealtimeLogAsync(token));
             var t2 = Task.Run(() => TaskDataLogAsync(token));
             var t3 = Task.Run(() => TaskAlarmMonitorAsync(token));
@@ -89,6 +163,32 @@ namespace Scada.TemperatureMonitoring
             await Task.WhenAll(t1, t2, t3, t4);
         }
 
+        /// <summary>
+        /// Đọc DB 1 lần khi khởi động để nạp trạng thái alarm đang active vào memory.
+        /// Sau đó TaskAlarmMonitorAsync chỉ cần check cache, không query DB mỗi giây.
+        /// </summary>
+        private async Task InitAlarmStateFromDbAsync()
+        {
+            if (_config?.LocationsConfig == null) return;
+            foreach (var config in _config.LocationsConfig)
+            {
+                if (!config.Id.HasValue) continue;
+                try
+                {
+                    var existingAlarm = await _repository.GetActiveAlarmAsync(config.Id);
+                    _activeAlarmIds[config.Id.Value] = existingAlarm?.Id;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error loading alarm state for {config.Name}: {ex.Message}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Task lưu realtime định kỳ vào FT11.
+        /// Đọc từ cache (_tagCache), KHÔNG gọi GetTag().
+        /// </summary>
         private async Task TaskRealtimeLogAsync(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
@@ -97,36 +197,29 @@ namespace Scada.TemperatureMonitoring
                 {
                     if (_config?.LocationsConfig != null && _config.LocationsConfig.Count > 0)
                     {
+                        bool easyConnected = _driver != null
+                            && _driver.IsStarted
+                            && _driver.ConnectionStatus == ConnectionStatus.Connected;
+
                         var realtimeModels = new List<TemperatureRealtimeModel>();
-                        bool easyConnected = _driver != null && _driver.IsStarted && _driver.ConnectionStatus == ConnectionStatus.Connected;
 
                         foreach (var config in _config.LocationsConfig)
                         {
-                            double pv = 0;
-                            bool plcConnected = false;
-
-                            if (easyConnected)
-                            {
-                                var tagPv = _driver.GetTag($"{config.Path}/PV");
-                                if (tagPv != null)
-                                {
-                                    string pvValueStr = tagPv.Value;
-                                    double.TryParse(pvValueStr, out pv);
-                                    plcConnected = tagPv.Quality == Quality.Good;
-                                }
-                            }
+                            // ✅ Đọc từ cache — không gọi GetTag()
+                            _tagCache.TryGetValue(config.Path, out var cache);
 
                             realtimeModels.Add(new TemperatureRealtimeModel
                             {
                                 Id = config.Id ?? 0,
                                 Name = config.Name,
                                 Path = config.Path,
-                                Status = plcConnected,
+                                Status = easyConnected && (cache?.PlcConnected ?? false),
                                 ConnectionStatus = easyConnected,
-                                PV = pv,
+                                PV = cache?.PV ?? 0,
                                 Config = config
                             });
                         }
+
                         await _repository.SaveRealtimeDataAsync(realtimeModels);
                     }
                 }
@@ -141,22 +234,26 @@ namespace Scada.TemperatureMonitoring
             }
         }
 
+        /// <summary>
+        /// Task log datalog định kỳ vào FT12.
+        /// Đọc từ cache (_tagCache), KHÔNG gọi GetTag().
+        /// </summary>
         private async Task TaskDataLogAsync(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
                 try
                 {
-                    if (_driver.IsStarted && _config?.LocationsConfig != null && _config.LocationsConfig.Count > 0)
+                    if (_config?.LocationsConfig != null && _config.LocationsConfig.Count > 0)
                     {
                         var datalogs = new List<FT12_TemperatureDatalog>();
                         var now = DateTime.Now;
 
                         foreach (var config in _config.LocationsConfig)
                         {
-                            string pvValueStr = _driver.GetTag($"{config.Path}/PV")?.Value;
-                            double pv = 0;
-                            double.TryParse(pvValueStr, out pv);
+                            // ✅ Đọc từ cache — không gọi GetTag()
+                            _tagCache.TryGetValue(config.Path, out var cache);
+                            double pv = cache?.PV ?? 0;
 
                             datalogs.Add(new FT12_TemperatureDatalog
                             {
@@ -185,6 +282,12 @@ namespace Scada.TemperatureMonitoring
             }
         }
 
+        /// <summary>
+        /// Task giám sát alarm và nhấp nháy UI.
+        /// Đọc PV từ cache (_tagCache) — KHÔNG gọi GetTag().
+        /// Trạng thái alarm (active/inactive) được track trong _activeAlarmIds (in-memory)
+        /// → chỉ query/write DB khi alarm state thực sự thay đổi (không query mỗi giây).
+        /// </summary>
         private async Task TaskAlarmMonitorAsync(CancellationToken token)
         {
             bool isBlinkOn = false;
@@ -193,30 +296,45 @@ namespace Scada.TemperatureMonitoring
             {
                 try
                 {
-                    if (_driver.IsStarted && _config?.LocationsConfig != null && _config.LocationsConfig.Count > 0)
+                    if (_driver.IsStarted
+                        && _config?.LocationsConfig != null
+                        && _config.LocationsConfig.Count > 0)
                     {
                         isBlinkOn = !isBlinkOn;
                         var now = DateTime.Now;
 
                         foreach (var config in _config.LocationsConfig)
                         {
-                            string pvValueStr = _driver.GetTag($"{config.Path}/PV")?.Value;
-                            double pv = 0;
-                            double.TryParse(pvValueStr, out pv);
+                            if (!config.Id.HasValue) continue;
+                            int locationId = config.Id.Value;
 
-                            double currentTemp = pv;
-                            bool isAlarm = currentTemp > config.HightLevel || currentTemp < config.LowLevel;
-                            
-                            var activeAlarm = await _repository.GetActiveAlarmAsync(config.Id);
+                            // ✅ Đọc từ cache — không gọi GetTag()
+                            _tagCache.TryGetValue(config.Path, out var cache);
+                            double pv = cache?.PV ?? 0;
+                            bool plcConnected = cache?.PlcConnected ?? false;
+
+                            // Nếu PLC mất kết nối thì bỏ qua alarm check
+                            if (!plcConnected) continue;
+
+                            bool isAlarm = pv > config.HightLevel || pv < config.LowLevel;
+
+                            // Lấy trạng thái alarm hiện tại từ memory (không query DB)
+                            _activeAlarmIds.TryGetValue(locationId, out Guid? activeAlarmId);
+                            bool hasActiveAlarm = activeAlarmId.HasValue;
 
                             if (isAlarm)
                             {
+                                // Nhấp nháy UI
                                 OnAlarmBlink?.Invoke(config.Path, isBlinkOn ? Color.Red : Color.White);
 
-                                if (activeAlarm == null)
+                                // Chỉ tạo alarm record mới nếu chưa có alarm active
+                                if (!hasActiveAlarm)
                                 {
-                                    string desc = currentTemp > config.HightLevel ? "Quá nhiệt độ cao" : "Dưới nhiệt độ thấp";
-                                    await _repository.CreateAlarmAsync(new FT13_TemperatureAlarmLog
+                                    string desc = pv > config.HightLevel
+                                        ? "Quá nhiệt độ cao"
+                                        : "Dưới nhiệt độ thấp";
+
+                                    var newAlarm = new FT13_TemperatureAlarmLog
                                     {
                                         Id = Guid.NewGuid(),
                                         LocationId = config.Id,
@@ -228,16 +346,26 @@ namespace Scada.TemperatureMonitoring
                                         Description = desc,
                                         CreatedAt = now,
                                         CreatedMachine = Environment.MachineName
-                                    });
+                                    };
+
+                                    await _repository.CreateAlarmAsync(newAlarm);
+
+                                    // Cập nhật cache trạng thái alarm
+                                    _activeAlarmIds[locationId] = newAlarm.Id;
                                 }
                             }
                             else
                             {
+                                // Tắt nhấp nháy
                                 OnAlarmBlink?.Invoke(config.Path, Color.White);
 
-                                if (activeAlarm != null)
+                                // Chỉ kết thúc alarm nếu đang có alarm active
+                                if (hasActiveAlarm)
                                 {
-                                    await _repository.EndAlarmAsync(activeAlarm.Id, pv, now);
+                                    await _repository.EndAlarmAsync(activeAlarmId.Value, pv, now);
+
+                                    // Xóa cache trạng thái alarm
+                                    _activeAlarmIds[locationId] = null;
                                 }
                             }
                         }
@@ -254,6 +382,10 @@ namespace Scada.TemperatureMonitoring
             }
         }
 
+        /// <summary>
+        /// Task kiểm tra thay đổi config từ DB (mỗi 5 giây).
+        /// Khi có config mới thì re-register TagChange events và ghi Offset xuống PLC.
+        /// </summary>
         private async Task TaskCheckConfigChangesAsync(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
@@ -273,7 +405,9 @@ namespace Scada.TemperatureMonitoring
                                 var tag = _driver.GetTag($"{loc.Path}/Offset");
                                 if (tag != null)
                                 {
-                                    await tag.WriteAsync(loc.Offset.ToString(System.Globalization.CultureInfo.InvariantCulture), WritePiority.High);
+                                    await tag.WriteAsync(
+                                        loc.Offset.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                                        WritePiority.High);
                                 }
                             }
                         }

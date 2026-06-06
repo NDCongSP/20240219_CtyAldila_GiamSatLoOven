@@ -36,6 +36,13 @@ namespace GiamSat.API
             builder.Entity<FT15_SandingRealtime>();
             builder.Entity<FT16_SandingLogData>();
 
+            builder.Entity<FT17_RefreshToken>(entity =>
+            {
+                entity.ToTable("FT17_RefreshTokens");
+                entity.HasIndex(e => e.Token).IsUnique();
+                entity.HasIndex(e => e.UserId);
+            });
+
 
             builder.Entity<RoleToPermission>(entity =>
             {
@@ -93,5 +100,6 @@ namespace GiamSat.API
         public DbSet<FT14_TipOdFreq> FT14_TipOdFreqs { get; set; }
         public DbSet<FT15_SandingRealtime> FT15_SandingRealtimes { get; set; }
         public DbSet<FT16_SandingLogData> FT16_SandingLogDatas { get; set; }
+        public DbSet<FT17_RefreshToken> FT17_RefreshTokens { get; set; }
     }
 }

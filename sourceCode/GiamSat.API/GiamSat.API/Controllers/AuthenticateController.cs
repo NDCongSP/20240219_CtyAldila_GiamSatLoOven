@@ -69,13 +69,34 @@ namespace GiamSat.API.Controllers
 
                 var token = GetToken(authClaims);
 
+                _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
+                if (refreshTokenValidityInDays <= 0) refreshTokenValidityInDays = 7;
+
+                var refreshToken = Guid.NewGuid().ToString();
+                var refreshTokenExpiry = DateTime.Now.AddDays(refreshTokenValidityInDays);
+
+                // Lưu refresh token vào DB
+                var refreshTokenEntity = new FT17_RefreshToken
+                {
+                    Id = Guid.NewGuid(),
+                    Token = refreshToken,
+                    UserId = user.Id,
+                    JwtId = authClaims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value,
+                    IsUsed = false,
+                    IsRevoked = false,
+                    CreatedAt = DateTime.Now,
+                    ExpiryDate = refreshTokenExpiry
+                };
+
+                _dbContext.FT17_RefreshTokens.Add(refreshTokenEntity);
+                await _dbContext.SaveChangesAsync();
+
                 return Ok(new LoginResult()
                 {
                     Token = new JwtSecurityTokenHandler().WriteToken(token),
                     Expiration = token.ValidTo,
-                    RefreshToken=Guid.NewGuid().ToString()
-
-                    //Log lai thông tin token để phục vụ cho việc refresh token
+                    RefreshToken = refreshToken,
+                    RefreshTokenExpiration = refreshTokenExpiry
                 });
             }
             return Unauthorized();
@@ -86,46 +107,87 @@ namespace GiamSat.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResult))]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenModel model)
         {
-            #region Check lại thông tin củ refreshToken xem có đúng ko thì mới cho refresh
+            // 1. Validate refresh token từ DB
+            var storedToken = await _dbContext.FT17_RefreshTokens
+                .FirstOrDefaultAsync(x => x.Token == model.RefreshToken);
 
-            #endregion
+            if (storedToken == null)
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "Refresh token không tồn tại." });
 
+            if (storedToken.IsUsed)
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "Refresh token đã được sử dụng." });
+
+            if (storedToken.IsRevoked)
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "Refresh token đã bị thu hồi." });
+
+            if (storedToken.ExpiryDate < DateTime.Now)
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "Refresh token đã hết hạn." });
+
+            // 2. Validate access token (lấy thông tin user)
             var claim = JwtHelper.GetClaimsPrincipalFromJwt(model.OldToken);
+            if (claim?.Identity?.Name == null)
+                return Unauthorized();
 
             var user = await _userManager.FindByNameAsync(claim.Identity.Name);
-            if (user != null)
+            if (user == null || user.Id != storedToken.UserId)
+                return Unauthorized();
+
+            // 3. Đánh dấu refresh token cũ đã sử dụng
+            storedToken.IsUsed = true;
+            _dbContext.FT17_RefreshTokens.Update(storedToken);
+
+            // 4. Tạo access token mới
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            var authClaims = new List<Claim>
             {
-                var userRoles = await _userManager.GetRolesAsync(user);
+                new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
+                new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
 
-                var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
-
-                foreach (var userRole in userRoles)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                }
-
-                var permissionCodes = await GetPermissionCodesAsync(userRoles);
-                foreach (var permissionCode in permissionCodes)
-                {
-                    authClaims.Add(new Claim(PermissionNames.Prefix, permissionCode));
-                }
-
-                var token = GetToken(authClaims);
-
-                return Ok(new LoginResult()
-                {
-                    Token = new JwtSecurityTokenHandler().WriteToken(token),
-                    Expiration = token.ValidTo,
-                    RefreshToken=Guid.NewGuid().ToString()
-
-                    //update lai thông tin token để phục vụ cho việc refresh token
-                });
+            foreach (var userRole in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
             }
-            return Unauthorized();
+
+            var permissionCodes = await GetPermissionCodesAsync(userRoles);
+            foreach (var permissionCode in permissionCodes)
+            {
+                authClaims.Add(new Claim(PermissionNames.Prefix, permissionCode));
+            }
+
+            var token = GetToken(authClaims);
+
+            // 5. Tạo refresh token mới (rotation)
+            _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
+            if (refreshTokenValidityInDays <= 0) refreshTokenValidityInDays = 7;
+
+            var newRefreshToken = Guid.NewGuid().ToString();
+            var newRefreshTokenExpiry = storedToken.ExpiryDate; // Giữ nguyên thời hạn cũ thay vì cộng thêm
+
+            var newRefreshTokenEntity = new FT17_RefreshToken
+            {
+                Id = Guid.NewGuid(),
+                Token = newRefreshToken,
+                UserId = user.Id,
+                JwtId = authClaims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value,
+                IsUsed = false,
+                IsRevoked = false,
+                CreatedAt = DateTime.Now,
+                ExpiryDate = newRefreshTokenExpiry
+            };
+
+            _dbContext.FT17_RefreshTokens.Add(newRefreshTokenEntity);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new LoginResult()
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                Expiration = token.ValidTo,
+                RefreshToken = newRefreshToken,
+                RefreshTokenExpiration = newRefreshTokenExpiry
+            });
         }
 
         [HttpPost]
@@ -319,22 +381,28 @@ namespace GiamSat.API.Controllers
         {
             var user = await _userManager.FindByNameAsync(model.UserName);
 
+            if (user == null)
+            {
+                return StatusCode(StatusCodes.Status200OK, new Response() { Status = "Error", Message = "User not found!" });
+            }
+
             var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
 
             if (isAdmin)
             {
                 return StatusCode(StatusCodes.Status200OK, new Response() { Status = "Error", Message = "Not allowed to delete the admin account" });
             }
-            if (user == null)
-            {
-                return StatusCode(StatusCodes.Status200OK, new Response() { Status = "Error", Message = "User not found!" });
-            }
 
-            // Usage check: Ensure the user is not "in use" (has no roles)
-            var currentRoles = await _userManager.GetRolesAsync(user);
-            if (currentRoles.Any())
+            // Đã bỏ check Role. Identity UserManager.DeleteAsync sẽ tự động cascade xóa các record trong bảng AspNetUserRoles.
+
+            // Xóa tất cả refresh token của user trước khi xóa user
+            var userTokens = await _dbContext.FT17_RefreshTokens
+                .Where(t => t.UserId == user.Id)
+                .ToListAsync();
+            if (userTokens.Any())
             {
-                return StatusCode(StatusCodes.Status200OK, new Response() { Status = "Error", Message = "Không thể xóa tài khoản đang có vai trò (Role) gán kèm. Vui lòng gỡ hết Role trước." });
+                _dbContext.FT17_RefreshTokens.RemoveRange(userTokens);
+                await _dbContext.SaveChangesAsync();
             }
 
             var res = await _userManager.DeleteAsync(user);
@@ -376,10 +444,13 @@ namespace GiamSat.API.Controllers
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
 
+            _ = int.TryParse(_configuration["JWT:TokenValidityInMinutes"], out int tokenValidityInMinutes);
+            if (tokenValidityInMinutes <= 0) tokenValidityInMinutes = 5;
+
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:ValidIssuer"],
                 audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddMinutes(60),
+                expires: DateTime.Now.AddMinutes(tokenValidityInMinutes),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );

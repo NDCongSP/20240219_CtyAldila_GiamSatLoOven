@@ -11,6 +11,9 @@ namespace Scada.Sanding
 
         public static SandingRealtimeModel SandingRealtime { get; set; } = new SandingRealtimeModel();
 
+        public static int Pilot5SandingCount { get; set; } = 0;
+        public static int Pilot5OdCount { get; set; } = 0;
+
         public static void InvokeIfRequired(Control control, Action action)
         {
             if (control.InvokeRequired)

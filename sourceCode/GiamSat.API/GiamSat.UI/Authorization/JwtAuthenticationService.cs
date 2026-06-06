@@ -99,10 +99,8 @@ namespace GiamSat.UI
             var tokenResponse = await _tokenClient.LoginAsync(request);
 
             string token = tokenResponse.Token;
-            string refreshToken = "";
+            string refreshToken = tokenResponse.RefreshToken;
             string sessionId = "";
-            //string refreshToken = tokenResponse.RefreshToken;
-            //string sessionId = tokenResponse.SessionId;
 
             if (string.IsNullOrWhiteSpace(token))
             {
@@ -144,6 +142,7 @@ namespace GiamSat.UI
             var token = await _localStorage.GetItemAsync<string>(StorageConts.AuthToken);
             if (string.IsNullOrWhiteSpace(token))
                 return null;
+            var refreshToken = await GetCachedRefreshTokenAsync();
 
             var authState = await GetAuthenticationStateAsync();
             var user = authState.User;
@@ -152,14 +151,20 @@ namespace GiamSat.UI
             var timeUTC = DateTime.UtcNow;
             var diff = expTime - timeUTC;
 
-            if (diff.TotalMinutes <= 5)
+            if (diff.TotalSeconds <= 5)
             {
                 // Cho nay de refresh token khi token sap het han
-                var res = await _tokenClient.RefreshTokenAsync(new APIClient.RefreshTokenModel() { OldToken = token });
+                var res = await _tokenClient.RefreshTokenAsync(new APIClient.RefreshTokenModel() { OldToken = token, RefreshToken = refreshToken });
 
-                await CacheAuthTokens(res.Token, res.RefreshToken, "");
-
-                return res.Token;
+                if (res != null && !string.IsNullOrWhiteSpace(res.Token))
+                {
+                    await CacheAuthTokens(res.Token, res.RefreshToken, "");
+                    return res.Token;
+                }
+                else
+                {
+                    throw new Exception("Invalid refresh token");
+                }
             }
             return token;
         }
@@ -299,8 +304,7 @@ namespace GiamSat.UI
         private async ValueTask CacheAuthTokens(string token, string refreshToken, string sessionId)
         {
             await _localStorage.SetItemAsync(StorageConts.AuthToken, token);
-            //await _localStorage.SetItemAsync(StorageConstants.Local.RefreshToken, refreshToken);
-            //await _localStorage.SetItemAsync(StorageConstants.Local.SessionId, sessionId);
+            await _localStorage.SetItemAsync(StorageConts.RefreshToken, refreshToken);
         }
 
         private ValueTask CachePermissions(ICollection<string> permissions) =>
@@ -309,9 +313,7 @@ namespace GiamSat.UI
         private async Task ClearCacheAsync()
         {
             await _localStorage.RemoveItemAsync(StorageConts.AuthToken);
-            //await _localStorage.RemoveItemAsync(StorageConstants.Local.RefreshToken);
-            //await _localStorage.RemoveItemAsync(StorageConstants.Local.SessionId);
-            //await _localStorage.RemoveItemAsync(StorageConstants.Local.Permissions);
+            await _localStorage.RemoveItemAsync(StorageConts.RefreshToken);
         }
 
         private ValueTask<string> GetCachedAuthTokenAsync() =>
