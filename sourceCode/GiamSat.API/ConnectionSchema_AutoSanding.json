@@ -4,7 +4,7 @@
   "Port": 8800,
   "CommunicationMode": 0,
   "RefreshRate": 1000,
-  "CreatedDate": "2026-06-06T14:57:40.1350311+07:00",
+  "CreatedDate": "2026-06-06T15:36:06.0405343+07:00",
   "Username": null,
   "Password": null,
   "Childs": [
@@ -317,8 +317,8 @@
                 },
                 {
                   "ItemType": 6,
-                  "Name": "Set_Trigger_NewPartInfo1",
-                  "Path": "Local Station/Channel1/Device1/Set_Trigger_NewPartInfo1",
+                  "Name": "Set_Trigger_NewPartInfo",
+                  "Path": "Local Station/Channel1/Device1/Set_Trigger_NewPartInfo",
                   "Description": "PC set to 1, bao cho PLC biet da truyen thong so cai dat moi xuong thanh cong, PLC thuc hien xong reset ve 0.",
                   "DisplayInfo": null,
                   "Error": null,

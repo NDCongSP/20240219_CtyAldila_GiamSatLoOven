@@ -672,7 +672,7 @@
   "Tags": []
 },
     {
-  "Name": "Set_Trigger_NewPartInfo1",
+  "Name": "Set_Trigger_NewPartInfo",
   "Description": "PC set to 1, bao cho PLC biet da truyen thong so cai dat moi xuong thanh cong, PLC thuc hien xong reset ve 0.",
   "ItemType": "Tag",
   "IsReadOnly": false,
@@ -863,7 +863,7 @@
   "DisplayName": null,
   "DisplayParameters": null,
   "Parameters": {
-    "DataType": "DWord",
+    "DataType": "Word",
     "Address": "404026"
   }
 },
