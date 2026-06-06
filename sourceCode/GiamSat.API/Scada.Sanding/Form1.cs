@@ -570,9 +570,9 @@ namespace Scada.Sanding
                 // Write each parameter to Set_ tags
                 await WriteTagAsync("Set_Shaft_Length", (config.Length ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
                 await WriteTagAsync("Set_Freq_Target", (config.FreqTarget ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
-                await WriteTagAsync("Set_Freq_Offset_Low", (config.Set_Freq_Offset_Low ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
-                await WriteTagAsync("Set_Freq_Offset_Hight", (config.Set_Freq_Offset_Hight ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
-                await WriteTagAsync("Set_Formula_F", (config.Formula_F ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                await WriteTagAsync("Set_Freq_Offset_Low", (config.FreqTargetLow ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                await WriteTagAsync("Set_Freq_Offset_Hight", (config.FreqTargetHight ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                await WriteTagAsync("Set_Formula_F", (config.Formula ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
                 
                 await WriteTagAsync("Set_A", (config.A ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
                 await WriteTagAsync("Set_B", (config.B ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));

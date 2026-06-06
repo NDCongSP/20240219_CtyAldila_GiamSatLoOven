@@ -281,8 +281,10 @@ active_context:
     - "GiamSat.UI/Pages/AutoSandingConfig.razor.cs"         # FIX: _work → _workFre1/_workFre2/_workSpine
   blocked_by:       ""
   next_step:
-    - Test toàn bộ luồng Tab 2: Part → WorkFre1 → Load Data → Tính ABCD → Áp dụng & Lưu DB
-    - Xem xét tính năng tiếp theo
+    - Thay đổi logic lấy data lên để tính ABCD:
+        + với 2 giá trị Freq01 và Freq02 vẫn sẽ lấy ở DB ALD_MFG.DatalogFrequency, nhưng sẽ ko quan tâm tới Station, giở chỉ theo key là Part+WorkFreq1 và Part+WrorkFreq2
+        + với giá trị SiffnessY thì truy vấn DB Oven.Ft16 với key là Part+WorkSpine và SandingMode = EnumSandingMode.Test
+    - Sau khi tinhs ABCD xong lưu ngược lại Part thì tính ra lại thông số Z_Siffness để lưu vào  với Y = FreqTarget
   last_session:     "2026-06-01"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"

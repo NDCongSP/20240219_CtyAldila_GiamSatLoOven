@@ -39,16 +39,26 @@ namespace GiamSat.Models
 
         public double? Length { get; set; } = 0;
 
+        /// <summary>
+        /// Đơn vị mm.
+        /// </summary>
+        public double? OD_BOD { get; set; } = 0;
+
         public double? FreqTarget { get; set; } = 0;
 
-        public double? Set_Freq_Offset_Low { get; set; } = 0;
-        public double? Set_Freq_Offset_Hight { get; set; } = 0;
-        public double? Formula_F { get; set; } = 0;
+        public double? FreqTargetLow { get; set; } = 0;
+        public double? FreqTargetHight { get; set; } = 0;
+        public double? Formula { get; set; } = 0;
 
         public double? A { get; set; } = 0;
         public double? B { get; set; } = 0;
         public double? C { get; set; } = 0;
         public double? D { get; set; } = 0;
+
+        /// <summary>
+        /// Stiffness Z (Kg) – độ cứng đo theo chiều Z (lực / độ võng).
+        /// </summary>
+        public double? Z_Stiffness { get; set; } = null;
 
         /// <summary>
         /// quy định điểm đo Tip OD sẽ được lấy ở đâu, ví dụ như lấy ở điểm đo nào đó trên máy, hoặc lấy ở điểm đo nào đó trên sản phẩm, hoặc lấy ở điểm đo nào đó trên cả máy và sản phẩm. Tùy vào từng loại sản phẩm mà sẽ có quy định khác nhau.
