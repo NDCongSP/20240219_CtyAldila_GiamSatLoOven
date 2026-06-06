@@ -914,8 +914,10 @@ namespace Scada.Sanding
             {
                 byte lowByte = (byte)(val & 0xFF);
                 byte highByte = (byte)((val >> 8) & 0xFF);
-                if (lowByte != 0 && lowByte != 32) sb.Append((char)lowByte);
+                
+                // Đảo lại: HighByte trước, LowByte sau để tránh bị ngược chuỗi (ví dụ: XA -> AX)
                 if (highByte != 0 && highByte != 32) sb.Append((char)highByte);
+                if (lowByte != 0 && lowByte != 32) sb.Append((char)lowByte);
             }
             return sb.ToString().Trim();
         }
