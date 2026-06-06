@@ -69,11 +69,11 @@ namespace GiamSat.API.Controllers
 
                 var token = GetToken(authClaims);
 
-                _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInMinutes"], out int refreshTokenValidityInMinutes);
-                if (refreshTokenValidityInMinutes <= 0) refreshTokenValidityInMinutes = 1;
+                _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
+                if (refreshTokenValidityInDays <= 0) refreshTokenValidityInDays = 7;
 
                 var refreshToken = Guid.NewGuid().ToString();
-                var refreshTokenExpiry = DateTime.Now.AddMinutes(refreshTokenValidityInMinutes);
+                var refreshTokenExpiry = DateTime.Now.AddDays(refreshTokenValidityInDays);
 
                 // Lưu refresh token vào DB
                 var refreshTokenEntity = new FT17_RefreshToken
@@ -160,8 +160,8 @@ namespace GiamSat.API.Controllers
             var token = GetToken(authClaims);
 
             // 5. Tạo refresh token mới (rotation)
-            _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInMinutes"], out int refreshTokenValidityInMinutes);
-            if (refreshTokenValidityInMinutes <= 0) refreshTokenValidityInMinutes = 1;
+            _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
+            if (refreshTokenValidityInDays <= 0) refreshTokenValidityInDays = 7;
 
             var newRefreshToken = Guid.NewGuid().ToString();
             var newRefreshTokenExpiry = storedToken.ExpiryDate; // Giữ nguyên thời hạn cũ thay vì cộng thêm
@@ -444,13 +444,13 @@ namespace GiamSat.API.Controllers
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
 
-            _ = int.TryParse(_configuration["JWT:TokenValidityInSeconds"], out int tokenValidityInSeconds);
-            if (tokenValidityInSeconds <= 0) tokenValidityInSeconds = 20;
+            _ = int.TryParse(_configuration["JWT:TokenValidityInMinutes"], out int tokenValidityInMinutes);
+            if (tokenValidityInMinutes <= 0) tokenValidityInMinutes = 5;
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:ValidIssuer"],
                 audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddSeconds(tokenValidityInSeconds),
+                expires: DateTime.Now.AddMinutes(tokenValidityInMinutes),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );
