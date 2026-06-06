@@ -4,7 +4,7 @@
   "Port": 8800,
   "CommunicationMode": 0,
   "RefreshRate": 1000,
-  "CreatedDate": "2026-06-06T14:32:47.914348+07:00",
+  "CreatedDate": "2026-06-06T14:57:40.1350311+07:00",
   "Username": null,
   "Password": null,
   "Childs": [
@@ -409,7 +409,7 @@
                   "ConnectionStatus": 0,
                   "Childs": [],
                   "Properties": {
-                    "DataType": "DWord",
+                    "DataType": "Word",
                     "Address": "404026"
                   }
                 },
@@ -625,8 +625,8 @@
                 },
                 {
                   "ItemType": 6,
-                  "Name": "Set_Freq_Target_Low",
-                  "Path": "Local Station/Channel1/Device1/Set_Freq_Target_Low",
+                  "Name": "Set_Freq_Target_Hight",
+                  "Path": "Local Station/Channel1/Device1/Set_Freq_Target_Hight",
                   "Description": null,
                   "DisplayInfo": null,
                   "Error": null,
@@ -870,7 +870,7 @@
                 "InputContactReadBlockSettings": "[]",
                 "OutputCoilsReadBlockSettings": "[]",
                 "InputRegisterReadBlockSettings": "[]",
-                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404001\",\r\n    \"EndAddress\": \"404042\"\r\n  }\r\n]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404001\",\r\n    \"EndAddress\": \"404066\"\r\n  }\r\n]",
                 "MaxWritesCount": "10"
               }
             }

@@ -27,8 +27,6 @@ namespace Scada.Sanding
         {
             this.components = new System.ComponentModel.Container();
             this.easyDriverConnector1 = new EasyScada.Winforms.Controls.EasyDriverConnector(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.easyDriverConnector1)).BeginInit();
-            
             this.pnlTitle = new System.Windows.Forms.Panel();
             this.lblTitle = new System.Windows.Forms.Label();
             this.grpProduction = new System.Windows.Forms.GroupBox();
@@ -91,11 +89,28 @@ namespace Scada.Sanding
             this.lblSetTipOdLength2Val = new System.Windows.Forms.Label();
             this.lblSetTipOdLength3 = new System.Windows.Forms.Label();
             this.lblSetTipOdLength3Val = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lblSetOD_BOD_Val = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.easyDriverConnector1)).BeginInit();
             this.pnlTitle.SuspendLayout();
             this.grpProduction.SuspendLayout();
             this.grpParameters.SuspendLayout();
             this.pnlFooter.SuspendLayout();
+            this.grpPlcSettings.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // easyDriverConnector1
+            // 
+            this.easyDriverConnector1.CollectionName = null;
+            this.easyDriverConnector1.CommunicationMode = EasyScada.Core.CommunicationMode.ReceiveFromServer;
+            this.easyDriverConnector1.DatabaseName = null;
+            this.easyDriverConnector1.MongoDb_ConnectionString = null;
+            this.easyDriverConnector1.Port = ((ushort)(8800));
+            this.easyDriverConnector1.RefreshRate = 1000;
+            this.easyDriverConnector1.ServerAddress = "127.0.0.1";
+            this.easyDriverConnector1.StationName = null;
+            this.easyDriverConnector1.Timeout = 30;
+            this.easyDriverConnector1.UseMongoDb = false;
             // 
             // pnlTitle
             // 
@@ -114,7 +129,7 @@ namespace Scada.Sanding
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(40)))), ((int)(((byte)(80)))));
             this.lblTitle.Location = new System.Drawing.Point(16, 13);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(232, 21);
+            this.lblTitle.Size = new System.Drawing.Size(239, 21);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "AUTO SANDING MONITORING";
             // 
@@ -158,7 +173,7 @@ namespace Scada.Sanding
             this.lblLogStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblLogStyle.Location = new System.Drawing.Point(20, 205);
             this.lblLogStyle.Name = "lblLogStyle";
-            this.lblLogStyle.Size = new System.Drawing.Size(68, 19);
+            this.lblLogStyle.Size = new System.Drawing.Size(70, 19);
             this.lblLogStyle.TabIndex = 8;
             this.lblLogStyle.Text = "Log_Style:";
             // 
@@ -180,7 +195,7 @@ namespace Scada.Sanding
             this.lblSandingMode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSandingMode.Location = new System.Drawing.Point(20, 163);
             this.lblSandingMode.Name = "lblSandingMode";
-            this.lblSandingMode.Size = new System.Drawing.Size(99, 19);
+            this.lblSandingMode.Size = new System.Drawing.Size(94, 19);
             this.lblSandingMode.TabIndex = 6;
             this.lblSandingMode.Text = "Auto_Manual:";
             // 
@@ -202,7 +217,7 @@ namespace Scada.Sanding
             this.lblWorkOrder.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblWorkOrder.Location = new System.Drawing.Point(20, 121);
             this.lblWorkOrder.Name = "lblWorkOrder";
-            this.lblWorkOrder.Size = new System.Drawing.Size(83, 19);
+            this.lblWorkOrder.Size = new System.Drawing.Size(44, 19);
             this.lblWorkOrder.TabIndex = 4;
             this.lblWorkOrder.Text = "Work:";
             // 
@@ -224,7 +239,7 @@ namespace Scada.Sanding
             this.lblPartName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblPartName.Location = new System.Drawing.Point(20, 79);
             this.lblPartName.Name = "lblPartName";
-            this.lblPartName.Size = new System.Drawing.Size(75, 19);
+            this.lblPartName.Size = new System.Drawing.Size(73, 19);
             this.lblPartName.TabIndex = 2;
             this.lblPartName.Text = "PartName:";
             // 
@@ -235,7 +250,7 @@ namespace Scada.Sanding
             this.lblPlcStatusVal.ForeColor = System.Drawing.Color.Red;
             this.lblPlcStatusVal.Location = new System.Drawing.Point(140, 37);
             this.lblPlcStatusVal.Name = "lblPlcStatusVal";
-            this.lblPlcStatusVal.Size = new System.Drawing.Size(107, 19);
+            this.lblPlcStatusVal.Size = new System.Drawing.Size(98, 19);
             this.lblPlcStatusVal.TabIndex = 1;
             this.lblPlcStatusVal.Text = "Disconnected";
             // 
@@ -246,7 +261,7 @@ namespace Scada.Sanding
             this.lblPlcStatus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblPlcStatus.Location = new System.Drawing.Point(20, 37);
             this.lblPlcStatus.Name = "lblPlcStatus";
-            this.lblPlcStatus.Size = new System.Drawing.Size(81, 19);
+            this.lblPlcStatus.Size = new System.Drawing.Size(95, 19);
             this.lblPlcStatus.TabIndex = 0;
             this.lblPlcStatus.Text = "PlcConnected:";
             // 
@@ -286,7 +301,7 @@ namespace Scada.Sanding
             this.lblDiam3.ForeColor = System.Drawing.Color.Black;
             this.lblDiam3.Location = new System.Drawing.Point(240, 163);
             this.lblDiam3.Name = "lblDiam3";
-            this.lblDiam3.Size = new System.Drawing.Size(187, 20);
+            this.lblDiam3.Size = new System.Drawing.Size(202, 20);
             this.lblDiam3.TabIndex = 16;
             this.lblDiam3.Text = "OD 3: -- mm [LL: -- / UL: --]";
             // 
@@ -297,7 +312,7 @@ namespace Scada.Sanding
             this.lblDiam2.ForeColor = System.Drawing.Color.Black;
             this.lblDiam2.Location = new System.Drawing.Point(240, 121);
             this.lblDiam2.Name = "lblDiam2";
-            this.lblDiam2.Size = new System.Drawing.Size(187, 20);
+            this.lblDiam2.Size = new System.Drawing.Size(202, 20);
             this.lblDiam2.TabIndex = 15;
             this.lblDiam2.Text = "OD 2: -- mm [LL: -- / UL: --]";
             // 
@@ -308,7 +323,7 @@ namespace Scada.Sanding
             this.lblDiam1.ForeColor = System.Drawing.Color.Black;
             this.lblDiam1.Location = new System.Drawing.Point(240, 79);
             this.lblDiam1.Name = "lblDiam1";
-            this.lblDiam1.Size = new System.Drawing.Size(187, 20);
+            this.lblDiam1.Size = new System.Drawing.Size(202, 20);
             this.lblDiam1.TabIndex = 14;
             this.lblDiam1.Text = "OD 1: -- mm [LL: -- / UL: --]";
             // 
@@ -319,7 +334,7 @@ namespace Scada.Sanding
             this.lblOkNgSandingVal.ForeColor = System.Drawing.Color.Black;
             this.lblOkNgSandingVal.Location = new System.Drawing.Point(340, 31);
             this.lblOkNgSandingVal.Name = "lblOkNgSandingVal";
-            this.lblOkNgSandingVal.Size = new System.Drawing.Size(29, 25);
+            this.lblOkNgSandingVal.Size = new System.Drawing.Size(28, 25);
             this.lblOkNgSandingVal.TabIndex = 13;
             this.lblOkNgSandingVal.Text = "--";
             // 
@@ -330,7 +345,7 @@ namespace Scada.Sanding
             this.lblOkNgSanding.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblOkNgSanding.Location = new System.Drawing.Point(240, 37);
             this.lblOkNgSanding.Name = "lblOkNgSanding";
-            this.lblOkNgSanding.Size = new System.Drawing.Size(73, 19);
+            this.lblOkNgSanding.Size = new System.Drawing.Size(112, 19);
             this.lblOkNgSanding.TabIndex = 12;
             this.lblOkNgSanding.Text = "OK_NG_Sanding:";
             // 
@@ -352,7 +367,7 @@ namespace Scada.Sanding
             this.lblSpineHigh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSpineHigh.Location = new System.Drawing.Point(20, 226);
             this.lblSpineHigh.Name = "lblSpineHigh";
-            this.lblSpineHigh.Size = new System.Drawing.Size(77, 19);
+            this.lblSpineHigh.Size = new System.Drawing.Size(85, 19);
             this.lblSpineHigh.TabIndex = 10;
             this.lblSpineHigh.Text = "Spine_Hight:";
             // 
@@ -374,7 +389,7 @@ namespace Scada.Sanding
             this.lblSpineLow.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSpineLow.Location = new System.Drawing.Point(20, 195);
             this.lblSpineLow.Name = "lblSpineLow";
-            this.lblSpineLow.Size = new System.Drawing.Size(73, 19);
+            this.lblSpineLow.Size = new System.Drawing.Size(76, 19);
             this.lblSpineLow.TabIndex = 8;
             this.lblSpineLow.Text = "Spine_Low:";
             // 
@@ -396,7 +411,7 @@ namespace Scada.Sanding
             this.lblSpineTarget.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSpineTarget.Location = new System.Drawing.Point(20, 163);
             this.lblSpineTarget.Name = "lblSpineTarget";
-            this.lblSpineTarget.Size = new System.Drawing.Size(86, 19);
+            this.lblSpineTarget.Size = new System.Drawing.Size(88, 19);
             this.lblSpineTarget.TabIndex = 6;
             this.lblSpineTarget.Text = "Spine_Target:";
             // 
@@ -418,7 +433,7 @@ namespace Scada.Sanding
             this.lblSpineB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSpineB.Location = new System.Drawing.Point(20, 121);
             this.lblSpineB.Name = "lblSpineB";
-            this.lblSpineB.Size = new System.Drawing.Size(57, 19);
+            this.lblSpineB.Size = new System.Drawing.Size(59, 19);
             this.lblSpineB.TabIndex = 4;
             this.lblSpineB.Text = "Spine_B:";
             // 
@@ -440,7 +455,7 @@ namespace Scada.Sanding
             this.lblSpineA.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSpineA.Location = new System.Drawing.Point(20, 79);
             this.lblSpineA.Name = "lblSpineA";
-            this.lblSpineA.Size = new System.Drawing.Size(58, 19);
+            this.lblSpineA.Size = new System.Drawing.Size(60, 19);
             this.lblSpineA.TabIndex = 2;
             this.lblSpineA.Text = "Spine_A:";
             // 
@@ -462,7 +477,7 @@ namespace Scada.Sanding
             this.lblMotorSpeed.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblMotorSpeed.Location = new System.Drawing.Point(20, 37);
             this.lblMotorSpeed.Name = "lblMotorSpeed";
-            this.lblMotorSpeed.Size = new System.Drawing.Size(91, 19);
+            this.lblMotorSpeed.Size = new System.Drawing.Size(154, 19);
             this.lblMotorSpeed.TabIndex = 0;
             this.lblMotorSpeed.Text = "Mortor_Sanding_Speed:";
             // 
@@ -471,7 +486,7 @@ namespace Scada.Sanding
             this.pnlFooter.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(235)))));
             this.pnlFooter.Controls.Add(this.lblFooterStatus);
             this.pnlFooter.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlFooter.Location = new System.Drawing.Point(0, 560);
+            this.pnlFooter.Location = new System.Drawing.Point(0, 570);
             this.pnlFooter.Name = "pnlFooter";
             this.pnlFooter.Size = new System.Drawing.Size(950, 30);
             this.pnlFooter.TabIndex = 3;
@@ -483,13 +498,16 @@ namespace Scada.Sanding
             this.lblFooterStatus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblFooterStatus.Location = new System.Drawing.Point(16, 7);
             this.lblFooterStatus.Name = "lblFooterStatus";
-            this.lblFooterStatus.Size = new System.Drawing.Size(437, 15);
+            this.lblFooterStatus.Size = new System.Drawing.Size(427, 15);
             this.lblFooterStatus.TabIndex = 0;
-            this.lblFooterStatus.Text = "EasyDriver Status: Disconnected | PLC Status: Disconnected | DB Server Status: --";
+            this.lblFooterStatus.Text = "EasyDriver Status: Disconnected | PLC Status: Disconnected | DB Server Status: --" +
+    "";
             // 
             // grpPlcSettings
             // 
             this.grpPlcSettings.BackColor = System.Drawing.Color.White;
+            this.grpPlcSettings.Controls.Add(this.label1);
+            this.grpPlcSettings.Controls.Add(this.lblSetOD_BOD_Val);
             this.grpPlcSettings.Controls.Add(this.lblShaftNumSanding);
             this.grpPlcSettings.Controls.Add(this.lblShaftNumSandingVal);
             this.grpPlcSettings.Controls.Add(this.lblShaftNumOd);
@@ -534,7 +552,7 @@ namespace Scada.Sanding
             this.lblShaftNumSanding.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblShaftNumSanding.Location = new System.Drawing.Point(20, 35);
             this.lblShaftNumSanding.Name = "lblShaftNumSanding";
-            this.lblShaftNumSanding.Size = new System.Drawing.Size(124, 19);
+            this.lblShaftNumSanding.Size = new System.Drawing.Size(134, 19);
             this.lblShaftNumSanding.TabIndex = 0;
             this.lblShaftNumSanding.Text = "Shaft_Num_Sanding:";
             // 
@@ -546,6 +564,7 @@ namespace Scada.Sanding
             this.lblShaftNumSandingVal.Location = new System.Drawing.Point(180, 35);
             this.lblShaftNumSandingVal.Name = "lblShaftNumSandingVal";
             this.lblShaftNumSandingVal.Size = new System.Drawing.Size(21, 19);
+            this.lblShaftNumSandingVal.TabIndex = 1;
             this.lblShaftNumSandingVal.Text = "--";
             // 
             // lblShaftNumOd
@@ -555,7 +574,7 @@ namespace Scada.Sanding
             this.lblShaftNumOd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblShaftNumOd.Location = new System.Drawing.Point(20, 70);
             this.lblShaftNumOd.Name = "lblShaftNumOd";
-            this.lblShaftNumOd.Size = new System.Drawing.Size(124, 19);
+            this.lblShaftNumOd.Size = new System.Drawing.Size(106, 19);
             this.lblShaftNumOd.TabIndex = 2;
             this.lblShaftNumOd.Text = "Shaft_Num_OD:";
             // 
@@ -567,6 +586,7 @@ namespace Scada.Sanding
             this.lblShaftNumOdVal.Location = new System.Drawing.Point(180, 70);
             this.lblShaftNumOdVal.Name = "lblShaftNumOdVal";
             this.lblShaftNumOdVal.Size = new System.Drawing.Size(21, 19);
+            this.lblShaftNumOdVal.TabIndex = 3;
             this.lblShaftNumOdVal.Text = "--";
             // 
             // lblSetFreqTarget
@@ -576,7 +596,7 @@ namespace Scada.Sanding
             this.lblSetFreqTarget.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetFreqTarget.Location = new System.Drawing.Point(20, 105);
             this.lblSetFreqTarget.Name = "lblSetFreqTarget";
-            this.lblSetFreqTarget.Size = new System.Drawing.Size(124, 19);
+            this.lblSetFreqTarget.Size = new System.Drawing.Size(107, 19);
             this.lblSetFreqTarget.TabIndex = 4;
             this.lblSetFreqTarget.Text = "Set_Freq_Target:";
             // 
@@ -588,6 +608,7 @@ namespace Scada.Sanding
             this.lblSetFreqTargetVal.Location = new System.Drawing.Point(180, 105);
             this.lblSetFreqTargetVal.Name = "lblSetFreqTargetVal";
             this.lblSetFreqTargetVal.Size = new System.Drawing.Size(21, 19);
+            this.lblSetFreqTargetVal.TabIndex = 5;
             this.lblSetFreqTargetVal.Text = "--";
             // 
             // lblSetFreqOffsetLow
@@ -597,9 +618,10 @@ namespace Scada.Sanding
             this.lblSetFreqOffsetLow.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetFreqOffsetLow.Location = new System.Drawing.Point(20, 140);
             this.lblSetFreqOffsetLow.Name = "lblSetFreqOffsetLow";
-            this.lblSetFreqOffsetLow.Size = new System.Drawing.Size(124, 19);
+            this.lblSetFreqOffsetLow.Size = new System.Drawing.Size(138, 19);
             this.lblSetFreqOffsetLow.TabIndex = 6;
-            this.lblSetFreqOffsetLow.Text = "Set_Freq_Offset_Low:";
+            this.lblSetFreqOffsetLow.Text = "Set_Freq_Target_Low:";
+            this.lblSetFreqOffsetLow.Click += new System.EventHandler(this.lblSetFreqOffsetLow_Click);
             // 
             // lblSetFreqOffsetLowVal
             // 
@@ -609,6 +631,7 @@ namespace Scada.Sanding
             this.lblSetFreqOffsetLowVal.Location = new System.Drawing.Point(180, 140);
             this.lblSetFreqOffsetLowVal.Name = "lblSetFreqOffsetLowVal";
             this.lblSetFreqOffsetLowVal.Size = new System.Drawing.Size(21, 19);
+            this.lblSetFreqOffsetLowVal.TabIndex = 7;
             this.lblSetFreqOffsetLowVal.Text = "--";
             // 
             // lblSetFreqOffsetHigh
@@ -618,9 +641,9 @@ namespace Scada.Sanding
             this.lblSetFreqOffsetHigh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetFreqOffsetHigh.Location = new System.Drawing.Point(20, 175);
             this.lblSetFreqOffsetHigh.Name = "lblSetFreqOffsetHigh";
-            this.lblSetFreqOffsetHigh.Size = new System.Drawing.Size(124, 19);
+            this.lblSetFreqOffsetHigh.Size = new System.Drawing.Size(147, 19);
             this.lblSetFreqOffsetHigh.TabIndex = 8;
-            this.lblSetFreqOffsetHigh.Text = "Set_Freq_Offset_Hight:";
+            this.lblSetFreqOffsetHigh.Text = "Set_Freq_Target_Hight:";
             // 
             // lblSetFreqOffsetHighVal
             // 
@@ -630,6 +653,7 @@ namespace Scada.Sanding
             this.lblSetFreqOffsetHighVal.Location = new System.Drawing.Point(180, 175);
             this.lblSetFreqOffsetHighVal.Name = "lblSetFreqOffsetHighVal";
             this.lblSetFreqOffsetHighVal.Size = new System.Drawing.Size(21, 19);
+            this.lblSetFreqOffsetHighVal.TabIndex = 9;
             this.lblSetFreqOffsetHighVal.Text = "--";
             // 
             // lblSetFormulaF
@@ -639,7 +663,8 @@ namespace Scada.Sanding
             this.lblSetFormulaF.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetFormulaF.Location = new System.Drawing.Point(320, 35);
             this.lblSetFormulaF.Name = "lblSetFormulaF";
-            this.lblSetFormulaF.Size = new System.Drawing.Size(95, 19);
+            this.lblSetFormulaF.Size = new System.Drawing.Size(100, 19);
+            this.lblSetFormulaF.TabIndex = 10;
             this.lblSetFormulaF.Text = "Set_Formula_F:";
             // 
             // lblSetFormulaFVal
@@ -650,6 +675,7 @@ namespace Scada.Sanding
             this.lblSetFormulaFVal.Location = new System.Drawing.Point(455, 35);
             this.lblSetFormulaFVal.Name = "lblSetFormulaFVal";
             this.lblSetFormulaFVal.Size = new System.Drawing.Size(21, 19);
+            this.lblSetFormulaFVal.TabIndex = 11;
             this.lblSetFormulaFVal.Text = "--";
             // 
             // lblSetA
@@ -659,7 +685,8 @@ namespace Scada.Sanding
             this.lblSetA.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetA.Location = new System.Drawing.Point(320, 70);
             this.lblSetA.Name = "lblSetA";
-            this.lblSetA.Size = new System.Drawing.Size(65, 19);
+            this.lblSetA.Size = new System.Drawing.Size(46, 19);
+            this.lblSetA.TabIndex = 12;
             this.lblSetA.Text = "Set_A:";
             // 
             // lblSetAVal
@@ -670,6 +697,7 @@ namespace Scada.Sanding
             this.lblSetAVal.Location = new System.Drawing.Point(455, 70);
             this.lblSetAVal.Name = "lblSetAVal";
             this.lblSetAVal.Size = new System.Drawing.Size(21, 19);
+            this.lblSetAVal.TabIndex = 13;
             this.lblSetAVal.Text = "--";
             // 
             // lblSetB
@@ -679,7 +707,8 @@ namespace Scada.Sanding
             this.lblSetB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetB.Location = new System.Drawing.Point(320, 105);
             this.lblSetB.Name = "lblSetB";
-            this.lblSetB.Size = new System.Drawing.Size(64, 19);
+            this.lblSetB.Size = new System.Drawing.Size(45, 19);
+            this.lblSetB.TabIndex = 14;
             this.lblSetB.Text = "Set_B:";
             // 
             // lblSetBVal
@@ -690,6 +719,7 @@ namespace Scada.Sanding
             this.lblSetBVal.Location = new System.Drawing.Point(455, 105);
             this.lblSetBVal.Name = "lblSetBVal";
             this.lblSetBVal.Size = new System.Drawing.Size(21, 19);
+            this.lblSetBVal.TabIndex = 15;
             this.lblSetBVal.Text = "--";
             // 
             // lblSetC
@@ -699,7 +729,8 @@ namespace Scada.Sanding
             this.lblSetC.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetC.Location = new System.Drawing.Point(320, 140);
             this.lblSetC.Name = "lblSetC";
-            this.lblSetC.Size = new System.Drawing.Size(65, 19);
+            this.lblSetC.Size = new System.Drawing.Size(46, 19);
+            this.lblSetC.TabIndex = 16;
             this.lblSetC.Text = "Set_C:";
             // 
             // lblSetCVal
@@ -710,6 +741,7 @@ namespace Scada.Sanding
             this.lblSetCVal.Location = new System.Drawing.Point(455, 140);
             this.lblSetCVal.Name = "lblSetCVal";
             this.lblSetCVal.Size = new System.Drawing.Size(21, 19);
+            this.lblSetCVal.TabIndex = 17;
             this.lblSetCVal.Text = "--";
             // 
             // lblSetD
@@ -719,7 +751,8 @@ namespace Scada.Sanding
             this.lblSetD.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetD.Location = new System.Drawing.Point(320, 175);
             this.lblSetD.Name = "lblSetD";
-            this.lblSetD.Size = new System.Drawing.Size(66, 19);
+            this.lblSetD.Size = new System.Drawing.Size(47, 19);
+            this.lblSetD.TabIndex = 18;
             this.lblSetD.Text = "Set_D:";
             // 
             // lblSetDVal
@@ -730,6 +763,7 @@ namespace Scada.Sanding
             this.lblSetDVal.Location = new System.Drawing.Point(455, 175);
             this.lblSetDVal.Name = "lblSetDVal";
             this.lblSetDVal.Size = new System.Drawing.Size(21, 19);
+            this.lblSetDVal.TabIndex = 19;
             this.lblSetDVal.Text = "--";
             // 
             // lblSetShaftLength
@@ -739,7 +773,8 @@ namespace Scada.Sanding
             this.lblSetShaftLength.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetShaftLength.Location = new System.Drawing.Point(620, 35);
             this.lblSetShaftLength.Name = "lblSetShaftLength";
-            this.lblSetShaftLength.Size = new System.Drawing.Size(107, 19);
+            this.lblSetShaftLength.Size = new System.Drawing.Size(117, 19);
+            this.lblSetShaftLength.TabIndex = 20;
             this.lblSetShaftLength.Text = "Set_Shaft_Length:";
             // 
             // lblSetShaftLengthVal
@@ -750,6 +785,7 @@ namespace Scada.Sanding
             this.lblSetShaftLengthVal.Location = new System.Drawing.Point(785, 35);
             this.lblSetShaftLengthVal.Name = "lblSetShaftLengthVal";
             this.lblSetShaftLengthVal.Size = new System.Drawing.Size(21, 19);
+            this.lblSetShaftLengthVal.TabIndex = 21;
             this.lblSetShaftLengthVal.Text = "--";
             // 
             // lblSetTipOdLength1
@@ -759,7 +795,8 @@ namespace Scada.Sanding
             this.lblSetTipOdLength1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetTipOdLength1.Location = new System.Drawing.Point(620, 70);
             this.lblSetTipOdLength1.Name = "lblSetTipOdLength1";
-            this.lblSetTipOdLength1.Size = new System.Drawing.Size(123, 19);
+            this.lblSetTipOdLength1.Size = new System.Drawing.Size(145, 19);
+            this.lblSetTipOdLength1.TabIndex = 22;
             this.lblSetTipOdLength1.Text = "Set_Tip_OD_Length_1:";
             // 
             // lblSetTipOdLength1Val
@@ -770,6 +807,7 @@ namespace Scada.Sanding
             this.lblSetTipOdLength1Val.Location = new System.Drawing.Point(785, 70);
             this.lblSetTipOdLength1Val.Name = "lblSetTipOdLength1Val";
             this.lblSetTipOdLength1Val.Size = new System.Drawing.Size(21, 19);
+            this.lblSetTipOdLength1Val.TabIndex = 23;
             this.lblSetTipOdLength1Val.Text = "--";
             // 
             // lblSetTipOdLength2
@@ -779,7 +817,8 @@ namespace Scada.Sanding
             this.lblSetTipOdLength2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetTipOdLength2.Location = new System.Drawing.Point(620, 105);
             this.lblSetTipOdLength2.Name = "lblSetTipOdLength2";
-            this.lblSetTipOdLength2.Size = new System.Drawing.Size(123, 19);
+            this.lblSetTipOdLength2.Size = new System.Drawing.Size(145, 19);
+            this.lblSetTipOdLength2.TabIndex = 24;
             this.lblSetTipOdLength2.Text = "Set_Tip_OD_Length_2:";
             // 
             // lblSetTipOdLength2Val
@@ -790,6 +829,7 @@ namespace Scada.Sanding
             this.lblSetTipOdLength2Val.Location = new System.Drawing.Point(785, 105);
             this.lblSetTipOdLength2Val.Name = "lblSetTipOdLength2Val";
             this.lblSetTipOdLength2Val.Size = new System.Drawing.Size(21, 19);
+            this.lblSetTipOdLength2Val.TabIndex = 25;
             this.lblSetTipOdLength2Val.Text = "--";
             // 
             // lblSetTipOdLength3
@@ -799,7 +839,8 @@ namespace Scada.Sanding
             this.lblSetTipOdLength3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetTipOdLength3.Location = new System.Drawing.Point(620, 140);
             this.lblSetTipOdLength3.Name = "lblSetTipOdLength3";
-            this.lblSetTipOdLength3.Size = new System.Drawing.Size(123, 19);
+            this.lblSetTipOdLength3.Size = new System.Drawing.Size(145, 19);
+            this.lblSetTipOdLength3.TabIndex = 26;
             this.lblSetTipOdLength3.Text = "Set_Tip_OD_Length_3:";
             // 
             // lblSetTipOdLength3Val
@@ -810,7 +851,30 @@ namespace Scada.Sanding
             this.lblSetTipOdLength3Val.Location = new System.Drawing.Point(785, 140);
             this.lblSetTipOdLength3Val.Name = "lblSetTipOdLength3Val";
             this.lblSetTipOdLength3Val.Size = new System.Drawing.Size(21, 19);
+            this.lblSetTipOdLength3Val.TabIndex = 27;
             this.lblSetTipOdLength3Val.Text = "--";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
+            this.label1.Location = new System.Drawing.Point(621, 175);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(93, 19);
+            this.label1.TabIndex = 28;
+            this.label1.Text = "Set_OD_BOD:";
+            // 
+            // lblSetOD_BOD_Val
+            // 
+            this.lblSetOD_BOD_Val.AutoSize = true;
+            this.lblSetOD_BOD_Val.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSetOD_BOD_Val.ForeColor = System.Drawing.Color.Black;
+            this.lblSetOD_BOD_Val.Location = new System.Drawing.Point(786, 175);
+            this.lblSetOD_BOD_Val.Name = "lblSetOD_BOD_Val";
+            this.lblSetOD_BOD_Val.Size = new System.Drawing.Size(21, 19);
+            this.lblSetOD_BOD_Val.TabIndex = 29;
+            this.lblSetOD_BOD_Val.Text = "--";
             // 
             // Form1
             // 
@@ -823,19 +887,6 @@ namespace Scada.Sanding
             this.Controls.Add(this.grpParameters);
             this.Controls.Add(this.grpProduction);
             this.Controls.Add(this.pnlTitle);
-            
-            // easyDriverConnector1
-            this.easyDriverConnector1.CollectionName = null;
-            this.easyDriverConnector1.CommunicationMode = EasyScada.Core.CommunicationMode.ReceiveFromServer;
-            this.easyDriverConnector1.DatabaseName = null;
-            this.easyDriverConnector1.MongoDb_ConnectionString = null;
-            this.easyDriverConnector1.Port = ((ushort)(8800));
-            this.easyDriverConnector1.RefreshRate = 1000;
-            this.easyDriverConnector1.ServerAddress = "127.0.0.1";
-            this.easyDriverConnector1.StationName = null;
-            this.easyDriverConnector1.Timeout = 30;
-            this.easyDriverConnector1.UseMongoDb = false;
-
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form1";
@@ -850,6 +901,8 @@ namespace Scada.Sanding
             this.grpParameters.PerformLayout();
             this.pnlFooter.ResumeLayout(false);
             this.pnlFooter.PerformLayout();
+            this.grpPlcSettings.ResumeLayout(false);
+            this.grpPlcSettings.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -918,5 +971,7 @@ namespace Scada.Sanding
         private System.Windows.Forms.Label lblSetTipOdLength2Val;
         private System.Windows.Forms.Label lblSetTipOdLength3;
         private System.Windows.Forms.Label lblSetTipOdLength3Val;
+        private Label label1;
+        private Label lblSetOD_BOD_Val;
     }
 }

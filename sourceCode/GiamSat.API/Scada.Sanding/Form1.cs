@@ -458,6 +458,9 @@ namespace Scada.Sanding
                 case "Set_Tip_OD_Length_3":
                     lblSetTipOdLength3Val.Text = ParseDouble(val).ToString("F3");
                     break;
+                case "Set_OD_BOD":
+                    lblSetOD_BOD_Val.Text = ParseDouble(val).ToString("F3");
+                    break;
             }
         }
 
@@ -926,6 +929,11 @@ namespace Scada.Sanding
                 return val;
             }
             return 0;
+        }
+
+        private void lblSetFreqOffsetLow_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
