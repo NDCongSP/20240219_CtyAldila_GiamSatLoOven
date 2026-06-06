@@ -642,9 +642,9 @@ namespace Scada.Sanding
                 {
                     if (style == 2) // Pilot 5
                     {
-                        if (GlobalVariable.Pilot5SandingCount >= 10)
+                        if (GlobalVariable.Pilot5SandingCount >= 5)
                         {
-                            LogEvent($"[Pilot 5 Limit] Bỏ qua lưu log cho Shaft {currentShaft} (Đã lưu đủ 10 dòng mài).");
+                            LogEvent($"[Pilot 5 Limit] Bỏ qua lưu log cho Shaft {currentShaft} (Đã lưu đủ 5 dòng mài).");
                             await WriteTagAsync("Trigger_Log_Sanding", "0");
                             return;
                         }
@@ -678,7 +678,7 @@ namespace Scada.Sanding
                     if (style == 2)
                     {
                         GlobalVariable.Pilot5SandingCount++;
-                        LogEvent($"[Pilot 5] Đã lưu log mài thứ {GlobalVariable.Pilot5SandingCount}/10 cho Shaft {currentShaft}.");
+                        LogEvent($"[Pilot 5] Đã lưu log mài thứ {GlobalVariable.Pilot5SandingCount}/5 cho Shaft {currentShaft}.");
                     }
                     else
                     {
@@ -719,9 +719,9 @@ namespace Scada.Sanding
                 {
                     if (style == 2) // Pilot 5
                     {
-                        if (GlobalVariable.Pilot5OdCount >= 10)
+                        if (GlobalVariable.Pilot5OdCount >= 5)
                         {
-                            LogEvent($"[Pilot 5 Limit] Bỏ qua lưu log OD cho Shaft {currentShaft} (Đã lưu đủ 10 dòng OD).");
+                            LogEvent($"[Pilot 5 Limit] Bỏ qua lưu log OD cho Shaft {currentShaft} (Đã lưu đủ 5 dòng OD).");
                             await WriteTagAsync("Trigger_Log_OD", "0");
                             return;
                         }
@@ -763,7 +763,7 @@ namespace Scada.Sanding
                         if (style == 2)
                         {
                             GlobalVariable.Pilot5OdCount++;
-                            LogEvent($"[Pilot 5] Đã cập nhật kết quả đo OD thứ {GlobalVariable.Pilot5OdCount}/10 cho Shaft {currentShaft}.");
+                            LogEvent($"[Pilot 5] Đã cập nhật kết quả đo OD thứ {GlobalVariable.Pilot5OdCount}/5 cho Shaft {currentShaft}.");
                         }
                         else
                         {
