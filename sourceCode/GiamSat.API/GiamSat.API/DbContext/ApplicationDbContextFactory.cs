@@ -29,9 +29,9 @@ namespace GiamSat.API
             //return new ApplicationDbContext(optionsBuilder.Options);
 
             var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            builder.UseSqlServer(@"Server=49.212.161.31;Initial Catalog=FBT_DEV2;Persist Security Info=False;User ID=sa;Password=@shuei249;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=True;Connection Timeout=300;", b =>
+            builder.UseSqlServer(@"Server=phucthinhautomation.ddns.net,1433;Database=oven;User Id=dev1;Password=DaPHA5eY@$AWysDW;TrustServerCertificate=True;Connection Timeout=10", b =>
             {
-                b.MigrationsHistoryTable("__EFMigrationsHistoryWMS");
+                b.MigrationsHistoryTable("__EFMigrationsHistory");
             });
             return new ApplicationDbContext(builder.Options);
         }
