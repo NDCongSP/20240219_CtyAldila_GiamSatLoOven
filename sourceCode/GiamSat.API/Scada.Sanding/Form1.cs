@@ -562,6 +562,18 @@ namespace Scada.Sanding
                     {
                         LogEvent($"Tìm thấy cấu hình trong FT14. Đang ghi xuống PLC...");
                         await DownloadConfigToPlcAsync(config);
+
+                        // Xử lý các lệnh ghi log đang bị kẹt (pending) trong lúc chờ chuỗi Part hoàn chỉnh
+                        if (GlobalVariable.SandingRealtime.Trigger_Log_Sanding == 1)
+                        {
+                            LogEvent($"Phát hiện lệnh ghi log Sanding đang chờ, tiến hành xử lý cho Part hợp lệ...");
+                            _ = ProcessSandingLogAsync();
+                        }
+                        if (GlobalVariable.SandingRealtime.Trigger_Log_OD == 1)
+                        {
+                            LogEvent($"Phát hiện lệnh ghi log OD đang chờ, tiến hành xử lý cho Part hợp lệ...");
+                            _ = ProcessOdLogAsync();
+                        }
                     }
                     else
                     {
@@ -640,6 +652,14 @@ namespace Scada.Sanding
 
                 using (var db = new ApplicationDbContext())
                 {
+                    // Kiểm tra tồn tại trong FT14 để tránh ghi log khi mã Part chưa truyền xong
+                    bool isPartValid = await db.FT14_TipOdFreqs.AnyAsync(x => x.PartName == part && x.Actived == true);
+                    if (!isPartValid)
+                    {
+                        LogEvent($"[Từ chối Log] Part '{part}' không có trong FT14. Tạm dừng ghi log Sanding và giữ nguyên Trigger.");
+                        return; // Không reset trigger, đợi hàm cấu hình gọi lại khi có part đúng
+                    }
+
                     if (style == 2) // Pilot 5
                     {
                         if (GlobalVariable.Pilot5SandingCount >= 5)
@@ -717,6 +737,14 @@ namespace Scada.Sanding
 
                 using (var db = new ApplicationDbContext())
                 {
+                    // Kiểm tra tồn tại trong FT14 để tránh ghi log khi mã Part chưa truyền xong
+                    bool isPartValid = await db.FT14_TipOdFreqs.AnyAsync(x => x.PartName == part && x.Actived == true);
+                    if (!isPartValid)
+                    {
+                        LogEvent($"[Từ chối Log OD] Part '{part}' không có trong FT14. Tạm dừng ghi log OD và giữ nguyên Trigger.");
+                        return; // Không reset trigger, đợi hàm cấu hình gọi lại khi có part đúng
+                    }
+
                     if (style == 2) // Pilot 5
                     {
                         if (GlobalVariable.Pilot5OdCount >= 5)
