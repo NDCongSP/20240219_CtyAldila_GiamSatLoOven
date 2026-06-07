@@ -91,7 +91,7 @@ máy này cần lập trình PLC
 
 đọc part word từ file access, sau đó lấy thồn tin về góc quay và tốc độ quay/2 truyền xuống PLC hoạt động. rồi lấy thông tin phản hồi START/STOP STEP từ PLC để log vào DB thời gian chạy dừng của các bước theo PART + WORK
 -------------------------------------------------------------------------------------------
-Auto rolling: HMI GOT2000, PLC-Q series
+Auto rolling: HMI GOT2000, PLC-Q series MC-Protocol port 8000 để kết nối PC
     |-Auto_Rolling_1: AUTO_ROLLING_3073_6_2_2024
         |-HMI:192.168.11.11
         |-PLC: 192.168.11.1
@@ -102,10 +102,45 @@ Auto rolling: HMI GOT2000, PLC-Q series
         |-HMI nhỏ: 192.168.11.22
     |-Auto_Rolling_3: AUTO_ROLLING_3083_6_2_2024
         |-HMI:192.168.11.13
-        |-PLC: 192.168.11.3
+        |-PLC: 192.168.11.3 --MC Protocol
         |-HMI nhỏ: 192.168.11.23
 
 máy auto rolling đac có HMI tính toán các thông số chạy máy hết rồi, nên chỉ cẩn kết nối với HMI để lấy thông tin lên lưu vào DB
+
+command test đọc MC-Protocol chat power cell
+try {
+    $client = New-Object System.Net.Sockets.TcpClient
+    $client.Connect("192.168.11.3", 8000)
+    $stream = $client.GetStream()
+    $stream.ReadTimeout = 3000
+
+    # 3E Binary frame: Read D162, 1 word
+    $frame = [byte[]](
+        0x50, 0x00,        # Subheader
+        0x00,              # Network No
+        0xFF,              # PC No (self-station)
+        0xFF, 0x03,        # Request I/O No
+        0x00,              # Request station No
+        0x0C, 0x00,        # Request data length (12 bytes)
+        0x10, 0x00,        # Monitoring timer
+        0x01, 0x04,        # Command: Batch Read
+        0x00, 0x00,        # Subcommand: word units
+        0xA2, 0x00, 0x00,  # D162 address (162 = 0xA2)
+        0xA8,              # Device code: D register
+        0x01, 0x00         # 1 point
+    )
+    $stream.Write($frame, 0, $frame.Length)
+
+    $buf = New-Object byte[] 64
+    $n = $stream.Read($buf, 0, 64)
+    $hex = ($buf[0..($n-1)] | ForEach-Object { "{0:X2}" -f $_ }) -join " "
+    Write-Host "Bytes received: $n"
+    Write-Host "Response: $hex"
+    $client.Close()
+} catch {
+    Write-Host "Error: $_"
+}
+
 
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
