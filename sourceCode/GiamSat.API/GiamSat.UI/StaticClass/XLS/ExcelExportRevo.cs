@@ -21,7 +21,8 @@ namespace GiamSat.UI
             bool useGridWhenAvailable,
             IReadOnlyList<Pages.RevoReport.RevoStepRow>? stepRows,
             IReadOnlyList<Pages.RevoReport.RevoShaftRow>? shaftRows,
-            IReadOnlyList<Pages.RevoReport.RevoHourRow>? hourRows)
+            IReadOnlyList<Pages.RevoReport.RevoHourRow>? hourRows,
+            List<Pages.RevoReport.RevoDropdownModel>? revoList = null)
         {
             using var wb = new XLWorkbook();
             wb.Properties.Author = "GiamSat System";
@@ -34,10 +35,25 @@ namespace GiamSat.UI
                 ? "Chỉ shaft hoàn thành"
                 : "Tất cả shaft";
 
+            if (revoList == null || revoList.Count == 0)
+            {
+                revoList = data
+                    .Where(x => x.RevoId.HasValue)
+                    .Select(x => new Pages.RevoReport.RevoDropdownModel
+                    {
+                        Id = x.RevoId!.Value,
+                        Name = x.RevoName ?? $"REVO {x.RevoId}"
+                    })
+                    .GroupBy(x => x.Id)
+                    .Select(g => g.First())
+                    .OrderBy(x => x.Id)
+                    .ToList();
+            }
+
             int colCount = mode switch
             {
                 Pages.RevoReport.RevoReportMode.ByShaft => 9,
-                Pages.RevoReport.RevoReportMode.ByHour => 7,
+                Pages.RevoReport.RevoReportMode.ByHour => 1 + revoList.Count * 2,
                 _ => 11
             };
 
@@ -75,9 +91,9 @@ namespace GiamSat.UI
             else if (useGridWhenAvailable && mode == Pages.RevoReport.RevoReportMode.ByShaft && shaftRows is { Count: > 0 })
                 currentRow = WriteShaftFromGrid(ws, currentRow, colCount, shaftRows);
             else if (useGridWhenAvailable && mode == Pages.RevoReport.RevoReportMode.ByHour && hourRows is { Count: > 0 })
-                currentRow = WriteHourFromGrid(ws, currentRow, hourRows);
+                currentRow = WriteHourFromGrid(ws, currentRow, hourRows, revoList);
             else
-                currentRow = WriteFromRawFt09(ws, data, mode, shaftScope, currentRow, colCount);
+                currentRow = WriteFromRawFt09(ws, data, mode, shaftScope, currentRow, colCount, revoList);
 
             ws.Columns().AdjustToContents();
 
@@ -111,8 +127,8 @@ namespace GiamSat.UI
                 ws.Cell(outRow, 6).Value = r.Rev ?? "N/A";
                 ws.Cell(outRow, 7).Value = r.Mandrel ?? "N/A";
                 ws.Cell(outRow, 8).Value = r.StepDisplay;
-                ws.Cell(outRow, 9).Value = r.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
-                ws.Cell(outRow, 10).Value = r.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
+                ws.Cell(outRow, 9).Value = r.StartedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
+                ws.Cell(outRow, 10).Value = r.EndedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
                 ws.Cell(outRow, 11).Value = r.DurationText;
                 if (r.HighlightIncomplete)
                     ws.Range(outRow, 1, outRow, colCount).Style.Fill.SetBackgroundColor(WarningFill);
@@ -143,8 +159,8 @@ namespace GiamSat.UI
                 ws.Cell(outRow, 4).Value = r.Work ?? "N/A";
                 ws.Cell(outRow, 5).Value = r.Mandrel ?? "N/A";
                 ws.Cell(outRow, 6).Value = r.StepCount;
-                ws.Cell(outRow, 7).Value = r.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
-                ws.Cell(outRow, 8).Value = r.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
+                ws.Cell(outRow, 7).Value = r.StartedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
+                ws.Cell(outRow, 8).Value = r.EndedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
                 ws.Cell(outRow, 9).Value = r.TotalTimeText;
                 if (r.HighlightIncomplete)
                     ws.Range(outRow, 1, outRow, colCount).Style.Fill.SetBackgroundColor(WarningFill);
@@ -154,27 +170,46 @@ namespace GiamSat.UI
             return outRow;
         }
 
-        private static int WriteHourFromGrid(IXLWorksheet ws, int currentRow, IReadOnlyList<Pages.RevoReport.RevoHourRow> rows)
+        private static int WriteHourFromGrid(
+            IXLWorksheet ws,
+            int currentRow,
+            IReadOnlyList<Pages.RevoReport.RevoHourRow> rows,
+            List<Pages.RevoReport.RevoDropdownModel> revoList)
         {
-            const int colCount = 7;
-            ws.Cell(currentRow, 1).Value = "Giờ";
-            ws.Cell(currentRow, 2).Value = "Tổng số Shaft";
-            ws.Cell(currentRow, 3).Value = "Hoàn thành (trong giờ)";
-            ws.Cell(currentRow, 4).Value = "Chưa xong (giờ)";
-            ws.Cell(currentRow, 5).Value = "Bắt đầu";
-            ws.Cell(currentRow, 6).Value = "Kết thúc";
-            ws.Cell(currentRow, 7).Value = "Thời lượng";
-            StyleHeader(ws, currentRow, colCount);
-            var outRow = currentRow + 1;
+            int colCount = 1 + revoList.Count * 2;
+
+            // Merge "Giờ" vertically across currentRow and currentRow + 1
+            ws.Range(currentRow, 1, currentRow + 1, 1).Merge().Value = "Giờ";
+            ws.Range(currentRow, 1, currentRow + 1, 1).Style
+                .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center)
+                .Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+
+            int currentCol = 2;
+            foreach (var revo in revoList)
+            {
+                ws.Range(currentRow, currentCol, currentRow, currentCol + 1).Merge().Value = revo.Name;
+                ws.Cell(currentRow + 1, currentCol).Value = "Tổng số";
+                ws.Cell(currentRow + 1, currentCol + 1).Value = "Hoàn thành";
+                currentCol += 2;
+            }
+
+            StyleHeader(ws, currentRow, colCount, XLColor.FromHtml("#FFF2CC"));
+            StyleHeader(ws, currentRow + 1, colCount, XLColor.FromHtml("#FFF2CC"));
+
+            var outRow = currentRow + 2;
             foreach (var r in rows)
             {
                 ws.Cell(outRow, 1).Value = r.HourRange;
-                ws.Cell(outRow, 2).Value = r.ShaftCount;
-                ws.Cell(outRow, 3).Value = r.ShaftCountFinishedInHour;
-                ws.Cell(outRow, 4).Value = r.IncompleteShaftCountInHour;
-                ws.Cell(outRow, 5).Value = r.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
-                ws.Cell(outRow, 6).Value = r.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
-                ws.Cell(outRow, 7).Value = r.TotalHoursText;
+
+                int cCol = 2;
+                foreach (var revo in revoList)
+                {
+                    var stats = r.GetMachineStats(revo.Id);
+                    ws.Cell(outRow, cCol).Value = stats.TotalShafts;
+                    ws.Cell(outRow, cCol + 1).Value = stats.FinishedShafts;
+                    cCol += 2;
+                }
+
                 if (r.HighlightIncomplete)
                     ws.Range(outRow, 1, outRow, colCount).Style.Fill.SetBackgroundColor(WarningFill);
                 outRow++;
@@ -189,7 +224,8 @@ namespace GiamSat.UI
             Pages.RevoReport.RevoReportMode mode,
             Pages.RevoReport.RevoShaftScopeKind shaftScope,
             int currentRow,
-            int colCount)
+            int colCount,
+            List<Pages.RevoReport.RevoDropdownModel> revoList)
         {
             var normalized = data
                 .Where(x => x != null)
@@ -271,8 +307,8 @@ namespace GiamSat.UI
                     ws.Cell(outRow, 6).Value = item.Rev ?? "N/A";
                     ws.Cell(outRow, 7).Value = item.Mandrel ?? "N/A";
                     ws.Cell(outRow, 8).Value = $"{stepName} ({stepIdTxt})";
-                    ws.Cell(outRow, 9).Value = isAutoRolling ? "N/A" : item.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
-                    ws.Cell(outRow, 10).Value = isAutoRolling ? "N/A" : item.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
+                    ws.Cell(outRow, 9).Value = isAutoRolling ? "N/A" : item.StartedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
+                    ws.Cell(outRow, 10).Value = isAutoRolling ? "N/A" : item.EndedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
                     ws.Cell(outRow, 11).Value = durTxt;
 
                     var warn = shaftScope == Pages.RevoReport.RevoShaftScopeKind.Total
@@ -351,8 +387,8 @@ namespace GiamSat.UI
                     ws.Cell(outRow, 4).Value = r.FirstRow.Work ?? "N/A";
                     ws.Cell(outRow, 5).Value = r.FirstRow.Mandrel ?? "N/A";
                     ws.Cell(outRow, 6).Value = r.StepCount;
-                    ws.Cell(outRow, 7).Value = r.StartedAt.HasValue ? r.StartedAt.Value.ToString("dd/MM/yyyy HH:mm:ss") : "N/A";
-                    ws.Cell(outRow, 8).Value = r.EndedAt.HasValue ? r.EndedAt.Value.ToString("dd/MM/yyyy HH:mm:ss") : "N/A";
+                    ws.Cell(outRow, 7).Value = r.StartedAt.HasValue ? r.StartedAt.Value.ToString("yyyy-MM-dd HH:mm:ss") : "N/A";
+                    ws.Cell(outRow, 8).Value = r.EndedAt.HasValue ? r.EndedAt.Value.ToString("yyyy-MM-dd HH:mm:ss") : "N/A";
                     ws.Cell(outRow, 9).Value = FormatDuration(r.TotalTime);
                     var warn = shaftScope == Pages.RevoReport.RevoShaftScopeKind.Total && !finishedShafts.Contains(r.ShaftGuid);
                     if (warn)
@@ -363,75 +399,13 @@ namespace GiamSat.UI
                 return outRow;
             }
 
-            // By hour — 7 cột (thêm hoàn thành / chưa xong trong giờ)
-            const int hourCols = 7;
-            ws.Cell(currentRow, 1).Value = "Giờ";
-            ws.Cell(currentRow, 2).Value = "Tổng số Shaft";
-            ws.Cell(currentRow, 3).Value = "Hoàn thành (trong giờ)";
-            ws.Cell(currentRow, 4).Value = "Chưa xong (giờ)";
-            ws.Cell(currentRow, 5).Value = "Bắt đầu";
-            ws.Cell(currentRow, 6).Value = "Kết thúc";
-            ws.Cell(currentRow, 7).Value = "Thời lượng";
-            StyleHeader(ws, currentRow, hourCols);
-
-            var firstHourByShaft = normalized
-                .Where(x => x.Row.ShaftNum.HasValue)
-                .GroupBy(x => x.Row.ShaftNum!.Value)
-                .ToDictionary(h => h.Key, h => h.Min(x => x.Hour));
-
-            var hourRows = normalized
-                .GroupBy(x => x.Hour)
-                .Select(g =>
-                {
-                    var autoRows = g.Where(x => IsAutoRolling(x.Row)).ToList();
-                    var nonAutoRows = g.Where(x => !IsAutoRolling(x.Row)).ToList();
-                    var isAutoOnly = nonAutoRows.Count == 0 && autoRows.Count > 0;
-                    var start = isAutoOnly
-                        ? (DateTime?)null
-                        : nonAutoRows.Select(x => x.Row.StartedAt).Where(x => x.HasValue).DefaultIfEmpty(g.Min(x => x.Started)).Min();
-                    var end = isAutoOnly
-                        ? (DateTime?)null
-                        : nonAutoRows.Select(x => x.Row.EndedAt).Where(x => x.HasValue).DefaultIfEmpty(null).Max();
-                    var totalSeconds = g.Sum(x => x.Row.TotalTime ?? 0);
-                    var totalTime = totalSeconds > 0 ? TimeSpan.FromSeconds(totalSeconds) : TimeSpan.Zero;
-                    var shaftCnt = g.Select(x => x.Row.ShaftNum).Where(x => x.HasValue).Select(x => x!.Value).Distinct().Count();
-                    var distinctInHour = g.Where(x => x.Row.ShaftNum.HasValue).Select(x => x.Row.ShaftNum!.Value).Distinct().ToList();
-                    var finishedInHour = distinctInHour.Count(sn =>
-                        finishedShafts.Contains(sn)
-                        && firstHourByShaft.TryGetValue(sn, out var fh)
-                        && fh == g.Key);
-                    var incompleteInHour = distinctInHour.Count(sn => !finishedShafts.Contains(sn));
-                    return new
-                    {
-                        HourRange = $"{g.Key:dd/MM/yyyy HH}:00-{g.Key.AddHours(1):HH}:00",
-                        ShaftCount = shaftCnt,
-                        FinishedInHour = finishedInHour,
-                        Incomplete = incompleteInHour,
-                        StartedAt = start,
-                        EndedAt = end,
-                        TotalTime = totalTime,
-                        Warn = shaftScope == Pages.RevoReport.RevoShaftScopeKind.Total && incompleteInHour > 0
-                    };
-                })
-                .OrderBy(x => x.StartedAt)
-                .ToList();
-
-            var hr = currentRow + 1;
-            foreach (var r in hourRows)
+            // By hour
+            if (mode == Pages.RevoReport.RevoReportMode.ByHour)
             {
-                ws.Cell(hr, 1).Value = r.HourRange;
-                ws.Cell(hr, 2).Value = r.ShaftCount;
-                ws.Cell(hr, 3).Value = r.FinishedInHour;
-                ws.Cell(hr, 4).Value = r.Incomplete;
-                ws.Cell(hr, 5).Value = r.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
-                ws.Cell(hr, 6).Value = r.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
-                ws.Cell(hr, 7).Value = FormatDuration(r.TotalTime);
-                if (r.Warn)
-                    ws.Range(hr, 1, hr, hourCols).Style.Fill.SetBackgroundColor(WarningFill);
-                hr++;
+                var hourRows = MapHourRowsFromRaw(data, shaftScope, revoList);
+                return WriteHourFromGrid(ws, currentRow, hourRows, revoList);
             }
-            StyleData(ws, currentRow, hr - 1, hourCols);
-            return hr;
+            return currentRow;
         }
 
         private static HashSet<Guid> BuildFinishedShaftSet(IEnumerable<FT09_RevoDatalog> rows)
@@ -460,11 +434,100 @@ namespace GiamSat.UI
                 || work.Replace(" ", string.Empty).Contains("autorolling", StringComparison.OrdinalIgnoreCase);
         }
 
-        private static void StyleHeader(IXLWorksheet ws, int row, int colCount)
+        public static List<Pages.RevoReport.RevoHourRow> MapHourRowsFromRaw(
+            List<FT09_RevoDatalog> data,
+            Pages.RevoReport.RevoShaftScopeKind shaftScope,
+            List<Pages.RevoReport.RevoDropdownModel> revoList)
+        {
+            var normalized = data
+                .Where(x => x != null)
+                .Select(x =>
+                {
+                    var t = x.StartedAt ?? x.CreatedAt ?? DateTime.MinValue;
+                    var hour = new DateTime(t.Year, t.Month, t.Day, t.Hour, 0, 0);
+                    return new { Row = x, Started = t, Hour = hour };
+                })
+                .Where(x => x.Started != DateTime.MinValue)
+                .ToList();
+
+            var finishedShafts = BuildFinishedShaftSet(data);
+            if (shaftScope == Pages.RevoReport.RevoShaftScopeKind.Finished)
+            {
+                normalized = normalized
+                    .Where(x => !x.Row.ShaftNum.HasValue || finishedShafts.Contains(x.Row.ShaftNum.Value))
+                    .ToList();
+            }
+
+            var firstHourByShaft = normalized
+                .Where(x => x.Row.ShaftNum.HasValue)
+                .GroupBy(x => x.Row.ShaftNum!.Value)
+                .ToDictionary(h => h.Key, h => h.Min(x => x.Hour));
+
+            return normalized
+                .GroupBy(x => x.Hour)
+                .Select(g =>
+                {
+                    var autoRows = g.Where(x => IsAutoRolling(x.Row)).ToList();
+                    var nonAutoRows = g.Where(x => !IsAutoRolling(x.Row)).ToList();
+                    var isAutoOnly = nonAutoRows.Count == 0 && autoRows.Count > 0;
+
+                    var start = isAutoOnly
+                        ? (DateTime?)null
+                        : nonAutoRows.Select(x => x.Row.StartedAt).Where(x => x.HasValue).DefaultIfEmpty(g.Min(x => x.Started)).Min();
+
+                    var end = isAutoOnly
+                        ? (DateTime?)null
+                        : nonAutoRows.Select(x => x.Row.EndedAt).Where(x => x.HasValue).DefaultIfEmpty(null).Max();
+
+                    var totalSeconds = g.Sum(x => x.Row.TotalTime ?? 0);
+                    var totalTime = totalSeconds > 0 ? TimeSpan.FromSeconds(totalSeconds) : TimeSpan.Zero;
+                    var shaftCount = g.Select(x => x.Row.ShaftNum).Where(x => x.HasValue).Select(x => x!.Value).Distinct().Count();
+                    var distinctInHour = g.Where(x => x.Row.ShaftNum.HasValue).Select(x => x.Row.ShaftNum!.Value).Distinct().ToList();
+                    var finishedInHour = distinctInHour.Count(sn =>
+                        finishedShafts.Contains(sn)
+                        && firstHourByShaft.TryGetValue(sn, out var fh)
+                        && fh == g.Key);
+                    var incompleteInHour = distinctInHour.Count(sn => !finishedShafts.Contains(sn));
+
+                    var machineStats = new Dictionary<int, Pages.RevoReport.RevoHourStats>();
+                    foreach (var revo in revoList)
+                    {
+                        var mRows = g.Where(x => x.Row.RevoId == revo.Id).ToList();
+                        var mDistinctShafts = mRows.Where(x => x.Row.ShaftNum.HasValue).Select(x => x.Row.ShaftNum!.Value).Distinct().ToList();
+                        var mFinishedInHour = mDistinctShafts.Count(sn =>
+                            finishedShafts.Contains(sn)
+                            && firstHourByShaft.TryGetValue(sn, out var fh)
+                            && fh == g.Key);
+                        machineStats[revo.Id] = new Pages.RevoReport.RevoHourStats
+                        {
+                            TotalShafts = mDistinctShafts.Count,
+                            FinishedShafts = mFinishedInHour
+                        };
+                    }
+
+                    return new Pages.RevoReport.RevoHourRow
+                    {
+                        Hour = g.Key,
+                        HourRange = $"{g.Key:yyyy-MM-dd HH}:00-{g.Key.AddHours(1):HH}:00",
+                        ShaftCount = shaftCount,
+                        ShaftCountFinishedInHour = finishedInHour,
+                        IncompleteShaftCountInHour = incompleteInHour,
+                        StartedAt = start,
+                        EndedAt = end,
+                        TotalTime = totalTime,
+                        HighlightIncomplete = shaftScope == Pages.RevoReport.RevoShaftScopeKind.Total && incompleteInHour > 0,
+                        MachineStats = machineStats
+                    };
+                })
+                .OrderBy(x => x.StartedAt ?? DateTime.MinValue)
+                .ToList();
+        }
+
+        private static void StyleHeader(IXLWorksheet ws, int row, int colCount, XLColor? customColor = null)
         {
             ws.Range(row, 1, row, colCount).SetAutoFilter(true);
             ws.Range(row, 1, row, colCount).Style
-                .Fill.SetBackgroundColor(XLColor.LightCyan)
+                .Fill.SetBackgroundColor(customColor ?? XLColor.LightCyan)
                 .Font.SetBold(true)
                 .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center)
                 .Alignment.SetVertical(XLAlignmentVerticalValues.Center);

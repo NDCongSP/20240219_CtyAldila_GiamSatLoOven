@@ -25,6 +25,11 @@
     .alarm-card {
         border-left: 5px solid #ef5350;
     }
+
+    .disconnect-card {
+        border-left: 5px solid #ff9800;
+        background-color: #fff3e0 !important;
+    }
 </style>
 
 <RadzenRow Gap="1rem">
@@ -47,20 +52,28 @@
         {
             var calibratedPv = item.Pv;
             var isAlarm = calibratedPv > item.Config.HightLevel || calibratedPv < item.Config.LowLevel;
-            var alarmClass = isAlarm ? "alarm-blink alarm-card" : "normal-card";
+            var isDisconnected = !item.ConnectionStatus || !item.Status;
+            var alarmClass = isDisconnected ? "disconnect-card" : (isAlarm ? "alarm-blink alarm-card" : "normal-card");
             var timeBlinkStr = (_timeBlinkAlarm / 1000.0).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) +
             "s";
 
             <RadzenColumn Size="12" SizeMD="6" SizeLG="4">
                 <RadzenCard class="@($"rz-shadow-3 {alarmClass}")"
-                    Style="@($"border-radius: 8px; {(isAlarm ? $"animation-duration: {timeBlinkStr};" : "")}")">
+                    Style="@($"border-radius: 8px; {(!isDisconnected && isAlarm ? $"animation-duration: {timeBlinkStr};" : "")}")">
                     <RadzenText TextStyle="TextStyle.H6" class="rz-color-primary rz-mb-0">@item.Name</RadzenText>
-                    <RadzenText TextStyle="TextStyle.Caption" class="rz-color-secondary rz-mb-3">@item.Path</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Caption" class="rz-color-secondary rz-mb-2">@item.Path</RadzenText>
+
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" class="rz-mb-3">
+                        <RadzenBadge BadgeStyle="@(item.ConnectionStatus ? BadgeStyle.Success : BadgeStyle.Danger)"
+                                     Text="@(item.ConnectionStatus ? "EasyDriver: OK" : "EasyDriver: Err")" />
+                        <RadzenBadge BadgeStyle="@(item.Status ? BadgeStyle.Success : BadgeStyle.Danger)"
+                                     Text="@(item.Status ? "PLC: OK" : "PLC: Err")" />
+                    </RadzenStack>
 
                     <RadzenRow AlignItems="AlignItems.Center">
                         <RadzenColumn Size="6">
                             <RadzenText TextStyle="TextStyle.H3" Style="font-weight: 700;"
-                                class="@(isAlarm ? "rz-color-danger" : "rz-color-success")">
+                                class="@(isDisconnected ? "rz-color-secondary" : (isAlarm ? "rz-color-danger" : "rz-color-success"))">
                                 @calibratedPv.ToString("0.0")<span style="font-size: 0.4em;">°C</span>
                             </RadzenText>
                         </RadzenColumn>
@@ -70,18 +83,32 @@
                         </RadzenColumn>
                     </RadzenRow>
 
-                    @if (isAlarm)
+                    @if (!item.ConnectionStatus)
+                    {
+                        <RadzenAlert Title="MẤT KẾT NỐI" AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" Shade="Shade.Lighter"
+                            Size="AlertSize.Small" AllowClose="false" class="rz-mt-3 rz-mb-0">
+                            Không kết nối được EasyDriver Server!
+                        </RadzenAlert>
+                    }
+                    else if (!item.Status)
+                    {
+                        <RadzenAlert Title="MẤT KẾT NỐI" AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter"
+                            Size="AlertSize.Small" AllowClose="false" class="rz-mt-3 rz-mb-0">
+                            Mất kết nối thiết bị (PLC)!
+                        </RadzenAlert>
+                    }
+                    else if (isAlarm)
                     {
                         <RadzenAlert Title="BÁO ĐỘNG" AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" Shade="Shade.Lighter"
-                            Size="AlertSize.Small" class="rz-mt-3 rz-mb-0">
+                            Size="AlertSize.Small" AllowClose="false" class="rz-mt-3 rz-mb-0">
                             Nhiệt độ nằm ngoài ngưỡng an toàn!
                         </RadzenAlert>
                     }
                     else
                     {
                         <RadzenAlert Title="Bình thường" AlertStyle="AlertStyle.Success" Variant="Variant.Flat"
-                            Shade="Shade.Lighter" Size="AlertSize.Small" class="rz-mt-3 rz-mb-0">
-                            Hệ thống hoạt động ổn định
+                            Shade="Shade.Lighter" Size="AlertSize.Small" AllowClose="false" class="rz-mt-3 rz-mb-0">
+                            Thiết bị hoạt động ổn định
                         </RadzenAlert>
                     }
 

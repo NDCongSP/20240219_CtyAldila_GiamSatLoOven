@@ -1,4 +1,4 @@
-﻿using EasyScada.Core;
+using EasyScada.Core;
 using EasyScada.Winforms.Controls;
 using GiamSat.Models;
 using Newtonsoft.Json;
@@ -851,16 +851,14 @@ namespace Scada.TrackingTime_AutoRolling1
                 byte lowByte = (byte)(val & 0xFF);
                 byte highByte = (byte)((val >> 8) & 0xFF);
 
-                // 2. Đảo vị trí: Theo yêu cầu của bạn là đảo vị trí
-                // Thông thường PLC lưu Byte Cao trước, Byte Thấp sau hoặc ngược lại.
-                // Ở đây tôi giả định bạn muốn ghép ký tự từ LowByte trước rồi HighByte (hoặc ngược lại)
-                char firstChar = (char)lowByte;
-                char secondChar = (char)highByte;
+                // Đảo vị trí: HighByte trước, LowByte sau để tránh bị ngược chuỗi
+                char firstChar = (char)highByte;
+                char secondChar = (char)lowByte;
 
                 // Loại bỏ các ký tự rác hoặc ký tự Null (mã ASCII là 0) 
                 // và khoảng trắng dư thừa nếu cần (mã ASCII là 32)
-                if (lowByte != 0 && lowByte != 32) fullPartName += firstChar;
-                if (highByte != 0 && highByte != 32) fullPartName += secondChar;
+                if (highByte != 0 && highByte != 32) fullPartName += firstChar;
+                if (lowByte != 0 && lowByte != 32) fullPartName += secondChar;
             }
 
             // Gán kết quả cuối cùng vào model (vì dùng ref nên bên ngoài sẽ nhận được luôn)

@@ -2,43 +2,7 @@
 
 namespace GiamSat.APIClient
 {
-    // DTO for a single row returned by the calc-data endpoint
-    public partial class AutoSandingTestRow
-    {
-        [System.Text.Json.Serialization.JsonPropertyName("rowIndex")]
-        public int RowIndex { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("fre1")]
-        public double Fre1 { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("stiffnessZ")]
-        public double StiffnessZ { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("beltRotationRpm")]
-        public double BeltRotationRpm { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("fre2")]
-        public double Fre2 { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("stiffnessY")]
-        public double StiffnessY { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("freqDiff")]
-        public double FreqDiff { get; set; }
-    }
-
-    // Result wrapper for List<AutoSandingTestRow>
-    public partial class AutoSandingTestRowListResult
-    {
-        [System.Text.Json.Serialization.JsonPropertyName("messages")]
-        public System.Collections.Generic.ICollection<string>? Messages { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("succeeded")]
-        public bool Succeeded { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("data")]
-        public System.Collections.Generic.ICollection<AutoSandingTestRow>? Data { get; set; }
-    }
+    // AutoSandingTestRow và AutoSandingTestRowListResult được định nghĩa trong GiamSatApi.cs (NSwag-generated)
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial interface IFT14CalcDataClient : IApiService
@@ -47,7 +11,9 @@ namespace GiamSat.APIClient
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<AutoSandingTestRowListResult> GetCalcDataAsync(
             string? part,
-            string? work,
+            string? workFre1,
+            string? workFre2,
+            string? workSpine,
             double? offsetFre1,
             double? offsetFre2,
             double? motorFrom,
@@ -59,7 +25,9 @@ namespace GiamSat.APIClient
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<AutoSandingTestRowListResult> GetCalcDataAsync(
             string? part,
-            string? work,
+            string? workFre1,
+            string? workFre2,
+            string? workSpine,
             double? offsetFre1,
             double? offsetFre2,
             double? motorFrom,
@@ -99,18 +67,18 @@ namespace GiamSat.APIClient
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<AutoSandingTestRowListResult> GetCalcDataAsync(
-            string? part, string? work,
+            string? part, string? workFre1, string? workFre2, string? workSpine,
             double? offsetFre1, double? offsetFre2,
             double? motorFrom, double? motorTo, double? motorStep)
         {
-            return GetCalcDataAsync(part, work, offsetFre1, offsetFre2, motorFrom, motorTo, motorStep, System.Threading.CancellationToken.None);
+            return GetCalcDataAsync(part, workFre1, workFre2, workSpine, offsetFre1, offsetFre2, motorFrom, motorTo, motorStep, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<AutoSandingTestRowListResult> GetCalcDataAsync(
-            string? part, string? work,
+            string? part, string? workFre1, string? workFre2, string? workSpine,
             double? offsetFre1, double? offsetFre2,
             double? motorFrom, double? motorTo, double? motorStep,
             System.Threading.CancellationToken cancellationToken)
@@ -134,9 +102,17 @@ namespace GiamSat.APIClient
                     {
                         urlBuilder_.Append(System.Uri.EscapeDataString("part")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(part, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
-                    if (work != null)
+                    if (workFre1 != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("work")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(work, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("workFre1")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(workFre1, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (workFre2 != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("workFre2")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(workFre2, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (workSpine != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("workSpine")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(workSpine, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (offsetFre1 != null)
                     {

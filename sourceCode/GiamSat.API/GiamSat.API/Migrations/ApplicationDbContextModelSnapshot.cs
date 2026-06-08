@@ -84,6 +84,7 @@ namespace GiamSat.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Details")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("OvenId")
@@ -113,9 +114,11 @@ namespace GiamSat.API.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedMachine")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Details")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("EndTime")
@@ -131,12 +134,14 @@ namespace GiamSat.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("OvenName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProfileId")
                         .HasColumnType("int");
 
                     b.Property<string>("ProfileName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Seconds")
@@ -155,6 +160,7 @@ namespace GiamSat.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("StepName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Temperature")
@@ -190,6 +196,7 @@ namespace GiamSat.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Details")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Hours")
@@ -202,12 +209,14 @@ namespace GiamSat.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("OvenName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProfileId")
                         .HasColumnType("int");
 
                     b.Property<string>("ProfileName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Seconds")
@@ -220,6 +229,7 @@ namespace GiamSat.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("StepName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Temperature")
@@ -237,6 +247,7 @@ namespace GiamSat.API.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("C000")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -503,23 +514,26 @@ namespace GiamSat.API.Migrations
                     b.Property<double?>("Diam_UL_3")
                         .HasColumnType("float");
 
-                    b.Property<double?>("Formula_F")
+                    b.Property<double?>("Formula")
                         .HasColumnType("float");
 
                     b.Property<double?>("FreqTarget")
                         .HasColumnType("float");
 
+                    b.Property<double?>("Freq_LL")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Freq_UL")
+                        .HasColumnType("float");
+
                     b.Property<double?>("Length")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("OD_BOD")
                         .HasColumnType("float");
 
                     b.Property<string>("PartName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double?>("Set_Freq_Offset_Hight")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("Set_Freq_Offset_Low")
-                        .HasColumnType("float");
 
                     b.Property<string>("TipOdLength_1")
                         .HasColumnType("nvarchar(max)");
@@ -532,6 +546,9 @@ namespace GiamSat.API.Migrations
 
                     b.Property<DateTime?>("UpdateddAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<double?>("Z_Stiffness")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -654,6 +671,48 @@ namespace GiamSat.API.Migrations
                     b.ToTable("FT16");
                 });
 
+            modelBuilder.Entity("GiamSat.Models.FT17_RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JwtId")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Token")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("FT17_RefreshTokens", (string)null);
+                });
+
             modelBuilder.Entity("GiamSat.Models.Permissions", b =>
                 {
                     b.Property<Guid>("Id")
@@ -679,6 +738,7 @@ namespace GiamSat.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -898,12 +958,14 @@ namespace GiamSat.API.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("PermisionDescription")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PermisionName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RoleName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("RoleId", "PermissionId");

@@ -32,7 +32,7 @@
                         <RadzenDatePicker @bind-Value="@_fromDate"
                                           ShowTime="true"
                                           ShowSeconds="true"
-                                          DateFormat="dd/MM/yyyy HH:mm:ss"
+                                          DateFormat="yyyy-MM-dd HH:mm:ss"
                                           Style="width: 100%;" />
                     </RadzenStack>
 
@@ -41,7 +41,7 @@
                         <RadzenDatePicker @bind-Value="@_toDate"
                                           ShowTime="true"
                                           ShowSeconds="true"
-                                          DateFormat="dd/MM/yyyy HH:mm:ss"
+                                          DateFormat="yyyy-MM-dd HH:mm:ss"
                                           Style="width: 100%;" />
                     </RadzenStack>
 
@@ -158,12 +158,12 @@
                             <RadzenDataGridColumn TItem="RevoStepRow" Property="StepDisplay" Title="Tên Step" Width="170px" />
                             <RadzenDataGridColumn TItem="RevoStepRow" Property="StartedAt" Title="Bắt đầu" Width="180px">
                                 <Template Context="data">
-                                    @(data.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A")
+                                    @(data.StartedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A")
                                 </Template>
                             </RadzenDataGridColumn>
                             <RadzenDataGridColumn TItem="RevoStepRow" Property="EndedAt" Title="Kết thúc" Width="180px">
                                 <Template Context="data">
-                                    @(data.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A")
+                                    @(data.EndedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A")
                                 </Template>
                             </RadzenDataGridColumn>
                             <RadzenDataGridColumn TItem="RevoStepRow" Property="DurationText" Title="Thời lượng" Width="120px" TextAlign="TextAlign.Center" />
@@ -193,12 +193,12 @@
                             <RadzenDataGridColumn TItem="RevoShaftRow" Property="StepCount" Title="Số step" Width="90px" TextAlign="TextAlign.Center" />
                             <RadzenDataGridColumn TItem="RevoShaftRow" Property="StartedAt" Title="Bắt đầu" Width="180px">
                                 <Template Context="data">
-                                    @(data.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A")
+                                    @(data.StartedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A")
                                 </Template>
                             </RadzenDataGridColumn>
                             <RadzenDataGridColumn TItem="RevoShaftRow" Property="EndedAt" Title="Kết thúc" Width="180px">
                                 <Template Context="data">
-                                    @(data.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A")
+                                    @(data.EndedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A")
                                 </Template>
                             </RadzenDataGridColumn>
                             <RadzenDataGridColumn TItem="RevoShaftRow" Property="TotalTimeText" Title="Thời lượng" Width="120px" TextAlign="TextAlign.Center" />
@@ -207,36 +207,43 @@
                 }
                 else
                 {
-                    <RadzenDataGrid @ref="_hourGrid"
-                                    Data="@_hourRows"
-                                    TItem="RevoHourRow"
-                                    AllowPaging="true"
-                                    PageSize="10"
-                                    AllowSorting="true"
-                                    RowRender="@OnHourRowRender"
-                                    PagerHorizontalAlign="HorizontalAlign.Right"
-                                    ShowPagingSummary="true"
-                                    PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)"
-                                    PageSizeText="Bản ghi trên trang"
-                                    PageSizeOptions="@(new int[] { 10, 20, 50, 100 })">
-                        <Columns>
-                            <RadzenDataGridColumn TItem="RevoHourRow" Property="HourRange" Title="Giờ" Width="160px" />
-                            <RadzenDataGridColumn TItem="RevoHourRow" Property="ShaftCount" Title="Tổng số Shaft" Width="110px" TextAlign="TextAlign.Center" />
-                            <RadzenDataGridColumn TItem="RevoHourRow" Property="ShaftCountFinishedInHour" Title="Hoàn thành (trong giờ)" Width="130px" TextAlign="TextAlign.Center" />
-                            <RadzenDataGridColumn TItem="RevoHourRow" Property="IncompleteShaftCountInHour" Title="Chưa xong (giờ)" Width="120px" TextAlign="TextAlign.Center" />
-                            <RadzenDataGridColumn TItem="RevoHourRow" Property="StartedAt" Title="Bắt đầu" Width="180px">
-                                <Template Context="data">
-                                    @(data.StartedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A")
-                                </Template>
-                            </RadzenDataGridColumn>
-                            <RadzenDataGridColumn TItem="RevoHourRow" Property="EndedAt" Title="Kết thúc" Width="180px">
-                                <Template Context="data">
-                                    @(data.EndedAt?.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A")
-                                </Template>
-                            </RadzenDataGridColumn>
-                            <RadzenDataGridColumn TItem="RevoHourRow" Property="TotalHoursText" Title="Thời lượng" Width="120px" TextAlign="TextAlign.Center" />
-                        </Columns>
-                    </RadzenDataGrid>
+                    <div style="overflow-x: auto; width: 100%;">
+                        <RadzenDataGrid @ref="_hourGrid"
+                                        class="hourly-report-grid"
+                                        Style="@($"min-width: {210 + (_revoList.Count * 250)}px; width: 100%;")"
+                                        Data="@_hourRows"
+                                        TItem="RevoHourRow"
+                                        AllowPaging="true"
+                                        PageSize="10"
+                                        AllowSorting="true"
+                                        RowRender="@OnHourRowRender"
+                                        PagerHorizontalAlign="HorizontalAlign.Right"
+                                        ShowPagingSummary="true"
+                                        PagingSummaryFormat="Trang {0} / {1} (Tổng {2} bản ghi)"
+                                        PageSizeText="Bản ghi trên trang"
+                                        PageSizeOptions="@(new int[] { 10, 20, 50, 100 })">
+                            <Columns>
+                                <RadzenDataGridColumn TItem="RevoHourRow" Property="HourRange" Title="Giờ" Width="210px" />
+                                @foreach (var revo in _revoList)
+                                {
+                                    <RadzenDataGridColumn TItem="RevoHourRow" Title="@revo.Name" TextAlign="TextAlign.Center">
+                                        <Columns>
+                                            <RadzenDataGridColumn TItem="RevoHourRow" Title="Tổng số" Width="120px" TextAlign="TextAlign.Center">
+                                                <Template Context="data">
+                                                    @data.GetMachineStats(revo.Id).TotalShafts
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumn TItem="RevoHourRow" Title="Hoàn thành" Width="130px" TextAlign="TextAlign.Center">
+                                                <Template Context="data">
+                                                    @data.GetMachineStats(revo.Id).FinishedShafts
+                                                </Template>
+                                            </RadzenDataGridColumn>
+                                        </Columns>
+                                    </RadzenDataGridColumn>
+                                }
+                            </Columns>
+                        </RadzenDataGrid>
+                    </div>
                 }
             }
         </RadzenCard>

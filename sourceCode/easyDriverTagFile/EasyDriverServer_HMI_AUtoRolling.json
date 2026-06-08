@@ -11,7 +11,7 @@
   "IsReadOnly": true,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:43:59.185364+07:00",
-  "ModifiedDate": "2026-05-03T06:38:24.1165994+07:00",
+  "ModifiedDate": "2026-06-07T16:22:39.9309701+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -31,12 +31,12 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:44:13.0399531+07:00",
-  "ModifiedDate": "2026-05-03T06:38:24.1165994+07:00",
+  "ModifiedDate": "2026-06-07T16:22:39.9309701+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
   "Parameters": {
-    "IpAddress": "192.168.1.100",
+    "IpAddress": "192.168.11.11",
     "Port": "502",
     "DelayBetweenPool": "5",
     "ScanRate": "100"
@@ -51,7 +51,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:44:17.7993086+07:00",
-  "ModifiedDate": "2026-05-03T19:36:51.9083004+07:00",
+  "ModifiedDate": "2026-06-07T16:22:39.9309701+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -1129,13 +1129,13 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:44:13.0399531+07:00",
-  "ModifiedDate": "2026-05-03T06:38:24.1165994+07:00",
+  "ModifiedDate": "2026-06-07T16:22:39.9309701+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
   "Parameters": {
-    "IpAddress": "192.168.1.100",
-    "Port": "503",
+    "IpAddress": "192.168.11.12",
+    "Port": "502",
     "DelayBetweenPool": "5",
     "ScanRate": "100"
   }
@@ -1149,7 +1149,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:44:17.7993086+07:00",
-  "ModifiedDate": "2026-05-03T06:38:24.1165994+07:00",
+  "ModifiedDate": "2026-06-07T16:22:39.9309701+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
@@ -2200,13 +2200,13 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:44:13.0399531+07:00",
-  "ModifiedDate": "2026-05-03T06:38:24.1165994+07:00",
+  "ModifiedDate": "2026-06-07T16:22:39.9309701+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,
   "Parameters": {
-    "IpAddress": "192.168.1.100",
-    "Port": "504",
+    "IpAddress": "192.168.11.13",
+    "Port": "502",
     "DelayBetweenPool": "5",
     "ScanRate": "100"
   }
@@ -2220,7 +2220,7 @@
   "IsReadOnly": false,
   "Enabled": true,
   "CreatedDate": "2026-02-04T15:44:17.7993086+07:00",
-  "ModifiedDate": "2026-05-03T06:38:24.1165994+07:00",
+  "ModifiedDate": "2026-06-07T16:22:39.9309701+07:00",
   "ParameterContainer": {
   "DisplayName": null,
   "DisplayParameters": null,

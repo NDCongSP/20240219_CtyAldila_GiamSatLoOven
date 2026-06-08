@@ -271,19 +271,13 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "DONE — Fix lỗi tạo role (400 validation error) và seed permission cho phân hệ Sanding"
+  current_task:     "DONE — DataGrid TipOD: đưa tên lên trên, LL/UL xuống dưới"
   related_files:
-    - "GiamSat.Models/IdentityAdminDtos.cs"                          # FIX: đổi Id và Claims trong IdentityRoleDto thành nullable để không bị lỗi 400 Validation
-    - "GiamSat.Models/Enums/AppModule.cs"                            # FEAT: thêm Sanding_Config, Sanding_Report vào AppModule enum
-    - "GiamSat.Models/Security/AppPermissions.cs"                    # FEAT: thêm hằng số phân quyền Sanding_*
-    - "GiamSat.API/PermissionSeeder.cs"                              # FEAT: cấu hình hạt giống (seed) dữ liệu cho phân hệ Sanding
-    - "GiamSat.UI/Shared/NavMenu.razor"                               # FEAT: wrap menu Auto Sanding bằng AuthorizeView
-    - "GiamSat.UI/Pages/AutoSandingConfig.razor"                     # FEAT: bảo vệ trang cấu hình Sanding bằng [Authorize]
+    - "GiamSat.UI/Pages/AutoSandingConfig.razor"    # FIX: Data Điểm 1/2/3 — TipOdLength lên trên, Diam LL/UL xuống dưới
   blocked_by:       ""
   next_step:
-    - Chạy ứng dụng, vào trang Quản lý Role & Permission và bấm "Seed" hoặc chạy database update seeder để tạo các quyền Sanding
-    - Test tạo role mới từ UI để xác nhận không còn lỗi 400
-  last_session:     "2026-05-29"
+    - Kiểm tra compile và chạy thử UI
+  last_session:     "2026-06-08"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
     - "Production appsettings có khác với appsettings.json không? Đang deploy ở đâu?"
@@ -321,6 +315,189 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-06-08] — Session: Bỏ filter Station Fre1/Fre2; tính Z_Stiffness từ ABCD
+
+```
+[FIX]  SFT14_CalcData.cs          — Bỏ filter Station ("Auto Fre No.1"/"Auto Fre No.2") khỏi query Fre1/Fre2
+                                    Chỉ còn filter theo Part+WorkFre1 và Part+WorkFre2
+[FEAT] GiamSatApi.cs              — Thêm field Z_Stiffness (double?) vào FT14_TipOdFreq APIClient
+[FEAT] AutoSandingConfig.razor.cs — OnApplyAbcdToPart(): tính Z_Stiffness = (FreqTarget - B) / A
+                                    Lưu Z_Stiffness vào FT14 cùng với A,B,C,D
+                                    Notification hiển thị thêm Z_Stiffness
+```
+
+---
+
+### [2026-06-08] — Session: DataGrid TipOD đổi thứ tự hiển thị
+
+```
+[FIX] AutoSandingConfig.razor — Data Điểm 1/2/3: TipOdLength (tên) lên trên, Diam LL/UL xuống dưới
+```
+
+---
+
+### [2026-06-08] — Session: Thêm Z_Stiffness vào grid; resize cột; scroll; load Formula khi chọn Part
+
+```
+[FEAT] AutoSandingConfig.razor    — DataGrid Tab 1: thêm cột Z_Stiffness (màu tím) sau cột D
+                                    AllowColumnResize=true + ColumnResizeMode=OnResize → kéo chỉnh độ rộng cột
+                                    Style="height:500px" → scroll dọc/ngang tự động
+[FEAT] AutoSandingConfig.razor.cs — OnPartSelected(): load _formular = (int)(part.Formula ?? 1)
+                                    Khi chọn part ở Tab 2, ô Formular tự điền giá trị hiện tại của part
+```
+
+---
+
+### [2026-06-08] — Session: Fix NSwag auto-revert + CS0229 duplicate partial class
+
+```
+[FIX]  GiamSat.APIClient.csproj    — Đã comment out NSwag Target (Net70) đúng cách (bọc trong <!-- -->).
+                                      Nguyên nhân revert: NSwag target ACTIVE chạy mỗi lần build Debug,
+                                      regenerate GiamSatApi.cs từ swagger.json → xóa mọi edit thủ công.
+[FIX]  FT14CalcDataClient.cs       — Xóa AutoSandingTestRow + AutoSandingTestRowListResult partial class
+                                      (duplicate với GiamSatApi.cs → CS0229 ambiguity error).
+                                      GiamSatApi.cs đã có 2 class này (NSwag gen từ swagger.json cập nhật).
+[FIX]  AutoSandingConfig.razor     — Tăng width cột Freq LL/UL/OD/Formula/FreqTarget (70→90-100px)
+                                      để hiện đủ header text, không bị cắt "Freq ...".
+```
+
+---
+
+### [2026-06-08] — Session: Đổi Set_Freq_Offset_Low/Hight → Freq_LL/Freq_UL; thêm OD_BOD; Formula_F → Formula
+
+```
+[BREAK] GiamSatApi.cs                         — FT14_TipOdFreq: xóa Set_Freq_Offset_Low, Set_Freq_Offset_Hight, Formula_F
+                                                 Thêm OD_BOD (oD_BOD), Freq_LL (freq_LL), Freq_UL (freq_UL), Formula (formula)
+[FEAT]  DialogAutoSandingConfig.razor          — Thêm field "OD / BOD (mm)" bind @_model.OD_BOD
+                                                 Đổi "Fre Offset Low/High" → "Freq LL/UL (CPM)" với binding Freq_LL/Freq_UL
+                                                 Đổi "Formula F" → "Formula" bind @_model.Formula
+[FIX]   DialogAutoSandingConfig.razor.cs       — Clone: thay Set_Freq_Offset_Low/Hight/Formula_F → OD_BOD/Freq_LL/Freq_UL/Formula
+[FIX]   AutoSandingConfig.razor                — DataGrid: thêm cột OD_BOD; đổi cột Freq_LL/Freq_UL/Formula
+[FIX]   AutoSandingConfig.razor.cs             — OnAddPart: Formula_F=1 → Formula=1
+                                                 OnApplyAbcdToPart: part.Formula_F → part.Formula
+                                                 Export Excel: headers 19→20 cols (+OD/BOD), data mappings cập nhật
+                                                 Import Excel: update/insert mappings 19→20 cols
+```
+
+---
+
+### [2026-06-01] — Session: Đổi Formular từ Dropdown sang RadzenNumeric
+
+```
+[FIX] AutoSandingConfig.razor  — Formular: RadzenDropDown {1,2,3} → RadzenNumeric TValue=int, Min=1
+                                  Người dùng có thể nhập bất kỳ số nguyên ≥ 1 thay vì chỉ 1/2/3
+```
+
+---
+
+### [2026-06-01] — Session: Thêm PageSizeOptions và PagingSummary cho DataGrid
+
+```
+[FEAT] AutoSandingConfig.razor  — Thêm PageSizeOptions={5,10,20,50} → dropdown "items per page"
+                                   Bỏ PagerHorizontalAlign → Radzen tự layout: summary trái / pages giữa / size phải
+                                   PagingSummaryFormat: "Hiển thị trang {0}/{1} (Tổng {2} bản ghi)"
+```
+
+---
+
+### [2026-06-01] — Session: Export + Import Excel cho Tab 1 AutoSanding
+
+```
+[FEAT] AutoSandingConfig.razor     — Thêm nút "Export Excel" (Info) và "Import Excel" (Light) vào header
+                                     Thêm hidden <InputFile id="ft14ImportInput"> trigger via JS eval
+[FEAT] AutoSandingConfig.razor.cs  — OnExportExcel(): ClosedXML tạo .xlsx 19 cột, BlazorDownloadFile download
+                                     OnImportClick(): JS trigger hidden input
+                                     OnImportFileSelected(): đọc file, parse rows, Insert/Update theo PartName
+                                     Thêm using ClosedXML.Excel, Microsoft.JSInterop, System.IO, InputFile
+```
+
+---
+
+### [2026-06-01] — Session: Tab 1 Cấu hình chung → RadzenDataGrid
+
+```
+[REFACTOR] AutoSandingConfig.razor  — Thay custom <table class="as-config-table"> bằng RadzenDataGrid
+                                       AllowSorting/AllowFiltering/AllowPaging=true, PageSize=10
+                                       Thêm @using alias FT14_TipOdFreq = GiamSat.APIClient.FT14_TipOdFreq để resolve ambiguous
+                                       Data Điểm 1/2/3: dùng Template với div stacked (LL/UL / label)
+                                       IsLoading bind vào _isLoading; EmptyText thay RadzenAlert
+```
+
+---
+
+### [2026-06-01] — Session: Tách Work Order thành workFre1/workFre2/workSpine
+
+```
+[BREAK] ISFT14_CalcData.cs          — Đổi param work → workFre1, workFre2, workSpine
+[FEAT]  SFT14_CalcData.cs           — Fre1 dùng workFre1; Fre2 dùng workFre2 (fallback workFre1); Spine dùng workSpine (fallback workFre1)
+[BREAK] FT14Controller.cs           — Params: workFre1 (required), workFre2="" , workSpine="" (optional)
+[BREAK] FT14CalcDataClient.cs       — Interface + HTTP query string: workFre1/workFre2/workSpine
+[FEAT]  AutoSandingConfig.razor     — 3 TextBox thay cho 1 Work Order; Fre2/Spine có placeholder "để trống = dùng Fre1"
+[FIX]   AutoSandingConfig.razor.cs  — _work → _workFre1, _workFre2, _workSpine
+```
+
+---
+
+### [2026-05-31] — Session: Lưu Formula_F khi Áp dụng & Lưu DB
+
+```
+[FIX]  AutoSandingConfig.razor.cs  — OnApplyAbcdToPart(): thêm part.Formula_F = _formular
+                                      Notification message cập nhật thêm Formula={_formular}
+```
+
+---
+
+### [2026-05-31] — Session: Tạo SQL seed script FT16 test data
+
+```
+[FEAT] sql/seed_FT16_test_data.sql  — INSERT 10 records vào FT16: Part=AX181-IS-1, Work=1794406
+                                       SandingMode=2 (Test), ShaftNum 1-10, SpineB = stiffness mẫu
+                                       Dùng để test StiffnessY từ endpoint /api/FT14/calcdata
+                                       Lưu ý: ShaftNum phải khớp với ShaftNum trong DatalogFrequency
+```
+
+---
+
+### [2026-05-31] — Session: Fix logic phân bổ row theo bước nhảy RPM
+
+```
+[FIX]  SFT14_CalcData.cs  — Đổi cách tính số row: totalRows = rpmValues.Count × 2 (2 row/bước nhảy)
+                             Vd: From=100, To=500, Step=100 → 5 bước → 10 rows
+                             RPM gán theo rowIdx/2: row 0-1 → rpm[0], row 2-3 → rpm[1], ...
+                             Dừng điền khi đạt totalRows (không phụ thuộc vào số record Fre1 trong DB)
+```
+
+---
+
+### [2026-05-31] — Session: Fix schema FreMeasurementRecord khớp DB thực tế
+
+```
+[FIX]  FreMeasurementRecord.cs  — Đổi kiểu Id từ long (Int64) → int (Int32)
+                                   ShaftNum: int → int? (DB cho phép null)
+                                   BSL, Weight, Reading, UL, LL: double? → string? (DB lưu nvarchar(50))
+                                   Thêm IsCalib int? (có trong DB nhưng thiếu trong entity)
+[FIX]  SFT14_CalcData.cs        — Thêm ParseReading(string?) để parse nvarchar→double (InvariantCulture)
+                                   Lọc ShaftNum != null trước khi query, xử lý .HasValue trong loop/dictionary
+                                   Nguyên nhân: bảng DatalogFrequency trong external DB dùng int, không phải bigint
+                                   Lỗi runtime: "Unable to cast object of type 'System.Int32' to type 'System.Int64'"
+```
+
+---
+
+### [2026-05-30] — Session: Tab 2 AutoSanding — bỏ StiffnessZ, StiffnessY từ FT16, Part searchable
+
+```
+[FIX]  AutoSandingConfigModel.cs   — Bỏ property StiffnessZ khỏi AutoSandingTestRow (không dùng nữa)
+[FIX]  FT14CalcDataClient.cs       — Bỏ StiffnessZ khỏi DTO AutoSandingTestRow trong APIClient
+[FEAT] SFT14_CalcData.cs           — Inject ApplicationDbContext; query FT16.SpineB (SandingMode=Test, Part+Work)
+                                     và khớp StiffnessY theo ShaftNum với Fre1 records từ external DB
+[FIX]  AutoSandingConfig.razor     — Part dropdown: thêm AllowFiltering=true + CaseInsensitive để search được
+                                     Bảng dữ liệu: bỏ cột "Stiffness Z" (header + data cell)
+[FIX]  AutoSandingConfig.razor.cs  — Fake data: bỏ StiffnessZ; mapping OnLoadDataFromDB: bỏ StiffnessZ
+```
 
 ---
 

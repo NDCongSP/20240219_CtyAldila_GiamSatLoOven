@@ -1,8 +1,12 @@
+using ClosedXML.Excel;
 using GiamSat.APIClient;
 using GiamSat.Models;
 using GiamSat.UI.Components;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.JSInterop;
 using Radzen;
+using System.IO;
 using FT14_TipOdFreq      = GiamSat.APIClient.FT14_TipOdFreq;
 using AutoSandingTestRow  = GiamSat.Models.AutoSandingTestRow;
 
@@ -15,6 +19,8 @@ namespace GiamSat.UI.Pages
         private bool _isLoading      = true;
         private bool _isSaving       = false;
         private bool _isLoadingCalc  = false;
+        private bool _isExporting    = false;
+        private bool _isImporting    = false;
         private bool _abcdCalculated = false;
         private bool _showGuide      = false;
 
@@ -28,7 +34,9 @@ namespace GiamSat.UI.Pages
         private LinearRegressionResult _resultCD = new();
 
         // Tab 2 – form load data từ external DB
-        private string  _work         = string.Empty;
+        private string  _workFre1     = string.Empty;
+        private string  _workFre2     = string.Empty;
+        private string  _workSpine    = string.Empty;
         private double  _offsetFre1   = 0;
         private double  _offsetFre2   = 0;
         private double  _offsetSpine  = 0;
@@ -83,9 +91,9 @@ namespace GiamSat.UI.Pages
         {
             var blank = new FT14_TipOdFreq
             {
-                Id        = System.Guid.Empty,
-                Actived   = true,
-                Formula_F = 1,
+                Id      = System.Guid.Empty,
+                Actived = true,
+                Formula = 1,
             };
 
             var saved = await OpenPartDialog("Thêm Part mới", blank, isEdit: false);
@@ -188,11 +196,190 @@ namespace GiamSat.UI.Pages
             return result as FT14_TipOdFreq;
         }
 
+        // ── Export / Import Excel ─────────────────────────────────────────────
+        private async Task OnExportExcel()
+        {
+            try
+            {
+                _isExporting = true;
+                StateHasChanged();
+
+                using var wb = new XLWorkbook();
+                var ws = wb.Worksheets.Add("AutoSanding Config");
+
+                var headers = new[]
+                {
+                    "Item Number","Length","OD/BOD","Freq Target","Freq LL","Freq UL","Formula",
+                    "A","B","C","D",
+                    "Diam LL 1","Diam UL 1","Tip OD Length 1",
+                    "Diam LL 2","Diam UL 2","Tip OD Length 2",
+                    "Diam LL 3","Diam UL 3","Tip OD Length 3"
+                };
+                for (int i = 0; i < headers.Length; i++)
+                    ws.Cell(1, i + 1).Value = headers[i];
+
+                var hdrRow = ws.Row(1);
+                hdrRow.Style.Font.Bold = true;
+                hdrRow.Style.Fill.BackgroundColor = XLColor.LightBlue;
+
+                int row = 2;
+                foreach (var p in _parts)
+                {
+                    ws.Cell(row, 1).Value  = p.PartName ?? "";
+                    ws.Cell(row, 2).Value  = p.Length ?? 0;
+                    ws.Cell(row, 3).Value  = p.OD_BOD ?? 0;
+                    ws.Cell(row, 4).Value  = p.FreqTarget ?? 0;
+                    ws.Cell(row, 5).Value  = p.Freq_LL ?? 0;
+                    ws.Cell(row, 6).Value  = p.Freq_UL ?? 0;
+                    ws.Cell(row, 7).Value  = p.Formula ?? 0;
+                    ws.Cell(row, 8).Value  = p.A ?? 0;
+                    ws.Cell(row, 9).Value  = p.B ?? 0;
+                    ws.Cell(row, 10).Value = p.C ?? 0;
+                    ws.Cell(row, 11).Value = p.D ?? 0;
+                    ws.Cell(row, 12).Value = p.Diam_LL_1 ?? 0;
+                    ws.Cell(row, 13).Value = p.Diam_UL_1 ?? 0;
+                    ws.Cell(row, 14).Value = p.TipOdLength_1 ?? "";
+                    ws.Cell(row, 15).Value = p.Diam_LL_2 ?? 0;
+                    ws.Cell(row, 16).Value = p.Diam_UL_2 ?? 0;
+                    ws.Cell(row, 17).Value = p.TipOdLength_2 ?? "";
+                    ws.Cell(row, 18).Value = p.Diam_LL_3 ?? 0;
+                    ws.Cell(row, 19).Value = p.Diam_UL_3 ?? 0;
+                    ws.Cell(row, 20).Value = p.TipOdLength_3 ?? "";
+                    row++;
+                }
+
+                ws.Columns().AdjustToContents();
+
+                using var ms = new MemoryStream();
+                wb.SaveAs(ms);
+                await _js.InvokeVoidAsync("BlazorDownloadFile",
+                    $"AutoSandingConfig_{DateTime.Now:yyyyMMdd_HHmm}.xlsx", ms.ToArray());
+            }
+            catch (Exception ex)
+            {
+                _notificationService.Notify(NotificationSeverity.Error, "Lỗi Export", ex.Message);
+            }
+            finally
+            {
+                _isExporting = false;
+                StateHasChanged();
+            }
+        }
+
+        private async Task OnImportClick()
+        {
+            await _js.InvokeVoidAsync("eval", "document.getElementById('ft14ImportInput').click()");
+        }
+
+        private async Task OnImportFileSelected(InputFileChangeEventArgs e)
+        {
+            var file = e.File;
+            if (file == null) return;
+
+            try
+            {
+                _isImporting = true;
+                StateHasChanged();
+
+                using var ms = new MemoryStream();
+                await file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024).CopyToAsync(ms);
+                ms.Position = 0;
+
+                using var wb = new XLWorkbook(ms);
+                var ws = wb.Worksheet(1);
+                var dataRows = ws.RowsUsed().Skip(1);
+
+                int inserted = 0, updated = 0, skipped = 0;
+                foreach (var dataRow in dataRows)
+                {
+                    var partName = dataRow.Cell(1).GetString();
+                    if (string.IsNullOrWhiteSpace(partName)) { skipped++; continue; }
+
+                    var existing = _parts.FirstOrDefault(p => p.PartName == partName);
+                    if (existing != null)
+                    {
+                        existing.Length      = dataRow.Cell(2).GetDouble();
+                        existing.OD_BOD      = dataRow.Cell(3).GetDouble();
+                        existing.FreqTarget  = dataRow.Cell(4).GetDouble();
+                        existing.Freq_LL     = dataRow.Cell(5).GetDouble();
+                        existing.Freq_UL     = dataRow.Cell(6).GetDouble();
+                        existing.Formula     = dataRow.Cell(7).GetDouble();
+                        existing.A           = dataRow.Cell(8).GetDouble();
+                        existing.B           = dataRow.Cell(9).GetDouble();
+                        existing.C           = dataRow.Cell(10).GetDouble();
+                        existing.D           = dataRow.Cell(11).GetDouble();
+                        existing.Diam_LL_1   = dataRow.Cell(12).GetDouble();
+                        existing.Diam_UL_1   = dataRow.Cell(13).GetDouble();
+                        existing.TipOdLength_1 = dataRow.Cell(14).GetString();
+                        existing.Diam_LL_2   = dataRow.Cell(15).GetDouble();
+                        existing.Diam_UL_2   = dataRow.Cell(16).GetDouble();
+                        existing.TipOdLength_2 = dataRow.Cell(17).GetString();
+                        existing.Diam_LL_3   = dataRow.Cell(18).GetDouble();
+                        existing.Diam_UL_3   = dataRow.Cell(19).GetDouble();
+                        existing.TipOdLength_3 = dataRow.Cell(20).GetString();
+                        existing.UpdateddAt            = DateTime.Now;
+                        await _fT14Client.UpdateAsync(existing);
+                        updated++;
+                    }
+                    else
+                    {
+                        var newPart = new FT14_TipOdFreq
+                        {
+                            Id                    = Guid.NewGuid(),
+                            PartName              = partName,
+                            CreatedAt             = DateTime.Now,
+                            CreatedMachine        = Environment.MachineName,
+                            Actived               = true,
+                            Length        = dataRow.Cell(2).GetDouble(),
+                            OD_BOD        = dataRow.Cell(3).GetDouble(),
+                            FreqTarget    = dataRow.Cell(4).GetDouble(),
+                            Freq_LL       = dataRow.Cell(5).GetDouble(),
+                            Freq_UL       = dataRow.Cell(6).GetDouble(),
+                            Formula       = dataRow.Cell(7).GetDouble(),
+                            A             = dataRow.Cell(8).GetDouble(),
+                            B             = dataRow.Cell(9).GetDouble(),
+                            C             = dataRow.Cell(10).GetDouble(),
+                            D             = dataRow.Cell(11).GetDouble(),
+                            Diam_LL_1     = dataRow.Cell(12).GetDouble(),
+                            Diam_UL_1     = dataRow.Cell(13).GetDouble(),
+                            TipOdLength_1 = dataRow.Cell(14).GetString(),
+                            Diam_LL_2     = dataRow.Cell(15).GetDouble(),
+                            Diam_UL_2     = dataRow.Cell(16).GetDouble(),
+                            TipOdLength_2 = dataRow.Cell(17).GetString(),
+                            Diam_LL_3     = dataRow.Cell(18).GetDouble(),
+                            Diam_UL_3     = dataRow.Cell(19).GetDouble(),
+                            TipOdLength_3 = dataRow.Cell(20).GetString(),
+                        };
+                        await _fT14Client.InsertAsync(newPart);
+                        inserted++;
+                    }
+                }
+
+                _notificationService.Notify(NotificationSeverity.Success, "Import hoàn tất",
+                    $"Thêm mới: {inserted} | Cập nhật: {updated} | Bỏ qua: {skipped}");
+                await LoadData();
+            }
+            catch (Exception ex)
+            {
+                _notificationService.Notify(NotificationSeverity.Error, "Lỗi Import", ex.Message);
+            }
+            finally
+            {
+                _isImporting = false;
+                StateHasChanged();
+            }
+        }
+
         // ── Tab 2 – Tính ABCD ────────────────────────────────────────────────
         private void OnPartSelected(object value)
         {
             _abcdCalculated = false;
             _testRows       = new List<AutoSandingTestRow>();
+
+            var part = _parts.FirstOrDefault(p => p.Id == _selectedPartId);
+            if (part != null)
+                _formular = (int)(part.Formula ?? 1);
+
             StateHasChanged();
         }
 
@@ -211,16 +398,16 @@ namespace GiamSat.UI.Pages
         {
             _testRows = new List<AutoSandingTestRow>
             {
-                new() { RowIndex=1,  Fre1=308.9, StiffnessZ=2.559, BeltRotationRpm=100, Fre2=308.1, StiffnessY=2.546 },
-                new() { RowIndex=2,  Fre1=309.4, StiffnessZ=2.566, BeltRotationRpm=100, Fre2=308.6, StiffnessY=2.552 },
-                new() { RowIndex=3,  Fre1=309.3, StiffnessZ=2.580, BeltRotationRpm=200, Fre2=306.3, StiffnessY=2.526 },
-                new() { RowIndex=4,  Fre1=309.5, StiffnessZ=2.574, BeltRotationRpm=200, Fre2=306.8, StiffnessY=2.526 },
-                new() { RowIndex=5,  Fre1=308.3, StiffnessZ=2.529, BeltRotationRpm=300, Fre2=303.2, StiffnessY=2.436 },
-                new() { RowIndex=6,  Fre1=309.1, StiffnessZ=2.527, BeltRotationRpm=300, Fre2=302.9, StiffnessY=2.445 },
-                new() { RowIndex=7,  Fre1=306.6, StiffnessZ=2.529, BeltRotationRpm=400, Fre2=300.0, StiffnessY=2.398 },
-                new() { RowIndex=8,  Fre1=307.4, StiffnessZ=2.521, BeltRotationRpm=400, Fre2=299.4, StiffnessY=2.366 },
-                new() { RowIndex=9,  Fre1=307.9, StiffnessZ=2.531, BeltRotationRpm=500, Fre2=298.3, StiffnessY=2.372 },
-                new() { RowIndex=10, Fre1=307.8, StiffnessZ=2.542, BeltRotationRpm=500, Fre2=298.7, StiffnessY=2.364 },
+                new() { RowIndex=1,  Fre1=308.9, BeltRotationRpm=100, Fre2=308.1, StiffnessY=2.546 },
+                new() { RowIndex=2,  Fre1=309.4, BeltRotationRpm=100, Fre2=308.6, StiffnessY=2.552 },
+                new() { RowIndex=3,  Fre1=309.3, BeltRotationRpm=200, Fre2=306.3, StiffnessY=2.526 },
+                new() { RowIndex=4,  Fre1=309.5, BeltRotationRpm=200, Fre2=306.8, StiffnessY=2.526 },
+                new() { RowIndex=5,  Fre1=308.3, BeltRotationRpm=300, Fre2=303.2, StiffnessY=2.436 },
+                new() { RowIndex=6,  Fre1=309.1, BeltRotationRpm=300, Fre2=302.9, StiffnessY=2.445 },
+                new() { RowIndex=7,  Fre1=306.6, BeltRotationRpm=400, Fre2=300.0, StiffnessY=2.398 },
+                new() { RowIndex=8,  Fre1=307.4, BeltRotationRpm=400, Fre2=299.4, StiffnessY=2.366 },
+                new() { RowIndex=9,  Fre1=307.9, BeltRotationRpm=500, Fre2=298.3, StiffnessY=2.372 },
+                new() { RowIndex=10, Fre1=307.8, BeltRotationRpm=500, Fre2=298.7, StiffnessY=2.364 },
             };
             _abcdCalculated = false;
             _notificationService.Notify(NotificationSeverity.Info, "Fake Data", "Đã nạp 10 dòng dữ liệu mẫu từ slide 14.");
@@ -235,9 +422,9 @@ namespace GiamSat.UI.Pages
                 _notificationService.Notify(NotificationSeverity.Warning, "Chưa chọn Part", "Vui lòng chọn Part trước khi load data.");
                 return;
             }
-            if (string.IsNullOrWhiteSpace(_work))
+            if (string.IsNullOrWhiteSpace(_workFre1))
             {
-                _notificationService.Notify(NotificationSeverity.Warning, "Thiếu Work Order", "Vui lòng nhập Work Order.");
+                _notificationService.Notify(NotificationSeverity.Warning, "Thiếu Work Fre1", "Vui lòng nhập Work Order cho Fre1.");
                 return;
             }
 
@@ -248,7 +435,7 @@ namespace GiamSat.UI.Pages
                 StateHasChanged();
 
                 var result = await _ft14CalcDataClient.GetCalcDataAsync(
-                    partName, _work,
+                    partName, _workFre1, _workFre2, _workSpine,
                     _offsetFre1, _offsetFre2,
                     _motorFrom, _motorTo, _motorStep);
 
@@ -264,14 +451,13 @@ namespace GiamSat.UI.Pages
                 {
                     RowIndex        = idx + 1,
                     Fre1            = r.Fre1,
-                    StiffnessZ      = r.StiffnessZ,
                     BeltRotationRpm = r.BeltRotationRpm,
                     Fre2            = r.Fre2,
                     StiffnessY      = r.StiffnessY,
                 }).ToList();
 
                 _notificationService.Notify(NotificationSeverity.Success, "Load thành công",
-                    $"Đã load {_testRows.Count} dòng từ DB (Part={partName}, Work={_work}). Kiểm tra StiffnessZ/Y rồi nhấn Tính A,B,C,D.");
+                    $"Đã load {_testRows.Count} dòng từ DB (Part={partName}, WorkFre1={_workFre1}). Kiểm tra StiffnessY rồi nhấn Tính A,B,C,D.");
             }
             catch (Exception ex)
             {
@@ -318,17 +504,27 @@ namespace GiamSat.UI.Pages
                 _isSaving    = true;
                 StateHasChanged();
 
-                part.A           = Math.Round(_resultAB.Slope,     3);
-                part.B           = Math.Round(_resultAB.Intercept,  3);
+                double a = Math.Round(_resultAB.Slope,     3);
+                double b = Math.Round(_resultAB.Intercept,  3);
+                // Z_Stiffness: nghịch đảo hàm Y = A*Z + B → Z = (Y - B) / A với Y = FreqTarget
+                double freqTarget  = part.FreqTarget ?? 0;
+                double zStiffness  = Math.Abs(a) > 1e-10
+                    ? Math.Round((freqTarget - b) / a, 3)
+                    : 0;
+
+                part.A           = a;
+                part.B           = b;
                 part.C           = Math.Round(_resultCD.Slope,     3);
                 part.D           = Math.Round(_resultCD.Intercept,  3);
+                part.Z_Stiffness = zStiffness;
+                part.Formula     = _formular;
                 part.UpdateddAt  = DateTime.Now;
 
                 var result = await _fT14Client.UpdateAsync(part);
                 if (result.Succeeded)
                 {
                     _notificationService.Notify(NotificationSeverity.Success, "Đã lưu DB",
-                        $"A={part.A}, B={part.B}, C={part.C}, D={part.D} → part \"{part.PartName}\".");
+                        $"Formula={_formular} | A={part.A}, B={part.B}, C={part.C}, D={part.D} | Z_Stiffness={part.Z_Stiffness} → part \"{part.PartName}\".");
                     await LoadData();
                 }
                 else

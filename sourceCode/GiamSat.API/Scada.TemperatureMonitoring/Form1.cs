@@ -85,6 +85,7 @@ namespace Scada.TemperatureMonitoring
                 {
                     _easyDriverConnector_Started(null, null);
                 }
+                UpdateConnectionUI(_easyDriverConnector.ConnectionStatus);
                 #endregion
 
                 // Khởi tạo Service
@@ -195,14 +196,26 @@ namespace Scada.TemperatureMonitoring
         {
             if (this.InvokeRequired)
             {
-                this.Invoke(new Action(() =>
-                {
-                    labelStatus.Text = $"Connection Status: {e.NewStatus}";
-                }));
+                this.Invoke(new Action(() => UpdateConnectionUI(e.NewStatus)));
             }
             else
             {
-                labelStatus.Text = $"Connection Status: {e.NewStatus}";
+                UpdateConnectionUI(e.NewStatus);
+            }
+        }
+
+        private void UpdateConnectionUI(EasyScada.Core.ConnectionStatus status)
+        {
+            labelStatus.Text = $"EasyDriver Server: {status}";
+            labelStatus.ForeColor = status == EasyScada.Core.ConnectionStatus.Connected ? Color.ForestGreen : Color.Red;
+
+            if (status != EasyScada.Core.ConnectionStatus.Connected)
+            {
+                foreach (DataGridViewRow row in dgvDevices.Rows)
+                {
+                    row.Cells["PV"].Value = "0";
+                    row.Cells["ConnectionStatus"].Value = Quality.Bad.ToString();
+                }
             }
         }
 
