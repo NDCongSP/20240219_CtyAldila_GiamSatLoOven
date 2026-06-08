@@ -15,18 +15,15 @@ namespace GiamSat.API
     /// File:    GiamSat.API/Services/SFT14_CalcData.cs
     /// Author:  Cong.Nguyen
     /// Created: 2026-05-28
-    /// Modified: 2026-05-31 — Reading là nvarchar → dùng ParseReading(); ShaftNum nullable
+    /// Modified: 2026-06-08 — Bỏ filter Station cho Fre1/Fre2; chỉ lọc theo Part+WorkOrder
     /// Nguồn dữ liệu:
-    ///   - Fre1      : external DB, Station = "Auto Fre No.1", cột Reading (nvarchar), sort by ShaftNum
-    ///   - Fre2      : external DB, Station = "Auto Fre No.2", cột Reading (nvarchar), sort by ShaftNum
-    ///   - StiffnessY: main DB (FT16), SpineB, SandingMode=Test, khớp ShaftNum
-    ///   - RPM       : tính từ motorFrom/To/Step, ceil(count/rpmCount) shafts/mức
+    ///   - Fre1      : external DB, Part+WorkFre1, cột Reading (nvarchar), sort by ShaftNum
+    ///   - Fre2      : external DB, Part+WorkFre2, cột Reading (nvarchar), sort by ShaftNum
+    ///   - StiffnessY: main DB (FT16), Part+WorkSpine, SandingMode=Test, khớp ShaftNum
+    ///   - RPM       : tính từ motorFrom/To/Step, 2 row/bước nhảy
     /// </remarks>
     public class SFT14_CalcData : ISFT14_CalcData
     {
-        private const string StationFre1 = "Auto Fre No.1";
-        private const string StationFre2 = "Auto Fre No.2";
-
         private readonly FreMeasurementDbContext _extContext;
         private readonly ApplicationDbContext _mainContext;
 
@@ -61,21 +58,19 @@ namespace GiamSat.API
                 var fre1Records = await _extContext.FreMeasurements
                     .AsNoTracking()
                     .Where(r => r.Part == part && r.WorkOrder == workFre1
-                             && r.Station == StationFre1
                              && r.Reading != null && r.ShaftNum != null)
                     .OrderBy(r => r.ShaftNum)
                     .ToListAsync();
 
                 if (fre1Records.Count == 0)
                     return await Result<List<AutoSandingTestRow>>.FailAsync(
-                        $"Không tìm thấy dữ liệu Fre1 (Station='{StationFre1}') cho Part='{part}', WorkFre1='{workFre1}'.");
+                        $"Không tìm thấy dữ liệu Fre1 cho Part='{part}', WorkFre1='{workFre1}'.");
 
                 // ── Fre2 từ external DB (workFre2 có thể khác workFre1) ──────
                 var effectiveWorkFre2 = string.IsNullOrWhiteSpace(workFre2) ? workFre1 : workFre2;
                 var fre2Records = await _extContext.FreMeasurements
                     .AsNoTracking()
                     .Where(r => r.Part == part && r.WorkOrder == effectiveWorkFre2
-                             && r.Station == StationFre2
                              && r.Reading != null && r.ShaftNum != null)
                     .OrderBy(r => r.ShaftNum)
                     .ToListAsync();

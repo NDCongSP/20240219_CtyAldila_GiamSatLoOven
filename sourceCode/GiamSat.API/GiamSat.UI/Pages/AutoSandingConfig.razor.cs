@@ -91,9 +91,9 @@ namespace GiamSat.UI.Pages
         {
             var blank = new FT14_TipOdFreq
             {
-                Id        = System.Guid.Empty,
-                Actived   = true,
-                Formula_F = 1,
+                Id      = System.Guid.Empty,
+                Actived = true,
+                Formula = 1,
             };
 
             var saved = await OpenPartDialog("Thêm Part mới", blank, isEdit: false);
@@ -209,7 +209,7 @@ namespace GiamSat.UI.Pages
 
                 var headers = new[]
                 {
-                    "Item Number","Length","Freq Target","Fre-","Fre+","Formula-F",
+                    "Item Number","Length","OD/BOD","Freq Target","Freq LL","Freq UL","Formula",
                     "A","B","C","D",
                     "Diam LL 1","Diam UL 1","Tip OD Length 1",
                     "Diam LL 2","Diam UL 2","Tip OD Length 2",
@@ -227,23 +227,24 @@ namespace GiamSat.UI.Pages
                 {
                     ws.Cell(row, 1).Value  = p.PartName ?? "";
                     ws.Cell(row, 2).Value  = p.Length ?? 0;
-                    ws.Cell(row, 3).Value  = p.FreqTarget ?? 0;
-                    ws.Cell(row, 4).Value  = p.Set_Freq_Offset_Low ?? 0;
-                    ws.Cell(row, 5).Value  = p.Set_Freq_Offset_Hight ?? 0;
-                    ws.Cell(row, 6).Value  = p.Formula_F ?? 0;
-                    ws.Cell(row, 7).Value  = p.A ?? 0;
-                    ws.Cell(row, 8).Value  = p.B ?? 0;
-                    ws.Cell(row, 9).Value  = p.C ?? 0;
-                    ws.Cell(row, 10).Value = p.D ?? 0;
-                    ws.Cell(row, 11).Value = p.Diam_LL_1 ?? 0;
-                    ws.Cell(row, 12).Value = p.Diam_UL_1 ?? 0;
-                    ws.Cell(row, 13).Value = p.TipOdLength_1 ?? "";
-                    ws.Cell(row, 14).Value = p.Diam_LL_2 ?? 0;
-                    ws.Cell(row, 15).Value = p.Diam_UL_2 ?? 0;
-                    ws.Cell(row, 16).Value = p.TipOdLength_2 ?? "";
-                    ws.Cell(row, 17).Value = p.Diam_LL_3 ?? 0;
-                    ws.Cell(row, 18).Value = p.Diam_UL_3 ?? 0;
-                    ws.Cell(row, 19).Value = p.TipOdLength_3 ?? "";
+                    ws.Cell(row, 3).Value  = p.OD_BOD ?? 0;
+                    ws.Cell(row, 4).Value  = p.FreqTarget ?? 0;
+                    ws.Cell(row, 5).Value  = p.Freq_LL ?? 0;
+                    ws.Cell(row, 6).Value  = p.Freq_UL ?? 0;
+                    ws.Cell(row, 7).Value  = p.Formula ?? 0;
+                    ws.Cell(row, 8).Value  = p.A ?? 0;
+                    ws.Cell(row, 9).Value  = p.B ?? 0;
+                    ws.Cell(row, 10).Value = p.C ?? 0;
+                    ws.Cell(row, 11).Value = p.D ?? 0;
+                    ws.Cell(row, 12).Value = p.Diam_LL_1 ?? 0;
+                    ws.Cell(row, 13).Value = p.Diam_UL_1 ?? 0;
+                    ws.Cell(row, 14).Value = p.TipOdLength_1 ?? "";
+                    ws.Cell(row, 15).Value = p.Diam_LL_2 ?? 0;
+                    ws.Cell(row, 16).Value = p.Diam_UL_2 ?? 0;
+                    ws.Cell(row, 17).Value = p.TipOdLength_2 ?? "";
+                    ws.Cell(row, 18).Value = p.Diam_LL_3 ?? 0;
+                    ws.Cell(row, 19).Value = p.Diam_UL_3 ?? 0;
+                    ws.Cell(row, 20).Value = p.TipOdLength_3 ?? "";
                     row++;
                 }
 
@@ -297,24 +298,25 @@ namespace GiamSat.UI.Pages
                     var existing = _parts.FirstOrDefault(p => p.PartName == partName);
                     if (existing != null)
                     {
-                        existing.Length                = dataRow.Cell(2).GetDouble();
-                        existing.FreqTarget            = dataRow.Cell(3).GetDouble();
-                        existing.Set_Freq_Offset_Low   = dataRow.Cell(4).GetDouble();
-                        existing.Set_Freq_Offset_Hight = dataRow.Cell(5).GetDouble();
-                        existing.Formula_F             = dataRow.Cell(6).GetDouble();
-                        existing.A                     = dataRow.Cell(7).GetDouble();
-                        existing.B                     = dataRow.Cell(8).GetDouble();
-                        existing.C                     = dataRow.Cell(9).GetDouble();
-                        existing.D                     = dataRow.Cell(10).GetDouble();
-                        existing.Diam_LL_1             = dataRow.Cell(11).GetDouble();
-                        existing.Diam_UL_1             = dataRow.Cell(12).GetDouble();
-                        existing.TipOdLength_1         = dataRow.Cell(13).GetString();
-                        existing.Diam_LL_2             = dataRow.Cell(14).GetDouble();
-                        existing.Diam_UL_2             = dataRow.Cell(15).GetDouble();
-                        existing.TipOdLength_2         = dataRow.Cell(16).GetString();
-                        existing.Diam_LL_3             = dataRow.Cell(17).GetDouble();
-                        existing.Diam_UL_3             = dataRow.Cell(18).GetDouble();
-                        existing.TipOdLength_3         = dataRow.Cell(19).GetString();
+                        existing.Length      = dataRow.Cell(2).GetDouble();
+                        existing.OD_BOD      = dataRow.Cell(3).GetDouble();
+                        existing.FreqTarget  = dataRow.Cell(4).GetDouble();
+                        existing.Freq_LL     = dataRow.Cell(5).GetDouble();
+                        existing.Freq_UL     = dataRow.Cell(6).GetDouble();
+                        existing.Formula     = dataRow.Cell(7).GetDouble();
+                        existing.A           = dataRow.Cell(8).GetDouble();
+                        existing.B           = dataRow.Cell(9).GetDouble();
+                        existing.C           = dataRow.Cell(10).GetDouble();
+                        existing.D           = dataRow.Cell(11).GetDouble();
+                        existing.Diam_LL_1   = dataRow.Cell(12).GetDouble();
+                        existing.Diam_UL_1   = dataRow.Cell(13).GetDouble();
+                        existing.TipOdLength_1 = dataRow.Cell(14).GetString();
+                        existing.Diam_LL_2   = dataRow.Cell(15).GetDouble();
+                        existing.Diam_UL_2   = dataRow.Cell(16).GetDouble();
+                        existing.TipOdLength_2 = dataRow.Cell(17).GetString();
+                        existing.Diam_LL_3   = dataRow.Cell(18).GetDouble();
+                        existing.Diam_UL_3   = dataRow.Cell(19).GetDouble();
+                        existing.TipOdLength_3 = dataRow.Cell(20).GetString();
                         existing.UpdateddAt            = DateTime.Now;
                         await _fT14Client.UpdateAsync(existing);
                         updated++;
@@ -328,24 +330,25 @@ namespace GiamSat.UI.Pages
                             CreatedAt             = DateTime.Now,
                             CreatedMachine        = Environment.MachineName,
                             Actived               = true,
-                            Length                = dataRow.Cell(2).GetDouble(),
-                            FreqTarget            = dataRow.Cell(3).GetDouble(),
-                            Set_Freq_Offset_Low   = dataRow.Cell(4).GetDouble(),
-                            Set_Freq_Offset_Hight = dataRow.Cell(5).GetDouble(),
-                            Formula_F             = dataRow.Cell(6).GetDouble(),
-                            A                     = dataRow.Cell(7).GetDouble(),
-                            B                     = dataRow.Cell(8).GetDouble(),
-                            C                     = dataRow.Cell(9).GetDouble(),
-                            D                     = dataRow.Cell(10).GetDouble(),
-                            Diam_LL_1             = dataRow.Cell(11).GetDouble(),
-                            Diam_UL_1             = dataRow.Cell(12).GetDouble(),
-                            TipOdLength_1         = dataRow.Cell(13).GetString(),
-                            Diam_LL_2             = dataRow.Cell(14).GetDouble(),
-                            Diam_UL_2             = dataRow.Cell(15).GetDouble(),
-                            TipOdLength_2         = dataRow.Cell(16).GetString(),
-                            Diam_LL_3             = dataRow.Cell(17).GetDouble(),
-                            Diam_UL_3             = dataRow.Cell(18).GetDouble(),
-                            TipOdLength_3         = dataRow.Cell(19).GetString(),
+                            Length        = dataRow.Cell(2).GetDouble(),
+                            OD_BOD        = dataRow.Cell(3).GetDouble(),
+                            FreqTarget    = dataRow.Cell(4).GetDouble(),
+                            Freq_LL       = dataRow.Cell(5).GetDouble(),
+                            Freq_UL       = dataRow.Cell(6).GetDouble(),
+                            Formula       = dataRow.Cell(7).GetDouble(),
+                            A             = dataRow.Cell(8).GetDouble(),
+                            B             = dataRow.Cell(9).GetDouble(),
+                            C             = dataRow.Cell(10).GetDouble(),
+                            D             = dataRow.Cell(11).GetDouble(),
+                            Diam_LL_1     = dataRow.Cell(12).GetDouble(),
+                            Diam_UL_1     = dataRow.Cell(13).GetDouble(),
+                            TipOdLength_1 = dataRow.Cell(14).GetString(),
+                            Diam_LL_2     = dataRow.Cell(15).GetDouble(),
+                            Diam_UL_2     = dataRow.Cell(16).GetDouble(),
+                            TipOdLength_2 = dataRow.Cell(17).GetString(),
+                            Diam_LL_3     = dataRow.Cell(18).GetDouble(),
+                            Diam_UL_3     = dataRow.Cell(19).GetDouble(),
+                            TipOdLength_3 = dataRow.Cell(20).GetString(),
                         };
                         await _fT14Client.InsertAsync(newPart);
                         inserted++;
@@ -372,6 +375,11 @@ namespace GiamSat.UI.Pages
         {
             _abcdCalculated = false;
             _testRows       = new List<AutoSandingTestRow>();
+
+            var part = _parts.FirstOrDefault(p => p.Id == _selectedPartId);
+            if (part != null)
+                _formular = (int)(part.Formula ?? 1);
+
             StateHasChanged();
         }
 
@@ -496,18 +504,27 @@ namespace GiamSat.UI.Pages
                 _isSaving    = true;
                 StateHasChanged();
 
-                part.A           = Math.Round(_resultAB.Slope,     3);
-                part.B           = Math.Round(_resultAB.Intercept,  3);
+                double a = Math.Round(_resultAB.Slope,     3);
+                double b = Math.Round(_resultAB.Intercept,  3);
+                // Z_Stiffness: nghịch đảo hàm Y = A*Z + B → Z = (Y - B) / A với Y = FreqTarget
+                double freqTarget  = part.FreqTarget ?? 0;
+                double zStiffness  = Math.Abs(a) > 1e-10
+                    ? Math.Round((freqTarget - b) / a, 3)
+                    : 0;
+
+                part.A           = a;
+                part.B           = b;
                 part.C           = Math.Round(_resultCD.Slope,     3);
                 part.D           = Math.Round(_resultCD.Intercept,  3);
-                part.Formula_F   = _formular;
+                part.Z_Stiffness = zStiffness;
+                part.Formula     = _formular;
                 part.UpdateddAt  = DateTime.Now;
 
                 var result = await _fT14Client.UpdateAsync(part);
                 if (result.Succeeded)
                 {
                     _notificationService.Notify(NotificationSeverity.Success, "Đã lưu DB",
-                        $"Formula={_formular} | A={part.A}, B={part.B}, C={part.C}, D={part.D} → part \"{part.PartName}\".");
+                        $"Formula={_formular} | A={part.A}, B={part.B}, C={part.C}, D={part.D} | Z_Stiffness={part.Z_Stiffness} → part \"{part.PartName}\".");
                     await LoadData();
                 }
                 else

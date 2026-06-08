@@ -271,21 +271,13 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "DONE — Đổi Formular từ dropdown cố định sang RadzenNumeric tự nhập"
+  current_task:     "DONE — DataGrid TipOD: đưa tên lên trên, LL/UL xuống dưới"
   related_files:
-    - "GiamSat.Models/Services/ISFT14_CalcData.cs"          # BREAK: thêm workFre1/workFre2/workSpine thay work
-    - "GiamSat.API/Services/SFT14_CalcData.cs"              # FEAT: query Fre1/Fre2/Spine mỗi nguồn dùng work riêng; fallback về workFre1 nếu để trống
-    - "GiamSat.API/Controllers/FT14Controller.cs"           # BREAK: params workFre1, workFre2="", workSpine=""
-    - "GiamSat.APIClient/ApiClient/FT14CalcDataClient.cs"   # BREAK: cập nhật interface + HTTP client
-    - "GiamSat.UI/Pages/AutoSandingConfig.razor"            # FEAT: 3 TextBox Work Fre1/Fre2/Spine (Fre2/Spine có thể để trống)
-    - "GiamSat.UI/Pages/AutoSandingConfig.razor.cs"         # FIX: _work → _workFre1/_workFre2/_workSpine
+    - "GiamSat.UI/Pages/AutoSandingConfig.razor"    # FIX: Data Điểm 1/2/3 — TipOdLength lên trên, Diam LL/UL xuống dưới
   blocked_by:       ""
   next_step:
-    - Thay đổi logic lấy data lên để tính ABCD:
-        + với 2 giá trị Freq01 và Freq02 vẫn sẽ lấy ở DB ALD_MFG.DatalogFrequency, nhưng sẽ ko quan tâm tới Station, giở chỉ theo key là Part+WorkFreq1 và Part+WrorkFreq2
-        + với giá trị SiffnessY thì truy vấn DB Oven.Ft16 với key là Part+WorkSpine và SandingMode = EnumSandingMode.Test
-    - Sau khi tinhs ABCD xong lưu ngược lại Part thì tính ra lại thông số Z_Siffness để lưu vào  với Y = FreqTarget
-  last_session:     "2026-06-01"
+    - Kiểm tra compile và chạy thử UI
+  last_session:     "2026-06-08"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
     - "Production appsettings có khác với appsettings.json không? Đang deploy ở đâu?"
@@ -323,6 +315,72 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-06-08] — Session: Bỏ filter Station Fre1/Fre2; tính Z_Stiffness từ ABCD
+
+```
+[FIX]  SFT14_CalcData.cs          — Bỏ filter Station ("Auto Fre No.1"/"Auto Fre No.2") khỏi query Fre1/Fre2
+                                    Chỉ còn filter theo Part+WorkFre1 và Part+WorkFre2
+[FEAT] GiamSatApi.cs              — Thêm field Z_Stiffness (double?) vào FT14_TipOdFreq APIClient
+[FEAT] AutoSandingConfig.razor.cs — OnApplyAbcdToPart(): tính Z_Stiffness = (FreqTarget - B) / A
+                                    Lưu Z_Stiffness vào FT14 cùng với A,B,C,D
+                                    Notification hiển thị thêm Z_Stiffness
+```
+
+---
+
+### [2026-06-08] — Session: DataGrid TipOD đổi thứ tự hiển thị
+
+```
+[FIX] AutoSandingConfig.razor — Data Điểm 1/2/3: TipOdLength (tên) lên trên, Diam LL/UL xuống dưới
+```
+
+---
+
+### [2026-06-08] — Session: Thêm Z_Stiffness vào grid; resize cột; scroll; load Formula khi chọn Part
+
+```
+[FEAT] AutoSandingConfig.razor    — DataGrid Tab 1: thêm cột Z_Stiffness (màu tím) sau cột D
+                                    AllowColumnResize=true + ColumnResizeMode=OnResize → kéo chỉnh độ rộng cột
+                                    Style="height:500px" → scroll dọc/ngang tự động
+[FEAT] AutoSandingConfig.razor.cs — OnPartSelected(): load _formular = (int)(part.Formula ?? 1)
+                                    Khi chọn part ở Tab 2, ô Formular tự điền giá trị hiện tại của part
+```
+
+---
+
+### [2026-06-08] — Session: Fix NSwag auto-revert + CS0229 duplicate partial class
+
+```
+[FIX]  GiamSat.APIClient.csproj    — Đã comment out NSwag Target (Net70) đúng cách (bọc trong <!-- -->).
+                                      Nguyên nhân revert: NSwag target ACTIVE chạy mỗi lần build Debug,
+                                      regenerate GiamSatApi.cs từ swagger.json → xóa mọi edit thủ công.
+[FIX]  FT14CalcDataClient.cs       — Xóa AutoSandingTestRow + AutoSandingTestRowListResult partial class
+                                      (duplicate với GiamSatApi.cs → CS0229 ambiguity error).
+                                      GiamSatApi.cs đã có 2 class này (NSwag gen từ swagger.json cập nhật).
+[FIX]  AutoSandingConfig.razor     — Tăng width cột Freq LL/UL/OD/Formula/FreqTarget (70→90-100px)
+                                      để hiện đủ header text, không bị cắt "Freq ...".
+```
+
+---
+
+### [2026-06-08] — Session: Đổi Set_Freq_Offset_Low/Hight → Freq_LL/Freq_UL; thêm OD_BOD; Formula_F → Formula
+
+```
+[BREAK] GiamSatApi.cs                         — FT14_TipOdFreq: xóa Set_Freq_Offset_Low, Set_Freq_Offset_Hight, Formula_F
+                                                 Thêm OD_BOD (oD_BOD), Freq_LL (freq_LL), Freq_UL (freq_UL), Formula (formula)
+[FEAT]  DialogAutoSandingConfig.razor          — Thêm field "OD / BOD (mm)" bind @_model.OD_BOD
+                                                 Đổi "Fre Offset Low/High" → "Freq LL/UL (CPM)" với binding Freq_LL/Freq_UL
+                                                 Đổi "Formula F" → "Formula" bind @_model.Formula
+[FIX]   DialogAutoSandingConfig.razor.cs       — Clone: thay Set_Freq_Offset_Low/Hight/Formula_F → OD_BOD/Freq_LL/Freq_UL/Formula
+[FIX]   AutoSandingConfig.razor                — DataGrid: thêm cột OD_BOD; đổi cột Freq_LL/Freq_UL/Formula
+[FIX]   AutoSandingConfig.razor.cs             — OnAddPart: Formula_F=1 → Formula=1
+                                                 OnApplyAbcdToPart: part.Formula_F → part.Formula
+                                                 Export Excel: headers 19→20 cols (+OD/BOD), data mappings cập nhật
+                                                 Import Excel: update/insert mappings 19→20 cols
+```
 
 ---
 

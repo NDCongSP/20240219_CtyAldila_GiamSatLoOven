@@ -54,5 +54,6 @@
 		<Exec WorkingDirectory="$(ProjectDir)\ApiClient" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development"
 			  Command="$(NSwagExe_Net70) run nswag.json /variables:Configuration=$(Configuration)" />
 	</Target>
+	
 
 </Project>
