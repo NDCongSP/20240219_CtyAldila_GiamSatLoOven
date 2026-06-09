@@ -524,6 +524,8 @@ namespace Scada.Sanding
             lblPartNameVal.Text = decodedPartName;
             lblWorkOrderVal.Text = decodedWorkOrder;
 
+            bool changed = false;
+
             if (decodedPartName != _lastPartName || decodedWorkOrder != _lastWorkOrder)
             {
                 if (!string.IsNullOrEmpty(_lastPartName) || !string.IsNullOrEmpty(_lastWorkOrder))
@@ -538,14 +540,20 @@ namespace Scada.Sanding
             {
                 LogEvent($"Phát hiện đổi Part Name: '{_lastPartName}' -> '{decodedPartName}'");
                 _lastPartName = decodedPartName;
-
-                if (!string.IsNullOrEmpty(decodedPartName))
-                {
-                    _ = DownloadConfigFromDbAsync(decodedPartName);
-                }
+                changed = true;
             }
 
-            _lastWorkOrder = decodedWorkOrder;
+            if (decodedWorkOrder != _lastWorkOrder)
+            {
+                LogEvent($"Phát hiện đổi Work Order: '{_lastWorkOrder}' -> '{decodedWorkOrder}'");
+                _lastWorkOrder = decodedWorkOrder;
+                changed = true;
+            }
+
+            if (changed && !string.IsNullOrEmpty(decodedPartName))
+            {
+                _ = DownloadConfigFromDbAsync(decodedPartName);
+            }
         }
 
         private async Task DownloadConfigFromDbAsync(string partName)
