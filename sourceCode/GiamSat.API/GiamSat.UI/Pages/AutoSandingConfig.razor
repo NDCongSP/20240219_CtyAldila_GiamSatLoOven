@@ -60,6 +60,9 @@
                                                 PagingSummaryFormat="Hiển thị trang {0}/{1} (Tổng {2} bản ghi)"
                                                 EmptyText="Chưa có part nào. Nhấn &quot;Thêm Part&quot; để tạo mới."
                                                 Density="Density.Compact"
+                                                AllowColumnResize="true"
+                                                ColumnResizeMode="ColumnResizeMode.OnResize"
+                                                Style="height:500px"
                                                 class="rz-shadow-2">
                                     <Columns>
                                         <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="PartName" Title="Item Number" Width="130px" Frozen="true" />
@@ -69,23 +72,28 @@
                                             <Template Context="p">@p.Length?.ToString("F1")</Template>
                                         </RadzenDataGridColumn>
 
-                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="FreqTarget" Title="Freq Target" Width="95px">
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="OD_BOD" Width="90px">
+                                            <HeaderTemplate><span style="color:#c62828">OD/BOD</span></HeaderTemplate>
+                                            <Template Context="p">@p.OD_BOD?.ToString("F3")</Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="FreqTarget" Title="Freq Target" Width="100px">
                                             <Template Context="p">@p.FreqTarget?.ToString("F1")</Template>
                                         </RadzenDataGridColumn>
 
-                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="Set_Freq_Offset_Low" Width="65px">
-                                            <HeaderTemplate><span style="color:#c62828">Fre -</span></HeaderTemplate>
-                                            <Template Context="p">@p.Set_Freq_Offset_Low?.ToString("F1")</Template>
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="Freq_LL" Width="90px">
+                                            <HeaderTemplate><span style="color:#c62828">Freq LL</span></HeaderTemplate>
+                                            <Template Context="p">@p.Freq_LL?.ToString("F1")</Template>
                                         </RadzenDataGridColumn>
 
-                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="Set_Freq_Offset_Hight" Width="65px">
-                                            <HeaderTemplate><span style="color:#c62828">Fre +</span></HeaderTemplate>
-                                            <Template Context="p">@p.Set_Freq_Offset_Hight?.ToString("F1")</Template>
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="Freq_UL" Width="90px">
+                                            <HeaderTemplate><span style="color:#c62828">Freq UL</span></HeaderTemplate>
+                                            <Template Context="p">@p.Freq_UL?.ToString("F1")</Template>
                                         </RadzenDataGridColumn>
 
-                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="Formula_F" Width="85px">
-                                            <HeaderTemplate><span style="color:#c62828">Formula-F</span></HeaderTemplate>
-                                            <Template Context="p">@p.Formula_F?.ToString("F0")</Template>
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="Formula" Width="90px">
+                                            <HeaderTemplate><span style="color:#c62828">Formula</span></HeaderTemplate>
+                                            <Template Context="p">@p.Formula?.ToString("F0")</Template>
                                         </RadzenDataGridColumn>
 
                                         <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="A" Width="65px">
@@ -108,11 +116,16 @@
                                             <Template Context="p">@p.D?.ToString("F3")</Template>
                                         </RadzenDataGridColumn>
 
+                                        <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="Z_Stiffness" Width="95px">
+                                            <HeaderTemplate><span style="color:#6a1b9a;font-weight:700">Z_Stiffness</span></HeaderTemplate>
+                                            <Template Context="p">@(p.Z_Stiffness.HasValue ? p.Z_Stiffness.Value.ToString("F3") : "—")</Template>
+                                        </RadzenDataGridColumn>
+
                                         <RadzenDataGridColumn TItem="FT14_TipOdFreq" Title="Data Điểm 1" Sortable="false" Filterable="false" Width="130px">
                                             <Template Context="p">
                                                 <div style="line-height:1.4">
-                                                    <div>@p.Diam_LL_1?.ToString("F2") / @p.Diam_UL_1?.ToString("F2")</div>
                                                     <small style="color:var(--rz-success)">@(p.TipOdLength_1 ?? "—")</small>
+                                                    <div>@p.Diam_LL_1?.ToString("F2") / @p.Diam_UL_1?.ToString("F2")</div>
                                                 </div>
                                             </Template>
                                         </RadzenDataGridColumn>
@@ -120,8 +133,8 @@
                                         <RadzenDataGridColumn TItem="FT14_TipOdFreq" Title="Data Điểm 2" Sortable="false" Filterable="false" Width="130px">
                                             <Template Context="p">
                                                 <div style="line-height:1.4">
-                                                    <div>@p.Diam_LL_2?.ToString("F2") / @p.Diam_UL_2?.ToString("F2")</div>
                                                     <small style="color:var(--rz-success)">@(p.TipOdLength_2 ?? "—")</small>
+                                                    <div>@p.Diam_LL_2?.ToString("F2") / @p.Diam_UL_2?.ToString("F2")</div>
                                                 </div>
                                             </Template>
                                         </RadzenDataGridColumn>
@@ -129,8 +142,8 @@
                                         <RadzenDataGridColumn TItem="FT14_TipOdFreq" Title="Data Điểm 3" Sortable="false" Filterable="false" Width="130px">
                                             <Template Context="p">
                                                 <div style="line-height:1.4">
-                                                    <div>@p.Diam_LL_3?.ToString("F2") / @p.Diam_UL_3?.ToString("F2")</div>
                                                     <small style="color:var(--rz-success)">@(p.TipOdLength_3 ?? "—")</small>
+                                                    <div>@p.Diam_LL_3?.ToString("F2") / @p.Diam_UL_3?.ToString("F2")</div>
                                                 </div>
                                             </Template>
                                         </RadzenDataGridColumn>

@@ -20,26 +20,32 @@
                 </div>
 
                 <div class="col-6 col-md-3">
+                    <RadzenFormField Text="OD / BOD (mm)" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.OD_BOD" TValue="double?" Format="F3" Min="0" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+
+                <div class="col-6 col-md-3">
                     <RadzenFormField Text="Freq Target (CPM)" Style="width:100%">
                         <RadzenNumeric @bind-Value="@_model.FreqTarget" TValue="double?" Format="F1" Style="width:100%" />
                     </RadzenFormField>
                 </div>
 
                 <div class="col-6 col-md-3">
-                    <RadzenFormField Text="Formula F" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.Formula_F" TValue="double?" Format="F0" Min="1" Style="width:100%" />
+                    <RadzenFormField Text="Freq LL (CPM)" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.Freq_LL" TValue="double?" Format="F1" Style="width:100%" />
                     </RadzenFormField>
                 </div>
 
                 <div class="col-6 col-md-3">
-                    <RadzenFormField Text="Fre Offset Low (-)" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.Set_Freq_Offset_Low" TValue="double?" Format="F2" Min="0" Style="width:100%" />
+                    <RadzenFormField Text="Freq UL (CPM)" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.Freq_UL" TValue="double?" Format="F1" Style="width:100%" />
                     </RadzenFormField>
                 </div>
 
                 <div class="col-6 col-md-3">
-                    <RadzenFormField Text="Fre Offset High (+)" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.Set_Freq_Offset_Hight" TValue="double?" Format="F2" Min="0" Style="width:100%" />
+                    <RadzenFormField Text="Formula" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.Formula" TValue="double?" Format="F0" Min="1" Style="width:100%" />
                     </RadzenFormField>
                 </div>
 

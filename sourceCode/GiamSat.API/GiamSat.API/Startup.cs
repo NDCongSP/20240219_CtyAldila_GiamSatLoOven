@@ -423,6 +423,21 @@ namespace GiamSat.API
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                // Production: trả về JSON 500 rõ ràng thay vì reset connection.
+                // Nếu không có handler này, exception chưa bắt sẽ reset TCP connection
+                // → browser không nhận được CORS header → báo CORS error thay vì 500.
+                app.UseExceptionHandler(errorApp =>
+                {
+                    errorApp.Run(async context =>
+                    {
+                        context.Response.StatusCode = 500;
+                        context.Response.ContentType = "application/json";
+                        await context.Response.WriteAsJsonAsync(new { succeeded = false, message = "Internal server error." });
+                    });
+                });
+            }
 
             Log.Information("Configure: UseSwagger + SwaggerUI");
             app.UseSwagger();

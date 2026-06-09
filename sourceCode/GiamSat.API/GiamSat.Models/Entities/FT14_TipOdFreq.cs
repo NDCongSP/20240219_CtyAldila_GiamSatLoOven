@@ -46,8 +46,11 @@ namespace GiamSat.Models
 
         public double? FreqTarget { get; set; } = 0;
 
-        public double? FreqTargetLow { get; set; } = 0;
-        public double? FreqTargetHight { get; set; } = 0;
+        /// <summary>
+        /// giá trị tần số thấp.
+        /// </summary>
+        public double? Freq_LL { get; set; } = 0;
+        public double? Freq_UL { get; set; } = 0;
         public double? Formula { get; set; } = 0;
 
         public double? A { get; set; } = 0;

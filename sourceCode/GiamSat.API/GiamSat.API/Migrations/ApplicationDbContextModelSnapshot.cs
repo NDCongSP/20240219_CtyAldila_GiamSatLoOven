@@ -520,10 +520,10 @@ namespace GiamSat.API.Migrations
                     b.Property<double?>("FreqTarget")
                         .HasColumnType("float");
 
-                    b.Property<double?>("FreqTargetHight")
+                    b.Property<double?>("Freq_LL")
                         .HasColumnType("float");
 
-                    b.Property<double?>("FreqTargetLow")
+                    b.Property<double?>("Freq_UL")
                         .HasColumnType("float");
 
                     b.Property<double?>("Length")

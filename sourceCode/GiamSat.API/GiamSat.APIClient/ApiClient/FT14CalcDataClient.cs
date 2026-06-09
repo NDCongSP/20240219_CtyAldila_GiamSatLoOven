@@ -2,40 +2,7 @@
 
 namespace GiamSat.APIClient
 {
-    // DTO for a single row returned by the calc-data endpoint
-    public partial class AutoSandingTestRow
-    {
-        [System.Text.Json.Serialization.JsonPropertyName("rowIndex")]
-        public int RowIndex { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("fre1")]
-        public double Fre1 { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("beltRotationRpm")]
-        public double BeltRotationRpm { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("fre2")]
-        public double Fre2 { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("stiffnessY")]
-        public double StiffnessY { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("freqDiff")]
-        public double FreqDiff { get; set; }
-    }
-
-    // Result wrapper for List<AutoSandingTestRow>
-    public partial class AutoSandingTestRowListResult
-    {
-        [System.Text.Json.Serialization.JsonPropertyName("messages")]
-        public System.Collections.Generic.ICollection<string>? Messages { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("succeeded")]
-        public bool Succeeded { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("data")]
-        public System.Collections.Generic.ICollection<AutoSandingTestRow>? Data { get; set; }
-    }
+    // AutoSandingTestRow và AutoSandingTestRowListResult được định nghĩa trong GiamSatApi.cs (NSwag-generated)
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial interface IFT14CalcDataClient : IApiService
