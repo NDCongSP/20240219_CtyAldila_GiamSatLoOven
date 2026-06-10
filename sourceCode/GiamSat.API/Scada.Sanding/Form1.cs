@@ -223,12 +223,12 @@ namespace Scada.Sanding
                 "Spine_Low", "Spine_Hight", "OK_NG_Sanding", "Shaft_Num_OD",
                 "Diam_Reading_1", "Diam_Reading_2", "Diam_Reading_3",
                 "OK_NG_OD_1", "OK_NG_OD_2", "OK_NG_OD_3",
-                "Set_Shaft_Length", "Set_Freq_Target", "Set_Freq_Offset_Low", "Set_Freq_Offset_Hight",
+                "Set_Shaft_Length", "Set_Freq_Target", "Set_Freq_Target_Low", "Set_Freq_Target_Hight",
                 "Set_Formula_F", "Set_A", "Set_B", "Set_C", "Set_D",
                 "Set_Diam_LL_1", "Set_Diam_LL_2", "Set_Diam_LL_3",
                 "Set_Diam_UL_1", "Set_Diam_UL_2", "Set_Diam_UL_3",
                 "Set_Tip_OD_Length_1", "Set_Tip_OD_Length_2", "Set_Tip_OD_Length_3",
-                "Auto_Manual"
+                "Auto_Manual", "Set_OD_BOD"
             };
 
             foreach (var name in tags)
@@ -344,27 +344,30 @@ namespace Scada.Sanding
                 case "OK_NG_OD_1": model.OK_NG_OD_1 = ParseInt(val); break;
                 case "OK_NG_OD_2": model.OK_NG_OD_2 = ParseInt(val); break;
                 case "OK_NG_OD_3": model.OK_NG_OD_3 = ParseInt(val); break;
-                case "Set_Shaft_Length": model.Set_Shaft_Length = ParseInt(val); break;
-                case "Set_Freq_Target": model.Set_Freq_Target = ParseInt(val); break;
-                case "Set_Freq_Offset_Low": model.Set_Freq_Offset_Low = ParseInt(val); break;
-                case "Set_Freq_Offset_Hight": model.Set_Freq_Offset_Hight = ParseInt(val); break;
+                case "Set_Shaft_Length": model.Set_Shaft_Length = ParseDouble(val); break;
+                case "Set_Freq_Target": model.Set_Freq_Target = ParseDouble(val); break;
+                case "Set_Freq_Target_Low": model.Set_Freq_Target_Low = ParseDouble(val); break;
+                case "Set_Freq_Target_Hight": model.Set_Freq_Target_Hight = ParseDouble(val); break;
                 case "Set_Formula_F": model.Set_Formula_F = ParseInt(val); break;
-                case "Set_A": model.Set_A = ParseInt(val); break;
-                case "Set_B": model.Set_B = ParseInt(val); break;
-                case "Set_C": model.Set_C = ParseInt(val); break;
-                case "Set_D": model.Set_D = ParseInt(val); break;
-                case "Set_Diam_LL_1": model.Set_Diam_LL_1 = ParseInt(val); break;
-                case "Set_Diam_LL_2": model.Set_Diam_LL_2 = ParseInt(val); break;
-                case "Set_Diam_LL_3": model.Set_Diam_LL_3 = ParseInt(val); break;
-                case "Set_Diam_UL_1": model.Set_Diam_UL_1 = ParseInt(val); break;
-                case "Set_Diam_UL_2": model.Set_Diam_UL_2 = ParseInt(val); break;
-                case "Set_Diam_UL_3": model.Set_Diam_UL_3 = ParseInt(val); break;
+                case "Set_A": model.Set_A = ParseDouble(val); break;
+                case "Set_B": model.Set_B = ParseDouble(val); break;
+                case "Set_C": model.Set_C = ParseDouble(val); break;
+                case "Set_D": model.Set_D = ParseDouble(val); break;
+                case "Set_Diam_LL_1": model.Set_Diam_LL_1 = ParseDouble(val); break;
+                case "Set_Diam_LL_2": model.Set_Diam_LL_2 = ParseDouble(val); break;
+                case "Set_Diam_LL_3": model.Set_Diam_LL_3 = ParseDouble(val); break;
+                case "Set_Diam_UL_1": model.Set_Diam_UL_1 = ParseDouble(val); break;
+                case "Set_Diam_UL_2": model.Set_Diam_UL_2 = ParseDouble(val); break;
+                case "Set_Diam_UL_3": model.Set_Diam_UL_3 = ParseDouble(val); break;
                 case "Set_Tip_OD_Length_1": model.Set_Tip_OD_Length_1 = ParseDouble(val); break;
                 case "Set_Tip_OD_Length_2": model.Set_Tip_OD_Length_2 = ParseDouble(val); break;
                 case "Set_Tip_OD_Length_3": model.Set_Tip_OD_Length_3 = ParseDouble(val); break;
                 case "Auto_Manual":
                     model.Auto_Manual = ParseInt(val);
                     model.SandingMode = model.Auto_Manual == 2 ? "Test" : "Production";
+                    break;
+                case "Set_OD_BOD":
+                    model.Set_OD_BOD = ParseDouble(val);
                     break;
             }
         }
@@ -425,10 +428,10 @@ namespace Scada.Sanding
                 case "Set_Freq_Target":
                     lblSetFreqTargetVal.Text = val;
                     break;
-                case "Set_Freq_Offset_Low":
+                case "Set_Freq_Target_Low":
                     lblSetFreqOffsetLowVal.Text = val;
                     break;
-                case "Set_Freq_Offset_Hight":
+                case "Set_Freq_Target_Hight":
                     lblSetFreqOffsetHighVal.Text = val;
                     break;
                 case "Set_Formula_F":
@@ -603,9 +606,10 @@ namespace Scada.Sanding
                 // Write each parameter to Set_ tags
                 await WriteTagAsync("Set_Shaft_Length", (config.Length ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
                 await WriteTagAsync("Set_Freq_Target", (config.FreqTarget ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
-                await WriteTagAsync("FreqTargetLow", (config.Freq_LL ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
-                await WriteTagAsync("FreqTargetHight", (config.Freq_UL ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                await WriteTagAsync("Set_Freq_Target_Low", (config.Freq_LL ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                await WriteTagAsync("Set_Freq_Target_Hight", (config.Freq_UL ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
                 await WriteTagAsync("Set_Formula_F", (config.Formula ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                await WriteTagAsync("Set_OD_BOD", (config.OD_BOD ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
                 
                 await WriteTagAsync("Set_A", (config.A ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
                 await WriteTagAsync("Set_B", (config.B ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
@@ -621,13 +625,40 @@ namespace Scada.Sanding
                 await WriteTagAsync("Set_Diam_UL_3", (config.Diam_UL_3 ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
 
                 // Extract numeric values from TipOdLength_1..3 strings
-                double len1 = ExtractDouble(config.TipOdLength_1 ?? "");
-                double len2 = ExtractDouble(config.TipOdLength_2 ?? "");
-                double len3 = ExtractDouble(config.TipOdLength_3 ?? "");
+                double? len1Opt = ExtractDouble(config.TipOdLength_1 ?? "");
+                double? len2Opt = ExtractDouble(config.TipOdLength_2 ?? "");
+                double? len3Opt = ExtractDouble(config.TipOdLength_3 ?? "");
+
+                bool hasFormatError = false;
+                if (!string.IsNullOrEmpty(config.TipOdLength_1) && len1Opt == null) hasFormatError = true;
+                if (!string.IsNullOrEmpty(config.TipOdLength_2) && len2Opt == null) hasFormatError = true;
+                if (!string.IsNullOrEmpty(config.TipOdLength_3) && len3Opt == null) hasFormatError = true;
+
+                double len1 = len1Opt ?? 0;
+                double len2 = len2Opt ?? 0;
+                double len3 = len3Opt ?? 0;
 
                 await WriteTagAsync("Set_Tip_OD_Length_1", len1.ToString(System.Globalization.CultureInfo.InvariantCulture));
                 await WriteTagAsync("Set_Tip_OD_Length_2", len2.ToString(System.Globalization.CultureInfo.InvariantCulture));
                 await WriteTagAsync("Set_Tip_OD_Length_3", len3.ToString(System.Globalization.CultureInfo.InvariantCulture));
+
+                if (hasFormatError)
+                {
+                    LogEvent("Phát hiện định dạng Tip OD Length không hợp lệ! Kích hoạt Set_Alarm = 1.");
+                    await WriteTagAsync("Set_Alarm", "1");
+                    GlobalVariable.SandingRealtime.Set_Alarm = 1;
+                    GlobalVariable.InvokeIfRequired(this, () =>
+                    {
+                        lblFooterStatus.Text += " | [CẢNH BÁO]: Format Tip OD Length sai!";
+                        lblFooterStatus.ForeColor = Color.Red;
+                        MessageBox.Show("Cảnh báo: Định dạng Tip OD Length 1, 2, 3 không đúng (không tìm thấy số)!", "Cảnh Báo Định Dạng", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    });
+                }
+                else
+                {
+                    await WriteTagAsync("Set_Alarm", "0");
+                    GlobalVariable.SandingRealtime.Set_Alarm = 0;
+                }
 
                 LogEvent("Ghi cấu hình thành công. Đang gửi tín hiệu Set_Trigger_NewPartInfo = 1...");
                 await WriteTagAsync("Set_Trigger_NewPartInfo", "1");
@@ -941,15 +972,28 @@ namespace Scada.Sanding
             return sb.ToString().Trim();
         }
 
-        private double ExtractDouble(string input)
+        private double? ExtractDouble(string input)
         {
-            if (string.IsNullOrEmpty(input)) return 0;
-            var match = Regex.Match(input, @"[0-9]+(\.[0-9]+)?");
-            if (match.Success && double.TryParse(match.Value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double val))
+            if (string.IsNullOrEmpty(input)) return null;
+            
+            // Find number immediately after @ character
+            var matchAt = Regex.Match(input, @"@\s*([0-9]+(\.[0-9]+)?)");
+            if (matchAt.Success && matchAt.Groups.Count > 1)
             {
-                return val;
+                if (double.TryParse(matchAt.Groups[1].Value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double val))
+                {
+                    return val;
+                }
             }
-            return 0;
+
+            // Fallback to finding the first number if @ is not present
+            var match = Regex.Match(input, @"[0-9]+(\.[0-9]+)?");
+            if (match.Success && double.TryParse(match.Value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double val2))
+            {
+                return val2;
+            }
+            
+            return null;
         }
 
         private void lblSetFreqOffsetLow_Click(object sender, EventArgs e)
