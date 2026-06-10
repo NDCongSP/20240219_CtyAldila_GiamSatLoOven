@@ -453,13 +453,13 @@ namespace Scada.Sanding
                     lblSetShaftLengthVal.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 case "Set_Tip_OD_Length_1":
-                    lblSetTipOdLength1Val.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    // Do not update from PLC tag to keep the raw DB string on UI
                     break;
                 case "Set_Tip_OD_Length_2":
-                    lblSetTipOdLength2Val.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    // Do not update from PLC tag to keep the raw DB string on UI
                     break;
                 case "Set_Tip_OD_Length_3":
-                    lblSetTipOdLength3Val.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    // Do not update from PLC tag to keep the raw DB string on UI
                     break;
                 case "Set_Diam_LL_1":
                     lblSetDiamLL1Val.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
@@ -645,6 +645,22 @@ namespace Scada.Sanding
                 double? len1Opt = ExtractDouble(config.TipOdLength_1 ?? "");
                 double? len2Opt = ExtractDouble(config.TipOdLength_2 ?? "");
                 double? len3Opt = ExtractDouble(config.TipOdLength_3 ?? "");
+
+                // Display raw strings directly on the UI
+                if (this.InvokeRequired)
+                {
+                    this.Invoke(new Action(() => {
+                        lblSetTipOdLength1Val.Text = string.IsNullOrEmpty(config.TipOdLength_1) ? "--" : config.TipOdLength_1;
+                        lblSetTipOdLength2Val.Text = string.IsNullOrEmpty(config.TipOdLength_2) ? "--" : config.TipOdLength_2;
+                        lblSetTipOdLength3Val.Text = string.IsNullOrEmpty(config.TipOdLength_3) ? "--" : config.TipOdLength_3;
+                    }));
+                }
+                else
+                {
+                    lblSetTipOdLength1Val.Text = string.IsNullOrEmpty(config.TipOdLength_1) ? "--" : config.TipOdLength_1;
+                    lblSetTipOdLength2Val.Text = string.IsNullOrEmpty(config.TipOdLength_2) ? "--" : config.TipOdLength_2;
+                    lblSetTipOdLength3Val.Text = string.IsNullOrEmpty(config.TipOdLength_3) ? "--" : config.TipOdLength_3;
+                }
 
                 bool hasFormatError = false;
                 if (!string.IsNullOrEmpty(config.TipOdLength_1) && len1Opt == null) hasFormatError = true;
