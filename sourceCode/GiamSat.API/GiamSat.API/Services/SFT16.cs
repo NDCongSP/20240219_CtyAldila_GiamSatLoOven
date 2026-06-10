@@ -24,14 +24,14 @@ namespace GiamSat.API
         {
             try
             {
-                var query = _context.FT16_SandingLogDatas.AsNoTracking().AsQueryable();
-                if (from.HasValue)
-                    query = query.Where(x => x.CreatedAt >= from.Value);
-                if (to.HasValue)
-                    query = query.Where(x => x.CreatedAt <= to.Value.Date.AddDays(1).AddSeconds(-1));
-                if (mode.HasValue)
-                    query = query.Where(x => x.SandingMode == mode.Value);
-                var list = await query.OrderByDescending(x => x.CreatedAt).ToListAsync();
+                var query =await _context.FT16_SandingLogDatas
+                    .Where(x => (from == null || x.CreatedAt >= from)
+                    && (to == null || x.CreatedAt <= to)
+                    && (mode == null || x.SandingMode == mode))
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                var list = query.OrderByDescending(x => x.CreatedAt).ToList();
                 return await Result<List<FT16_SandingLogData>>.SuccessAsync(list);
             }
             catch (Exception ex)

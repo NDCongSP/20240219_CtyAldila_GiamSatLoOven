@@ -284,8 +284,8 @@ active_context:
     - "GiamSat.UI/_Imports.razor"                    # CHORE: inject _ft16ReportClient
   blocked_by:       ""
   next_step:
-    - Kiểm tra compile (FT16ReportClient tham chiếu IApiService đúng không)
-    - Test giao diện báo cáo và xuất Excel
+    - update Report sanding:
+        + oo9
   last_session:     "2026-06-09"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
@@ -324,6 +324,20 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-06-10] — Session: Fix filter SandingMode NULL + normalize datetime trong GetReport
+
+```
+[FIX]  SFT16.cs                   — GetReport: from → from.Value.Date (00:00:00); to → < to.Value.Date.AddDays(1) (00:00:00 ngày hôm sau)
+                                    Tránh lỗi DatePicker truyền giờ hiện tại (vd: 17:00) làm bỏ sót record trong ngày
+[FIX]  SFT16.cs                   — GetReport: khi mode=Production, include SandingMode IS NULL
+                                    (SCADA insert không set SandingMode → DB null → entity default Production)
+                                    Khi mode=Test: chỉ lấy đúng SandingMode=2
+[FIX]  AutoSandingReport.razor.cs — Đổi default _selectedMode từ Production(1) → null(Tất cả)
+                                    Để người dùng thấy toàn bộ data khi lần đầu load
+```
 
 ---
 

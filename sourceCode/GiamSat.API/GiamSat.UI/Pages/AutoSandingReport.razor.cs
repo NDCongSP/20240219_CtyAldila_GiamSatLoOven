@@ -12,10 +12,8 @@ namespace GiamSat.UI.Pages
 {
     public partial class AutoSandingReport
     {
-        [Inject] private IJSRuntime _js { get; set; } = default!;
-
         // ── Filter state ──────────────────────────────────────────────
-        private int? _selectedMode = 1; // 1 = Production (mặc định)
+        private int? _selectedMode = null; // null = Tất cả (mặc định để tiện test; đổi về 1 khi muốn default là Production)
         private DateTime? _fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
         private DateTime? _toDate = DateTime.Today;
 
