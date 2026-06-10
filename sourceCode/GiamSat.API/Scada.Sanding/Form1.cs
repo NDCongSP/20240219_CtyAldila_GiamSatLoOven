@@ -26,6 +26,7 @@ namespace Scada.Sanding
 
         private string _lastPartName = string.Empty;
         private string _lastWorkOrder = string.Empty;
+        private int _lastAutoManual = -1;
 
         private readonly string _basePath = "Local Station/Channel1/Device1";
 
@@ -383,6 +384,14 @@ namespace Scada.Sanding
                 case "Auto_Manual":
                     int mode = ParseInt(val);
                     lblSandingModeVal.Text = mode == 2 ? "Test (2)" : "Production (1)";
+                    
+                    if (_lastAutoManual != -1 && mode != _lastAutoManual)
+                    {
+                        LogEvent($"Phát hiện đổi Sanding Mode (Auto_Manual): {_lastAutoManual} -> {mode}. Reset bộ đếm Pilot5.");
+                        GlobalVariable.Pilot5SandingCount = 0;
+                        GlobalVariable.Pilot5OdCount = 0;
+                    }
+                    _lastAutoManual = mode;
                     break;
                 case "Mortor_Sanding_Speed":
                     lblMotorSpeedVal.Text = val;
@@ -453,13 +462,13 @@ namespace Scada.Sanding
                     lblSetShaftLengthVal.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 case "Set_Tip_OD_Length_1":
-                    lblSetTipOdLength1Val.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    // Do not update from PLC tag to keep the raw DB string on UI
                     break;
                 case "Set_Tip_OD_Length_2":
-                    lblSetTipOdLength2Val.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    // Do not update from PLC tag to keep the raw DB string on UI
                     break;
                 case "Set_Tip_OD_Length_3":
-                    lblSetTipOdLength3Val.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    // Do not update from PLC tag to keep the raw DB string on UI
                     break;
                 case "Set_Diam_LL_1":
                     lblSetDiamLL1Val.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
@@ -645,6 +654,22 @@ namespace Scada.Sanding
                 double? len1Opt = ExtractDouble(config.TipOdLength_1 ?? "");
                 double? len2Opt = ExtractDouble(config.TipOdLength_2 ?? "");
                 double? len3Opt = ExtractDouble(config.TipOdLength_3 ?? "");
+
+                // Display raw strings directly on the UI
+                if (this.InvokeRequired)
+                {
+                    this.Invoke(new Action(() => {
+                        lblSetTipOdLength1Val.Text = string.IsNullOrEmpty(config.TipOdLength_1) ? "--" : config.TipOdLength_1;
+                        lblSetTipOdLength2Val.Text = string.IsNullOrEmpty(config.TipOdLength_2) ? "--" : config.TipOdLength_2;
+                        lblSetTipOdLength3Val.Text = string.IsNullOrEmpty(config.TipOdLength_3) ? "--" : config.TipOdLength_3;
+                    }));
+                }
+                else
+                {
+                    lblSetTipOdLength1Val.Text = string.IsNullOrEmpty(config.TipOdLength_1) ? "--" : config.TipOdLength_1;
+                    lblSetTipOdLength2Val.Text = string.IsNullOrEmpty(config.TipOdLength_2) ? "--" : config.TipOdLength_2;
+                    lblSetTipOdLength3Val.Text = string.IsNullOrEmpty(config.TipOdLength_3) ? "--" : config.TipOdLength_3;
+                }
 
                 bool hasFormatError = false;
                 if (!string.IsNullOrEmpty(config.TipOdLength_1) && len1Opt == null) hasFormatError = true;
