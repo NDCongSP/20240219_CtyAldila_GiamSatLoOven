@@ -40,7 +40,7 @@ namespace Scada.Sanding
             {
                 easyDriverConnector1.ConnectionStatusChaged += EasyDriverConnector_ConnectionStatusChanged;
                 easyDriverConnector1.Started += EasyDriverConnector_Started;
-                
+
                 LogEvent("Đang khởi chạy EasyDriverConnector...");
                 easyDriverConnector1.Start();
 
@@ -69,7 +69,7 @@ namespace Scada.Sanding
                     var constring = dbContext.Database.Connection.ConnectionString;
                     GlobalVariable.ConnectionString = constring;
                     GlobalVariable.IpDbServer = constring.Split(';')[0].Split('=')[1];
-                    
+
                     var maskedConn = System.Text.RegularExpressions.Regex.Replace(constring, "Password=[^;]+", "Password=******");
                     LogEvent("Chuỗi kết nối DB: " + maskedConn);
                 }
@@ -165,7 +165,7 @@ namespace Scada.Sanding
                 {
                     var allTags = easyDriverConnector1.GetAllTags();
                     int tagCount = allTags != null ? allTags.Count() : 0;
-                    
+
                     var tag = easyDriverConnector1.GetTag(string.Format("{0}/PartName_1", _basePath));
                     if (tag != null && !_tagsRegistered)
                     {
@@ -388,19 +388,19 @@ namespace Scada.Sanding
                     lblMotorSpeedVal.Text = val;
                     break;
                 case "Spine_A":
-                    lblSpineAVal.Text = ParseDouble(val).ToString("0.###");
+                    lblSpineAVal.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 case "Spine_B":
-                    lblSpineBVal.Text = ParseDouble(val).ToString("0.###");
+                    lblSpineBVal.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 case "Spine_Target":
-                    lblSpineTargetVal.Text = ParseDouble(val).ToString("0.###");
+                    lblSpineTargetVal.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 case "Spine_Low":
-                    lblSpineLowVal.Text = ParseDouble(val).ToString("0.###");
+                    lblSpineLowVal.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 case "Spine_Hight":
-                    lblSpineHighVal.Text = ParseDouble(val).ToString("0.###");
+                    lblSpineHighVal.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 case "OK_NG_Sanding":
                     int okNg = ParseInt(val);
@@ -426,43 +426,61 @@ namespace Scada.Sanding
                     lblShaftNumOdVal.Text = val;
                     break;
                 case "Set_Freq_Target":
-                    lblSetFreqTargetVal.Text = ParseDouble(val).ToString("0.###");
+                    lblSetFreqTargetVal.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 case "Set_Freq_Target_Low":
-                    lblSetFreqOffsetLowVal.Text = ParseDouble(val).ToString("0.###");
+                    lblSetFreqOffsetLowVal.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 case "Set_Freq_Target_Hight":
-                    lblSetFreqOffsetHighVal.Text = ParseDouble(val).ToString("0.###");
+                    lblSetFreqOffsetHighVal.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 case "Set_Formula_F":
                     lblSetFormulaFVal.Text = val;
                     break;
                 case "Set_A":
-                    lblSetAVal.Text = ParseDouble(val).ToString("0.###");
+                    lblSetAVal.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 case "Set_B":
-                    lblSetBVal.Text = ParseDouble(val).ToString("0.###");
+                    lblSetBVal.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 case "Set_C":
-                    lblSetCVal.Text = ParseDouble(val).ToString("0.###");
+                    lblSetCVal.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 case "Set_D":
-                    lblSetDVal.Text = ParseDouble(val).ToString("0.###");
+                    lblSetDVal.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 case "Set_Shaft_Length":
-                    lblSetShaftLengthVal.Text = ParseDouble(val).ToString("0.###");
+                    lblSetShaftLengthVal.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 case "Set_Tip_OD_Length_1":
-                    lblSetTipOdLength1Val.Text = ParseDouble(val).ToString("0.###");
+                    lblSetTipOdLength1Val.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 case "Set_Tip_OD_Length_2":
-                    lblSetTipOdLength2Val.Text = ParseDouble(val).ToString("0.###");
+                    lblSetTipOdLength2Val.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 case "Set_Tip_OD_Length_3":
-                    lblSetTipOdLength3Val.Text = ParseDouble(val).ToString("0.###");
+                    lblSetTipOdLength3Val.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    break;
+                case "Set_Diam_LL_1":
+                    lblSetDiamLL1Val.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    break;
+                case "Set_Diam_LL_2":
+                    lblSetDiamLL2Val.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    break;
+                case "Set_Diam_LL_3":
+                    lblSetDiamLL3Val.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    break;
+                case "Set_Diam_UL_1":
+                    lblSetDiamUL1Val.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    break;
+                case "Set_Diam_UL_2":
+                    lblSetDiamUL2Val.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    break;
+                case "Set_Diam_UL_3":
+                    lblSetDiamUL3Val.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
                 case "Set_OD_BOD":
-                    lblSetOD_BOD_Val.Text = ParseDouble(val).ToString("0.###");
+                    lblSetOD_BOD_Val.Text = ParseDouble(val).ToString(System.Globalization.CultureInfo.InvariantCulture);
                     break;
             }
         }
@@ -472,34 +490,33 @@ namespace Scada.Sanding
             var model = GlobalVariable.SandingRealtime;
             double reading = 0;
             int okNg = 0;
-            double ll = 0, ul = 0;
 
             if (index == 1)
             {
                 reading = model.Diam_Reading_1;
                 okNg = model.OK_NG_OD_1;
-                ll = model.Set_Diam_LL_1;
-                ul = model.Set_Diam_UL_1;
-                lblDiam1.Text = $"OD 1: {reading:0.###} mm [LL: {ll:0.###} / UL: {ul:0.###}]";
+                lblDiam1.Text = $"OD 1: {reading} mm";
                 lblDiam1.ForeColor = okNg == 1 ? Color.ForestGreen : okNg == 2 ? Color.Red : Color.Black;
+                lblOkNgOd1Val.Text = okNg == 1 ? "OK" : okNg == 2 ? "NG" : "--";
+                lblOkNgOd1Val.ForeColor = lblDiam1.ForeColor;
             }
             else if (index == 2)
             {
                 reading = model.Diam_Reading_2;
                 okNg = model.OK_NG_OD_2;
-                ll = model.Set_Diam_LL_2;
-                ul = model.Set_Diam_UL_2;
-                lblDiam2.Text = $"OD 2: {reading:0.###} mm [LL: {ll:0.###} / UL: {ul:0.###}]";
+                lblDiam2.Text = $"OD 2: {reading} mm";
                 lblDiam2.ForeColor = okNg == 1 ? Color.ForestGreen : okNg == 2 ? Color.Red : Color.Black;
+                lblOkNgOd2Val.Text = okNg == 1 ? "OK" : okNg == 2 ? "NG" : "--";
+                lblOkNgOd2Val.ForeColor = lblDiam2.ForeColor;
             }
             else if (index == 3)
             {
                 reading = model.Diam_Reading_3;
                 okNg = model.OK_NG_OD_3;
-                ll = model.Set_Diam_LL_3;
-                ul = model.Set_Diam_UL_3;
-                lblDiam3.Text = $"OD 3: {reading:0.###} mm [LL: {ll:0.###} / UL: {ul:0.###}]";
+                lblDiam3.Text = $"OD 3: {reading} mm";
                 lblDiam3.ForeColor = okNg == 1 ? Color.ForestGreen : okNg == 2 ? Color.Red : Color.Black;
+                lblOkNgOd3Val.Text = okNg == 1 ? "OK" : okNg == 2 ? "NG" : "--";
+                lblOkNgOd3Val.ForeColor = lblDiam3.ForeColor;
             }
         }
 
@@ -610,7 +627,7 @@ namespace Scada.Sanding
                 await WriteTagAsync("Set_Freq_Target_Hight", (config.Freq_UL ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
                 await WriteTagAsync("Set_Formula_F", (config.Formula ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
                 await WriteTagAsync("Set_OD_BOD", (config.OD_BOD ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
-                
+
                 await WriteTagAsync("Set_A", (config.A ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
                 await WriteTagAsync("Set_B", (config.B ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
                 await WriteTagAsync("Set_C", (config.C ?? 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
@@ -701,8 +718,31 @@ namespace Scada.Sanding
                         }
                     }
 
-                    // Create log row
                     var model = GlobalVariable.SandingRealtime;
+                    int sandingMode = model.Auto_Manual;
+                    if (sandingMode != 1 && sandingMode != 2)
+                    {
+                        LogEvent($"[Bỏ qua] Không ghi log Sanding vì Sanding Mode (Auto_Manual) = {sandingMode} (yêu cầu 1 hoặc 2).");
+                        await WriteTagAsync("Trigger_Log_Sanding", "0");
+                        return;
+                    }
+
+                    if (string.IsNullOrEmpty(part) || string.IsNullOrEmpty(work) || currentShaft <= 0)
+                    {
+                        LogEvent($"[Bỏ qua] Thiếu thông tin Part ({part}), Work ({work}) hoặc Shaft ({currentShaft}).");
+                        await WriteTagAsync("Trigger_Log_Sanding", "0");
+                        return;
+                    }
+
+                    bool exists = await db.FT16_SandingLogDatas.AnyAsync(x => x.Part == part && x.Work == work && x.ShaftNum == currentShaft);
+                    if (exists)
+                    {
+                        LogEvent($"[Bỏ qua] Dữ liệu Sanding cho Part: {part}, Work: {work}, Shaft: {currentShaft} đã tồn tại (đảm bảo Unique).");
+                        await WriteTagAsync("Trigger_Log_Sanding", "0");
+                        return;
+                    }
+
+                    // Create log row
                     var logData = new FT16_SandingLogData()
                     {
                         Id = Guid.NewGuid(),
@@ -778,6 +818,22 @@ namespace Scada.Sanding
                         }
                     }
 
+                    var model = GlobalVariable.SandingRealtime;
+                    int sandingMode = model.Auto_Manual;
+                    if (sandingMode != 1 && sandingMode != 2)
+                    {
+                        LogEvent($"[Bỏ qua] Không ghi log OD vì Sanding Mode (Auto_Manual) = {sandingMode} (yêu cầu 1 hoặc 2).");
+                        await WriteTagAsync("Trigger_Log_OD", "0");
+                        return;
+                    }
+
+                    if (string.IsNullOrEmpty(part) || string.IsNullOrEmpty(work) || currentShaft <= 0)
+                    {
+                        LogEvent($"[Bỏ qua] Thiếu thông tin Part ({part}), Work ({work}) hoặc Shaft ({currentShaft}).");
+                        await WriteTagAsync("Trigger_Log_OD", "0");
+                        return;
+                    }
+
                     // Find existing log row matching Part, Work and ShaftNum that hasn't been updated with OD yet
                     var existingRow = await db.FT16_SandingLogDatas
                         .OrderBy(x => x.CreatedAt)
@@ -785,7 +841,6 @@ namespace Scada.Sanding
 
                     if (existingRow != null)
                     {
-                        var model = GlobalVariable.SandingRealtime;
                         existingRow.Diam_Reading_1 = model.Diam_Reading_1;
                         existingRow.Diam_Reading_2 = model.Diam_Reading_2;
                         existingRow.Diam_Reading_3 = model.Diam_Reading_3;
@@ -954,6 +1009,8 @@ namespace Scada.Sanding
 
         private double ParseDouble(string val)
         {
+            if (string.IsNullOrEmpty(val)) return 0;
+            val = val.Replace(',', '.');
             if (double.TryParse(val, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double result)) return result;
             return 0;
         }
@@ -965,7 +1022,7 @@ namespace Scada.Sanding
             {
                 byte lowByte = (byte)(val & 0xFF);
                 byte highByte = (byte)((val >> 8) & 0xFF);
-                
+
                 if (lowByte != 0 && lowByte != 32) sb.Append((char)lowByte);
                 if (highByte != 0 && highByte != 32) sb.Append((char)highByte);
             }
@@ -975,7 +1032,7 @@ namespace Scada.Sanding
         private double? ExtractDouble(string input)
         {
             if (string.IsNullOrEmpty(input)) return null;
-            
+
             // Find number immediately after @ character
             var matchAt = Regex.Match(input, @"@\s*([0-9]+(\.[0-9]+)?)");
             if (matchAt.Success && matchAt.Groups.Count > 1)
@@ -992,7 +1049,7 @@ namespace Scada.Sanding
             {
                 return val2;
             }
-            
+
             return null;
         }
 
