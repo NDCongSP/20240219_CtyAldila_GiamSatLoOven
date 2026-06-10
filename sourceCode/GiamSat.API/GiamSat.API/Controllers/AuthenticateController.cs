@@ -124,11 +124,25 @@ namespace GiamSat.API.Controllers
                 return StatusCode(StatusCodes.Status200OK, new Response { Status = "Error", Message = "Refresh token đã hết hạn." });
 
             // 2. Validate access token (lấy thông tin user)
-            var claim = JwtHelper.GetClaimsPrincipalFromJwt(model.OldToken);
-            if (claim?.Identity?.Name == null)
+            string userName = null;
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+                if (handler.CanReadToken(model.OldToken))
+                {
+                    var jwtToken = handler.ReadJwtToken(model.OldToken);
+                    userName = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                }
+            }
+            catch
+            {
+                // Ignore parse errors, userName remains null
+            }
+
+            if (string.IsNullOrEmpty(userName))
                 return Unauthorized();
 
-            var user = await _userManager.FindByNameAsync(claim.Identity.Name);
+            var user = await _userManager.FindByNameAsync(userName);
             if (user == null || user.Id != storedToken.UserId)
                 return Unauthorized();
 

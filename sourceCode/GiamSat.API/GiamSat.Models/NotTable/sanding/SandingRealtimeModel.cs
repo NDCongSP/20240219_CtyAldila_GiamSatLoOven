@@ -18,7 +18,8 @@ namespace GiamSat.Models
         public string SandingMode { get; set; } = "Production"; // "Production" (1) or "Test" (2)
 
         // PLC Live Status Tags
-        public int Set_Trigger_NewPartInfo1 { get; set; }
+        public int Set_Trigger_NewPartInfo { get; set; }
+        public int Set_Alarm { get; set; }
         public int Trigger_Log_Sanding { get; set; }
         public int Trigger_Log_OD { get; set; }
         public int Shaft_Num_Sanding { get; set; }
@@ -38,24 +39,25 @@ namespace GiamSat.Models
         public int OK_NG_OD_3 { get; set; }
 
         // PLC Downloaded Config Tags (Set_)
-        public int Set_Shaft_Length { get; set; }
-        public int Set_Freq_Target { get; set; }
-        public int Set_Freq_Offset_Low { get; set; }
-        public int Set_Freq_Offset_Hight { get; set; }
+        public double Set_Shaft_Length { get; set; }
+        public double Set_Freq_Target { get; set; }
+        public double Set_Freq_Target_Low { get; set; }
+        public double Set_Freq_Target_Hight { get; set; }
         public int Set_Formula_F { get; set; }
-        public int Set_A { get; set; }
-        public int Set_B { get; set; }
-        public int Set_C { get; set; }
-        public int Set_D { get; set; }
-        public int Set_Diam_LL_1 { get; set; }
-        public int Set_Diam_LL_2 { get; set; }
-        public int Set_Diam_LL_3 { get; set; }
-        public int Set_Diam_UL_1 { get; set; }
-        public int Set_Diam_UL_2 { get; set; }
-        public int Set_Diam_UL_3 { get; set; }
+        public double Set_A { get; set; }
+        public double Set_B { get; set; }
+        public double Set_C { get; set; }
+        public double Set_D { get; set; }
+        public double Set_Diam_LL_1 { get; set; }
+        public double Set_Diam_LL_2 { get; set; }
+        public double Set_Diam_LL_3 { get; set; }
+        public double Set_Diam_UL_1 { get; set; }
+        public double Set_Diam_UL_2 { get; set; }
+        public double Set_Diam_UL_3 { get; set; }
         public double Set_Tip_OD_Length_1 { get; set; }
         public double Set_Tip_OD_Length_2 { get; set; }
         public double Set_Tip_OD_Length_3 { get; set; }
         public int Auto_Manual { get; set; }
+        public double Set_OD_BOD { get; set; }
     }
 }
