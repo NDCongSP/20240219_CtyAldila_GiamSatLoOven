@@ -18,7 +18,7 @@ namespace GiamSat.Models
         public string SandingMode { get; set; } = "Production"; // "Production" (1) or "Test" (2)
 
         // PLC Live Status Tags
-        public int Set_Trigger_NewPartInfo1 { get; set; }
+        public int Set_Trigger_NewPartInfo { get; set; }
         public int Trigger_Log_Sanding { get; set; }
         public int Trigger_Log_OD { get; set; }
         public int Shaft_Num_Sanding { get; set; }

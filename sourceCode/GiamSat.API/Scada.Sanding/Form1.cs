@@ -218,7 +218,7 @@ namespace Scada.Sanding
                 "PartName_6", "PartName_7", "PartName_8", "PartName_9", "PartName_10",
                 "Work_1", "Work_2", "Work_3", "Work_4", "Work_5",
                 "Work_6", "Work_7", "Work_8", "Work_9", "Work_10",
-                "Set_Trigger_NewPartInfo1", "Log_Style", "Trigger_Log_Sanding", "Trigger_Log_OD",
+                "Set_Trigger_NewPartInfo", "Log_Style", "Trigger_Log_Sanding", "Trigger_Log_OD",
                 "Shaft_Num_Sanding", "Spine_A", "Mortor_Sanding_Speed", "Spine_B", "Spine_Target",
                 "Spine_Low", "Spine_Hight", "OK_NG_Sanding", "Shaft_Num_OD",
                 "Diam_Reading_1", "Diam_Reading_2", "Diam_Reading_3",
@@ -325,7 +325,7 @@ namespace Scada.Sanding
 
             switch (name)
             {
-                case "Set_Trigger_NewPartInfo1": model.Set_Trigger_NewPartInfo1 = ParseInt(val); break;
+                case "Set_Trigger_NewPartInfo": model.Set_Trigger_NewPartInfo = ParseInt(val); break;
                 case "Log_Style": model.LogStyle = ParseInt(val); break;
                 case "Trigger_Log_Sanding": model.Trigger_Log_Sanding = ParseInt(val); break;
                 case "Trigger_Log_OD": model.Trigger_Log_OD = ParseInt(val); break;
@@ -629,8 +629,8 @@ namespace Scada.Sanding
                 await WriteTagAsync("Set_Tip_OD_Length_2", len2.ToString(System.Globalization.CultureInfo.InvariantCulture));
                 await WriteTagAsync("Set_Tip_OD_Length_3", len3.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
-                LogEvent("Ghi cấu hình thành công. Đang gửi tín hiệu Set_Trigger_NewPartInfo1 = 1...");
-                await WriteTagAsync("Set_Trigger_NewPartInfo1", "1");
+                LogEvent("Ghi cấu hình thành công. Đang gửi tín hiệu Set_Trigger_NewPartInfo = 1...");
+                await WriteTagAsync("Set_Trigger_NewPartInfo", "1");
                 LogEvent("Gửi tín hiệu NewPartInfo thành công.");
             }
             catch (Exception ex)
@@ -660,14 +660,6 @@ namespace Scada.Sanding
 
                 using (var db = new ApplicationDbContext())
                 {
-                    // Kiểm tra tồn tại trong FT14 để tránh ghi log khi mã Part chưa truyền xong
-                    bool isPartValid = await db.FT14_TipOdFreqs.AnyAsync(x => x.PartName == part && x.Actived == true);
-                    if (!isPartValid)
-                    {
-                        LogEvent($"[Từ chối Log] Part '{part}' không có trong FT14. Tạm dừng ghi log Sanding và giữ nguyên Trigger.");
-                        return; // Không reset trigger, đợi hàm cấu hình gọi lại khi có part đúng
-                    }
-
                     if (style == 2) // Pilot 5
                     {
                         if (GlobalVariable.Pilot5SandingCount >= 5)
@@ -745,14 +737,6 @@ namespace Scada.Sanding
 
                 using (var db = new ApplicationDbContext())
                 {
-                    // Kiểm tra tồn tại trong FT14 để tránh ghi log khi mã Part chưa truyền xong
-                    bool isPartValid = await db.FT14_TipOdFreqs.AnyAsync(x => x.PartName == part && x.Actived == true);
-                    if (!isPartValid)
-                    {
-                        LogEvent($"[Từ chối Log OD] Part '{part}' không có trong FT14. Tạm dừng ghi log OD và giữ nguyên Trigger.");
-                        return; // Không reset trigger, đợi hàm cấu hình gọi lại khi có part đúng
-                    }
-
                     if (style == 2) // Pilot 5
                     {
                         if (GlobalVariable.Pilot5OdCount >= 5)
@@ -951,9 +935,8 @@ namespace Scada.Sanding
                 byte lowByte = (byte)(val & 0xFF);
                 byte highByte = (byte)((val >> 8) & 0xFF);
                 
-                // Đảo lại: HighByte trước, LowByte sau để tránh bị ngược chuỗi (ví dụ: XA -> AX)
-                if (highByte != 0 && highByte != 32) sb.Append((char)highByte);
                 if (lowByte != 0 && lowByte != 32) sb.Append((char)lowByte);
+                if (highByte != 0 && highByte != 32) sb.Append((char)highByte);
             }
             return sb.ToString().Trim();
         }
