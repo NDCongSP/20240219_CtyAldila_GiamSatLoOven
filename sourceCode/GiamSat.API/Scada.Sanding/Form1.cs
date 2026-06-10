@@ -759,7 +759,9 @@ namespace Scada.Sanding
                         return;
                     }
 
-                    bool exists = await db.FT16_SandingLogDatas.AnyAsync(x => x.Part == part && x.Work == work && x.ShaftNum == currentShaft);
+                    var enumMode = sandingMode == 2 ? EnumSandingMode.Test : EnumSandingMode.Production;
+
+                    bool exists = await db.FT16_SandingLogDatas.AnyAsync(x => x.Part == part && x.Work == work && x.ShaftNum == currentShaft && x.SandingMode == enumMode);
                     if (exists)
                     {
                         LogEvent($"[Bỏ qua] Dữ liệu Sanding cho Part: {part}, Work: {work}, Shaft: {currentShaft} đã tồn tại (đảm bảo Unique).");
@@ -860,9 +862,11 @@ namespace Scada.Sanding
                     }
 
                     // Find existing log row matching Part, Work and ShaftNum that hasn't been updated with OD yet
+                    var enumMode = sandingMode == 2 ? EnumSandingMode.Test : EnumSandingMode.Production;
+
                     var existingRow = await db.FT16_SandingLogDatas
                         .OrderBy(x => x.CreatedAt)
-                        .FirstOrDefaultAsync(x => x.Part == part && x.Work == work && x.ShaftNum == currentShaft && x.OK_NG_OD_1 == null);
+                        .FirstOrDefaultAsync(x => x.Part == part && x.Work == work && x.ShaftNum == currentShaft && x.SandingMode == enumMode && x.OK_NG_OD_1 == null);
 
                     if (existingRow != null)
                     {
