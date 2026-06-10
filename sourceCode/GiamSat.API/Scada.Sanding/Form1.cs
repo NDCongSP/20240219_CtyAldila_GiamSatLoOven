@@ -26,6 +26,7 @@ namespace Scada.Sanding
 
         private string _lastPartName = string.Empty;
         private string _lastWorkOrder = string.Empty;
+        private int _lastAutoManual = -1;
 
         private readonly string _basePath = "Local Station/Channel1/Device1";
 
@@ -383,6 +384,14 @@ namespace Scada.Sanding
                 case "Auto_Manual":
                     int mode = ParseInt(val);
                     lblSandingModeVal.Text = mode == 2 ? "Test (2)" : "Production (1)";
+                    
+                    if (_lastAutoManual != -1 && mode != _lastAutoManual)
+                    {
+                        LogEvent($"Phát hiện đổi Sanding Mode (Auto_Manual): {_lastAutoManual} -> {mode}. Reset bộ đếm Pilot5.");
+                        GlobalVariable.Pilot5SandingCount = 0;
+                        GlobalVariable.Pilot5OdCount = 0;
+                    }
+                    _lastAutoManual = mode;
                     break;
                 case "Mortor_Sanding_Speed":
                     lblMotorSpeedVal.Text = val;
