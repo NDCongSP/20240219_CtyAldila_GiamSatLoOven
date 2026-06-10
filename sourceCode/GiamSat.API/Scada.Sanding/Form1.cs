@@ -388,19 +388,19 @@ namespace Scada.Sanding
                     lblMotorSpeedVal.Text = val;
                     break;
                 case "Spine_A":
-                    lblSpineAVal.Text = ParseDouble(val).ToString("F3");
+                    lblSpineAVal.Text = ParseDouble(val).ToString("0.###");
                     break;
                 case "Spine_B":
-                    lblSpineBVal.Text = ParseDouble(val).ToString("F3");
+                    lblSpineBVal.Text = ParseDouble(val).ToString("0.###");
                     break;
                 case "Spine_Target":
-                    lblSpineTargetVal.Text = ParseDouble(val).ToString("F3");
+                    lblSpineTargetVal.Text = ParseDouble(val).ToString("0.###");
                     break;
                 case "Spine_Low":
-                    lblSpineLowVal.Text = ParseDouble(val).ToString("F3");
+                    lblSpineLowVal.Text = ParseDouble(val).ToString("0.###");
                     break;
                 case "Spine_Hight":
-                    lblSpineHighVal.Text = ParseDouble(val).ToString("F3");
+                    lblSpineHighVal.Text = ParseDouble(val).ToString("0.###");
                     break;
                 case "OK_NG_Sanding":
                     int okNg = ParseInt(val);
@@ -426,43 +426,43 @@ namespace Scada.Sanding
                     lblShaftNumOdVal.Text = val;
                     break;
                 case "Set_Freq_Target":
-                    lblSetFreqTargetVal.Text = val;
+                    lblSetFreqTargetVal.Text = ParseDouble(val).ToString("0.###");
                     break;
                 case "Set_Freq_Target_Low":
-                    lblSetFreqOffsetLowVal.Text = val;
+                    lblSetFreqOffsetLowVal.Text = ParseDouble(val).ToString("0.###");
                     break;
                 case "Set_Freq_Target_Hight":
-                    lblSetFreqOffsetHighVal.Text = val;
+                    lblSetFreqOffsetHighVal.Text = ParseDouble(val).ToString("0.###");
                     break;
                 case "Set_Formula_F":
                     lblSetFormulaFVal.Text = val;
                     break;
                 case "Set_A":
-                    lblSetAVal.Text = val;
+                    lblSetAVal.Text = ParseDouble(val).ToString("0.###");
                     break;
                 case "Set_B":
-                    lblSetBVal.Text = val;
+                    lblSetBVal.Text = ParseDouble(val).ToString("0.###");
                     break;
                 case "Set_C":
-                    lblSetCVal.Text = val;
+                    lblSetCVal.Text = ParseDouble(val).ToString("0.###");
                     break;
                 case "Set_D":
-                    lblSetDVal.Text = val;
+                    lblSetDVal.Text = ParseDouble(val).ToString("0.###");
                     break;
                 case "Set_Shaft_Length":
-                    lblSetShaftLengthVal.Text = val;
+                    lblSetShaftLengthVal.Text = ParseDouble(val).ToString("0.###");
                     break;
                 case "Set_Tip_OD_Length_1":
-                    lblSetTipOdLength1Val.Text = ParseDouble(val).ToString("F3");
+                    lblSetTipOdLength1Val.Text = ParseDouble(val).ToString("0.###");
                     break;
                 case "Set_Tip_OD_Length_2":
-                    lblSetTipOdLength2Val.Text = ParseDouble(val).ToString("F3");
+                    lblSetTipOdLength2Val.Text = ParseDouble(val).ToString("0.###");
                     break;
                 case "Set_Tip_OD_Length_3":
-                    lblSetTipOdLength3Val.Text = ParseDouble(val).ToString("F3");
+                    lblSetTipOdLength3Val.Text = ParseDouble(val).ToString("0.###");
                     break;
                 case "Set_OD_BOD":
-                    lblSetOD_BOD_Val.Text = ParseDouble(val).ToString("F3");
+                    lblSetOD_BOD_Val.Text = ParseDouble(val).ToString("0.###");
                     break;
             }
         }
@@ -472,7 +472,7 @@ namespace Scada.Sanding
             var model = GlobalVariable.SandingRealtime;
             double reading = 0;
             int okNg = 0;
-            int ll = 0, ul = 0;
+            double ll = 0, ul = 0;
 
             if (index == 1)
             {
@@ -480,7 +480,7 @@ namespace Scada.Sanding
                 okNg = model.OK_NG_OD_1;
                 ll = model.Set_Diam_LL_1;
                 ul = model.Set_Diam_UL_1;
-                lblDiam1.Text = $"OD 1: {reading:F2} mm [LL: {ll} / UL: {ul}]";
+                lblDiam1.Text = $"OD 1: {reading:0.###} mm [LL: {ll:0.###} / UL: {ul:0.###}]";
                 lblDiam1.ForeColor = okNg == 1 ? Color.ForestGreen : okNg == 2 ? Color.Red : Color.Black;
             }
             else if (index == 2)
@@ -489,7 +489,7 @@ namespace Scada.Sanding
                 okNg = model.OK_NG_OD_2;
                 ll = model.Set_Diam_LL_2;
                 ul = model.Set_Diam_UL_2;
-                lblDiam2.Text = $"OD 2: {reading:F2} mm [LL: {ll} / UL: {ul}]";
+                lblDiam2.Text = $"OD 2: {reading:0.###} mm [LL: {ll:0.###} / UL: {ul:0.###}]";
                 lblDiam2.ForeColor = okNg == 1 ? Color.ForestGreen : okNg == 2 ? Color.Red : Color.Black;
             }
             else if (index == 3)
@@ -498,7 +498,7 @@ namespace Scada.Sanding
                 okNg = model.OK_NG_OD_3;
                 ll = model.Set_Diam_LL_3;
                 ul = model.Set_Diam_UL_3;
-                lblDiam3.Text = $"OD 3: {reading:F2} mm [LL: {ll} / UL: {ul}]";
+                lblDiam3.Text = $"OD 3: {reading:0.###} mm [LL: {ll:0.###} / UL: {ul:0.###}]";
                 lblDiam3.ForeColor = okNg == 1 ? Color.ForestGreen : okNg == 2 ? Color.Red : Color.Black;
             }
         }

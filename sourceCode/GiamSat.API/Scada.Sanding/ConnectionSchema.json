@@ -1,10 +1,10 @@
 {
   "ItemType": 0,
-  "ServerAddress": "127.0.0.1",
+  "ServerAddress": "192.168.1.110",
   "Port": 8800,
   "CommunicationMode": 0,
   "RefreshRate": 1000,
-  "CreatedDate": "2026-06-06T15:36:06.0405343+07:00",
+  "CreatedDate": "2026-06-10T20:36:22.0606955+07:00",
   "Username": null,
   "Password": null,
   "Childs": [
@@ -22,7 +22,7 @@
           "Name": "Channel1",
           "Path": "Local Station/Channel1",
           "Description": null,
-          "DisplayInfo": "ModbusTCP - 192.168.1.100:502",
+          "DisplayInfo": "ModbusTCP - 127.0.0.:502",
           "Error": null,
           "ConnectionStatus": 0,
           "Childs": [
@@ -480,7 +480,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404036"
+                    "Address": "404037"
                   }
                 },
                 {
@@ -494,7 +494,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404037"
+                    "Address": "404038"
                   }
                 },
                 {
@@ -508,7 +508,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404038"
+                    "Address": "404039"
                   }
                 },
                 {
@@ -522,7 +522,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404049"
+                    "Address": "404040"
                   }
                 },
                 {
@@ -536,7 +536,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404040"
+                    "Address": "404041"
                   }
                 },
                 {
@@ -550,7 +550,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404041"
+                    "Address": "404042"
                   }
                 },
                 {
@@ -564,7 +564,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404042"
+                    "Address": "404043"
                   }
                 },
                 {
@@ -578,7 +578,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404043"
+                    "Address": "404044"
                   }
                 },
                 {
@@ -592,7 +592,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404044"
+                    "Address": "404045"
                   }
                 },
                 {
@@ -606,7 +606,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404045"
+                    "Address": "404046"
                   }
                 },
                 {
@@ -620,7 +620,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404046"
+                    "Address": "404047"
                   }
                 },
                 {
@@ -634,7 +634,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404047"
+                    "Address": "404048"
                   }
                 },
                 {
@@ -648,7 +648,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404048"
+                    "Address": "404049"
                   }
                 },
                 {
@@ -661,8 +661,8 @@
                   "ConnectionStatus": 0,
                   "Childs": [],
                   "Properties": {
-                    "DataType": "Word",
-                    "Address": "404049"
+                    "DataType": "DWord",
+                    "Address": "404050"
                   }
                 },
                 {
@@ -675,8 +675,8 @@
                   "ConnectionStatus": 0,
                   "Childs": [],
                   "Properties": {
-                    "DataType": "Word",
-                    "Address": "404051"
+                    "DataType": "DWord",
+                    "Address": "404052"
                   }
                 },
                 {
@@ -689,8 +689,8 @@
                   "ConnectionStatus": 0,
                   "Childs": [],
                   "Properties": {
-                    "DataType": "Word",
-                    "Address": "404053"
+                    "DataType": "DWord",
+                    "Address": "404054"
                   }
                 },
                 {
@@ -703,8 +703,8 @@
                   "ConnectionStatus": 0,
                   "Childs": [],
                   "Properties": {
-                    "DataType": "Word",
-                    "Address": "404055"
+                    "DataType": "DWord",
+                    "Address": "404056"
                   }
                 },
                 {
@@ -718,7 +718,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404056"
+                    "Address": "404058"
                   }
                 },
                 {
@@ -732,7 +732,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404057"
+                    "Address": "404059"
                   }
                 },
                 {
@@ -746,7 +746,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404058"
+                    "Address": "404060"
                   }
                 },
                 {
@@ -760,7 +760,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404059"
+                    "Address": "404061"
                   }
                 },
                 {
@@ -774,7 +774,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404060"
+                    "Address": "404062"
                   }
                 },
                 {
@@ -788,7 +788,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404061"
+                    "Address": "404063"
                   }
                 },
                 {
@@ -802,7 +802,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404062"
+                    "Address": "404064"
                   }
                 },
                 {
@@ -816,7 +816,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404063"
+                    "Address": "404065"
                   }
                 },
                 {
@@ -830,7 +830,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404064"
+                    "Address": "404066"
                   }
                 },
                 {
@@ -844,7 +844,7 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404065"
+                    "Address": "404067"
                   }
                 },
                 {
@@ -858,7 +858,21 @@
                   "Childs": [],
                   "Properties": {
                     "DataType": "Word",
-                    "Address": "404066"
+                    "Address": "404068"
+                  }
+                },
+                {
+                  "ItemType": 6,
+                  "Name": "Set_Alarm",
+                  "Path": "Local Station/Channel1/Device1/Set_Alarm",
+                  "Description": null,
+                  "DisplayInfo": null,
+                  "Error": null,
+                  "ConnectionStatus": 0,
+                  "Childs": [],
+                  "Properties": {
+                    "DataType": "Word",
+                    "Address": "404069"
                   }
                 }
               ],
@@ -870,13 +884,13 @@
                 "InputContactReadBlockSettings": "[]",
                 "OutputCoilsReadBlockSettings": "[]",
                 "InputRegisterReadBlockSettings": "[]",
-                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404001\",\r\n    \"EndAddress\": \"404066\"\r\n  }\r\n]",
+                "HoldingRegisterReadBlockSettings": "[\r\n  {\r\n    \"AddressType\": 4,\r\n    \"Enabled\": true,\r\n    \"StartAddress\": \"404001\",\r\n    \"EndAddress\": \"404068\"\r\n  }\r\n]",
                 "MaxWritesCount": "10"
               }
             }
           ],
           "Properties": {
-            "IpAddress": "192.168.1.100",
+            "IpAddress": "127.0.0.",
             "Port": "502",
             "DelayBetweenPool": "5",
             "ScanRate": "100"
