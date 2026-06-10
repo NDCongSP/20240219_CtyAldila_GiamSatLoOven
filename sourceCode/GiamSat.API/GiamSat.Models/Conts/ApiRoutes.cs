@@ -114,6 +114,7 @@ namespace GiamSat.Models
         public static class FT16
         {
             public const string BasePath = "api/FT16";
+            public const string GetReport = "report";
         }
     }
 }

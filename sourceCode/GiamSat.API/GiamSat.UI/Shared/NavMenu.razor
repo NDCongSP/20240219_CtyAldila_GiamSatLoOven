@@ -94,6 +94,12 @@
                                          Path="/autosanding/config"
                                          Match="NavLinkMatch.All" />
                 </AuthorizeView>
+                <AuthorizeView Policy="@AppPermissions.Sanding_Report_View">
+                    <RadzenPanelMenuItem Text="Báo cáo"
+                                         Icon="description"
+                                         Path="/autosanding/report"
+                                         Match="NavLinkMatch.All" />
+                </AuthorizeView>
             </ChildContent>
         </RadzenPanelMenuItem>
     }

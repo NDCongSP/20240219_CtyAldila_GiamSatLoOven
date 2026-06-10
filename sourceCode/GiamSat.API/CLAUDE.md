@@ -271,12 +271,21 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "DONE — DataGrid formatting: right-align số, format N (thousand separator), width vừa tiêu đề"
+  current_task:     "DONE — Báo cáo Auto Sanding: lọc SandingMode+From~To, DataGrid, xuất Excel"
   related_files:
-    - "GiamSat.UI/Pages/AutoSandingConfig.razor" # FIX: TextAlign=Right + N format + width cho tất cả numeric columns; CSS .as-parts-grid chặn truncation header
+    - "GiamSat.Models/Services/ISFT16.cs"            # FEAT: thêm GetReport(from, to, mode)
+    - "GiamSat.API/Services/SFT16.cs"                # FEAT: implement GetReport với EF Core filter
+    - "GiamSat.API/Controllers/FT16Controller.cs"    # FEAT: GET /api/FT16/report endpoint
+    - "GiamSat.Models/Conts/ApiRoutes.cs"            # FEAT: FT16.GetReport = "report"
+    - "GiamSat.APIClient/ApiClient/FT16ReportClient.cs" # FEAT: file mới — IFT16ReportClient + DTOs
+    - "GiamSat.UI/Pages/AutoSandingReport.razor"     # FEAT: trang báo cáo mới
+    - "GiamSat.UI/Pages/AutoSandingReport.razor.cs"  # FEAT: OnSearch + OnExportExcel
+    - "GiamSat.UI/Shared/NavMenu.razor"              # FEAT: thêm menu Báo cáo dưới Auto Sanding
+    - "GiamSat.UI/_Imports.razor"                    # CHORE: inject _ft16ReportClient
   blocked_by:       ""
   next_step:
-    - Kiểm tra compile và chạy thử UI
+    - Kiểm tra compile (FT16ReportClient tham chiếu IApiService đúng không)
+    - Test giao diện báo cáo và xuất Excel
   last_session:     "2026-06-09"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
@@ -315,6 +324,22 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-06-09] — Session: Thêm trang Báo cáo Auto Sanding (FT16)
+
+```
+[FEAT] ISFT16.cs                  — Thêm GetReport(from, to, mode) → filter server-side
+[FEAT] SFT16.cs                   — Implement GetReport: filter CreatedAt + SandingMode, OrderByDescending
+[FEAT] ApiRoutes.cs               — FT16.GetReport = "report"
+[FEAT] FT16Controller.cs          — GET /api/FT16/report?from=&to=&mode= endpoint
+[FEAT] FT16ReportClient.cs        — File mới: IFT16ReportClient + FT16SandingLogData DTO + FT16SandingLogDataListResult
+[FEAT] AutoSandingReport.razor    — Trang mới: bộ lọc (SandingMode/From/To) + DataGrid + tổng hợp OK/NG
+[FEAT] AutoSandingReport.razor.cs — OnSearch() gọi API, OnExportExcel() dùng ClosedXML + BlazorDownloadFile
+[FEAT] NavMenu.razor              — Thêm mục "Báo cáo" dưới Auto Sanding (AuthorizeView Sanding_Report_View)
+[CHORE] _Imports.razor            — Thêm @inject IFT16ReportClient _ft16ReportClient
+```
 
 ---
 
