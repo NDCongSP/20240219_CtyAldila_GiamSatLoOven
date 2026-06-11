@@ -271,25 +271,20 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "DONE — Báo cáo Auto Sanding: lọc SandingMode+From~To, DataGrid, xuất Excel"
+  current_task:     "DONE — Scada.TrackingTime_AutoRolling1: redesign FT09 logging — insert on shaft reset (TotalTime=0), update on step time change"
   related_files:
-    - "GiamSat.Models/Services/ISFT16.cs"            # FEAT: thêm GetReport(from, to, mode)
-    - "GiamSat.API/Services/SFT16.cs"                # FEAT: implement GetReport với EF Core filter
-    - "GiamSat.API/Controllers/FT16Controller.cs"    # FEAT: GET /api/FT16/report endpoint
-    - "GiamSat.Models/Conts/ApiRoutes.cs"            # FEAT: FT16.GetReport = "report"
-    - "GiamSat.APIClient/ApiClient/FT16ReportClient.cs" # FEAT: file mới — IFT16ReportClient + DTOs
-    - "GiamSat.UI/Pages/AutoSandingReport.razor"     # FEAT: trang báo cáo mới
-    - "GiamSat.UI/Pages/AutoSandingReport.razor.cs"  # FEAT: OnSearch + OnExportExcel
-    - "GiamSat.UI/Shared/NavMenu.razor"              # FEAT: thêm menu Báo cáo dưới Auto Sanding
-    - "GiamSat.UI/_Imports.razor"                    # CHORE: inject _ft16ReportClient
+    - "Scada.TrackingTime_AutoRolling1/frmProduction.cs"
   blocked_by:       ""
   next_step:
-    - update Report sanding:
-        + oo9
-  last_session:     "2026-06-09"
+    - Test kết nối thực tế với máy Auto Rolling 1/2/3
+    - Verify FT09: khi Part đổi hoặc StepRun=0 → INSERT rows TotalTime=0 cho shaft mới
+    - Verify FT09: khi TimeRunStep thay đổi → UPDATE TotalTime theo ShaftNum+StepId (không insert thêm)
+    - Rebuild McProtocolScada.Core trước, sau đó rebuild AutoRolling1
+  last_session:     "2026-06-12"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
     - "Production appsettings có khác với appsettings.json không? Đang deploy ở đâu?"
+    - "IP thực của 3 máy Auto Rolling 1/2/3 là bao nhiêu? (tags.json hiện dùng 192.168.11.1/2/3)"
 ```
 
 ### 4.2 Quyết định đã chốt (Decision Log)
@@ -324,6 +319,112 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-06-12] — Session: Fix first-shaft startup values = 0 + fire TimeRunStep on load
+
+```
+[FIX]  Scada.TrackingTime_AutoRolling1/frmProduction.cs
+                                  — Fix 1 (first-shaft TotalTime=0): TaskResetShaftAsync cũ reset TotalRunTime=0 trước InsertShaftAsync
+                                    → khi app mới mở, ShaftNum==Guid.Empty → FlushShaftTimesAsync no-op → reset xóa PLC values
+                                    → InsertShaftAsync lưu TotalTime=0 cho tất cả step (bất kể PLC đang chạy bước nào)
+                                    Fix: phân biệt isFirstShaft (ShaftNum==Guid.Empty):
+                                      isFirstShaft=true  → KHÔNG reset TotalRunTime → InsertShaftAsync lưu giá trị thực từ PLC
+                                      isFirstShaft=false → flush + reset như bình thường
+                                  — Fix 2 (InsertShaftAsync hardcode 0): đổi TotalTime=0 → TotalTime=step.TotalRunTime??0
+                                    Shaft reset bình thường: model đã reset về 0 trước gọi → TotalTime=0 như cũ
+                                    Shaft đầu tiên: model có PLC values → TotalTime=giá trị thực
+                                  — Thêm bước 5b (second-pass TimeRunStep fire): sau Task.WhenAll, fire lại TimeRunStep tags
+                                    Lý do: tags.json order → TimeRunStep fire TRƯỚC RecipeSettingStep trong initial loop
+                                    → step.Enable chưa set khi HandleTimeRunStep chạy. Second-pass đảm bảo Enable đã sẵn sàng.
+```
+
+---
+
+### [2026-06-12] — Session: Fix double ShaftNum + flush before reset (FT09)
+
+```
+[FIX]  Scada.TrackingTime_AutoRolling1/frmProduction.cs
+                                  — Fix 1 (double ShaftNum): StepRun condition cũ dùng (== 0 || == Recipe_Settings)
+                                    → PLC đi qua Recipe_Settings (bước cuối) rồi về 0 trong cùng một chu kỳ
+                                    → nếu 2 event cách nhau > SHAFT_RESET_DEBOUNCE (3s) → 2 ShaftNum cho 1 lần reset
+                                    Fix: chỉ trigger reset khi StepRun == 0, bỏ || == Recipe_Settings
+                                  — Fix 2 (flush trước reset): TaskResetShaftAsync cũ reset TotalRunTime=0 ngay
+                                    → bước cuối cùng của shaft cũ bị lưu giá trị 0 thay vì giá trị thực tế
+                                    Fix: thêm FlushShaftTimesAsync(item) gọi TRƯỚC khi reset TotalRunTime=0
+                                    FlushShaftTimesAsync: UPDATE FT09 theo ShaftNum hiện tại với TotalRunTime thực tế,
+                                    sau đó mới reset về 0 và tạo ShaftNum mới
+                                    Thêm method: FlushShaftTimesAsync(RevoRealtimeModel item)
+```
+
+---
+
+### [2026-06-12] — Session: Redesign FT09 logging — insert on reset, update on step change
+
+```
+[FIX]  Scada.TrackingTime_AutoRolling1/frmProduction.cs
+                                  — Root cause duplicate: LogDataStepRun() không reset TotalRunTime trước khi insert shaft mới
+                                    → shaft mới kế thừa TotalRunTime của shaft cũ → FT09 lưu trùng giá trị cho ShaftNum khác nhau
+                                    Redesign hoàn toàn logic FT09:
+                                    BEFORE (sai): 1 method LogDataStepRun() vừa INSERT vừa UPDATE, dùng hash để dedup → race condition + duplicate
+                                    AFTER  (đúng):
+                                      TaskResetShaftAsync: reset step.TotalRunTime=0 + targetItem.TimeRunStepX=0 trước → ShaftNum=NewGuid() → InsertShaftAsync(TotalTime=0)
+                                      TaskTimerAsync (200ms): gọi UpdateShaftTimesAsync() → chỉ UPDATE TotalTime khi có delta > 0.001
+                                    Xóa: LogDataStepRun(), BuildLogStepRunHash(), _lastLogStepRunHash field
+                                    Thêm: InsertShaftAsync(RevoRealtimeModel), UpdateShaftTimesAsync()
+                                    _logStepRunLock: giữ nguyên, dùng để serialize UpdateShaftTimesAsync
+```
+
+---
+
+### [2026-06-11] — Session: Fix FT09 không log (Scada.TrackingTime_AutoRolling1)
+
+```
+[FIX]  Scada.TrackingTime_AutoRolling1/frmProduction.cs
+                                  — Root cause: RevoConfig.Path trong DB (vd "Auto Rolling 1") != plcName tags.json ("Auto_Rolling_1")
+                                    → Plc_OnValueChanged path check `item.Path != plcName` luôn true → EnqueueResetShaft không gọi
+                                    → TaskResetShaftAsync không fire → ShaftNum giữ nguyên Guid.Empty
+                                    → LogDataStepRun: validModels.Count == 0 → return sớm → FT09 không bao giờ insert
+                                    Fix: Thêm bước 3b trong frmProduction_LoadAsync — sau khi _plcManager.LoadFromConfig():
+                                    duyệt tất cả plcName từ tags.json, trích số máy (last part split by '_'),
+                                    tìm RevoRealtimeModel + AutoRollingTagChangedModel khớp theo RevoName trailing number,
+                                    ghi đè Path = plcName → từ đó các lookup x.Path == plcName đều match đúng.
+                                    FT08 không bị ảnh hưởng (dùng all-models scan, không dùng Path).
+```
+
+---
+
+### [2026-06-11] — Session: Scada.TrackingTime_AutoRolling1 — thay EasyDriver → MC Protocol
+
+```
+[REFACTOR] Scada.TrackingTime_AutoRolling1/frmProduction.cs
+                                  — Xóa toàn bộ EasyDriverConnector, IEasyDriverConnector, ConnectionStatus
+                                    Thêm PlcManager + Dictionary<string,(PlcRuntime,PlcSubscriptionManager)> _sessions
+                                    frmProduction_Load: LoadFromConfig("tags.json") → connect song song Task.WhenAll
+                                    → ReadGroupAsync initial values → fire Plc_OnValueChanged cho từng tag
+                                    Thêm Plc_OnValueChanged(plcName, tag): dispatcher thay thế tất cả event handler cũ
+                                    (Part_ValueChanged, StepRun_ValueChanged, PartName_ValueChanged, TimeRunStep_ValueChanged, RecipeSettingStep_ValueChanged)
+                                    Thêm HandleTimeRunStep() + SetTimeRunStep(): tách logic cũ khỏi switch lớn
+                                    frmProduction_FormClosing: foreach kv in _sessions → kv.Value.Sub.Stop() + Client.Dispose()
+                                    TaskTimerAsync: status bar hiển thị "PLC_1:Connected | PLC_2:Error" thay EasyDriver status
+                                    PartName: String tag decode native (MC Protocol) thay thế 8×Word+GetCharFromInt thủ công
+                                    tags.json Name == RevoConfig.Path → không cần mapping dictionary
+[FIX]      Scada.TrackingTime_AutoRolling1/frmConfig.cs
+                                  — Xóa using EasyScada.Winforms.Controls; Xóa property EasyDriverConnector
+[FEAT]     Scada.TrackingTime_AutoRolling1/tags.json     — File mới: 3 PLC entry (Auto_Rolling_1/2/3)
+                                    QnA3E_Binary, port 8000; tags: Part/D162, TimeRunStep1-15/D671-685,
+                                    StepRun/D1953, PartName/D8020(String-16), RecipeSettingStep/D10520
+[CHORE]    Scada.TrackingTime_AutoRolling1.csproj        — Xóa EasyScada.Core + EasyScada.Winforms.Controls references
+                                    Thêm McProtocolScada.Lib.dll (HintPath → McProtocolScada.Core/bin/Debug/netstandard2.0)
+                                    Thêm tags.json ContentItem với CopyToOutputDirectory=Always
+[FIX]      .NET 4.8 compat: foreach (var kv in dict) thay cho foreach (var (k,v) in dict)
+                                    KeyValuePair<K,V>.Deconstruct() không tồn tại trong .NET Framework 4.8
+[FIX]      Scada.TrackingTime_AutoRolling1/frmProduction.cs
+                                  — frmProduction_Load là async void → mọi exception (vd: DB hostname không phân giải được → "No such host is known")
+                                    sẽ show WinForms unhandled exception dialog thay vì thông báo thân thiện.
+                                    Fix: tách body ra frmProduction_LoadAsync() + bọc trong try/catch ở frmProduction_Load.
+```
 
 ---
 

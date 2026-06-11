@@ -1,0 +1,101 @@
+[
+  {
+    "Name": "Auto_Rolling_1",
+    "Host": "192.168.11.1",
+    "Port": 8000,
+    "FrameType": "QnA3E_Binary",
+    "Network": 0,
+    "Station": 0,
+    "Tags": [
+      { "Name": "Part",              "Address": "D162",   "DataType": "Word",   "NumDecimal": 0 },
+
+      { "Name": "TimeRunStep1",      "Address": "D671",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep2",      "Address": "D672",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep3",      "Address": "D673",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep4",      "Address": "D674",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep5",      "Address": "D675",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep6",      "Address": "D676",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep7",      "Address": "D677",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep8",      "Address": "D678",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep9",      "Address": "D679",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep10",     "Address": "D680",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep11",     "Address": "D681",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep12",     "Address": "D682",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep13",     "Address": "D683",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep14",     "Address": "D684",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep15",     "Address": "D685",   "DataType": "Int",    "NumDecimal": 0 },
+
+      { "Name": "StepRun",           "Address": "D1953",  "DataType": "Int",    "NumDecimal": 0 },
+
+      { "Name": "PartName",          "Address": "D8020",  "DataType": "String", "Length": 16 },
+
+      { "Name": "RecipeSettingStep", "Address": "D10520", "DataType": "Word",   "NumDecimal": 0 }
+    ]
+  },
+  {
+    "Name": "Auto_Rolling_2",
+    "Host": "192.168.11.2",
+    "Port": 8000,
+    "FrameType": "QnA3E_Binary",
+    "Network": 0,
+    "Station": 0,
+    "Tags": [
+      { "Name": "Part",              "Address": "D162",   "DataType": "Word",   "NumDecimal": 0 },
+
+      { "Name": "TimeRunStep1",      "Address": "D671",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep2",      "Address": "D672",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep3",      "Address": "D673",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep4",      "Address": "D674",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep5",      "Address": "D675",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep6",      "Address": "D676",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep7",      "Address": "D677",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep8",      "Address": "D678",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep9",      "Address": "D679",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep10",     "Address": "D680",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep11",     "Address": "D681",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep12",     "Address": "D682",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep13",     "Address": "D683",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep14",     "Address": "D684",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep15",     "Address": "D685",   "DataType": "Int",    "NumDecimal": 0 },
+
+      { "Name": "StepRun",           "Address": "D1953",  "DataType": "Int",    "NumDecimal": 0 },
+
+      { "Name": "PartName",          "Address": "D8020",  "DataType": "String", "Length": 16 },
+
+      { "Name": "RecipeSettingStep", "Address": "D10520", "DataType": "Word",   "NumDecimal": 0 }
+    ]
+  },
+  {
+    "Name": "Auto_Rolling_3",
+    "Host": "192.168.11.3",
+    "Port": 8000,
+    "FrameType": "QnA3E_Binary",
+    "Network": 0,
+    "Station": 0,
+    "Tags": [
+      { "Name": "Part",              "Address": "D162",   "DataType": "Word",   "NumDecimal": 0 },
+
+      { "Name": "TimeRunStep1",      "Address": "D671",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep2",      "Address": "D672",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep3",      "Address": "D673",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep4",      "Address": "D674",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep5",      "Address": "D675",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep6",      "Address": "D676",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep7",      "Address": "D677",   "DataType": "Word",   "NumDecimal": 0 },
+      { "Name": "TimeRunStep8",      "Address": "D678",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep9",      "Address": "D679",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep10",     "Address": "D680",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep11",     "Address": "D681",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep12",     "Address": "D682",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep13",     "Address": "D683",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep14",     "Address": "D684",   "DataType": "Int",    "NumDecimal": 0 },
+      { "Name": "TimeRunStep15",     "Address": "D685",   "DataType": "Int",    "NumDecimal": 0 },
+
+      { "Name": "StepRun",           "Address": "D1953",  "DataType": "Int",    "NumDecimal": 0 },
+
+      { "Name": "PartName",          "Address": "D8020",  "DataType": "String", "Length": 16 },
+
+      { "Name": "RecipeSettingStep", "Address": "D10520", "DataType": "Word",   "NumDecimal": 0 }
+    ]
+  }
+]

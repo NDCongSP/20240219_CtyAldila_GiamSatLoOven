@@ -43,11 +43,14 @@
     <Reference Include="Azure.Identity, Version=1.10.3.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
       <HintPath>..\packages\Azure.Identity.1.10.3\lib\netstandard2.0\Azure.Identity.dll</HintPath>
     </Reference>
-    <Reference Include="EasyScada.Core">
-      <HintPath>C:\Program Files (x86)\PT Automation Solution\Easy Driver Server\Toolkit\EasyScada.Core.dll</HintPath>
+    <!-- McProtocol SCADA driver (Mitsubishi MC Protocol — .NET Standard 2.0, compatible với .NET 4.8) -->
+    <!-- Rebuild McProtocolScada.Lib trước để HslCommunication.dll xuất hiện cùng thư mục (CopyLocalLockFileAssemblies=true) -->
+    <Reference Include="McProtocolScada.Lib">
+      <HintPath>..\..\..\..\Scada\202600120_Snap7\McProtocolScadaSolution\McProtocolScada.Core\bin\Debug\netstandard2.0\McProtocolScada.Lib.dll</HintPath>
     </Reference>
-    <Reference Include="EasyScada.Winforms.Controls">
-      <HintPath>C:\Program Files (x86)\PT Automation Solution\Easy Driver Server\Toolkit\EasyScada.Winforms.Controls.dll</HintPath>
+    <Reference Include="HslCommunication">
+      <HintPath>..\..\..\..\Scada\202600120_Snap7\McProtocolScadaSolution\McProtocolScada.Core\bin\Debug\netstandard2.0\HslCommunication.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.dll</HintPath>
@@ -181,12 +184,6 @@
   <ItemGroup>
     <Compile Include="ApplicationDbContext.cs" />
     <Compile Include="AsyncAutoResetEvent.cs" />
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -208,9 +205,6 @@
     <Compile Include="Models\PatternModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="frmConfig.resx">
       <DependentUpon>frmConfig.cs</DependentUpon>
     </EmbeddedResource>
@@ -228,6 +222,9 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="ConnectionSchema.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="tags.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
@@ -251,6 +248,28 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <!-- ═══ Copy McProtocol dependencies vào output mỗi lần build ═══
+       Cần rebuild McProtocolScada.Lib trước (ít nhất 1 lần) để HslCommunication.dll
+       xuất hiện trong netstandard2.0 output (CopyLocalLockFileAssemblies=true).
+       Lưu ý: phải dùng bản netstandard2.0 — bản net8.0 sẽ lỗi "netstandard 2.1.0.0 not found" trên .NET 4.8. -->
+  <PropertyGroup>
+    <McProtocolOutputDir>$(MSBuildThisFileDirectory)..\..\..\..\..\Scada\202600120_Snap7\McProtocolScadaSolution\McProtocolScada.Core\bin\Debug\netstandard2.0</McProtocolOutputDir>
+  </PropertyGroup>
+  <Target Name="CopyMcProtocolDeps" AfterTargets="Build">
+    <ItemGroup>
+      <_McProtocolDlls Include="$(McProtocolOutputDir)\HslCommunication.dll" />
+      <_McProtocolDlls Include="$(McProtocolOutputDir)\System.IO.Ports.dll" Condition="Exists('$(McProtocolOutputDir)\System.IO.Ports.dll')" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_McProtocolDlls)"
+          DestinationFolder="$(OutputPath)"
+          SkipUnchangedFiles="true"
+          ContinueOnError="true" />
+    <Message Text="[McProtocol] Copied deps → $(OutputPath)" Importance="high"
+             Condition="Exists('$(McProtocolOutputDir)\HslCommunication.dll')" />
+    <Warning Text="[McProtocol] HslCommunication.dll chưa có — hãy rebuild McProtocolScada.Lib trước!"
+             Condition="!Exists('$(McProtocolOutputDir)\HslCommunication.dll')" />
+  </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
