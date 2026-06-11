@@ -1,0 +1,272 @@
+@page "/autosanding/report"
+@using GiamSat.Models
+@using GiamSat.APIClient
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Policy = AppPermissions.Sanding_Report_View)]
+
+<RadzenRow Gap="1rem">
+    <RadzenColumn Size="12">
+        <RadzenCard class="rz-shadow-3">
+            <RadzenStack Gap="0.75rem">
+
+                <RadzenStack Orientation="Orientation.Horizontal"
+                             AlignItems="AlignItems.Center"
+                             JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenText TextStyle="TextStyle.H5">Báo cáo Auto Sanding</RadzenText>
+                </RadzenStack>
+
+                @* ── Bộ lọc ── *@
+                <RadzenCard class="rz-background-color-base-100 rz-p-3"
+                            style="border-left:4px solid var(--rz-primary)">
+                    <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-2"
+                                style="color:var(--rz-primary)">Bộ lọc</RadzenText>
+
+                    <RadzenStack Orientation="Orientation.Horizontal"
+                                 AlignItems="AlignItems.End"
+                                 Gap="0.75rem"
+                                 Wrap="FlexWrap.Wrap">
+
+                        <RadzenStack Gap="0.2rem" Style="min-width:170px">
+                            <RadzenLabel Text="Sanding Mode" />
+                            <RadzenDropDown @bind-Value="_selectedMode"
+                                            Data="@_modeOptions"
+                                            TextProperty="Label"
+                                            ValueProperty="Value"
+                                            Style="width:100%" />
+                        </RadzenStack>
+
+                        <RadzenStack Gap="0.2rem" Style="min-width:200px">
+                            <RadzenLabel Text="Từ ngày" />
+                            <RadzenDatePicker @bind-Value="_fromDate"
+                                              DateFormat="yyyy-MM-dd"
+                                              Style="width:100%" />
+                        </RadzenStack>
+
+                        <RadzenStack Gap="0.2rem" Style="min-width:200px">
+                            <RadzenLabel Text="Đến ngày" />
+                            <RadzenDatePicker @bind-Value="_toDate"
+                                              DateFormat="yyyy-MM-dd"
+                                              Style="width:100%" />
+                        </RadzenStack>
+
+                        <RadzenButton Icon="search" Text="Tải dữ liệu"
+                                      ButtonStyle="ButtonStyle.Primary"
+                                      Click="@OnSearch"
+                                      IsBusy="@_isLoading"
+                                      BusyText="Đang tải..." />
+
+                        <RadzenButton Icon="file_download" Text="Xuất Excel"
+                                      ButtonStyle="ButtonStyle.Success"
+                                      Click="@OnExportExcel"
+                                      IsBusy="@_isExporting"
+                                      BusyText="Đang xuất..."
+                                      Disabled="@(_data == null || _data.Count == 0)" />
+                    </RadzenStack>
+                </RadzenCard>
+
+                @* ── Kết quả: tổng quan ── *@
+                @if (_data != null)
+                {
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" Wrap="FlexWrap.Wrap">
+                        <RadzenBadge BadgeStyle="BadgeStyle.Info"
+                                     Text="@($"Tổng: {_data.Count} bản ghi")" />
+                        <RadzenBadge BadgeStyle="BadgeStyle.Success"
+                                     Text="@($"OK Spine: {_data.Count(x => x.OK_NG_SpineB == 1)}")" />
+                        <RadzenBadge BadgeStyle="BadgeStyle.Danger"
+                                     Text="@($"NG Spine: {_data.Count(x => x.OK_NG_SpineB == 0)}")" />
+                    </RadzenStack>
+                }
+
+                @* ── DataGrid ── *@
+                <RadzenDataGrid Data="@_data" TItem="FT16SandingLogData"
+                                IsLoading="@_isLoading"
+                                AllowSorting="true"
+                                AllowFiltering="true"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                FilterMode="FilterMode.SimpleWithMenu"
+                                AllowPaging="true" PageSize="20"
+                                PageSizeOptions="@(new int[]{10,20,50,100})"
+                                ShowPagingSummary="true"
+                                PagingSummaryFormat="Hiển thị trang {0}/{1} (Tổng {2} bản ghi)"
+                                EmptyText="Chưa có dữ liệu. Nhấn &quot;Tải dữ liệu&quot; để lấy báo cáo."
+                                Density="Density.Compact"
+                                AllowColumnResize="true"
+                                ColumnResizeMode="ColumnResizeMode.OnResize"
+                                Style="height:600px"
+                                class="rz-shadow-2 as-report-grid">
+                    <Columns>
+                        <RadzenDataGridColumn TItem="FT16SandingLogData"
+                                              Property="CreatedAt" Title="Thời gian"
+                                              Width="155px" Frozen="true"
+                                              FormatString="{0:yyyy-MM-dd HH:mm:ss}" />
+
+                        <RadzenDataGridColumn TItem="FT16SandingLogData"
+                                              Property="Part" Title="Part"
+                                              Width="130px" />
+
+                        <RadzenDataGridColumn TItem="FT16SandingLogData"
+                                              Property="Work" Title="Work Order"
+                                              Width="110px" />
+
+                        <RadzenDataGridColumn TItem="FT16SandingLogData"
+                                              Property="ShaftNum" Title="Shaft #"
+                                              Width="85px" TextAlign="TextAlign.Right" />
+
+                        <RadzenDataGridColumn TItem="FT16SandingLogData"
+                                              Property="SandingMode" Title="Mode"
+                                              Width="100px">
+                            <Template Context="r">
+                                @if (r.SandingMode == 1)
+                                {
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Primary" Text="Production" />
+                                }
+                                else if (r.SandingMode == 2)
+                                {
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="Test" />
+                                }
+                                else
+                                {
+                                    <span>—</span>
+                                }
+                            </Template>
+                        </RadzenDataGridColumn>
+
+                        <RadzenDataGridColumn TItem="FT16SandingLogData"
+                                              Property="Formula" Title="Formula"
+                                              Width="85px" TextAlign="TextAlign.Right" />
+
+                        <RadzenDataGridColumn TItem="FT16SandingLogData"
+                                              Property="MotorSandingSpeed" Title="Motor Speed"
+                                              Width="110px" TextAlign="TextAlign.Right">
+                            <Template Context="r">@r.MotorSandingSpeed?.ToString("N1")</Template>
+                        </RadzenDataGridColumn>
+
+                        <RadzenDataGridColumn TItem="FT16SandingLogData"
+                                              Property="SpineA" Title="Spine A"
+                                              Width="95px" TextAlign="TextAlign.Right">
+                            <Template Context="r">@r.SpineA?.ToString("N3")</Template>
+                        </RadzenDataGridColumn>
+
+                        <RadzenDataGridColumn TItem="FT16SandingLogData"
+                                              Property="SpineB" Title="Spine B"
+                                              Width="95px" TextAlign="TextAlign.Right">
+                            <Template Context="r">@r.SpineB?.ToString("N3")</Template>
+                        </RadzenDataGridColumn>
+
+                        <RadzenDataGridColumn TItem="FT16SandingLogData"
+                                              Property="SpineTarget" Title="Target"
+                                              Width="90px" TextAlign="TextAlign.Right">
+                            <Template Context="r">@r.SpineTarget?.ToString("N3")</Template>
+                        </RadzenDataGridColumn>
+
+                        <RadzenDataGridColumn TItem="FT16SandingLogData"
+                                              Property="Spine_Low" Title="Spine LL"
+                                              Width="95px" TextAlign="TextAlign.Right">
+                            <Template Context="r">@r.Spine_Low?.ToString("N3")</Template>
+                        </RadzenDataGridColumn>
+
+                        <RadzenDataGridColumn TItem="FT16SandingLogData"
+                                              Property="Spine_Hight" Title="Spine UL"
+                                              Width="95px" TextAlign="TextAlign.Right">
+                            <Template Context="r">@r.Spine_Hight?.ToString("N3")</Template>
+                        </RadzenDataGridColumn>
+
+                        <RadzenDataGridColumn TItem="FT16SandingLogData"
+                                              Property="OK_NG_SpineB" Title="OK/NG Spine"
+                                              Width="110px" TextAlign="TextAlign.Center">
+                            <Template Context="r">
+                                @if (r.OK_NG_SpineB == 1)
+                                {
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="OK" />
+                                }
+                                else if (r.OK_NG_SpineB == 0)
+                                {
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="NG" />
+                                }
+                                else
+                                {
+                                    <span>—</span>
+                                }
+                            </Template>
+                        </RadzenDataGridColumn>
+
+                        <RadzenDataGridColumn TItem="FT16SandingLogData"
+                                              Title="OD 1" Sortable="false" Filterable="false"
+                                              Width="130px">
+                            <HeaderTemplate><span>OD 1 (@(string.Empty)@(string.Empty)<small>reading / OK-NG</small>)</span></HeaderTemplate>
+                            <Template Context="r">
+                                <div style="line-height:1.4">
+                                    <div style="text-align:right">@r.Diam_Reading_1?.ToString("N3")</div>
+                                    <div style="text-align:center">
+                                        @if (r.OK_NG_OD_1 == 1)
+                                        {
+                                            <small style="color:var(--rz-success)">OK</small>
+                                        }
+                                        else if (r.OK_NG_OD_1 == 0)
+                                        {
+                                            <small style="color:var(--rz-danger)">NG</small>
+                                        }
+                                    </div>
+                                </div>
+                            </Template>
+                        </RadzenDataGridColumn>
+
+                        <RadzenDataGridColumn TItem="FT16SandingLogData"
+                                              Title="OD 2" Sortable="false" Filterable="false"
+                                              Width="130px">
+                            <HeaderTemplate><span>OD 2 (<small>reading / OK-NG</small>)</span></HeaderTemplate>
+                            <Template Context="r">
+                                <div style="line-height:1.4">
+                                    <div style="text-align:right">@r.Diam_Reading_2?.ToString("N3")</div>
+                                    <div style="text-align:center">
+                                        @if (r.OK_NG_OD_2 == 1)
+                                        {
+                                            <small style="color:var(--rz-success)">OK</small>
+                                        }
+                                        else if (r.OK_NG_OD_2 == 0)
+                                        {
+                                            <small style="color:var(--rz-danger)">NG</small>
+                                        }
+                                    </div>
+                                </div>
+                            </Template>
+                        </RadzenDataGridColumn>
+
+                        <RadzenDataGridColumn TItem="FT16SandingLogData"
+                                              Title="OD 3" Sortable="false" Filterable="false"
+                                              Width="130px">
+                            <HeaderTemplate><span>OD 3 (<small>reading / OK-NG</small>)</span></HeaderTemplate>
+                            <Template Context="r">
+                                <div style="line-height:1.4">
+                                    <div style="text-align:right">@r.Diam_Reading_3?.ToString("N3")</div>
+                                    <div style="text-align:center">
+                                        @if (r.OK_NG_OD_3 == 1)
+                                        {
+                                            <small style="color:var(--rz-success)">OK</small>
+                                        }
+                                        else if (r.OK_NG_OD_3 == 0)
+                                        {
+                                            <small style="color:var(--rz-danger)">NG</small>
+                                        }
+                                    </div>
+                                </div>
+                            </Template>
+                        </RadzenDataGridColumn>
+
+                    </Columns>
+                </RadzenDataGrid>
+
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+</RadzenRow>
+
+<style>
+    .as-report-grid .rz-column-title {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: unset;
+        line-height: 1.3;
+        word-break: keep-all;
+    }
+</style>

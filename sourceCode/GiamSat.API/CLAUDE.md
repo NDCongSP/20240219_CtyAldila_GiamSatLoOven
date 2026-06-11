@@ -271,13 +271,22 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "DONE — DataGrid TipOD: đưa tên lên trên, LL/UL xuống dưới"
+  current_task:     "DONE — Báo cáo Auto Sanding: lọc SandingMode+From~To, DataGrid, xuất Excel"
   related_files:
-    - "GiamSat.UI/Pages/AutoSandingConfig.razor"    # FIX: Data Điểm 1/2/3 — TipOdLength lên trên, Diam LL/UL xuống dưới
+    - "GiamSat.Models/Services/ISFT16.cs"            # FEAT: thêm GetReport(from, to, mode)
+    - "GiamSat.API/Services/SFT16.cs"                # FEAT: implement GetReport với EF Core filter
+    - "GiamSat.API/Controllers/FT16Controller.cs"    # FEAT: GET /api/FT16/report endpoint
+    - "GiamSat.Models/Conts/ApiRoutes.cs"            # FEAT: FT16.GetReport = "report"
+    - "GiamSat.APIClient/ApiClient/FT16ReportClient.cs" # FEAT: file mới — IFT16ReportClient + DTOs
+    - "GiamSat.UI/Pages/AutoSandingReport.razor"     # FEAT: trang báo cáo mới
+    - "GiamSat.UI/Pages/AutoSandingReport.razor.cs"  # FEAT: OnSearch + OnExportExcel
+    - "GiamSat.UI/Shared/NavMenu.razor"              # FEAT: thêm menu Báo cáo dưới Auto Sanding
+    - "GiamSat.UI/_Imports.razor"                    # CHORE: inject _ft16ReportClient
   blocked_by:       ""
   next_step:
-    - Kiểm tra compile và chạy thử UI
-  last_session:     "2026-06-08"
+    - update Report sanding:
+        + oo9
+  last_session:     "2026-06-09"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
     - "Production appsettings có khác với appsettings.json không? Đang deploy ở đâu?"
@@ -318,6 +327,51 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 
 ---
 
+### [2026-06-10] — Session: Fix filter SandingMode NULL + normalize datetime trong GetReport
+
+```
+[FIX]  SFT16.cs                   — GetReport: from → from.Value.Date (00:00:00); to → < to.Value.Date.AddDays(1) (00:00:00 ngày hôm sau)
+                                    Tránh lỗi DatePicker truyền giờ hiện tại (vd: 17:00) làm bỏ sót record trong ngày
+[FIX]  SFT16.cs                   — GetReport: khi mode=Production, include SandingMode IS NULL
+                                    (SCADA insert không set SandingMode → DB null → entity default Production)
+                                    Khi mode=Test: chỉ lấy đúng SandingMode=2
+[FIX]  AutoSandingReport.razor.cs — Đổi default _selectedMode từ Production(1) → null(Tất cả)
+                                    Để người dùng thấy toàn bộ data khi lần đầu load
+```
+
+---
+
+### [2026-06-09] — Session: Thêm trang Báo cáo Auto Sanding (FT16)
+
+```
+[FEAT] ISFT16.cs                  — Thêm GetReport(from, to, mode) → filter server-side
+[FEAT] SFT16.cs                   — Implement GetReport: filter CreatedAt + SandingMode, OrderByDescending
+[FEAT] ApiRoutes.cs               — FT16.GetReport = "report"
+[FEAT] FT16Controller.cs          — GET /api/FT16/report?from=&to=&mode= endpoint
+[FEAT] FT16ReportClient.cs        — File mới: IFT16ReportClient + FT16SandingLogData DTO + FT16SandingLogDataListResult
+[FEAT] AutoSandingReport.razor    — Trang mới: bộ lọc (SandingMode/From/To) + DataGrid + tổng hợp OK/NG
+[FEAT] AutoSandingReport.razor.cs — OnSearch() gọi API, OnExportExcel() dùng ClosedXML + BlazorDownloadFile
+[FEAT] NavMenu.razor              — Thêm mục "Báo cáo" dưới Auto Sanding (AuthorizeView Sanding_Report_View)
+[CHORE] _Imports.razor            — Thêm @inject IFT16ReportClient _ft16ReportClient
+```
+
+---
+
+### [2026-06-09] — Session: DataGrid Tab 1 — format số, căn phải, width vừa tiêu đề
+
+```
+[FIX]  AutoSandingConfig.razor  — TextAlign="TextAlign.Right" cho tất cả cột số (Length, OD/BOD, FreqTarget, Freq LL/UL, Formula, A/B/C/D, Z_Stiffness)
+                                   Format F→N: F1→N1, F2→N2, F3→N3, F0→N0 (thêm dấu phân cách hàng nghìn, vd: 1,234.5)
+                                   Width điều chỉnh vừa tiêu đề: A/B/C/D 80-90px, Z_Stiffness 110px, Data Điểm 145px
+                                   Data Điểm 1/2/3: div LL/UL cũng căn phải (text-align:right)
+[FIX]  AutoSandingConfig.razor  — Điều chỉnh width dựa trên chuẩn "Item Number"(11 chars=140px):
+                                   Freq Target→140px, Z_Stiffness→140px, Freq LL/UL→105px, Formula→105px
+                                   Length→100px, OD/BOD→100px, A/B/C/D→95px, Data Điểm→150px, Hành động→100px
+                                   Thêm CSS .as-parts-grid .rz-column-title { white-space:normal } → tiêu đề không bị "..." nếu vừa thiếu px
+```
+
+---
+
 ### [2026-06-08] — Session: Bỏ filter Station Fre1/Fre2; tính Z_Stiffness từ ABCD
 
 ```
@@ -327,6 +381,17 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 [FEAT] AutoSandingConfig.razor.cs — OnApplyAbcdToPart(): tính Z_Stiffness = (FreqTarget - B) / A
                                     Lưu Z_Stiffness vào FT14 cùng với A,B,C,D
                                     Notification hiển thị thêm Z_Stiffness
+```
+
+---
+
+### [2026-06-09] — Session: Thêm Z_Stiffness vào Excel Export/Import (20→21 cột)
+
+```
+[FEAT] AutoSandingConfig.razor.cs — Export: headers 20→21 cột, thêm "Z_Stiffness" tại col 12
+                                    Data: cell(12)=Z_Stiffness (empty string nếu null), TipOD dịch lên col 13-21
+                                    Import update: Z_Stiffness=cell(12) parse nullable double, TipOD cell 13-21
+                                    Import insert: Z_Stiffness nullable parse, TipOD cell 13-21
 ```
 
 ---

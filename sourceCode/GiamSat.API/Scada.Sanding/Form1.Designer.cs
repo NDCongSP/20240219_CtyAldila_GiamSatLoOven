@@ -45,6 +45,13 @@ namespace Scada.Sanding
             this.lblDiam2 = new System.Windows.Forms.Label();
             this.lblDiam1 = new System.Windows.Forms.Label();
             this.lblOkNgSandingVal = new System.Windows.Forms.Label();
+            this.lblOkNgOd1 = new System.Windows.Forms.Label();
+            this.lblOkNgOd1Val = new System.Windows.Forms.Label();
+            this.lblOkNgOd2 = new System.Windows.Forms.Label();
+            this.lblOkNgOd2Val = new System.Windows.Forms.Label();
+            this.lblOkNgOd3 = new System.Windows.Forms.Label();
+            this.lblOkNgOd3Val = new System.Windows.Forms.Label();
+
             this.lblOkNgSanding = new System.Windows.Forms.Label();
             this.lblSpineHighVal = new System.Windows.Forms.Label();
             this.lblSpineHigh = new System.Windows.Forms.Label();
@@ -89,6 +96,19 @@ namespace Scada.Sanding
             this.lblSetTipOdLength2Val = new System.Windows.Forms.Label();
             this.lblSetTipOdLength3 = new System.Windows.Forms.Label();
             this.lblSetTipOdLength3Val = new System.Windows.Forms.Label();
+            this.lblSetDiamLL1 = new System.Windows.Forms.Label();
+            this.lblSetDiamLL1Val = new System.Windows.Forms.Label();
+            this.lblSetDiamLL2 = new System.Windows.Forms.Label();
+            this.lblSetDiamLL2Val = new System.Windows.Forms.Label();
+            this.lblSetDiamLL3 = new System.Windows.Forms.Label();
+            this.lblSetDiamLL3Val = new System.Windows.Forms.Label();
+            this.lblSetDiamUL1 = new System.Windows.Forms.Label();
+            this.lblSetDiamUL1Val = new System.Windows.Forms.Label();
+            this.lblSetDiamUL2 = new System.Windows.Forms.Label();
+            this.lblSetDiamUL2Val = new System.Windows.Forms.Label();
+            this.lblSetDiamUL3 = new System.Windows.Forms.Label();
+            this.lblSetDiamUL3Val = new System.Windows.Forms.Label();
+
             this.label1 = new System.Windows.Forms.Label();
             this.lblSetOD_BOD_Val = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.easyDriverConnector1)).BeginInit();
@@ -150,6 +170,7 @@ namespace Scada.Sanding
             this.grpProduction.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(90)))), ((int)(((byte)(160)))));
             this.grpProduction.Location = new System.Drawing.Point(16, 64);
             this.grpProduction.Name = "grpProduction";
+            this.grpProduction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left)));
             this.grpProduction.Size = new System.Drawing.Size(430, 260);
             this.grpProduction.TabIndex = 1;
             this.grpProduction.TabStop = false;
@@ -285,25 +306,97 @@ namespace Scada.Sanding
             this.grpParameters.Controls.Add(this.lblSpineA);
             this.grpParameters.Controls.Add(this.lblMotorSpeedVal);
             this.grpParameters.Controls.Add(this.lblMotorSpeed);
+            this.grpParameters.Controls.Add(this.lblOkNgOd1);
+            this.grpParameters.Controls.Add(this.lblOkNgOd1Val);
+            this.grpParameters.Controls.Add(this.lblOkNgOd2);
+            this.grpParameters.Controls.Add(this.lblOkNgOd2Val);
+            this.grpParameters.Controls.Add(this.lblOkNgOd3);
+            this.grpParameters.Controls.Add(this.lblOkNgOd3Val);
+
             this.grpParameters.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.grpParameters.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(90)))), ((int)(((byte)(160)))));
             this.grpParameters.Location = new System.Drawing.Point(462, 64);
             this.grpParameters.Name = "grpParameters";
-            this.grpParameters.Size = new System.Drawing.Size(470, 260);
+            this.grpParameters.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpParameters.Size = new System.Drawing.Size(470, 280);
             this.grpParameters.TabIndex = 2;
             this.grpParameters.TabStop = false;
             this.grpParameters.Text = "SANDING & MEASUREMENT PARAMETERS";
             // 
-            // lblDiam3
+            
+            // lblOkNgOd1
+            this.lblOkNgOd1.AutoSize = true;
+            this.lblOkNgOd1.Location = new System.Drawing.Point(240, 195);
+            this.lblOkNgOd1.Name = "lblOkNgOd1";
+            this.lblOkNgOd1.Anchor = System.Windows.Forms.AnchorStyles.Top;
+                        this.lblOkNgOd1.Size = new System.Drawing.Size(90, 19);
+            this.lblOkNgOd1.Text = "OK/NG OD 1:";
+            this.lblOkNgOd1.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblOkNgOd1.ForeColor = System.Drawing.Color.Black;
+            
+            // lblOkNgOd1Val
+            this.lblOkNgOd1Val.AutoSize = true;
+            this.lblOkNgOd1Val.Location = new System.Drawing.Point(390, 195);
+            this.lblOkNgOd1Val.Name = "lblOkNgOd1Val";
+            this.lblOkNgOd1Val.Anchor = System.Windows.Forms.AnchorStyles.Top;
+                        this.lblOkNgOd1Val.Size = new System.Drawing.Size(30, 19);
+            this.lblOkNgOd1Val.Text = "--";
+            this.lblOkNgOd1Val.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblOkNgOd1Val.ForeColor = System.Drawing.Color.Black;
+            
+
+            // lblOkNgOd2
+            this.lblOkNgOd2.AutoSize = true;
+            this.lblOkNgOd2.Location = new System.Drawing.Point(240, 220);
+            this.lblOkNgOd2.Name = "lblOkNgOd2";
+            this.lblOkNgOd2.Anchor = System.Windows.Forms.AnchorStyles.Top;
+                        this.lblOkNgOd2.Size = new System.Drawing.Size(90, 19);
+            this.lblOkNgOd2.Text = "OK/NG OD 2:";
+            this.lblOkNgOd2.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblOkNgOd2.ForeColor = System.Drawing.Color.Black;
+            
+            // lblOkNgOd2Val
+            this.lblOkNgOd2Val.AutoSize = true;
+            this.lblOkNgOd2Val.Location = new System.Drawing.Point(390, 220);
+            this.lblOkNgOd2Val.Name = "lblOkNgOd2Val";
+            this.lblOkNgOd2Val.Anchor = System.Windows.Forms.AnchorStyles.Top;
+                        this.lblOkNgOd2Val.Size = new System.Drawing.Size(30, 19);
+            this.lblOkNgOd2Val.Text = "--";
+            this.lblOkNgOd2Val.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblOkNgOd2Val.ForeColor = System.Drawing.Color.Black;
+            
+
+            // lblOkNgOd3
+            this.lblOkNgOd3.AutoSize = true;
+            this.lblOkNgOd3.Location = new System.Drawing.Point(240, 245);
+            this.lblOkNgOd3.Name = "lblOkNgOd3";
+            this.lblOkNgOd3.Anchor = System.Windows.Forms.AnchorStyles.Top;
+                        this.lblOkNgOd3.Size = new System.Drawing.Size(90, 19);
+            this.lblOkNgOd3.Text = "OK/NG OD 3:";
+            this.lblOkNgOd3.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblOkNgOd3.ForeColor = System.Drawing.Color.Black;
+            
+            // lblOkNgOd3Val
+            this.lblOkNgOd3Val.AutoSize = true;
+            this.lblOkNgOd3Val.Location = new System.Drawing.Point(390, 245);
+            this.lblOkNgOd3Val.Name = "lblOkNgOd3Val";
+            this.lblOkNgOd3Val.Anchor = System.Windows.Forms.AnchorStyles.Top;
+                        this.lblOkNgOd3Val.Size = new System.Drawing.Size(30, 19);
+            this.lblOkNgOd3Val.Text = "--";
+            this.lblOkNgOd3Val.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblOkNgOd3Val.ForeColor = System.Drawing.Color.Black;
+            
+// lblDiam3
             // 
             this.lblDiam3.AutoSize = true;
             this.lblDiam3.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDiam3.ForeColor = System.Drawing.Color.Black;
             this.lblDiam3.Location = new System.Drawing.Point(240, 163);
             this.lblDiam3.Name = "lblDiam3";
-            this.lblDiam3.Size = new System.Drawing.Size(202, 20);
+            this.lblDiam3.Anchor = System.Windows.Forms.AnchorStyles.Top;
+                        this.lblDiam3.Size = new System.Drawing.Size(202, 20);
             this.lblDiam3.TabIndex = 16;
-            this.lblDiam3.Text = "OD 3: -- mm [LL: -- / UL: --]";
+            this.lblDiam3.Text = "OD 3: -- mm";
             // 
             // lblDiam2
             // 
@@ -312,9 +405,10 @@ namespace Scada.Sanding
             this.lblDiam2.ForeColor = System.Drawing.Color.Black;
             this.lblDiam2.Location = new System.Drawing.Point(240, 121);
             this.lblDiam2.Name = "lblDiam2";
-            this.lblDiam2.Size = new System.Drawing.Size(202, 20);
+            this.lblDiam2.Anchor = System.Windows.Forms.AnchorStyles.Top;
+                        this.lblDiam2.Size = new System.Drawing.Size(202, 20);
             this.lblDiam2.TabIndex = 15;
-            this.lblDiam2.Text = "OD 2: -- mm [LL: -- / UL: --]";
+            this.lblDiam2.Text = "OD 2: -- mm";
             // 
             // lblDiam1
             // 
@@ -323,18 +417,20 @@ namespace Scada.Sanding
             this.lblDiam1.ForeColor = System.Drawing.Color.Black;
             this.lblDiam1.Location = new System.Drawing.Point(240, 79);
             this.lblDiam1.Name = "lblDiam1";
-            this.lblDiam1.Size = new System.Drawing.Size(202, 20);
+            this.lblDiam1.Anchor = System.Windows.Forms.AnchorStyles.Top;
+                        this.lblDiam1.Size = new System.Drawing.Size(202, 20);
             this.lblDiam1.TabIndex = 14;
-            this.lblDiam1.Text = "OD 1: -- mm [LL: -- / UL: --]";
+            this.lblDiam1.Text = "OD 1: -- mm";
             // 
             // lblOkNgSandingVal
             // 
             this.lblOkNgSandingVal.AutoSize = true;
             this.lblOkNgSandingVal.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblOkNgSandingVal.ForeColor = System.Drawing.Color.Black;
-            this.lblOkNgSandingVal.Location = new System.Drawing.Point(340, 31);
+            this.lblOkNgSandingVal.Location = new System.Drawing.Point(390, 31);
             this.lblOkNgSandingVal.Name = "lblOkNgSandingVal";
-            this.lblOkNgSandingVal.Size = new System.Drawing.Size(28, 25);
+            this.lblOkNgSandingVal.Anchor = System.Windows.Forms.AnchorStyles.Top;
+                        this.lblOkNgSandingVal.Size = new System.Drawing.Size(28, 25);
             this.lblOkNgSandingVal.TabIndex = 13;
             this.lblOkNgSandingVal.Text = "--";
             // 
@@ -345,7 +441,8 @@ namespace Scada.Sanding
             this.lblOkNgSanding.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblOkNgSanding.Location = new System.Drawing.Point(240, 37);
             this.lblOkNgSanding.Name = "lblOkNgSanding";
-            this.lblOkNgSanding.Size = new System.Drawing.Size(112, 19);
+            this.lblOkNgSanding.Anchor = System.Windows.Forms.AnchorStyles.Top;
+                        this.lblOkNgSanding.Size = new System.Drawing.Size(112, 19);
             this.lblOkNgSanding.TabIndex = 12;
             this.lblOkNgSanding.Text = "OK_NG_Sanding:";
             // 
@@ -486,7 +583,7 @@ namespace Scada.Sanding
             this.pnlFooter.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(235)))));
             this.pnlFooter.Controls.Add(this.lblFooterStatus);
             this.pnlFooter.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlFooter.Location = new System.Drawing.Point(0, 570);
+            this.pnlFooter.Location = new System.Drawing.Point(0, 690);
             this.pnlFooter.Name = "pnlFooter";
             this.pnlFooter.Size = new System.Drawing.Size(950, 30);
             this.pnlFooter.TabIndex = 3;
@@ -536,11 +633,25 @@ namespace Scada.Sanding
             this.grpPlcSettings.Controls.Add(this.lblSetTipOdLength2Val);
             this.grpPlcSettings.Controls.Add(this.lblSetTipOdLength3);
             this.grpPlcSettings.Controls.Add(this.lblSetTipOdLength3Val);
+            this.grpPlcSettings.Controls.Add(this.lblSetDiamLL1);
+            this.grpPlcSettings.Controls.Add(this.lblSetDiamLL1Val);
+            this.grpPlcSettings.Controls.Add(this.lblSetDiamLL2);
+            this.grpPlcSettings.Controls.Add(this.lblSetDiamLL2Val);
+            this.grpPlcSettings.Controls.Add(this.lblSetDiamLL3);
+            this.grpPlcSettings.Controls.Add(this.lblSetDiamLL3Val);
+            this.grpPlcSettings.Controls.Add(this.lblSetDiamUL1);
+            this.grpPlcSettings.Controls.Add(this.lblSetDiamUL1Val);
+            this.grpPlcSettings.Controls.Add(this.lblSetDiamUL2);
+            this.grpPlcSettings.Controls.Add(this.lblSetDiamUL2Val);
+            this.grpPlcSettings.Controls.Add(this.lblSetDiamUL3);
+            this.grpPlcSettings.Controls.Add(this.lblSetDiamUL3Val);
+
             this.grpPlcSettings.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.grpPlcSettings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(90)))), ((int)(((byte)(160)))));
-            this.grpPlcSettings.Location = new System.Drawing.Point(16, 340);
+            this.grpPlcSettings.Location = new System.Drawing.Point(16, 360);
             this.grpPlcSettings.Name = "grpPlcSettings";
-            this.grpPlcSettings.Size = new System.Drawing.Size(916, 210);
+            this.grpPlcSettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpPlcSettings.Size = new System.Drawing.Size(916, 300);
             this.grpPlcSettings.TabIndex = 4;
             this.grpPlcSettings.TabStop = false;
             this.grpPlcSettings.Text = "PLC CONFIGURATION PARAMETERS";
@@ -663,6 +774,7 @@ namespace Scada.Sanding
             this.lblSetFormulaF.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetFormulaF.Location = new System.Drawing.Point(320, 35);
             this.lblSetFormulaF.Name = "lblSetFormulaF";
+            this.lblSetFormulaF.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lblSetFormulaF.Size = new System.Drawing.Size(100, 19);
             this.lblSetFormulaF.TabIndex = 10;
             this.lblSetFormulaF.Text = "Set_Formula_F:";
@@ -674,6 +786,7 @@ namespace Scada.Sanding
             this.lblSetFormulaFVal.ForeColor = System.Drawing.Color.Black;
             this.lblSetFormulaFVal.Location = new System.Drawing.Point(455, 35);
             this.lblSetFormulaFVal.Name = "lblSetFormulaFVal";
+            this.lblSetFormulaFVal.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lblSetFormulaFVal.Size = new System.Drawing.Size(21, 19);
             this.lblSetFormulaFVal.TabIndex = 11;
             this.lblSetFormulaFVal.Text = "--";
@@ -685,6 +798,7 @@ namespace Scada.Sanding
             this.lblSetA.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetA.Location = new System.Drawing.Point(320, 70);
             this.lblSetA.Name = "lblSetA";
+            this.lblSetA.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lblSetA.Size = new System.Drawing.Size(46, 19);
             this.lblSetA.TabIndex = 12;
             this.lblSetA.Text = "Set_A:";
@@ -696,6 +810,7 @@ namespace Scada.Sanding
             this.lblSetAVal.ForeColor = System.Drawing.Color.Black;
             this.lblSetAVal.Location = new System.Drawing.Point(455, 70);
             this.lblSetAVal.Name = "lblSetAVal";
+            this.lblSetAVal.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lblSetAVal.Size = new System.Drawing.Size(21, 19);
             this.lblSetAVal.TabIndex = 13;
             this.lblSetAVal.Text = "--";
@@ -707,6 +822,7 @@ namespace Scada.Sanding
             this.lblSetB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetB.Location = new System.Drawing.Point(320, 105);
             this.lblSetB.Name = "lblSetB";
+            this.lblSetB.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lblSetB.Size = new System.Drawing.Size(45, 19);
             this.lblSetB.TabIndex = 14;
             this.lblSetB.Text = "Set_B:";
@@ -718,6 +834,7 @@ namespace Scada.Sanding
             this.lblSetBVal.ForeColor = System.Drawing.Color.Black;
             this.lblSetBVal.Location = new System.Drawing.Point(455, 105);
             this.lblSetBVal.Name = "lblSetBVal";
+            this.lblSetBVal.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lblSetBVal.Size = new System.Drawing.Size(21, 19);
             this.lblSetBVal.TabIndex = 15;
             this.lblSetBVal.Text = "--";
@@ -729,6 +846,7 @@ namespace Scada.Sanding
             this.lblSetC.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetC.Location = new System.Drawing.Point(320, 140);
             this.lblSetC.Name = "lblSetC";
+            this.lblSetC.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lblSetC.Size = new System.Drawing.Size(46, 19);
             this.lblSetC.TabIndex = 16;
             this.lblSetC.Text = "Set_C:";
@@ -740,6 +858,7 @@ namespace Scada.Sanding
             this.lblSetCVal.ForeColor = System.Drawing.Color.Black;
             this.lblSetCVal.Location = new System.Drawing.Point(455, 140);
             this.lblSetCVal.Name = "lblSetCVal";
+            this.lblSetCVal.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lblSetCVal.Size = new System.Drawing.Size(21, 19);
             this.lblSetCVal.TabIndex = 17;
             this.lblSetCVal.Text = "--";
@@ -751,6 +870,7 @@ namespace Scada.Sanding
             this.lblSetD.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetD.Location = new System.Drawing.Point(320, 175);
             this.lblSetD.Name = "lblSetD";
+            this.lblSetD.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lblSetD.Size = new System.Drawing.Size(47, 19);
             this.lblSetD.TabIndex = 18;
             this.lblSetD.Text = "Set_D:";
@@ -762,6 +882,7 @@ namespace Scada.Sanding
             this.lblSetDVal.ForeColor = System.Drawing.Color.Black;
             this.lblSetDVal.Location = new System.Drawing.Point(455, 175);
             this.lblSetDVal.Name = "lblSetDVal";
+            this.lblSetDVal.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lblSetDVal.Size = new System.Drawing.Size(21, 19);
             this.lblSetDVal.TabIndex = 19;
             this.lblSetDVal.Text = "--";
@@ -773,6 +894,7 @@ namespace Scada.Sanding
             this.lblSetShaftLength.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetShaftLength.Location = new System.Drawing.Point(620, 35);
             this.lblSetShaftLength.Name = "lblSetShaftLength";
+            this.lblSetShaftLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSetShaftLength.Size = new System.Drawing.Size(117, 19);
             this.lblSetShaftLength.TabIndex = 20;
             this.lblSetShaftLength.Text = "Set_Shaft_Length:";
@@ -784,6 +906,7 @@ namespace Scada.Sanding
             this.lblSetShaftLengthVal.ForeColor = System.Drawing.Color.Black;
             this.lblSetShaftLengthVal.Location = new System.Drawing.Point(785, 35);
             this.lblSetShaftLengthVal.Name = "lblSetShaftLengthVal";
+            this.lblSetShaftLengthVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSetShaftLengthVal.Size = new System.Drawing.Size(21, 19);
             this.lblSetShaftLengthVal.TabIndex = 21;
             this.lblSetShaftLengthVal.Text = "--";
@@ -795,6 +918,7 @@ namespace Scada.Sanding
             this.lblSetTipOdLength1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetTipOdLength1.Location = new System.Drawing.Point(620, 70);
             this.lblSetTipOdLength1.Name = "lblSetTipOdLength1";
+            this.lblSetTipOdLength1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSetTipOdLength1.Size = new System.Drawing.Size(145, 19);
             this.lblSetTipOdLength1.TabIndex = 22;
             this.lblSetTipOdLength1.Text = "Set_Tip_OD_Length_1:";
@@ -806,6 +930,7 @@ namespace Scada.Sanding
             this.lblSetTipOdLength1Val.ForeColor = System.Drawing.Color.Black;
             this.lblSetTipOdLength1Val.Location = new System.Drawing.Point(785, 70);
             this.lblSetTipOdLength1Val.Name = "lblSetTipOdLength1Val";
+            this.lblSetTipOdLength1Val.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSetTipOdLength1Val.Size = new System.Drawing.Size(21, 19);
             this.lblSetTipOdLength1Val.TabIndex = 23;
             this.lblSetTipOdLength1Val.Text = "--";
@@ -817,6 +942,7 @@ namespace Scada.Sanding
             this.lblSetTipOdLength2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetTipOdLength2.Location = new System.Drawing.Point(620, 105);
             this.lblSetTipOdLength2.Name = "lblSetTipOdLength2";
+            this.lblSetTipOdLength2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSetTipOdLength2.Size = new System.Drawing.Size(145, 19);
             this.lblSetTipOdLength2.TabIndex = 24;
             this.lblSetTipOdLength2.Text = "Set_Tip_OD_Length_2:";
@@ -828,6 +954,7 @@ namespace Scada.Sanding
             this.lblSetTipOdLength2Val.ForeColor = System.Drawing.Color.Black;
             this.lblSetTipOdLength2Val.Location = new System.Drawing.Point(785, 105);
             this.lblSetTipOdLength2Val.Name = "lblSetTipOdLength2Val";
+            this.lblSetTipOdLength2Val.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSetTipOdLength2Val.Size = new System.Drawing.Size(21, 19);
             this.lblSetTipOdLength2Val.TabIndex = 25;
             this.lblSetTipOdLength2Val.Text = "--";
@@ -839,6 +966,7 @@ namespace Scada.Sanding
             this.lblSetTipOdLength3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.lblSetTipOdLength3.Location = new System.Drawing.Point(620, 140);
             this.lblSetTipOdLength3.Name = "lblSetTipOdLength3";
+            this.lblSetTipOdLength3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSetTipOdLength3.Size = new System.Drawing.Size(145, 19);
             this.lblSetTipOdLength3.TabIndex = 26;
             this.lblSetTipOdLength3.Text = "Set_Tip_OD_Length_3:";
@@ -850,6 +978,12 @@ namespace Scada.Sanding
             this.lblSetTipOdLength3Val.ForeColor = System.Drawing.Color.Black;
             this.lblSetTipOdLength3Val.Location = new System.Drawing.Point(785, 140);
             this.lblSetTipOdLength3Val.Name = "lblSetTipOdLength3Val";
+            this.lblSetTipOdLength3Val.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSetTipOdLength3Val.Size = new System.Drawing.Size(21, 19);
+            this.lblSetTipOdLength3Val.TabIndex = 27;
+            this.lblSetTipOdLength3Val.Text = "--";
+            // 
+            this.lblSetTipOdLength3Val.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSetTipOdLength3Val.Size = new System.Drawing.Size(21, 19);
             this.lblSetTipOdLength3Val.TabIndex = 27;
             this.lblSetTipOdLength3Val.Text = "--";
@@ -861,17 +995,129 @@ namespace Scada.Sanding
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this.label1.Location = new System.Drawing.Point(621, 175);
             this.label1.Name = "label1";
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.Size = new System.Drawing.Size(93, 19);
             this.label1.TabIndex = 28;
             this.label1.Text = "Set_OD_BOD:";
             // 
-            // lblSetOD_BOD_Val
+            
+            // lblSetDiamLL1
+            this.lblSetDiamLL1.AutoSize = true;
+            this.lblSetDiamLL1.Location = new System.Drawing.Point(20, 210);
+            this.lblSetDiamLL1.Name = "lblSetDiamLL1";
+            this.lblSetDiamLL1.Size = new System.Drawing.Size(120, 19);
+            this.lblSetDiamLL1.Text = "Diam LL 1:";
+            
+            // lblSetDiamLL1Val
+            this.lblSetDiamLL1Val.AutoSize = true;
+            this.lblSetDiamLL1Val.Location = new System.Drawing.Point(180, 210);
+            this.lblSetDiamLL1Val.Name = "lblSetDiamLL1Val";
+            this.lblSetDiamLL1Val.Size = new System.Drawing.Size(30, 19);
+            this.lblSetDiamLL1Val.Text = "0";
+            this.lblSetDiamLL1Val.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblSetDiamLL1Val.ForeColor = System.Drawing.Color.Black;
+            
+
+            // lblSetDiamLL2
+            this.lblSetDiamLL2.AutoSize = true;
+            this.lblSetDiamLL2.Location = new System.Drawing.Point(320, 210);
+            this.lblSetDiamLL2.Name = "lblSetDiamLL2";
+            this.lblSetDiamLL2.Anchor = System.Windows.Forms.AnchorStyles.Top;
+                        this.lblSetDiamLL2.Size = new System.Drawing.Size(120, 19);
+            this.lblSetDiamLL2.Text = "Diam LL 2:";
+            
+            // lblSetDiamLL2Val
+            this.lblSetDiamLL2Val.AutoSize = true;
+            this.lblSetDiamLL2Val.Location = new System.Drawing.Point(455, 210);
+            this.lblSetDiamLL2Val.Name = "lblSetDiamLL2Val";
+            this.lblSetDiamLL2Val.Anchor = System.Windows.Forms.AnchorStyles.Top;
+                        this.lblSetDiamLL2Val.Size = new System.Drawing.Size(30, 19);
+            this.lblSetDiamLL2Val.Text = "0";
+            this.lblSetDiamLL2Val.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblSetDiamLL2Val.ForeColor = System.Drawing.Color.Black;
+            
+
+            // lblSetDiamLL3
+            this.lblSetDiamLL3.AutoSize = true;
+            this.lblSetDiamLL3.Location = new System.Drawing.Point(620, 210);
+            this.lblSetDiamLL3.Name = "lblSetDiamLL3";
+            this.lblSetDiamLL3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                        this.lblSetDiamLL3.Size = new System.Drawing.Size(120, 19);
+            this.lblSetDiamLL3.Text = "Diam LL 3:";
+            
+            // lblSetDiamLL3Val
+            this.lblSetDiamLL3Val.AutoSize = true;
+            this.lblSetDiamLL3Val.Location = new System.Drawing.Point(785, 210);
+            this.lblSetDiamLL3Val.Name = "lblSetDiamLL3Val";
+            this.lblSetDiamLL3Val.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                        this.lblSetDiamLL3Val.Size = new System.Drawing.Size(30, 19);
+            this.lblSetDiamLL3Val.Text = "0";
+            this.lblSetDiamLL3Val.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblSetDiamLL3Val.ForeColor = System.Drawing.Color.Black;
+            
+
+            // lblSetDiamUL1
+            this.lblSetDiamUL1.AutoSize = true;
+            this.lblSetDiamUL1.Location = new System.Drawing.Point(20, 245);
+            this.lblSetDiamUL1.Name = "lblSetDiamUL1";
+            this.lblSetDiamUL1.Size = new System.Drawing.Size(120, 19);
+            this.lblSetDiamUL1.Text = "Diam UL 1:";
+            
+            // lblSetDiamUL1Val
+            this.lblSetDiamUL1Val.AutoSize = true;
+            this.lblSetDiamUL1Val.Location = new System.Drawing.Point(180, 245);
+            this.lblSetDiamUL1Val.Name = "lblSetDiamUL1Val";
+            this.lblSetDiamUL1Val.Size = new System.Drawing.Size(30, 19);
+            this.lblSetDiamUL1Val.Text = "0";
+            this.lblSetDiamUL1Val.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblSetDiamUL1Val.ForeColor = System.Drawing.Color.Black;
+            
+
+            // lblSetDiamUL2
+            this.lblSetDiamUL2.AutoSize = true;
+            this.lblSetDiamUL2.Location = new System.Drawing.Point(320, 245);
+            this.lblSetDiamUL2.Name = "lblSetDiamUL2";
+            this.lblSetDiamUL2.Anchor = System.Windows.Forms.AnchorStyles.Top;
+                        this.lblSetDiamUL2.Size = new System.Drawing.Size(120, 19);
+            this.lblSetDiamUL2.Text = "Diam UL 2:";
+            
+            // lblSetDiamUL2Val
+            this.lblSetDiamUL2Val.AutoSize = true;
+            this.lblSetDiamUL2Val.Location = new System.Drawing.Point(455, 245);
+            this.lblSetDiamUL2Val.Name = "lblSetDiamUL2Val";
+            this.lblSetDiamUL2Val.Anchor = System.Windows.Forms.AnchorStyles.Top;
+                        this.lblSetDiamUL2Val.Size = new System.Drawing.Size(30, 19);
+            this.lblSetDiamUL2Val.Text = "0";
+            this.lblSetDiamUL2Val.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblSetDiamUL2Val.ForeColor = System.Drawing.Color.Black;
+            
+
+            // lblSetDiamUL3
+            this.lblSetDiamUL3.AutoSize = true;
+            this.lblSetDiamUL3.Location = new System.Drawing.Point(620, 245);
+            this.lblSetDiamUL3.Name = "lblSetDiamUL3";
+            this.lblSetDiamUL3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                        this.lblSetDiamUL3.Size = new System.Drawing.Size(120, 19);
+            this.lblSetDiamUL3.Text = "Diam UL 3:";
+            
+            // lblSetDiamUL3Val
+            this.lblSetDiamUL3Val.AutoSize = true;
+            this.lblSetDiamUL3Val.Location = new System.Drawing.Point(785, 245);
+            this.lblSetDiamUL3Val.Name = "lblSetDiamUL3Val";
+            this.lblSetDiamUL3Val.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+                        this.lblSetDiamUL3Val.Size = new System.Drawing.Size(30, 19);
+            this.lblSetDiamUL3Val.Text = "0";
+            this.lblSetDiamUL3Val.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblSetDiamUL3Val.ForeColor = System.Drawing.Color.Black;
+            
+// lblSetOD_BOD_Val
             // 
             this.lblSetOD_BOD_Val.AutoSize = true;
             this.lblSetOD_BOD_Val.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSetOD_BOD_Val.ForeColor = System.Drawing.Color.Black;
             this.lblSetOD_BOD_Val.Location = new System.Drawing.Point(786, 175);
             this.lblSetOD_BOD_Val.Name = "lblSetOD_BOD_Val";
+            this.lblSetOD_BOD_Val.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSetOD_BOD_Val.Size = new System.Drawing.Size(21, 19);
             this.lblSetOD_BOD_Val.TabIndex = 29;
             this.lblSetOD_BOD_Val.Text = "--";
@@ -881,15 +1127,16 @@ namespace Scada.Sanding
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(244)))), ((int)(((byte)(248)))));
-            this.ClientSize = new System.Drawing.Size(950, 600);
+            this.ClientSize = new System.Drawing.Size(950, 720);
             this.Controls.Add(this.grpPlcSettings);
             this.Controls.Add(this.pnlFooter);
             this.Controls.Add(this.grpParameters);
             this.Controls.Add(this.grpProduction);
             this.Controls.Add(this.pnlTitle);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+            this.MaximizeBox = true;
             this.Name = "Form1";
+            this.MinimumSize = new System.Drawing.Size(950, 720);
             this.Text = "AUTO SANDING MONITORING CLIENT";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.easyDriverConnector1)).EndInit();
@@ -937,6 +1184,13 @@ namespace Scada.Sanding
         private System.Windows.Forms.Label lblSpineHighVal;
         private System.Windows.Forms.Label lblOkNgSanding;
         private System.Windows.Forms.Label lblOkNgSandingVal;
+        private System.Windows.Forms.Label lblOkNgOd1;
+        private System.Windows.Forms.Label lblOkNgOd1Val;
+        private System.Windows.Forms.Label lblOkNgOd2;
+        private System.Windows.Forms.Label lblOkNgOd2Val;
+        private System.Windows.Forms.Label lblOkNgOd3;
+        private System.Windows.Forms.Label lblOkNgOd3Val;
+
         private System.Windows.Forms.Label lblDiam1;
         private System.Windows.Forms.Label lblDiam2;
         private System.Windows.Forms.Label lblDiam3;
@@ -971,6 +1225,19 @@ namespace Scada.Sanding
         private System.Windows.Forms.Label lblSetTipOdLength2Val;
         private System.Windows.Forms.Label lblSetTipOdLength3;
         private System.Windows.Forms.Label lblSetTipOdLength3Val;
+        private System.Windows.Forms.Label lblSetDiamLL1;
+        private System.Windows.Forms.Label lblSetDiamLL1Val;
+        private System.Windows.Forms.Label lblSetDiamLL2;
+        private System.Windows.Forms.Label lblSetDiamLL2Val;
+        private System.Windows.Forms.Label lblSetDiamLL3;
+        private System.Windows.Forms.Label lblSetDiamLL3Val;
+        private System.Windows.Forms.Label lblSetDiamUL1;
+        private System.Windows.Forms.Label lblSetDiamUL1Val;
+        private System.Windows.Forms.Label lblSetDiamUL2;
+        private System.Windows.Forms.Label lblSetDiamUL2Val;
+        private System.Windows.Forms.Label lblSetDiamUL3;
+        private System.Windows.Forms.Label lblSetDiamUL3Val;
+
         private Label label1;
         private Label lblSetOD_BOD_Val;
     }

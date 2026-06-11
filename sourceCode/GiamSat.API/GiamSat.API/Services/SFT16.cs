@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using RestEase;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GiamSat.API
@@ -17,6 +18,26 @@ namespace GiamSat.API
         {
             _context = context;
             _contextAccessor = contextAccessor;
+        }
+
+        public async Task<Result<List<FT16_SandingLogData>>> GetReport(DateTime? from, DateTime? to, EnumSandingMode? mode)
+        {
+            try
+            {
+                var query =await _context.FT16_SandingLogDatas
+                    .Where(x => (from == null || x.CreatedAt.Value.Date >= from.Value.Date)
+                    && (to == null || x.CreatedAt.Value.Date <= to.Value.Date)
+                    && (mode == null || x.SandingMode == mode))
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                var list = query.OrderByDescending(x => x.CreatedAt).ToList();
+                return await Result<List<FT16_SandingLogData>>.SuccessAsync(list);
+            }
+            catch (Exception ex)
+            {
+                return await Result<List<FT16_SandingLogData>>.FailAsync(ex.Message);
+            }
         }
 
         public async Task<Result<List<FT16_SandingLogData>>> GetAll()
