@@ -25,8 +25,8 @@ namespace GiamSat.API
             try
             {
                 var query =await _context.FT16_SandingLogDatas
-                    .Where(x => (from == null || x.CreatedAt >= from)
-                    && (to == null || x.CreatedAt <= to)
+                    .Where(x => (from == null || x.CreatedAt.Value.Date >= from.Value.Date)
+                    && (to == null || x.CreatedAt.Value.Date <= to.Value.Date)
                     && (mode == null || x.SandingMode == mode))
                     .AsNoTracking()
                     .ToListAsync();
