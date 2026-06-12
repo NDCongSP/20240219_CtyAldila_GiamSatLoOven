@@ -54,7 +54,7 @@ namespace GiamSat.UI
             {
                 Pages.RevoReport.RevoReportMode.ByShaft => 9,
                 Pages.RevoReport.RevoReportMode.ByHour => 1 + revoList.Count * 2,
-                _ => 11
+                _ => 12
             };
 
             ws.Range(1, 1, 1, colCount).Merge().Style
@@ -111,10 +111,11 @@ namespace GiamSat.UI
             ws.Cell(currentRow, 5).Value = "Work";
             ws.Cell(currentRow, 6).Value = "Rev";
             ws.Cell(currentRow, 7).Value = "Mandrel";
-            ws.Cell(currentRow, 8).Value = "Tên Step (StepId)";
-            ws.Cell(currentRow, 9).Value = "Bắt đầu";
-            ws.Cell(currentRow, 10).Value = "Kết thúc";
-            ws.Cell(currentRow, 11).Value = "Thời lượng";
+            ws.Cell(currentRow, 8).Value = "Step";
+            ws.Cell(currentRow, 9).Value = "Tên Step";
+            ws.Cell(currentRow, 10).Value = "Bắt đầu";
+            ws.Cell(currentRow, 11).Value = "Kết thúc";
+            ws.Cell(currentRow, 12).Value = "Thời lượng";
             StyleHeader(ws, currentRow, colCount);
             var outRow = currentRow + 1;
             foreach (var r in rows)
@@ -126,10 +127,11 @@ namespace GiamSat.UI
                 ws.Cell(outRow, 5).Value = r.Work ?? "N/A";
                 ws.Cell(outRow, 6).Value = r.Rev ?? "N/A";
                 ws.Cell(outRow, 7).Value = r.Mandrel ?? "N/A";
-                ws.Cell(outRow, 8).Value = r.StepDisplay;
-                ws.Cell(outRow, 9).Value = r.StartedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
-                ws.Cell(outRow, 10).Value = r.EndedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
-                ws.Cell(outRow, 11).Value = r.DurationText;
+                ws.Cell(outRow, 8).Value = r.StepId?.ToString() ?? "N/A";
+                ws.Cell(outRow, 9).Value = r.StepDisplay;
+                ws.Cell(outRow, 10).Value = r.StartedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
+                ws.Cell(outRow, 11).Value = r.EndedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
+                ws.Cell(outRow, 12).Value = r.DurationText;
                 if (r.HighlightIncomplete)
                     ws.Range(outRow, 1, outRow, colCount).Style.Fill.SetBackgroundColor(WarningFill);
                 outRow++;
@@ -269,10 +271,11 @@ namespace GiamSat.UI
                 ws.Cell(currentRow, 5).Value = "Work";
                 ws.Cell(currentRow, 6).Value = "Rev";
                 ws.Cell(currentRow, 7).Value = "Mandrel";
-                ws.Cell(currentRow, 8).Value = "Tên Step (StepId)";
-                ws.Cell(currentRow, 9).Value = "Bắt đầu";
-                ws.Cell(currentRow, 10).Value = "Kết thúc";
-                ws.Cell(currentRow, 11).Value = "Thời lượng";
+                ws.Cell(currentRow, 8).Value = "Step";
+                ws.Cell(currentRow, 9).Value = "Tên Step";
+                ws.Cell(currentRow, 10).Value = "Bắt đầu";
+                ws.Cell(currentRow, 11).Value = "Kết thúc";
+                ws.Cell(currentRow, 12).Value = "Thời lượng";
                 StyleHeader(ws, currentRow, colCount);
 
                 var outRow = currentRow + 1;
@@ -306,10 +309,11 @@ namespace GiamSat.UI
                     ws.Cell(outRow, 5).Value = item.Work ?? "N/A";
                     ws.Cell(outRow, 6).Value = item.Rev ?? "N/A";
                     ws.Cell(outRow, 7).Value = item.Mandrel ?? "N/A";
-                    ws.Cell(outRow, 8).Value = $"{stepName} ({stepIdTxt})";
-                    ws.Cell(outRow, 9).Value = isAutoRolling ? "N/A" : item.StartedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
-                    ws.Cell(outRow, 10).Value = isAutoRolling ? "N/A" : item.EndedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
-                    ws.Cell(outRow, 11).Value = durTxt;
+                    ws.Cell(outRow, 8).Value = stepIdTxt;
+                    ws.Cell(outRow, 9).Value = $"{stepName} ({stepIdTxt})";
+                    ws.Cell(outRow, 10).Value = isAutoRolling ? "N/A" : item.StartedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
+                    ws.Cell(outRow, 11).Value = isAutoRolling ? "N/A" : item.EndedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A";
+                    ws.Cell(outRow, 12).Value = durTxt;
 
                     var warn = shaftScope == Pages.RevoReport.RevoShaftScopeKind.Total
                         && item.ShaftNum.HasValue
@@ -519,7 +523,7 @@ namespace GiamSat.UI
                         MachineStats = machineStats
                     };
                 })
-                .OrderBy(x => x.StartedAt ?? DateTime.MinValue)
+                .OrderByDescending(x => x.Hour)
                 .ToList();
         }
 

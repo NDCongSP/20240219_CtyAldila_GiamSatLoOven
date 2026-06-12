@@ -113,6 +113,7 @@ SELECT
     b.Work,
     b.Rev,
     b.Mandrel,
+    b.StepId,
     StepDisplay = CONCAT(
         CASE WHEN NULLIF(LTRIM(RTRIM(b.StepName)), N'') IS NULL THEN N'N/A' ELSE b.StepName END,
         N' (',
@@ -316,6 +317,7 @@ RETURN
         b.Work,
         b.Rev,
         b.Mandrel,
+        b.StepId,
         StepDisplay = CONCAT(
             CASE WHEN NULLIF(LTRIM(RTRIM(b.StepName)), N'') IS NULL THEN N'N/A' ELSE b.StepName END,
             N' (',

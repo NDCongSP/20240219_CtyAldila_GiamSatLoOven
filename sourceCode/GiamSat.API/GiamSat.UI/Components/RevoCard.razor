@@ -217,7 +217,15 @@
         return $"{ts.Minutes}m{ts.Seconds:D2}s";
     }
 
-    private bool IsAutoRollingMode() =>
-        RevoData.MachineType == EnumMachineType.AUTO_ROLLING;
+    private bool IsAutoRollingMode()
+    {
+        if (RevoData.MachineType == EnumMachineType.AUTO_ROLLING) return true;
+        var revoName = RevoData.RevoName ?? string.Empty;
+        var work = RevoData.Work ?? string.Empty;
+        return revoName.Contains("auto rolling", StringComparison.OrdinalIgnoreCase)
+            || work.Contains("auto rolling", StringComparison.OrdinalIgnoreCase)
+            || revoName.Replace(" ", string.Empty).Contains("autorolling", StringComparison.OrdinalIgnoreCase)
+            || work.Replace(" ", string.Empty).Contains("autorolling", StringComparison.OrdinalIgnoreCase);
+    }
 }
 

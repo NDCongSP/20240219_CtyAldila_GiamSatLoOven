@@ -18,6 +18,7 @@ namespace GiamSat.Models
         public string? Work { get; set; }
         public string? Rev { get; set; }
         public string? Mandrel { get; set; }
+        public int? StepId { get; set; }
         public string? StepDisplay { get; set; }
         public DateTime? DisplayStartedAt { get; set; }
         public DateTime? DisplayEndedAt { get; set; }

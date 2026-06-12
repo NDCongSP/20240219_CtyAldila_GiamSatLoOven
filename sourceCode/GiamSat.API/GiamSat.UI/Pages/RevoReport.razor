@@ -155,6 +155,7 @@
                             <RadzenDataGridColumn TItem="RevoStepRow" Property="Work" Title="Work" Width="100px" />
                             <RadzenDataGridColumn TItem="RevoStepRow" Property="Rev" Title="Rev" Width="70px" />
                             <RadzenDataGridColumn TItem="RevoStepRow" Property="Mandrel" Title="Mandrel" Width="100px" />
+                            <RadzenDataGridColumn TItem="RevoStepRow" Property="StepId" Title="Step" Width="70px" TextAlign="TextAlign.Center" />
                             <RadzenDataGridColumn TItem="RevoStepRow" Property="StepDisplay" Title="Tên Step" Width="170px" />
                             <RadzenDataGridColumn TItem="RevoStepRow" Property="StartedAt" Title="Bắt đầu" Width="180px">
                                 <Template Context="data">
@@ -224,7 +225,7 @@
                                         PageSizeOptions="@(new int[] { 10, 20, 50, 100 })">
                             <Columns>
                                 <RadzenDataGridColumn TItem="RevoHourRow" Property="HourRange" Title="Giờ" Width="210px" />
-                                @foreach (var revo in _revoList)
+                                @foreach (var revo in _revoList.Where(r => _selectedRevoId == null || r.Id == _selectedRevoId))
                                 {
                                     <RadzenDataGridColumn TItem="RevoHourRow" Title="@revo.Name" TextAlign="TextAlign.Center">
                                         <Columns>

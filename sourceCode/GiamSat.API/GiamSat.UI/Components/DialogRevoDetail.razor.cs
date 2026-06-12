@@ -169,8 +169,16 @@ namespace GiamSat.UI.Components
             return $"{ts.Minutes}m{ts.Seconds:D2}s";
         }
 
-        private bool IsAutoRollingMode() =>
-            _revoData.MachineType == EnumMachineType.AUTO_ROLLING;
+        private bool IsAutoRollingMode()
+        {
+            if (_revoData.MachineType == EnumMachineType.AUTO_ROLLING) return true;
+            var revoName = _revoData.RevoName ?? string.Empty;
+            var work = _revoData.Work ?? string.Empty;
+            return revoName.Contains("auto rolling", StringComparison.OrdinalIgnoreCase)
+                || work.Contains("auto rolling", StringComparison.OrdinalIgnoreCase)
+                || revoName.Replace(" ", string.Empty).Contains("autorolling", StringComparison.OrdinalIgnoreCase)
+                || work.Replace(" ", string.Empty).Contains("autorolling", StringComparison.OrdinalIgnoreCase);
+        }
 
         private string GetStepClass(RevoStep step, bool isRunning)
         {

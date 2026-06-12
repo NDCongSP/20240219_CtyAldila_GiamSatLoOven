@@ -334,6 +334,7 @@ namespace GiamSat.UI.Pages
                 Work = v.Work,
                 Rev = v.Rev,
                 Mandrel = v.Mandrel,
+                StepId = v.StepId,
                 StepDisplay = v.StepDisplay ?? string.Empty,
                 StartedAt = v.DisplayStartedAt,
                 EndedAt = v.DisplayEndedAt,
@@ -635,6 +636,7 @@ namespace GiamSat.UI.Pages
                         Work = x.Row.Work,
                         Rev = x.Row.Rev,
                         Mandrel = x.Row.Mandrel,
+                        StepId = x.Row.StepId,
                         StepDisplay = $"{stepName} ({stepIdText})",
                         StartedAt = isAutoRolling ? null : x.Row.StartedAt,
                         EndedAt = isAutoRolling ? null : x.Row.EndedAt,
@@ -794,7 +796,7 @@ namespace GiamSat.UI.Pages
                         MachineStats = machineStats
                     };
                 })
-                .OrderBy(x => x.StartedAt ?? DateTime.MinValue)
+                .OrderByDescending(x => x.Hour)
                 .ToList();
         }
 
@@ -844,6 +846,7 @@ namespace GiamSat.UI.Pages
             public string? Work { get; set; }
             public string? Rev { get; set; }
             public string? Mandrel { get; set; }
+            public int? StepId { get; set; }
             public string StepDisplay { get; set; } = string.Empty;
             public DateTime? StartedAt { get; set; }
             public DateTime? EndedAt { get; set; }
