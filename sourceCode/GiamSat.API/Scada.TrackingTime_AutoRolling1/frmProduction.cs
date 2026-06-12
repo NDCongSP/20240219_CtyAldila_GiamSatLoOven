@@ -1,19 +1,17 @@
-﻿using EasyScada.Core;
-using EasyScada.Winforms.Controls;
 using GiamSat.Models;
+using McProtocolClientLib.Core;
+using McProtocolClientLib.Subscription;
+using McProtocolClientLib.Tags;
 using Newtonsoft.Json;
 using Serilog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,11 +19,28 @@ using System.Windows.Forms;
 
 namespace Scada.TrackingTime_AutoRolling1
 {
+    /// <summary>
+    /// Form sản xuất Auto Rolling — kết nối PLC Mitsubishi qua MC Protocol (McProtocolClientLib).
+    /// </summary>
+    /// <remarks>
+    /// File:     Scada.TrackingTime_AutoRolling1/frmProduction.cs
+    /// Author:   Cong.Nguyen
+    /// Created:  2024-02-19
+    /// Modified: 2026-06-11 — Thay EasyDriverConnector bằng PlcManager + PlcSubscriptionManager (MC Protocol)
+    /// </remarks>
     public partial class frmProduction : Form
     {
-        private EasyDriverConnector _easyDriverConnector;
-        private ConnectionStatus _easyStatus;
+        // ─── MC Protocol ─────────────────────────────────────────────────────────
+        private readonly PlcManager _plcManager = new PlcManager();
 
+        /// <summary>plcName → (runtime, subscription)</summary>
+        private readonly Dictionary<string, (PlcRuntime Runtime, PlcSubscriptionManager Sub)> _sessions
+            = new Dictionary<string, (PlcRuntime, PlcSubscriptionManager)>();
+
+        // tags.json Name = "Auto_Rolling_1/2/3" được chuẩn hóa khớp với RevoConfig.Path
+        // bằng số máy (1/2/3) ở bước 3b trong frmProduction_LoadAsync.
+
+        // ─── Timers / Tasks ───────────────────────────────────────────────────────
         private CancellationTokenSource _timerCts;
         private Task _timerTask;
 
@@ -42,14 +57,6 @@ namespace Scada.TrackingTime_AutoRolling1
 
         private List<AutoRollingTagChangedModel> _tagsValueRealtime = new List<AutoRollingTagChangedModel>();
 
-        //// Giả sử bạn muốn truyền thông tin Device hoặc Path
-        //public class ResetArgs
-        //{
-        //    public string Path { get; set; }
-        //    public int StepValue { get; set; }
-        //}
-        //private readonly ConcurrentQueue<ResetArgs> _resetQueue = new ConcurrentQueue<ResetArgs>();
-
         /// <summary>
         /// Lý do kích hoạt TaskResetShaftAsync.
         /// - PartChanged: chỉ log (KHÔNG đổi ShaftNum, KHÔNG reset TotalRunTime).
@@ -62,42 +69,31 @@ namespace Scada.TrackingTime_AutoRolling1
         }
 
         // Dùng ConcurrentDictionary thay vì Queue để mỗi Path chỉ có 1 entry duy nhất.
-        // Nếu Path đã tồn tại, ghi đè reason mới (ưu tiên reason cuối cùng).
         private readonly ConcurrentDictionary<string, ShaftActionReason> _resetShaftQueue
             = new ConcurrentDictionary<string, ShaftActionReason>();
         private readonly ConcurrentQueue<string> _resetPartQueue = new ConcurrentQueue<string>();
 
         /// <summary>
         /// Helper: enqueue Path vào queue reset shaft, đảm bảo unique.
-        /// Nếu Path đã có thì ghi đè reason mới.
         /// </summary>
         private void EnqueueResetShaft(string path, ShaftActionReason reason)
         {
-            _resetShaftQueue[path] = reason; // overwrite-if-exists, atomic
+            _resetShaftQueue[path] = reason;
             _triggerResetShaft.Set();
         }
 
         /// <summary>
         /// Lưu thời điểm reset shaft gần nhất theo Path để debounce cross-batch.
-        /// Nếu Part_Code và Step_Run=0 fire cách nhau nhưng trong khoảng debounce thì chỉ reset 1 lần.
         /// </summary>
         private readonly Dictionary<string, DateTime> _lastShaftResetAt = new Dictionary<string, DateTime>();
         private static readonly TimeSpan SHAFT_RESET_DEBOUNCE = TimeSpan.FromSeconds(3);
 
         /// <summary>
-        /// Hash của snapshot dữ liệu FT09 lần log gần nhất.
-        /// Nếu hash hiện tại == hash này -> data không đổi -> bỏ qua log để tránh DB write thừa.
-        /// </summary>
-        private string _lastLogStepRunHash = string.Empty;
-
-        /// <summary>
-        /// Lock để serialize các call vào LogDataStepRun (chống race condition giữa
-        /// TaskTimerAsync và TaskResetShaftAsync gây INSERT duplicate ở FT09).
+        /// Lock để serialize UpdateShaftTimesAsync — tránh gọi đồng thời từ timer.
         /// </summary>
         private readonly SemaphoreSlim _logStepRunLock = new SemaphoreSlim(1, 1);
 
         private bool _loaded = false;
-
 
         // Import để cho phép kéo form
         [DllImport("user32.dll")]
@@ -117,37 +113,17 @@ namespace Scada.TrackingTime_AutoRolling1
             InitializeComponent();
 
             #region add header
-            // Cấu hình form
             this.Text = "Custom Title Bar";
-            this.FormBorderStyle = FormBorderStyle.None; // Bỏ header mặc định
+            this.FormBorderStyle = FormBorderStyle.None;
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Size = new Size(1350, 514);
 
-            // Tạo panel làm thanh tiêu đề
             titleBar = new Panel();
             titleBar.Dock = DockStyle.Top;
             titleBar.Height = 40;
             titleBar.BackColor = Color.Black;
             titleBar.MouseDown += TitleBar_MouseDown;
             this.Controls.Add(titleBar);
-
-            //// Nút Close
-            //btnClose = new Button();
-            //btnClose.Text = "";
-            //btnClose.ForeColor = Color.White;
-            //btnClose.BackColor = Color.Black;
-            //btnClose.FlatStyle = FlatStyle.Flat;
-            //btnClose.FlatAppearance.BorderSize = 0;
-            //btnClose.Size = new Size(40, 40);
-            //btnClose.Location = new Point(this.Width - 40, 0);
-            //btnClose.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            //// 1) Gán icon từ Resources (đặt tên hình là "updateVersion" như trong Resource)
-            //btnClose.Image = Properties.Resources.close_window_30_white;  // PNG từ Resources
-            //btnClose.ImageAlign = ContentAlignment.MiddleCenter;  // căn giữa
-            //btnClose.Padding = new Padding(0);                    // tránh lệch
-            //btnClose.TextImageRelation = TextImageRelation.Overlay; // chỉ icon
-            //btnClose.Click += BtnClose_Click;
-            //titleBar.Controls.Add(btnClose);
 
             // Nút Maximize
             btnMaximize = new Button();
@@ -159,11 +135,10 @@ namespace Scada.TrackingTime_AutoRolling1
             btnMaximize.Size = new Size(40, 40);
             btnMaximize.Location = new Point(this.Width - 40, 0);
             btnMaximize.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            // 1) Gán icon từ Resources (đặt tên hình là "updateVersion" như trong Resource)
-            btnMaximize.Image = Properties.Resources.maximize_30_white;  // PNG từ Resources
-            btnMaximize.ImageAlign = ContentAlignment.MiddleCenter;  // căn giữa
-            btnMaximize.Padding = new Padding(0);                    // tránh lệch
-            btnMaximize.TextImageRelation = TextImageRelation.Overlay; // chỉ icon
+            btnMaximize.Image = Properties.Resources.maximize_30_white;
+            btnMaximize.ImageAlign = ContentAlignment.MiddleCenter;
+            btnMaximize.Padding = new Padding(0);
+            btnMaximize.TextImageRelation = TextImageRelation.Overlay;
             btnMaximize.Click += BtnMaximize_Click;
             titleBar.Controls.Add(btnMaximize);
 
@@ -177,17 +152,16 @@ namespace Scada.TrackingTime_AutoRolling1
             btnMinimize.Size = new Size(40, 40);
             btnMinimize.Location = new Point(this.Width - 80, 0);
             btnMinimize.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            // 1) Gán icon từ Resources (đặt tên hình là "updateVersion" như trong Resource)
-            btnMinimize.Image = Properties.Resources.minimize_30_White;  // PNG từ Resources
-            btnMinimize.ImageAlign = ContentAlignment.MiddleCenter;  // căn giữa
-            btnMinimize.Padding = new Padding(0);                    // tránh lệch
-            btnMinimize.TextImageRelation = TextImageRelation.Overlay; // chỉ icon
+            btnMinimize.Image = Properties.Resources.minimize_30_White;
+            btnMinimize.ImageAlign = ContentAlignment.MiddleCenter;
+            btnMinimize.Padding = new Padding(0);
+            btnMinimize.TextImageRelation = TextImageRelation.Overlay;
             btnMinimize.Click += BtnMinimize_Click;
             titleBar.Controls.Add(btnMinimize);
 
-            // Nút update version
+            // Nút Maintenance
             btnMaintenance = new Button();
-            btnMaintenance.Text = "";                      // Không cần chữ, chỉ hiển thị icon
+            btnMaintenance.Text = "";
             btnMaintenance.ForeColor = Color.White;
             btnMaintenance.BackColor = Color.Black;
             btnMaintenance.FlatStyle = FlatStyle.Flat;
@@ -196,91 +170,76 @@ namespace Scada.TrackingTime_AutoRolling1
             btnMaintenance.Location = new Point(this.Width - 120, 0);
             btnMaintenance.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnMaintenance.Cursor = Cursors.Hand;
+            btnMaintenance.Image = Properties.Resources.maintenance_30_white;
+            btnMaintenance.ImageAlign = ContentAlignment.MiddleCenter;
+            btnMaintenance.Padding = new Padding(0);
+            btnMaintenance.TextImageRelation = TextImageRelation.Overlay;
 
-            // 1) Gán icon từ Resources (đặt tên hình là "updateVersion" như trong Resource)
-            btnMaintenance.Image = Properties.Resources.maintenance_30_white;  // PNG từ Resources
-            btnMaintenance.ImageAlign = ContentAlignment.MiddleCenter;  // căn giữa
-            btnMaintenance.Padding = new Padding(0);                    // tránh lệch
-            btnMaintenance.TextImageRelation = TextImageRelation.Overlay; // chỉ icon
-
-            // Tùy chọn: scale icon nếu quá lớn/nhỏ (WinForms Button không có ImageLayout)
-            // => bạn có thể dùng phiên bản icon 24x24 hoặc 32x32 trong file PNG để vừa với nút 40x40.
-
-            // 2) Tooltip khi hover
             var tip = new ToolTip();
-            tip.AutoPopDelay = 5000;     // hiển thị tối đa 5 giây
-            tip.InitialDelay = 300;      // trễ 300ms
-            tip.ReshowDelay = 100;       // xuất hiện lại nhanh
-            tip.ShowAlways = true;       // luôn hiển thị tooltip
-            tip.SetToolTip(btnMaintenance, "MAINTENANCE");  // nội dung tooltip
+            tip.AutoPopDelay = 5000;
+            tip.InitialDelay = 300;
+            tip.ReshowDelay = 100;
+            tip.ShowAlways = true;
+            tip.SetToolTip(btnMaintenance, "MAINTENANCE");
 
-            // Tùy chọn: hiệu ứng hover (đổi nền cho dễ nhìn)
             btnMaintenance.MouseEnter += (s, e) => btnMaintenance.BackColor = Color.FromArgb(30, 30, 30);
             btnMaintenance.MouseLeave += (s, e) => btnMaintenance.BackColor = Color.Black;
-
-            // Sự kiện Click (giữ nguyên như bạn đã có)
-            btnMaintenance.Click += btnMaitenance_Click; ; // hoặc sự kiện update version thực tế của bạn
+            btnMaintenance.Click += btnMaitenance_Click;
             titleBar.Controls.Add(btnMaintenance);
 
-
-            // Đảm bảo tất cả có cùng Height = 30 và Y = 5
             btnMaximize.Size = btnMinimize.Size = btnMaintenance.Size = new Size(30, 30);
-
-
-            // Anchor cho cả 3 nút
             btnMaximize.Anchor = btnMinimize.Anchor = btnMaintenance.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
             // Logo
             PictureBox logo = new PictureBox();
-            logo.Image = Properties.Resources.logoAldila; // logo từ Resources
+            logo.Image = Properties.Resources.logoAldila;
             logo.SizeMode = PictureBoxSizeMode.Zoom;
-            logo.Size = new Size(100, 30); // kích thước logo
-            logo.Location = new Point(0, 5); // vị trí bên trái
+            logo.Size = new Size(100, 30);
+            logo.Location = new Point(0, 5);
             titleBar.Controls.Add(logo);
 
-            // Text
+            // Title text
             titleText = new Label();
             titleText.Text = $"AUTO ROLLING PRODUCTION";
             titleText.ForeColor = Color.White;
             titleText.Font = new Font("Segoe UI", 12, FontStyle.Bold);
             titleText.AutoSize = true;
-            titleText.Location = new Point(100, 10); // ngay sau logo
+            titleText.Location = new Point(100, 10);
             titleBar.Controls.Add(titleText);
             #endregion
 
-            // 1. Đảm bảo Footer nằm dưới cùng
             _labStatus.Dock = DockStyle.Bottom;
-            _labStatus.Height = 30; // Chỉnh độ cao phù hợp
-
-            // 2. Ép nó phải hiển thị lên trên (Z-Order)
+            _labStatus.Height = 30;
             _labStatus.BringToFront();
 
-            // 3. Nếu flowMain đang là Dock Fill, nó sẽ tự động chừa chỗ cho _labStatus
-            // flowMain.Dock = DockStyle.Fill;
-
             Load += frmProduction_Load;
-            //FormClosing += Form1_FormClosing;
         }
 
         private void frmProduction_FormClosing(object? sender, FormClosingEventArgs e)
         {
             try
             {
-                _easyDriverConnector.ConnectionStatusChaged -= _easyDriverConnector_ConnectionStatusChaged;
-                _easyDriverConnector.Started -= _easyDriverConnector_Started;
-                _easyDriverConnector.Stop();
+                // Dừng subscription và ngắt kết nối tất cả PLC
+                // NOTE: foreach (var (_, session) in _sessions) không compile trên .NET 4.8
+                //       vì KeyValuePair không có Deconstruct method — dùng kv.Value thay thế.
+                foreach (var kv in _sessions)
+                {
+                    try
+                    {
+                        kv.Value.Sub.Stop();
+                        kv.Value.Runtime.Client.Dispose();
+                    }
+                    catch { /* ignore on close */ }
+                }
 
-                _timerCts.Cancel();
-                _timerTask.Wait(1000);
+                _timerCts?.Cancel();
+                _timerTask?.Wait(1000);
 
-                _checkingTimeStepCts.Cancel();
-                _resetShaftCts.Cancel();
-                _resetPartCts.Cancel();
+                _checkingTimeStepCts?.Cancel();
+                _resetShaftCts?.Cancel();
+                _resetPartCts?.Cancel();
             }
-            catch
-            {
-
-            }
+            catch { }
             finally
             {
                 _timerCts?.Dispose();
@@ -294,7 +253,21 @@ namespace Scada.TrackingTime_AutoRolling1
 
         private async void frmProduction_Load(object? sender, EventArgs e)
         {
-            //ddocj gias trij config
+            try
+            {
+                await frmProduction_LoadAsync();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "frmProduction_Load unhandled");
+                MessageBox.Show($"Lỗi khởi động chương trình:\n{ex.Message}",
+                    "LỖI KHỞI ĐỘNG", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task frmProduction_LoadAsync()
+        {
+            // 1. Đọc config từ DB
             using (var dbContext = new ApplicationDbContext())
             {
                 var constring = dbContext.Database.Connection.ConnectionString;
@@ -313,10 +286,7 @@ namespace Scada.TrackingTime_AutoRolling1
                     if (GlobalVariable.RevoConfigs.Count == 0)
                     {
                         MessageBox.Show("Không đọc được thông tin cấu hình, vui lòng kiểm tra lại kết nối đến server. Rồi tắt mở lại chương trình.",
-                            "CẢNH BÁO", MessageBoxButtons.OK,
-                            MessageBoxIcon.Warning
-                            );
-
+                            "CẢNH BÁO", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
 
@@ -325,19 +295,14 @@ namespace Scada.TrackingTime_AutoRolling1
                 else
                 {
                     MessageBox.Show("Không đọc được thông tin cấu hình, vui lòng kiểm tra lại kết nối đến server. Rồi tắt mở lại chương trình.",
-                        "CẢNH BÁO", MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning
-                        );
+                        "CẢNH BÁO", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                //khởi tạo model realtime data
+                // 2. Khởi tạo model realtime
                 foreach (var item in GlobalVariable.RevoConfigs)
                 {
-                    // FIX: tạo list Steps RIÊNG cho từng RevoRealtimeModel.
-                    // KHÔNG được share 1 list giữa các models, vì List<T> là reference type
-                    // -> nếu share, event TimeRunStep của RevoId này sẽ ghi đè TotalRunTime
-                    // của RevoId khác (trông giống như "bị reset về 0").
+                    // FIX: tạo list Steps RIÊNG cho từng RevoRealtimeModel
                     var stepsForThisRevo = new List<RevoStep>();
                     for (int i = 1; i <= 15; i++)
                     {
@@ -345,6 +310,8 @@ namespace Scada.TrackingTime_AutoRolling1
                         {
                             StepIndex = i,
                             StepName = $"Step {i}",
+                            Visible = true,
+                            Enable = false
                         });
                     }
 
@@ -354,10 +321,7 @@ namespace Scada.TrackingTime_AutoRolling1
                         RevoName = item.Name,
                         Path = item.Path,
                         Steps = stepsForThisRevo,
-                        // KHÔNG gán ShaftNum ở đây - để mặc định Guid.Empty.
-                        // LogDataStepRun đã filter bỏ qua Guid.Empty -> không log gì
-                        // cho tới khi TaskResetShaftAsync gán Guid thật từ event PLC đầu tiên.
-                        // Như vậy mỗi transition (Part đổi / Step_Run=0) chỉ tạo đúng 1 ShaftNum.
+                        // ShaftNum mặc định Guid.Empty — TaskResetShaftAsync sẽ gán từ event PLC
                     });
 
                     _tagsValueRealtime.Add(new AutoRollingTagChangedModel()
@@ -367,35 +331,140 @@ namespace Scada.TrackingTime_AutoRolling1
                         Path = item.Path,
                     });
                 }
-
-                #region Khởi tạo easy drirver connector
-                _easyDriverConnector = new EasyDriverConnector();
-                _easyDriverConnector.ConnectionStatusChaged += _easyDriverConnector_ConnectionStatusChaged;
-                _easyDriverConnector.BeginInit();
-                _easyDriverConnector.EndInit();
-                //_easyStatus = _easyDriverConnector.ConnectionStatus;
-
-                _easyDriverConnector.Started += _easyDriverConnector_Started;
-                if (_easyDriverConnector.IsStarted)
-                {
-                    _easyDriverConnector_Started(null, null);
-                }
-                #endregion
-
-                _timerCts = new CancellationTokenSource();
-                _timerTask = Task.Run(async () => await TaskTimerAsync(_timerCts.Token));
-
-                _resetShaftCts = new CancellationTokenSource();
-                _ = TaskResetShaftAsync(_resetShaftCts.Token);
             }
+
+            // 3. Khởi tạo MC Protocol — load tags.json
+            try
+            {
+                _plcManager.LoadFromConfig("tags.json");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Không đọc được tags.json:\n{ex.Message}",
+                    "CẢNH BÁO", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 3b. Chuẩn hóa Path trong models để khớp với Name trong tags.json
+            //     (RevoConfig.Path trong DB có thể khác format, vd: "Auto Rolling 1" vs "Auto_Rolling_1"
+            //      hoặc "Local Station/Channel_Auto_Rolling_1/Device1" tùy cấu hình EasyDriver cũ)
+            //     → Dùng số máy (1/2/3) ở cuối tên để khớp, sau đó ghi đè Path = plcName.
+            foreach (var plcNameNorm in _plcManager.GetAllPlcNames())
+            {
+                var normParts = plcNameNorm.Split(new[] { '_' }, StringSplitOptions.RemoveEmptyEntries);
+                var machineNum = normParts.Length > 0 ? normParts[normParts.Length - 1] : "";
+
+                int dummy;
+                if (string.IsNullOrEmpty(machineNum) || !int.TryParse(machineNum, out dummy)) continue;
+
+                // Cập nhật RevoRealtimeModel.Path
+                foreach (var rm in GlobalVariable.RevoRealtimeModels)
+                {
+                    var nameParts = (rm.RevoName ?? "").Split(new[] { ' ', '_' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (nameParts.Length > 0 && nameParts[nameParts.Length - 1] == machineNum)
+                    {
+                        rm.Path = plcNameNorm;
+                        break;
+                    }
+                }
+
+                // Cập nhật AutoRollingTagChangedModel.Path
+                foreach (var tm in _tagsValueRealtime)
+                {
+                    var nameParts = (tm.RevoName ?? "").Split(new[] { ' ', '_' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (nameParts.Length > 0 && nameParts[nameParts.Length - 1] == machineNum)
+                    {
+                        tm.Path = plcNameNorm;
+                        break;
+                    }
+                }
+            }
+
+            // 4. Kết nối tất cả PLC song song
+            //    plcName trong tags.json ("Auto_Rolling_1"...) = RevoConfig.Path (sau khi chuẩn hóa ở 3b).
+            var plcNames = _plcManager.GetAllPlcNames().ToList();
+            var connectTasks = plcNames
+                .Select(async plcName =>
+            {
+                var runtime = _plcManager.GetPlc(plcName);
+                var path = plcName; // Path đã được chuẩn hóa = plcName ở bước 3b
+
+                // StateChanged → cập nhật PlcConnected trong model
+                runtime.Client.StateChanged += state =>
+                {
+                    bool connected = (state == PlcConnectionState.Connected);
+                    var tagItem = _tagsValueRealtime.FirstOrDefault(x => x.Path == path);
+                    if (tagItem != null) tagItem.PlcConnected = connected;
+
+                    var realtimeModel = GlobalVariable.RevoRealtimeModels.FirstOrDefault(x => x.Path == path);
+                    if (realtimeModel != null) realtimeModel.PlcConnected = connected;
+
+                    Log.Information($"[{plcName}] PLC state → {state}");
+                };
+
+                runtime.Reader.OnReadError += msg => Log.Warning($"[{plcName}] ReadError: {msg}");
+                runtime.Writer.OnWriteError += msg => Log.Warning($"[{plcName}] WriteError: {msg}");
+
+                // Subscription
+                var sub = new PlcSubscriptionManager(runtime.Reader);
+                sub.OnValueChanged += tag => Plc_OnValueChanged(plcName, tag);
+                _sessions[plcName] = (runtime, sub);
+
+                bool isConnected = false;
+                try { isConnected = await runtime.Client.ConnectAsync(); }
+                catch (Exception ex) { Log.Error(ex, $"[{plcName}] Connect error"); }
+
+                // Watchdog ICMP — không chiếm connection slot PLC (Q series giới hạn ~8 slots)
+                runtime.Client.StartWatchdog(10000);
+
+                if (isConnected)
+                {
+                    // Đọc giá trị khởi tạo và fire event ngay lập tức (như _easyDriverConnector_Started)
+                    try
+                    {
+                        await runtime.Reader.ReadGroupAsync(runtime.Tags);
+                        foreach (var tag in runtime.Tags)
+                        {
+                            Plc_OnValueChanged(plcName, tag);
+                        }
+                    }
+                    catch (Exception ex) { Log.Error(ex, $"[{plcName}] Initial read error"); }
+                }
+
+                sub.Subscribe(runtime.Tags, intervalMs: 200);
+            }).ToList();
+
+            await Task.WhenAll(connectTasks);
+
+            // 5b. Fire lại TimeRunStep tags sau khi TẤT CẢ PLC đã connect xong.
+            //     Lý do: trong initial fire ở bước 5 (bên trong connectTasks), các tag được fire
+            //     theo thứ tự tags.json → TimeRunStep1-15 fire TRƯỚC RecipeSettingStep
+            //     → step.Enable chưa được set → HandleTimeRunStep cập nhật TotalRunTime nhưng
+            //     step chưa enable. Sau Task.WhenAll, RecipeSettingStep đã được xử lý xong
+            //     → fire lại TimeRunStep để model có giá trị đúng ngay khi form mở.
+            foreach (var kv in _sessions)
+            {
+                var plcName2 = kv.Key;
+                var runtime2 = kv.Value.Runtime;
+                foreach (var tag in runtime2.Tags)
+                {
+                    if (tag.Name.StartsWith("TimeRunStep") && tag.NewValue != null)
+                        Plc_OnValueChanged(plcName2, tag);
+                }
+            }
+
+            // 6. Khởi động timer và task reset shaft
+            _timerCts = new CancellationTokenSource();
+            _timerTask = Task.Run(async () => await TaskTimerAsync(_timerCts.Token));
+
+            _resetShaftCts = new CancellationTokenSource();
+            _ = TaskResetShaftAsync(_resetShaftCts.Token);
         }
 
         #region Tasks
         /// <summary>
-        /// Task dùng để chạy vòng lặp check để luu data vào DB và update UI. Task này chạy liên tục với khoảng delay 0.1s, mỗi lần chạy sẽ thực hiện các công việc sau: show UI, Log data vào DB.
+        /// Task chạy vòng lặp 200ms: cập nhật UI status bar, log realtime (FT08), log step run (FT09).
         /// </summary>
-        /// <param name="token"></param>
-        /// <returns></returns>
         private async Task TaskTimerAsync(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
@@ -406,62 +475,50 @@ namespace Scada.TrackingTime_AutoRolling1
                     _totalCurrentHour = totalShaft?.CurrentHour ?? 0;
                     _totalLastHour = totalShaft?.LastHour ?? 0;
 
-                    //var ping = PingServer(GlobalVariable.IpDbServer);
+                    // Tổng hợp trạng thái từng PLC
+                    var plcStatus = string.Join(" | ",
+                        _sessions.Select(kv => $"{kv.Key}:{kv.Value.Runtime.Client.State}"));
+
                     GlobalVariable.InvokeIfRequired(this, () =>
                     {
-                        _labStatus.Text = $"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")} - Easy Driver: {_easyStatus} - PLC: {_tagsValueRealtime.FirstOrDefault().PlcConnected} - DB Server:";
+                        _labStatus.Text = $"{DateTime.Now:dd/MM/yyyy HH:mm:ss} - {plcStatus} - DB Server:";
                     });
 
-                    //Log data realtime (FT08) - mỗi 200ms
-                    var t = GlobalVariable.RevoRealtimeModels;
                     await LogDataRealtime();
 
-                    // Log step run (FT09). Bên trong LogDataStepRun có check hash:
-                    // chỉ thực sự write DB khi data đổi -> gọi 200ms cũng OK.
-                    await LogDataStepRun();
+                    // Cập nhật TotalTime FT09 — chỉ UPDATE, không INSERT (INSERT do InsertShaftAsync đảm nhận)
+                    await UpdateShaftTimesAsync();
                 }
                 catch (Exception ex)
                 {
-                    // Log lỗi nếu cần
-                    //Log.Error($"Lỗi trong TaskTimerAsync: {ex.Message}");
+                    Log.Error(ex, "TaskTimerAsync");
                 }
-                await Task.Delay(200, token); // Chờ 1 giây trước khi lặp lại
+                await Task.Delay(200, token);
             }
         }
 
         /// <summary>
-        /// Task xử lý khi có sự kiện reset trục (Shaft) được kích hoạt. Mỗi khi có sự kiện này.
-        /// task sẽ thực hiện các công việc cần thiết để reset trạng thái của trục, cập nhật UI và ghi log vào database.
-        /// Sau khi hoàn thành công việc, task sẽ quay lại trạng thái chờ để đợi sự kiện tiếp theo mà không cần phải sử dụng Sleep hay polling, giúp tiết kiệm tài nguyên CPU.
+        /// Task xử lý reset shaft khi có sự kiện Part đổi hoặc Step_Run = 0.
         /// </summary>
-        /// <param name="token"></param>
-        /// <returns></returns>
         private async Task TaskResetShaftAsync(CancellationToken token)
         {
             try
             {
                 while (true)
                 {
-                    // chờ sự kiện → không tốn CPU, không Sleep
                     await _triggerResetShaft.WaitAsync(token);
 
-                    // === xử lý 1 lần duy nhất mỗi lần được kích ===
                     Debug.WriteLine($"TaskResetShaftAsync triggered.");
 
-                    // Snapshot các Path đang có trong queue rồi xóa khỏi dictionary.
-                    // ConcurrentDictionary đã đảm bảo mỗi Path chỉ tồn tại 1 entry (unique).
                     var snapshot = _resetShaftQueue.ToArray();
                     foreach (var kv in snapshot)
-                    {
                         _resetShaftQueue.TryRemove(kv.Key, out _);
-                    }
 
                     foreach (var kv in snapshot)
                     {
                         var currentPath = kv.Key;
                         var reason = kv.Value;
 
-                        // Debounce cross-batch: nếu vừa reset trong < SHAFT_RESET_DEBOUNCE thì bỏ qua
                         if (_lastShaftResetAt.TryGetValue(currentPath, out var lastAt)
                             && (DateTime.Now - lastAt) < SHAFT_RESET_DEBOUNCE)
                         {
@@ -469,7 +526,6 @@ namespace Scada.TrackingTime_AutoRolling1
                             continue;
                         }
 
-                        // Tìm item trong list của bạn dựa trên Path
                         var targetItem = _tagsValueRealtime.FirstOrDefault(x => x.Path == currentPath);
                         if (targetItem == null) continue;
 
@@ -478,658 +534,190 @@ namespace Scada.TrackingTime_AutoRolling1
 
                         Debug.WriteLine($"Processing {reason} for Path: {currentPath}");
 
-                        // Cả 2 trường hợp (Part đổi / Step_Run = 0) đều coi là sang cây shaft mới.
-                        // CHỈ cấp ShaftNum mới — KHÔNG reset TotalRunTime.
-                        // TotalRunTime do PLC quản lý qua TimeRunStep_ValueChanged.
-                        // (Nếu reset ở đây sẽ ghi đè giá trị PLC vừa gán, mà TimeRunStep
-                        //  ValueChanged chỉ fire lại khi giá trị thật sự đổi -> bị stuck ở 0)
+                        bool isFirstShaft = !realtimeItem.ShaftNum.HasValue
+                                            || realtimeItem.ShaftNum.Value == Guid.Empty;
+
+                        if (!isFirstShaft)
+                        {
+                            // Reset bình thường (shaft đang chạy kết thúc):
+                            // flush giá trị cuối rồi reset về 0 cho shaft mới.
+                            await FlushShaftTimesAsync(realtimeItem);
+
+                            foreach (var step in realtimeItem.Steps)
+                                step.TotalRunTime = 0;
+
+                            if (targetItem != null)
+                            {
+                                targetItem.TimeRunStep1 = targetItem.TimeRunStep2 = targetItem.TimeRunStep3 =
+                                targetItem.TimeRunStep4 = targetItem.TimeRunStep5 = targetItem.TimeRunStep6 =
+                                targetItem.TimeRunStep7 = targetItem.TimeRunStep8 = targetItem.TimeRunStep9 =
+                                targetItem.TimeRunStep10 = targetItem.TimeRunStep11 = targetItem.TimeRunStep12 =
+                                targetItem.TimeRunStep13 = targetItem.TimeRunStep14 = targetItem.TimeRunStep15 = 0;
+                            }
+                        }
+                        // else: shaft đầu tiên khi app vừa mở — GIỮ NGUYÊN TotalRunTime
+                        // (đã được đọc từ PLC qua initial ReadGroupAsync + second-pass fire).
+                        // InsertShaftAsync sẽ lưu đúng giá trị hiện tại thay vì 0.
+
                         realtimeItem.ShaftNum = Guid.NewGuid();
                         _lastShaftResetAt[currentPath] = DateTime.Now;
 
-                        await LogDataStepRun();
+                        await InsertShaftAsync(realtimeItem);
                     }
-                    // xong việc → quay lại vòng chờ (không cần Delay hay poll)
                 }
             }
             catch (OperationCanceledException) { /* thoát êm */ }
         }
         #endregion
 
-        #region EASY DRIVER EVENTS
-        private void _easyDriverConnector_ConnectionStatusChaged(object sender, ConnectionStatusChangedEventArgs e)
-        {
-            _easyStatus = e.NewStatus;
-        }
-
-        private void _easyDriverConnector_Started(object sender, EventArgs e)
-        {
-            System.Threading.Thread.Sleep(2000);
-            foreach (var item in GlobalVariable.RevoConfigs)
-            {
-                _easyDriverConnector.GetTag($"{item.Path}/Part_Code").QualityChanged += Part_Code_QualityChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Part_Code").ValueChanged += Part_Code_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Recipe_Settings").ValueChanged += Recipe_Settings_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Step_Run").ValueChanged += Step_Run_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/TimeRunStep1").ValueChanged += TimeRunStep_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/TimeRunStep2").ValueChanged += TimeRunStep_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/TimeRunStep3").ValueChanged += TimeRunStep_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/TimeRunStep4").ValueChanged += TimeRunStep_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/TimeRunStep5").ValueChanged += TimeRunStep_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/TimeRunStep6").ValueChanged += TimeRunStep_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/TimeRunStep7").ValueChanged += TimeRunStep_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/TimeRunStep8").ValueChanged += TimeRunStep_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/TimeRunStep9").ValueChanged += TimeRunStep_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/TimeRunStep10").ValueChanged += TimeRunStep_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/TimeRunStep11").ValueChanged += TimeRunStep_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/TimeRunStep12").ValueChanged += TimeRunStep_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/TimeRunStep13").ValueChanged += TimeRunStep_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/TimeRunStep14").ValueChanged += TimeRunStep_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/TimeRunStep15").ValueChanged += TimeRunStep_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Part_Name1").ValueChanged += Part_Name_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Part_Name2").ValueChanged += Part_Name_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Part_Name3").ValueChanged += Part_Name_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Part_Name4").ValueChanged += Part_Name_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Part_Name5").ValueChanged += Part_Name_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Part_Name6").ValueChanged += Part_Name_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Part_Name7").ValueChanged += Part_Name_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Part_Name8").ValueChanged += Part_Name_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Work_1").ValueChanged += Work_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Work_2").ValueChanged += Work_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Work_3").ValueChanged += Work_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Work_4").ValueChanged += Work_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Work_5").ValueChanged += Work_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Work_6").ValueChanged += Work_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Work_7").ValueChanged += Work_ValueChanged;
-                _easyDriverConnector.GetTag($"{item.Path}/Work_8").ValueChanged += Work_ValueChanged;
-
-                Part_Code_QualityChanged(_easyDriverConnector.GetTag($"{item.Path}/Part_Code")
-          , new TagQualityChangedEventArgs(_easyDriverConnector.GetTag($"{item.Path}/Part_Code")
-          , Quality.Uncertain, _easyDriverConnector.GetTag($"{item.Path}/Part_Code").Quality));
-
-                Part_Code_ValueChanged(_easyDriverConnector.GetTag($"{item.Path}/Part_Code")
-                    , new TagValueChangedEventArgs(_easyDriverConnector.GetTag($"{item.Path}/Part_Code")
-                    , "", _easyDriverConnector.GetTag($"{item.Path}/Part_Code").Value));
-
-                Recipe_Settings_ValueChanged(_easyDriverConnector.GetTag($"{item.Path}/Recipe_Settings")
-                    , new TagValueChangedEventArgs(_easyDriverConnector.GetTag($"{item.Path}/Recipe_Settings")
-                    , "", _easyDriverConnector.GetTag($"{item.Path}/Recipe_Settings").Value));
-
-                Step_Run_ValueChanged(_easyDriverConnector.GetTag($"{item.Path}/Step_Run")
-                   , new TagValueChangedEventArgs(_easyDriverConnector.GetTag($"{item.Path}/Step_Run")
-                   , "", _easyDriverConnector.GetTag($"{item.Path}/Step_Run").Value));
-
-                for (int i = 1; i <= 15; i++)
-                {
-                    if (i <= 8)
-                    {
-                        Part_Name_ValueChanged(_easyDriverConnector.GetTag($"{item.Path}/Part_Name{i}")
-                         , new TagValueChangedEventArgs(_easyDriverConnector.GetTag($"{item.Path}/Part_Name{i}")
-                         , "", _easyDriverConnector.GetTag($"{item.Path}/Part_Name{i}").Value));
-
-                        Work_ValueChanged(_easyDriverConnector.GetTag($"{item.Path}/Work_{i}")
-                      , new TagValueChangedEventArgs(_easyDriverConnector.GetTag($"{item.Path}/Work_{i}")
-                      , "", _easyDriverConnector.GetTag($"{item.Path}/Work_{i}").Value));
-                    }
-
-                    TimeRunStep_ValueChanged(_easyDriverConnector.GetTag($"{item.Path}/TimeRunStep{i}")
-                           , new TagValueChangedEventArgs(_easyDriverConnector.GetTag($"{item.Path}/TimeRunStep{i}")
-                           , "", _easyDriverConnector.GetTag($"{item.Path}/TimeRunStep{i}").Value));
-                }
-            }
-        }
-
-        private void Part_Code_QualityChanged(object sender, TagQualityChangedEventArgs e)
-        {
-            try
-            {
-                var path = e.Tag.Parent.Path;
-                var deviceName = e.Tag.Parent.Name;
-                var al = deviceName.Substring(4);
-
-                foreach (var item in _tagsValueRealtime)
-                {
-                    if (item.Path == path)
-                    {
-                        item.PlcConnected = e.NewQuality == Quality.Good;
-
-                        //cập nhật lại realtime model để tránh trường hợp tag mất kết nối rồi có giá trị mới vẫn cập nhật vào model, dẫn đến sai dữ liệu
-                        var realtimeModel = GlobalVariable.RevoRealtimeModels.FirstOrDefault(x => x.Path == path);
-                        realtimeModel.PlcConnected = item.PlcConnected;
-
-                        Log.Warning($"Alarm description {item.RevoId} disconnect.");
-                        return;
-                    }
-                }
-            }
-            catch (Exception ex) { Log.Error(ex, $"From TagValueChanged {e.Tag.Path}"); }
-        }
+        #region MC PROTOCOL EVENTS
 
         /// <summary>
-        /// Khi tag này thay đổi thì sẽ chuyển part code mới vào model realtime, đồng thời đưa path vào hàng đợi để TaskResetShaftAsync lấy ra xử lý reset trục (vì khi thay đổi part code thì sẽ reset trục). Sau khi TaskResetShaftAsync xử lý xong sẽ cập nhật lại UI và log vào DB.
+        /// Dispatcher chính: nhận OnValueChanged từ PlcSubscriptionManager và chuyển tới handler tương ứng.
+        /// Tương đương nhóm EASY DRIVER EVENTS cũ: Part_Code_ValueChanged, Recipe_Settings_ValueChanged,
+        /// Step_Run_ValueChanged, TimeRunStep_ValueChanged, Part_Name_ValueChanged.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Part_Code_ValueChanged(object sender, TagValueChangedEventArgs e)
+        private void Plc_OnValueChanged(string plcName, PlcTag tag)
         {
             try
             {
-                var path = e.Tag.Parent.Path;
-                var deviceName = e.Tag.Parent.Name;
-                var al = deviceName.Substring(4);
-                var tagName = e.Tag.Name;
+                // plcName == Path trực tiếp (tags.json Name = RevoConfig.Path)
+                var path = plcName;
+
+                string tagName = tag.Name;
+                string newValueStr = Convert.ToString(tag.NewValue) ?? "";
 
                 foreach (var item in _tagsValueRealtime)
                 {
-                    if (item.Path == path)
+                    if (item.Path != path) continue;
+
+                    switch (tagName)
                     {
-                        item.Part_Code = e.NewValue;
+                        case "Part":
+                            // Tương đương Part_Code_ValueChanged
+                            item.Part_Code = newValueStr;
+                            UpdateGrid();
+                            break;
 
-                        UpdateGrid();
-                        return;
-                    }
-                }
-            }
-            catch (Exception ex) { Log.Error(ex, $"From TagValueChanged {e.Tag.Path}"); }
-        }
+                        case "RecipeSettingStep":
+                            // Tương đương Recipe_Settings_ValueChanged
+                            item.Recipe_Settings = int.TryParse(newValueStr, out int rval) ? rval : 0;
+                            item.StepsIsRun = ConvertWordToBitArray((ushort)item.Recipe_Settings);
 
-        /// <summary>
-        /// Tag này sẽ thay đổi mỗi khi tag partCode thay đổi, nó quy định theo công thức thì các bước nào được sử dụng.
-        /// Sẽ được mã hóa thành một số nguyên và gửi về PLC. Khi tag này thay đổi thì sẽ chuyển giá trị mới vào model realtime, đồng thời chuyển sang dạng bit để biết được step nào đang được sử dụng, sau đó cập nhật lại UI. Ngoài ra khi tag này thay đổi cũng sẽ đưa path vào hàng đợi để TaskResetShaftAsync lấy ra xử lý reset trục (vì khi thay đổi recipe setting thì sẽ reset trục). Sau khi TaskResetShaftAsync xử lý xong sẽ cập nhật lại UI và log vào DB.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Recipe_Settings_ValueChanged(object sender, TagValueChangedEventArgs e)
-        {
-            try
-            {
-                var path = e.Tag.Parent.Path;
-                var deviceName = e.Tag.Parent.Name;
-                var al = deviceName.Substring(4);
-
-                foreach (var item in _tagsValueRealtime)
-                {
-                    if (item.Path == path)
-                    {
-                        item.Recipe_Settings = int.TryParse(e.NewValue, out int value) ? value : 0;
-                        item.StepsIsRun = ConvertWordToBitArray((ushort)item.Recipe_Settings);
-
-                        //Cập nhật model realtime 
-                        //mappign data
-                        // 1. Tìm đối tượng tương ứng trong list RevoRealtimeModels
-                        var revoModel = GlobalVariable.RevoRealtimeModels.FirstOrDefault(x => x.RevoId == item.RevoId);
-
-                        if (revoModel != null)
-                        {
-                            // 2. Duyệt qua 15 bước (bỏ qua bit 0 theo yêu cầu của bạn)
-                            for (int i = 1; i <= 15; i++)
+                            var revoModelR = GlobalVariable.RevoRealtimeModels.FirstOrDefault(x => x.RevoId == item.RevoId);
+                            if (revoModelR != null)
                             {
-                                // Tìm StepIndex tương ứng (Giả định StepIndex trong RevoStep khớp với số thứ tự)
-                                var step = revoModel.Steps.FirstOrDefault(s => s.StepIndex == i);
-
-                                if (step == null)
+                                for (int i = 1; i <= 15; i++)
                                 {
-                                    // Nếu chưa có step trong list thì khởi tạo mới
-                                    step = new RevoStep { StepIndex = i };
-                                    revoModel.Steps.Add(step);
+                                    var step = revoModelR.Steps.FirstOrDefault(s => s.StepIndex == i);
+                                    if (step == null)
+                                    {
+                                        step = new RevoStep { StepIndex = i };
+                                        revoModelR.Steps.Add(step);
+                                    }
+                                    step.Enable = item.StepsIsRun[i];
                                 }
-
-                                // 3. Cập nhật trạng thái chạy từ mảng bool[] StepsIsRun
-                                // Giả định StepsIsRun có 16 phần tử, index 1 tương ứng Step 1
-                                step.Enable = item.StepsIsRun[i];
                             }
+                            UpdateGrid();
+                            break;
 
-                            // Có thể cập nhật thêm thông tin Part hiện tại nếu cần
-                            // revoModel.CurrentPart = tagData.Part_Code; 
-                        }
+                        case "StepRun":
+                            // Tương đương Step_Run_ValueChanged
+                            item.StepRun = int.TryParse(newValueStr, out int sval) ? sval : 0;
 
-                        UpdateGrid();
-                        return;
+                            if (item.StepRun == 0)
+                            {
+                                // StepRun về 0 → kết thúc shaft cũ, sang cây shaft mới.
+                                // CHÚ Ý: KHÔNG dùng (== 0 || == Recipe_Settings) — PLC sẽ đi qua Recipe_Settings
+                                // rồi về 0 trong cùng một chu kỳ, nếu cả hai đều trigger sẽ tạo 2 ShaftNum
+                                // cho cùng 1 lần reset (double-fire).
+                                EnqueueResetShaft(item.Path, ShaftActionReason.StepRunZero);
+                            }
+                            break;
+
+                        case "PartName":
+                            // Thay thế Part_Name1-8: MC Protocol String type trả về string trực tiếp,
+                            // không cần decode từng word register như EasyDriver cũ.
+                            item.Part_Name = (newValueStr ?? "").Trim('\0').Trim();
+
+                            var revoModelP = GlobalVariable.RevoRealtimeModels.FirstOrDefault(x => x.RevoId == item.RevoId);
+                            if (revoModelP != null)
+                                revoModelP.Part = item.Part_Name;
+
+                            // Đổi part → reset shaft mới
+                            EnqueueResetShaft(item.Path, ShaftActionReason.PartChanged);
+                            UpdateGrid();
+                            break;
+
+                        default:
+                            // TimeRunStep1 → TimeRunStep15
+                            if (tagName.StartsWith("TimeRunStep"))
+                            {
+                                HandleTimeRunStep(item, tagName, newValueStr);
+                            }
+                            break;
                     }
+                    return; // found matching item — done
                 }
             }
-            catch (Exception ex) { Log.Error(ex, $"From TagValueChanged {e.Tag.Path}"); }
+            catch (Exception ex) { Log.Error(ex, $"Plc_OnValueChanged [{plcName}] {tag?.Name}"); }
         }
 
-        private void Step_Run_ValueChanged(object sender, TagValueChangedEventArgs e)
+        /// <summary>
+        /// Xử lý tag TimeRunStep1-15: cập nhật model và RevoStep.TotalRunTime.
+        /// Tương đương TimeRunStep_ValueChanged cũ.
+        /// </summary>
+        private void HandleTimeRunStep(AutoRollingTagChangedModel item, string tagName, string newValueStr)
         {
-            try
+            var timeRunStep = double.TryParse(newValueStr, out double dval) ? dval : 0;
+            var revoModel = GlobalVariable.RevoRealtimeModels.FirstOrDefault(x => x.RevoId == item.RevoId);
+
+            // Parse index từ "TimeRunStep{N}"
+            if (!int.TryParse(tagName.Replace("TimeRunStep", ""), out int stepIdx)
+                || stepIdx < 1 || stepIdx > 15) return;
+
+            // Cập nhật trường tương ứng trong model
+            SetTimeRunStep(item, stepIdx, timeRunStep);
+
+            if (revoModel != null)
             {
-                var path = e.Tag.Parent.Path;
-                var deviceName = e.Tag.Parent.Name;
-                var tagName = e.Tag.Name;
-
-                foreach (var item in _tagsValueRealtime)
+                var step = revoModel.Steps.FirstOrDefault(s => s.StepIndex == stepIdx);
+                if (step == null)
                 {
-                    if (item.Path == path)
-                    {
-                        item.StepRun = int.TryParse(e.NewValue, out int value) ? value : 0;
-
-                        //var latestStep = GlobalVariable.RevoRealtimeModels.FirstOrDefault(x => x.Path == path);
-                        //var totalRunTimeLastStep = latestStep?.Steps.Where(x => x.Enable == true)
-                        //      .OrderByDescending(x => x.StepIndex)
-                        //      .FirstOrDefault().TotalRunTime;
-
-                        if (item.StepRun == 0 || (item.StepRun == item.Recipe_Settings))
-                        {
-                                                        // Step_Run = 0 -> kết thúc shaft cũ, sang cây shaft mới
-                            EnqueueResetShaft(item.Path, ShaftActionReason.StepRunZero);
-                        }
-
-                        return;
-                    }
+                    step = new RevoStep { StepIndex = stepIdx, StepName = $"Step {stepIdx}" };
+                    revoModel.Steps.Add(step);
                 }
+                step.TotalRunTime = GetTimeRunStepByIndex(item, stepIdx);
             }
-            catch (Exception ex) { Log.Error(ex, $"From TagValueChanged {e.Tag.Path}"); }
+
+            UpdateGrid();
         }
 
-        private void TimeRunStep_ValueChanged(object sender, TagValueChangedEventArgs e)
+        /// <summary>
+        /// Gán giá trị TimeRunStepN vào đúng property của model theo index.
+        /// </summary>
+        private static void SetTimeRunStep(AutoRollingTagChangedModel item, int index, double value)
         {
-            try
+            switch (index)
             {
-                var path = e.Tag.Parent.Path;
-                var deviceName = e.Tag.Parent.Name;
-                var tagName = e.Tag.Name;
-
-                foreach (var item in _tagsValueRealtime)
-                {
-                    if (item.Path == path)
-                    {
-                        var timeRunStep = double.TryParse(e.NewValue, out double value) ? value : 0;
-
-                        // Tìm đối tượng tương ứng trong list RevoRealtimeModels (1 lần, dùng chung cho mọi case)
-                        var revoModel = GlobalVariable.RevoRealtimeModels.FirstOrDefault(x => x.RevoId == item.RevoId);
-
-                        switch (tagName)
-                        {
-                            case "TimeRunStep1":
-                                {
-                                    item.TimeRunStep1 = timeRunStep;
-
-                                    var step = revoModel?.Steps.FirstOrDefault(s => s.StepIndex == 1);
-                                    if (step == null)
-                                    {
-                                        // Nếu chưa có step trong list thì khởi tạo mới
-                                        step = new RevoStep { StepIndex = 1, StepName = "Step 1" };
-                                        revoModel.Steps.Add(step);
-                                    }
-
-                                    // Cập nhật thời gian chạy từ các biến TimeRunStepX
-                                    step.TotalRunTime = GetTimeRunStepByIndex(item, 1);
-                                    break;
-                                }
-                            case "TimeRunStep2":
-                                {
-                                    item.TimeRunStep2 = timeRunStep;
-
-                                    var step = revoModel?.Steps.FirstOrDefault(s => s.StepIndex == 2);
-                                    if (step == null)
-                                    {
-                                        // Nếu chưa có step trong list thì khởi tạo mới
-                                        step = new RevoStep { StepIndex = 2, StepName = "Step 2" };
-                                        revoModel.Steps.Add(step);
-                                    }
-
-                                    // Cập nhật thời gian chạy từ các biến TimeRunStepX
-                                    step.TotalRunTime = GetTimeRunStepByIndex(item, 2);
-                                    break;
-                                }
-                            case "TimeRunStep3":
-                                {
-                                    item.TimeRunStep3 = timeRunStep;
-
-                                    var step = revoModel?.Steps.FirstOrDefault(s => s.StepIndex == 3);
-                                    if (step == null)
-                                    {
-                                        // Nếu chưa có step trong list thì khởi tạo mới
-                                        step = new RevoStep { StepIndex = 3, StepName = "Step 3" };
-                                        revoModel.Steps.Add(step);
-                                    }
-
-                                    // Cập nhật thời gian chạy từ các biến TimeRunStepX
-                                    step.TotalRunTime = GetTimeRunStepByIndex(item, 3);
-                                    break;
-                                }
-                            case "TimeRunStep4":
-                                {
-                                    item.TimeRunStep4 = timeRunStep;
-
-                                    var step = revoModel?.Steps.FirstOrDefault(s => s.StepIndex == 4);
-                                    if (step == null)
-                                    {
-                                        // Nếu chưa có step trong list thì khởi tạo mới
-                                        step = new RevoStep { StepIndex = 4, StepName = "Step 4" };
-                                        revoModel.Steps.Add(step);
-                                    }
-
-                                    // Cập nhật thời gian chạy từ các biến TimeRunStepX
-                                    step.TotalRunTime = GetTimeRunStepByIndex(item, 4);
-                                    break;
-                                }
-                            case "TimeRunStep5":
-                                {
-                                    item.TimeRunStep5 = timeRunStep;
-
-                                    var step = revoModel?.Steps.FirstOrDefault(s => s.StepIndex == 5);
-                                    if (step == null)
-                                    {
-                                        // Nếu chưa có step trong list thì khởi tạo mới
-                                        step = new RevoStep { StepIndex = 5, StepName = "Step 5" };
-                                        revoModel.Steps.Add(step);
-                                    }
-
-                                    // Cập nhật thời gian chạy từ các biến TimeRunStepX
-                                    step.TotalRunTime = GetTimeRunStepByIndex(item, 5);
-                                    break;
-                                }
-                            case "TimeRunStep6":
-                                {
-                                    item.TimeRunStep6 = timeRunStep;
-
-                                    var step = revoModel?.Steps.FirstOrDefault(s => s.StepIndex == 6);
-                                    if (step == null)
-                                    {
-                                        // Nếu chưa có step trong list thì khởi tạo mới
-                                        step = new RevoStep { StepIndex = 6, StepName = "Step 6" };
-                                        revoModel.Steps.Add(step);
-                                    }
-
-                                    // Cập nhật thời gian chạy từ các biến TimeRunStepX
-                                    step.TotalRunTime = GetTimeRunStepByIndex(item, 6);
-                                    break;
-                                }
-                            case "TimeRunStep7":
-                                {
-                                    item.TimeRunStep7 = timeRunStep;
-
-                                    var step = revoModel?.Steps.FirstOrDefault(s => s.StepIndex == 7);
-                                    if (step == null)
-                                    {
-                                        // Nếu chưa có step trong list thì khởi tạo mới
-                                        step = new RevoStep { StepIndex = 7, StepName = "Step 7" };
-                                        revoModel.Steps.Add(step);
-                                    }
-
-                                    // Cập nhật thời gian chạy từ các biến TimeRunStepX
-                                    step.TotalRunTime = GetTimeRunStepByIndex(item, 7);
-                                    break;
-                                }
-                            case "TimeRunStep8":
-                                {
-                                    item.TimeRunStep8 = timeRunStep;
-
-                                    var step = revoModel?.Steps.FirstOrDefault(s => s.StepIndex == 8);
-                                    if (step == null)
-                                    {
-                                        // Nếu chưa có step trong list thì khởi tạo mới
-                                        step = new RevoStep { StepIndex = 8, StepName = "Step 8" };
-                                        revoModel.Steps.Add(step);
-                                    }
-
-                                    // Cập nhật thời gian chạy từ các biến TimeRunStepX
-                                    step.TotalRunTime = GetTimeRunStepByIndex(item, 8);
-                                    break;
-                                }
-                            case "TimeRunStep9":
-                                {
-                                    item.TimeRunStep9 = timeRunStep;
-
-                                    var step = revoModel?.Steps.FirstOrDefault(s => s.StepIndex == 9);
-                                    if (step == null)
-                                    {
-                                        // Nếu chưa có step trong list thì khởi tạo mới
-                                        step = new RevoStep { StepIndex = 9, StepName = "Step 9" };
-                                        revoModel.Steps.Add(step);
-                                    }
-
-                                    // Cập nhật thời gian chạy từ các biến TimeRunStepX
-                                    step.TotalRunTime = GetTimeRunStepByIndex(item, 9);
-                                    break;
-                                }
-                            case "TimeRunStep10":
-                                {
-                                    item.TimeRunStep10 = timeRunStep;
-
-                                    var step = revoModel?.Steps.FirstOrDefault(s => s.StepIndex == 10);
-                                    if (step == null)
-                                    {
-                                        // Nếu chưa có step trong list thì khởi tạo mới
-                                        step = new RevoStep { StepIndex = 10, StepName = "Step 10" };
-                                        revoModel.Steps.Add(step);
-                                    }
-
-                                    // Cập nhật thời gian chạy từ các biến TimeRunStepXm
-                                    step.TotalRunTime = GetTimeRunStepByIndex(item, 10);
-                                    break;
-                                }
-                            case "TimeRunStep11":
-                                {
-                                    item.TimeRunStep11 = timeRunStep;
-
-                                    var step = revoModel?.Steps.FirstOrDefault(s => s.StepIndex == 11);
-                                    if (step == null)
-                                    {
-                                        // Nếu chưa có step trong list thì khởi tạo mới
-                                        step = new RevoStep { StepIndex = 11, StepName = "Step 11" };
-                                        revoModel.Steps.Add(step);
-                                    }
-
-                                    // Cập nhật thời gian chạy từ các biến TimeRunStepX
-                                    step.TotalRunTime = GetTimeRunStepByIndex(item, 11);
-                                    break;
-                                }
-                            case "TimeRunStep12":
-                                {
-                                    item.TimeRunStep12 = timeRunStep;
-
-                                    var step = revoModel?.Steps.FirstOrDefault(s => s.StepIndex == 12);
-                                    if (step == null)
-                                    {
-                                        // Nếu chưa có step trong list thì khởi tạo mới
-                                        step = new RevoStep { StepIndex = 12, StepName = "Step 12" };
-                                        revoModel.Steps.Add(step);
-                                    }
-
-                                    // Cập nhật thời gian chạy từ các biến TimeRunStepX
-                                    step.TotalRunTime = GetTimeRunStepByIndex(item, 12);
-                                    break;
-                                }
-                            case "TimeRunStep13":
-                                {
-                                    item.TimeRunStep13 = timeRunStep;
-
-                                    var step = revoModel?.Steps.FirstOrDefault(s => s.StepIndex == 13);
-                                    if (step == null)
-                                    {
-                                        // Nếu chưa có step trong list thì khởi tạo mới
-                                        step = new RevoStep { StepIndex = 13, StepName = "Step 13" };
-                                        revoModel.Steps.Add(step);
-                                    }
-
-                                    // Cập nhật thời gian chạy từ các biến TimeRunStepX
-                                    step.TotalRunTime = GetTimeRunStepByIndex(item, 13);
-                                    break;
-                                }
-                            case "TimeRunStep14":
-                                {
-                                    item.TimeRunStep14 = timeRunStep;
-
-                                    var step = revoModel?.Steps.FirstOrDefault(s => s.StepIndex == 14);
-                                    if (step == null)
-                                    {
-                                        // Nếu chưa có step trong list thì khởi tạo mới
-                                        step = new RevoStep { StepIndex = 14, StepName = "Step 14" };
-                                        revoModel.Steps.Add(step);
-                                    }
-
-                                    // Cập nhật thời gian chạy từ các biến TimeRunStepX
-                                    step.TotalRunTime = GetTimeRunStepByIndex(item, 14);
-                                    break;
-                                }
-                            case "TimeRunStep15":
-                                {
-                                    item.TimeRunStep15 = timeRunStep;
-
-                                    var step = revoModel?.Steps.FirstOrDefault(s => s.StepIndex == 15);
-                                    if (step == null)
-                                    {
-                                        // Nếu chưa có step trong list thì khởi tạo mới
-                                        step = new RevoStep { StepIndex = 15, StepName = "Step 15" };
-                                        revoModel.Steps.Add(step);
-                                    }
-
-                                    // Cập nhật thời gian chạy từ các biến TimeRunStepX
-                                    step.TotalRunTime = GetTimeRunStepByIndex(item, 15);
-                                    break;
-                                }
-                            default:
-                                // code block
-                                break;
-                        }
-
-                        UpdateGrid();
-
-                        return;
-                    }
-                }
+                case 1: item.TimeRunStep1 = value; break;
+                case 2: item.TimeRunStep2 = value; break;
+                case 3: item.TimeRunStep3 = value; break;
+                case 4: item.TimeRunStep4 = value; break;
+                case 5: item.TimeRunStep5 = value; break;
+                case 6: item.TimeRunStep6 = value; break;
+                case 7: item.TimeRunStep7 = value; break;
+                case 8: item.TimeRunStep8 = value; break;
+                case 9: item.TimeRunStep9 = value; break;
+                case 10: item.TimeRunStep10 = value; break;
+                case 11: item.TimeRunStep11 = value; break;
+                case 12: item.TimeRunStep12 = value; break;
+                case 13: item.TimeRunStep13 = value; break;
+                case 14: item.TimeRunStep14 = value; break;
+                case 15: item.TimeRunStep15 = value; break;
             }
-            catch (Exception ex) { Log.Error(ex, $"From TagValueChanged {e.Tag.Path}"); }
         }
 
-        private void Part_Name_ValueChanged(object sender, TagValueChangedEventArgs e)
-        {
-            try
-            {
-                var path = e.Tag.Parent.Path;
-                var deviceName = e.Tag.Parent.Name;
-                var tagName = e.Tag.Name;
-
-                foreach (var item in _tagsValueRealtime)
-                {
-                    if (item.Path == path)
-                    {
-                        var charInt = int.TryParse(e.NewValue, out int value) ? value : 0;
-
-                        switch (tagName)
-                        {
-                            case "Part_Name1":
-                                item.Part_Name1 = charInt;
-                                break;
-                            case "Part_Name2":
-                                item.Part_Name2 = charInt;
-                                break;
-                            case "Part_Name3":
-                                item.Part_Name3 = charInt;
-                                break;
-                            case "Part_Name4":
-                                item.Part_Name4 = charInt;
-                                break;
-                            case "Part_Name5":
-                                item.Part_Name5 = charInt;
-                                break;
-                            case "Part_Name6":
-                                item.Part_Name6 = charInt;
-                                break;
-                            case "Part_Name7":
-                                item.Part_Name7 = charInt;
-                                break;
-                            case "Part_Name8":
-                                item.Part_Name8 = charInt;
-                                break;
-                            default:
-                                // code block
-                                break;
-                        }
-
-                        GetCharFromInt(item.RevoId, "Part");
-
-                        //Cập nhật model realtime
-                        //mappign data
-                        // 1. Tìm đối tượng tương ứng trong list RevoRealtimeModels
-                        var revoModel = GlobalVariable.RevoRealtimeModels.FirstOrDefault(x => x.RevoId == item.RevoId);
-
-                        if (revoModel != null)
-                        {
-                            revoModel.Part = item.Part_Name;
-                        }
-                        // Đưa Path vào hàng đợi để Task lấy ra dùng
-                        // (Dictionary đảm bảo unique theo Path -> không lo bị enqueue trùng dù
-                        //  Part_Name1..8 fire liên tục)
-                        EnqueueResetShaft(item.Path, ShaftActionReason.PartChanged);
-
-                        UpdateGrid();
-
-                        return;
-                    }
-                }
-            }
-            catch (Exception ex) { Log.Error(ex, $"From TagValueChanged {e.Tag.Path}"); }
-        }
-
-        private void Work_ValueChanged(object sender, TagValueChangedEventArgs e)
-        {
-            try
-            {
-                var path = e.Tag.Parent.Path;
-                var deviceName = e.Tag.Parent.Name;
-                var tagName = e.Tag.Name;
-
-                foreach (var item in _tagsValueRealtime)
-                {
-                    if (item.Path == path)
-                    {
-                        var charInt = int.TryParse(e.NewValue, out int value) ? value : 0;
-
-                        switch (tagName)
-                        {
-                            case "Work_1":
-                                item.Work_1 = charInt;
-                                break;
-                            case "Work_2":
-                                item.Work_2 = charInt;
-                                break;
-                            case "Work_3":
-                                item.Work_3 = charInt;
-                                break;
-                            case "Work_4":
-                                item.Work_4 = charInt;
-                                break;
-                            case "Work_5":
-                                item.Work_5 = charInt;
-                                break;
-                            case "Work_6":
-                                item.Work_6 = charInt;
-                                break;
-                            case "Work_7":
-                                item.Work_7 = charInt;
-                                break;
-                            case "Work_8":
-                                item.Work_8 = charInt;
-                                break;
-                            default:
-                                // code block
-                                break;
-                        }
-
-                        GetCharFromInt(item.RevoId, "Work");
-
-                        //Cập nhật model realtime
-                        //mappign data
-                        // 1. Tìm đối tượng tương ứng trong list RevoRealtimeModels
-                        var revoModel = GlobalVariable.RevoRealtimeModels.FirstOrDefault(x => x.RevoId == item.RevoId);
-
-                        if (revoModel != null)
-                        {
-                            revoModel.Work = item.Work;
-                        }
-
-                        UpdateGrid();
-
-                        return;
-                    }
-                }
-            }
-            catch (Exception ex) { Log.Error(ex, $"From TagValueChanged {e.Tag.Path}"); }
-        }
         #endregion
 
         #region Method helper
@@ -1138,310 +726,183 @@ namespace Scada.TrackingTime_AutoRolling1
             GlobalVariable.InvokeIfRequired(this, () =>
             {
                 if (_grv.DataSource == null)
-                {
                     _grv.DataSource = _tagsValueRealtime;
-                }
-                else _grv.Refresh();
+                else
+                    _grv.Refresh();
             });
         }
 
         /// <summary>
-        /// Hàm chuyển đổi giá trị kiểu ushort (16 bit) thành một mảng bool có 16 phần tử, mỗi phần tử đại diện cho trạng thái của một bit trong giá trị đó.
+        /// Chuyển đổi giá trị ushort (16 bit) thành mảng bool 16 phần tử.
         /// </summary>
-        /// <param name="wordValue"></param>
-        /// <returns></returns>
         public bool[] ConvertWordToBitArray(ushort wordValue)
         {
-            // Tạo mảng 16 phần tử (tương ứng 16 bit từ 0-15)
             bool[] bits = new bool[16];
+            bits[0] = false; // bit 0 luôn = 0 theo convention
 
-            // 1. Gán bit đầu tiên (bit 0) luôn bằng false (0) theo yêu cầu
-            bits[0] = false;
-
-            // 2. Vòng lặp lấy giá trị từ bit 1 đến bit 15
             for (int i = 1; i < 16; i++)
-            {
-                // Sử dụng phép toán AND với mặt nạ bit (mask) được dịch chuyển
-                // Kiểm tra xem bit tại vị trí i có đang bật (1) hay không
                 bits[i] = (wordValue & (1 << i)) != 0;
-            }
 
             return bits;
         }
 
         /// <summary>
-        /// Chuyển đổi sữ liệu dec đọc từ các tag của HMI về thành chuỗi, rồi lưu vào biến Part_Name của model để hiển thị lên UI và lưu vào database.
-        /// Vì PLC lưu dữ liệu kiểu int nên mỗi ký tự sẽ được mã hóa thành 2 byte (16 bit),
-        /// Do đó cần phải tách int thành 2 byte rồi chuyển đổi sang ký tự tương ứng theo bảng mã ASCII.
-        /// Sau đó ghép các ký tự lại với nhau để tạo thành chuỗi hoàn chỉnh.
+        /// Cập nhật UI (unused — giữ lại để backward compat với code khác có thể gọi).
         /// </summary>
-        /// <param name="revoId"></param>
-        /// <param name="partOrWork">Part or Work</param>
-        private void GetCharFromInt(int revoId, string partOrWork = "Part")
+        public void UpdateStepUI(RevoStep step, int isFirst = 0) { }
+
+        /// <summary>
+        /// Flush TotalTime hiện tại của shaft đang chạy vào DB trước khi reset.
+        /// Đảm bảo bước cuối cùng của shaft cũ được lưu đúng giá trị thực tế.
+        /// Gọi từ TaskResetShaftAsync TRƯỚC khi reset TotalRunTime = 0.
+        /// </summary>
+        private async Task FlushShaftTimesAsync(RevoRealtimeModel item)
         {
-            var machine = _tagsValueRealtime.FirstOrDefault(t => t.RevoId == revoId);
-            // Tạo danh sách các giá trị từ Part_Name1 đến Part_Name8
+            if (!item.ShaftNum.HasValue || item.ShaftNum.Value == Guid.Empty) return;
 
-
-            // Gán kết quả cuối cùng vào model (vì dùng ref nên bên ngoài sẽ nhận được luôn)
-            if (partOrWork == "Part")
+            try
             {
-                int[] registers = new int[]
-            {
-        machine.Part_Name1, machine.Part_Name2, machine.Part_Name3, machine.Part_Name4,
-        machine.Part_Name5, machine.Part_Name6, machine.Part_Name7, machine.Part_Name8
-            };
-
-                string fullPartName = string.Empty;
-
-                foreach (int val in registers)
+                using (var dbContext = new ApplicationDbContext())
                 {
-                    // 1. Tách số int thành 2 byte (mỗi byte là 1 ký tự ASCII)
-                    // val & 0xFF lấy byte thấp (Low Byte)
-                    // (val >> 8) & 0xFF lấy byte cao (High Byte)
+                    var shaftNum = item.ShaftNum;
+                    var dbRecords = await dbContext.FT09_RevoDatalogs
+                        .Where(x => x.ShaftNum == shaftNum)
+                        .ToListAsync();
 
-                    byte lowByte = (byte)(val & 0xFF);
-                    byte highByte = (byte)((val >> 8) & 0xFF);
+                    if (dbRecords.Count == 0) return;
 
-                    // 2. Đảo vị trí: Theo yêu cầu của bạn là đảo vị trí
-                    // Thông thường PLC lưu Byte Cao trước, Byte Thấp sau hoặc ngược lại.
-                    // Ở đây tôi giả định bạn muốn ghép ký tự từ LowByte trước rồi HighByte (hoặc ngược lại)
-                    char firstChar = (char)lowByte;
-                    char secondChar = (char)highByte;
+                    // Flush lần cuối: update TẤT CẢ step enabled (không dùng delta check)
+                    // để đảm bảo mọi bước — kể cả bước chưa từng thay đổi — đều được ghi đúng giá trị
+                    // thực tế trước khi shaft bị reset về 0.
+                    bool hasChanges = false;
+                    foreach (var step in item.Steps.Where(x => x.Enable == true))
+                    {
+                        var record = dbRecords.FirstOrDefault(r => r.StepId == step.StepIndex);
+                        if (record == null) continue;
 
-                    // Loại bỏ các ký tự rác hoặc ký tự Null (mã ASCII là 0) 
-                    // và khoảng trắng dư thừa nếu cần (mã ASCII là 32)
-                    if (lowByte != 0 && lowByte != 32) fullPartName += firstChar;
-                    if (highByte != 0 && highByte != 32) fullPartName += secondChar;
+                        record.TotalTime = step.TotalRunTime ?? 0;
+                        hasChanges = true;
+                    }
+
+                    if (hasChanges)
+                    {
+                        await dbContext.SaveChangesAsync();
+                        Log.Information($"[FT09] Flushed shaft times for {item.RevoName}, ShaftNum={item.ShaftNum:D}");
+                    }
                 }
-
-                machine.Part_Name = fullPartName.Trim();
             }
-            else //if (partOrWork == "Work")
+            catch (Exception ex)
             {
-                int[] registers = new int[]
-            {
-        machine.Work_1, machine.Work_2, machine.Work_3, machine.Work_4,
-        machine.Work_5, machine.Work_6, machine.Work_7, machine.Work_8
-            };
-
-                string fullPartName = string.Empty;
-
-                foreach (int val in registers)
-                {
-                    // 1. Tách số int thành 2 byte (mỗi byte là 1 ký tự ASCII)
-                    // val & 0xFF lấy byte thấp (Low Byte)
-                    // (val >> 8) & 0xFF lấy byte cao (High Byte)
-
-                    byte lowByte = (byte)(val & 0xFF);
-                    byte highByte = (byte)((val >> 8) & 0xFF);
-
-                    // 2. Đảo vị trí: Theo yêu cầu của bạn là đảo vị trí
-                    // Thông thường PLC lưu Byte Cao trước, Byte Thấp sau hoặc ngược lại.
-                    // Ở đây tôi giả định bạn muốn ghép ký tự từ LowByte trước rồi HighByte (hoặc ngược lại)
-                    char firstChar = (char)lowByte;
-                    char secondChar = (char)highByte;
-
-                    // Loại bỏ các ký tự rác hoặc ký tự Null (mã ASCII là 0) 
-                    // và khoảng trắng dư thừa nếu cần (mã ASCII là 32)
-                    if (lowByte != 0 && lowByte != 32) fullPartName += firstChar;
-                    if (highByte != 0 && highByte != 32) fullPartName += secondChar;
-                }
-                machine.Work = fullPartName.Trim();
+                Log.Error(ex, $"[FT09] FlushShaftTimesAsync error — {item.RevoName}");
             }
         }
 
         /// <summary>
-        /// cập nhật UI.
+        /// Insert tất cả step enabled với TotalTime=0 vào FT09 khi shaft mới bắt đầu.
+        /// Gọi MỘT LẦN từ TaskResetShaftAsync ngay sau khi tạo ShaftNum mới.
         /// </summary>
-        /// <param name="step">Chứa thông tin bước chạy. để lấy index ggeer lấy ra đúng control.</param>
-        /// <param name="isFirst">0-nextStep; 1-new; 2-previous step.</param>
-        public void UpdateStepUI(RevoStep step, int isFirst = 0)
+        private async Task InsertShaftAsync(RevoRealtimeModel item)
         {
-            //foreach (Control ctrl in flowMain.Controls)
-            //{
-            //    if (ctrl is Panel row && row.Tag is int idx && idx == step?.StepIndex)
-            //    {
-            //        Label lblIndex = row.Controls["lblIndex"] as Label;
-            //        Label lblStep = row.Controls["lblStep"] as Label;
+            if (!item.ShaftNum.HasValue || item.ShaftNum.Value == Guid.Empty) return;
 
-            //        lblIndex.Text = step.StepIndex.ToString();
+            var enabledSteps = item.Steps.Where(x => x.Enable == true).ToList();
+            if (enabledSteps.Count == 0)
+            {
+                Log.Warning($"[FT09] InsertShaftAsync: không có step enabled cho {item.RevoName} — bỏ qua (RecipeSettingStep=0?)");
+                return;
+            }
 
-            //        var startAtText = step.StartAt.HasValue ? ((DateTime)step.StartAt).ToString("HH:mm:ss") : "null";
-            //        var endAtText = step.EndAt.HasValue ? ((DateTime)step.EndAt).ToString("HH:mm:ss") : "null";
+            try
+            {
+                using (var dbContext = new ApplicationDbContext())
+                {
+                    var now = DateTime.Now;
+                    var toInsert = new List<FT09_RevoDatalog>();
+                    foreach (var step in enabledSteps)
+                    {
+                        toInsert.Add(new FT09_RevoDatalog
+                        {
+                            Id = Guid.NewGuid(),
+                            CreatedAt = now,
+                            CreatedMachine = Environment.MachineName,
+                            RevoId = item.RevoId,
+                            RevoName = item.RevoName,
+                            Work = item.Work,
+                            Part = item.Part,
+                            ShaftNum = item.ShaftNum,
+                            StepId = step.StepIndex,
+                            StepName = step.StepName,
+                            // Dùng TotalRunTime hiện tại thay vì hardcode 0:
+                            // - Shaft đầu tiên (app vừa mở): lưu giá trị thực tế đọc từ PLC
+                            // - Shaft reset bình thường: model đã được reset về 0 trước khi gọi hàm này
+                            TotalTime = step.TotalRunTime ?? 0
+                        });
+                    }
 
-            //        lblStep.Text = $"{step.StepName} - {startAtText} -> {endAtText}: {step.TotalRunTime}s" +
-            //            $"{Environment.NewLine}" +
-            //            $"Pul={step.SoLuongXung} - Speed = {step.Speed_Hz}";
+                    dbContext.FT09_RevoDatalogs.AddRange(toInsert);
+                    await dbContext.SaveChangesAsync();
 
-            //        if ((step.StartAt.HasValue && !step.EndAt.HasValue) || isFirst == 1)
-            //        {
-            //            lblStep.BackColor = Color.Red;
-            //            lblStep.ForeColor = Color.White;
-
-            //            lblIndex.BackColor = Color.Red;
-            //            lblIndex.ForeColor = Color.White;
-            //        }
-            //        else if (step.StartAt.HasValue && step.EndAt.HasValue)
-            //        {
-            //            lblStep.BackColor = Color.Gray;
-            //            lblStep.ForeColor = Color.White;
-
-            //            lblIndex.BackColor = Color.Gray;
-            //            lblIndex.ForeColor = Color.White;
-            //        }
-            //        else if (isFirst == 2)
-            //        {
-            //            lblStep.BackColor = Color.LightBlue;
-            //            lblStep.ForeColor = Color.Black;
-
-            //            lblIndex.BackColor = Color.LightBlue;
-            //            lblIndex.ForeColor = Color.Black;
-            //        }
-
-            //        break;
-            //    }
-            //}
+                    Log.Information($"[FT09] Inserted {toInsert.Count} steps for {item.RevoName}, ShaftNum={item.ShaftNum:D}, Part={item.Part}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"[FT09] InsertShaftAsync error — {item.RevoName}");
+            }
         }
 
-        public async Task LogDataStepRun()
+        /// <summary>
+        /// Update TotalTime cho các step đang active trong DB.
+        /// Gọi định kỳ từ TaskTimerAsync (200ms). Chỉ SaveChanges khi có thay đổi thực sự.
+        /// </summary>
+        private async Task UpdateShaftTimesAsync()
         {
-            // Lock serialize: nếu có call khác đang chạy thì CHỜ (không skip).
-            // Hash check phải ở BÊN TRONG lock để chống race condition - nếu để ngoài,
-            // 2 call đồng thời cùng thấy hash khác _lastHash -> cùng INSERT -> duplicate.
             await _logStepRunLock.WaitAsync();
             try
             {
-                // Tạo snapshot hash của data hiện tại.
-                // Chỉ thực sự write DB khi hash khác lần trước -> tránh DB write thừa khi
-                // gọi liên tục (200ms) mà data không đổi.
-                var currentHash = BuildLogStepRunHash();
-                if (currentHash == _lastLogStepRunHash) return; // không có gì thay đổi -> bỏ qua
+                var validModels = GlobalVariable.RevoRealtimeModels
+                    .Where(x => x.ShaftNum.HasValue && x.ShaftNum.Value != Guid.Empty)
+                    .ToList();
+
+                if (validModels.Count == 0) return;
 
                 using (var dbContext = new ApplicationDbContext())
                 {
-                    var createdAt = DateTime.Now;
-                    var createdMachine = Environment.MachineName;
+                    var shaftNums = validModels.Select(x => x.ShaftNum).Distinct().ToList();
 
-                    // Bỏ qua các model có ShaftNum null hoặc Guid.Empty
-                    var validModels = GlobalVariable.RevoRealtimeModels
-                        .Where(x => x.ShaftNum.HasValue && x.ShaftNum.Value != Guid.Empty)
-                        .ToList();
-
-                    if (validModels.Count == 0) return;
-
-                    // Lấy danh sách ShaftNum để giới hạn truy vấn
-                    var shaftNums = validModels
-                        .Select(x => x.ShaftNum)
-                        .Distinct()
-                        .ToList();
-
-                    // Load tất cả record hiện có theo ShaftNum (1 query duy nhất)
-                    var existingDataLogs = await dbContext.FT09_RevoDatalogs
+                    var dbRecords = await dbContext.FT09_RevoDatalogs
                         .Where(x => x.ShaftNum.HasValue && shaftNums.Contains(x.ShaftNum))
                         .ToListAsync();
 
-                    // Build dictionary để tra cứu O(1) theo bộ key (RevoId, StepId, ShaftNum)
-                    var existingMap = existingDataLogs
-                        .ToDictionary(x => (x.RevoId, x.StepId, x.ShaftNum));
-
-                    var toInsert = new List<FT09_RevoDatalog>();
-
+                    bool hasChanges = false;
                     foreach (var item in validModels)
                     {
-                        var steps = item.Steps.Where(x => x.Enable == true).ToList();
-
-                        // Rule UPDATE: chỉ LOCK khi DB đã có ĐẦY ĐỦ rows cho mọi enabled step
-                        // của shaft hiện tại VÀ tất cả các row đó có TotalTime != 0.
-                        // - DB còn thiếu row hoặc có row TotalTime=0 -> CHO UPDATE (sync lên DB).
-                        // - DB đã đầy đủ + tất cả !=0 -> shaft hoàn thành -> LOCK update.
-                        // INSERT luôn cho phép (cần để khởi tạo row đầu tiên cho shaft mới).
-                        bool dbAllStepsComplete = steps.All(step =>
+                        foreach (var step in item.Steps.Where(x => x.Enable == true))
                         {
-                            var k = ((int?)item.RevoId, (int?)step.StepIndex, item.ShaftNum);
-                            return existingMap.TryGetValue(k, out var existing)
-                                && (existing.TotalTime ?? 0) != 0;
-                        });
+                            var record = dbRecords.FirstOrDefault(r =>
+                                r.RevoId == item.RevoId &&
+                                r.ShaftNum == item.ShaftNum &&
+                                r.StepId == step.StepIndex);
 
-                        foreach (var itemStep in steps)
-                        {
-                            var key = ((int?)item.RevoId, (int?)itemStep.StepIndex, item.ShaftNum);
+                            if (record == null) continue; // InsertShaftAsync chưa chạy xong, bỏ qua
 
-                            if (existingMap.TryGetValue(key, out var existing))
+                            double newTime = step.TotalRunTime ?? 0;
+                            if (Math.Abs((record.TotalTime ?? 0) - newTime) > 0.001)
                             {
-                                // ĐÃ CÓ trong DB -> kiểm tra DB đã sync đầy đủ chưa.
-                                // Nếu DB còn thiếu hoặc có 0 -> vẫn UPDATE (kể cả các row đã sync,
-                                // để đồng bộ Work/Part nếu có thay đổi).
-                                if (dbAllStepsComplete) continue;
-
-                                existing.Work = item.Work;
-                                existing.Part = item.Part;
-                                existing.TotalTime = itemStep.TotalRunTime;
-                                // existing đang được tracked -> EF tự detect change
-                            }
-                            else
-                            {
-                                // CHƯA CÓ -> Insert mới (không bị rule chặn)
-                                toInsert.Add(new FT09_RevoDatalog
-                                {
-                                    Id = Guid.NewGuid(),
-                                    CreatedAt = createdAt,
-                                    CreatedMachine = createdMachine,
-                                    RevoId = item.RevoId,
-                                    RevoName = item.RevoName,
-                                    Work = item.Work,
-                                    Part = item.Part,
-                                    ShaftNum = item.ShaftNum,
-                                    StepId = itemStep.StepIndex,
-                                    StepName = itemStep.StepName,
-                                    TotalTime = itemStep.TotalRunTime
-                                });
+                                record.TotalTime = newTime;
+                                hasChanges = true;
                             }
                         }
                     }
 
-                    if (toInsert.Count > 0)
-                    {
-                        dbContext.FT09_RevoDatalogs.AddRange(toInsert);
-                    }
-
-                    // Chỉ 1 lần SaveChanges cho cả Insert + Update
-                    await dbContext.SaveChangesAsync();
-
-                    // Lưu hash sau khi save thành công.
-                    // Đặt sau SaveChanges để nếu save lỗi thì lần sau sẽ retry (hash chưa đổi).
-                    _lastLogStepRunHash = currentHash;
+                    if (hasChanges)
+                        await dbContext.SaveChangesAsync();
                 }
             }
             finally
             {
                 _logStepRunLock.Release();
             }
-        }
-
-        /// <summary>
-        /// Build hash từ snapshot dữ liệu sẽ log vào FT09.
-        /// Bao gồm các field thực sự được upsert: RevoId, StepId, ShaftNum, Work, Part, TotalRunTime.
-        /// Nếu hash giữa 2 lần gọi giống nhau -> data không đổi -> bỏ qua DB write.
-        /// </summary>
-        private string BuildLogStepRunHash()
-        {
-            var sb = new StringBuilder();
-            foreach (var item in GlobalVariable.RevoRealtimeModels)
-            {
-                if (!item.ShaftNum.HasValue || item.ShaftNum.Value == Guid.Empty) continue;
-
-                foreach (var step in item.Steps.Where(x => x.Enable == true))
-                {
-                    sb.Append(item.RevoId).Append('|')
-                      .Append(step.StepIndex).Append('|')
-                      .Append(item.ShaftNum).Append('|')
-                      .Append(item.Work).Append('|')
-                      .Append(item.Part).Append('|')
-                      .Append(step.TotalRunTime).Append(';');
-                }
-            }
-            return sb.ToString();
         }
 
         private async Task LogDataRealtime()
@@ -1462,13 +923,12 @@ namespace Scada.TrackingTime_AutoRolling1
                     }
                     else
                     {
-                        var nl = new FT08_RevoRealtime()
+                        dbContext.FT08_RevoRealtimes.Add(new FT08_RevoRealtime
                         {
                             Id = Guid.NewGuid(),
                             C000_RevoId = item.RevoId,
                             C001_Data = JsonConvert.SerializeObject(item)
-                        };
-                        dbContext.FT08_RevoRealtimes.Add(nl);
+                        });
                     }
                 }
 
@@ -1503,28 +963,19 @@ namespace Scada.TrackingTime_AutoRolling1
         {
             using var dbContext = new ApplicationDbContext();
 
-            // 1. Lấy giờ mới nhất
             var maxCreatedAt = dbContext.FT09_RevoDatalogs
                 .Where(x => x.CreatedAt != null)
                 .Max(x => x.CreatedAt);
 
-            if (maxCreatedAt == null)
-                return null;
+            if (maxCreatedAt == null) return null;
 
-            // 2. Chuẩn hóa giờ chẵn
             var currentHour = new DateTime(
-                maxCreatedAt.Value.Year,
-                maxCreatedAt.Value.Month,
-                maxCreatedAt.Value.Day,
-                maxCreatedAt.Value.Hour,
-                0, 0);
+                maxCreatedAt.Value.Year, maxCreatedAt.Value.Month, maxCreatedAt.Value.Day,
+                maxCreatedAt.Value.Hour, 0, 0);
 
             var nextHour = currentHour.AddHours(1);
             var lastHour = currentHour.AddHours(-1);
 
-            // 3) Đếm theo giờ hiện tại:
-            //    Group theo ShaftNum trong window giờ hiện tại
-            //    và CHỈ giữ group mà TẤT CẢ các dòng đều có StartedAt & EndedAt khác null
             var currentCount = await dbContext.FT09_RevoDatalogs
                 .Where(x => x.CreatedAt >= currentHour && x.CreatedAt < nextHour)
                 .GroupBy(x => x.ShaftNum!)
@@ -1532,7 +983,6 @@ namespace Scada.TrackingTime_AutoRolling1
                 .Select(g => g.Key)
                 .CountAsync();
 
-            // 4) Đếm theo giờ trước đó:
             var lastCount = await dbContext.FT09_RevoDatalogs
                 .Where(x => x.CreatedAt >= lastHour && x.CreatedAt < currentHour)
                 .GroupBy(x => x.ShaftNum!)
@@ -1540,19 +990,15 @@ namespace Scada.TrackingTime_AutoRolling1
                 .Select(g => g.Key)
                 .CountAsync();
 
-            // 5. Kết quả
-            var result = new GroupShaftModel
+            return new GroupShaftModel
             {
                 CurrentHour = currentCount,
                 LastHour = lastCount
             };
-
-            return result;
         }
         #endregion
 
         #region Events
-        // Cho phép kéo form bằng panel
         private void TitleBar_MouseDown(object sender, MouseEventArgs e)
         {
             ReleaseCapture();
@@ -1563,7 +1009,6 @@ namespace Scada.TrackingTime_AutoRolling1
         {
             using (var nf = new frmConfig())
             {
-                nf.EasyDriverConnector = _easyDriverConnector;
                 nf.ShowDialog();
             }
         }

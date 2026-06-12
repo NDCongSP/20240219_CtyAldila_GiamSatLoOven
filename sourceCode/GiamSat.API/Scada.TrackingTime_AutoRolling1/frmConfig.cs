@@ -1,5 +1,4 @@
-﻿using EasyScada.Winforms.Controls;
-using GiamSat.Models;
+﻿using GiamSat.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,6 @@ namespace Scada.TrackingTime_AutoRolling1
 {
     public partial class frmConfig : Form
     {
-        public EasyDriverConnector EasyDriverConnector { get; set; }
         EnumSaveMode _saveMode;
 
         public frmConfig()
