@@ -62,6 +62,7 @@ namespace GiamSat.UI.Pages
                 if (_disposed) return;
                 if (ft08Result.Succeeded && ft08Result.Data != null)
                 {
+                    var latestData = new Dictionary<int, RevoRealtimeModel>();
                     foreach (var ft08 in ft08Result.Data)
                     {
                         if (!string.IsNullOrEmpty(ft08.C001_Data))
@@ -70,10 +71,11 @@ namespace GiamSat.UI.Pages
                             if (revoRealtime != null)
                             {
                                 revoRealtime.RevoId = ft08.C000_RevoId ?? 0;
-                                _revoData.Add(revoRealtime);
+                                latestData[revoRealtime.RevoId] = revoRealtime;
                             }
                         }
                     }
+                    _revoData = latestData.Values.ToList();
                 }
 
                 // Load FT07 to get REVO names via NSwag client
