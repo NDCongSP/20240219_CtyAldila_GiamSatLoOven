@@ -45,9 +45,6 @@
     </Reference>
     <!-- McProtocol SCADA driver (Mitsubishi MC Protocol — .NET Standard 2.0, compatible với .NET 4.8) -->
     <!-- Rebuild McProtocolScada.Lib trước để HslCommunication.dll xuất hiện cùng thư mục (CopyLocalLockFileAssemblies=true) -->
-    <Reference Include="McProtocolScada.Lib">
-      <HintPath>..\..\..\..\Scada\202600120_Snap7\McProtocolScadaSolution\McProtocolScada.Core\bin\Debug\netstandard2.0\McProtocolScada.Lib.dll</HintPath>
-    </Reference>
     <Reference Include="HslCommunication">
       <HintPath>..\..\..\..\Scada\202600120_Snap7\McProtocolScadaSolution\McProtocolScada.Core\bin\Debug\netstandard2.0\HslCommunication.dll</HintPath>
       <Private>True</Private>
@@ -57,6 +54,9 @@
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="McProtocolScada.Lib">
+      <HintPath>..\dll\McProtocolScada.Lib.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -248,7 +248,6 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-
   <!-- ═══ Copy McProtocol dependencies vào output mỗi lần build ═══
        Cần rebuild McProtocolScada.Lib trước (ít nhất 1 lần) để HslCommunication.dll
        xuất hiện trong netstandard2.0 output (CopyLocalLockFileAssemblies=true).
@@ -261,14 +260,9 @@
       <_McProtocolDlls Include="$(McProtocolOutputDir)\HslCommunication.dll" />
       <_McProtocolDlls Include="$(McProtocolOutputDir)\System.IO.Ports.dll" Condition="Exists('$(McProtocolOutputDir)\System.IO.Ports.dll')" />
     </ItemGroup>
-    <Copy SourceFiles="@(_McProtocolDlls)"
-          DestinationFolder="$(OutputPath)"
-          SkipUnchangedFiles="true"
-          ContinueOnError="true" />
-    <Message Text="[McProtocol] Copied deps → $(OutputPath)" Importance="high"
-             Condition="Exists('$(McProtocolOutputDir)\HslCommunication.dll')" />
-    <Warning Text="[McProtocol] HslCommunication.dll chưa có — hãy rebuild McProtocolScada.Lib trước!"
-             Condition="!Exists('$(McProtocolOutputDir)\HslCommunication.dll')" />
+    <Copy SourceFiles="@(_McProtocolDlls)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" ContinueOnError="true" />
+    <Message Text="[McProtocol] Copied deps → $(OutputPath)" Importance="high" Condition="Exists('$(McProtocolOutputDir)\HslCommunication.dll')" />
+    <Warning Text="[McProtocol] HslCommunication.dll chưa có — hãy rebuild McProtocolScada.Lib trước!" Condition="!Exists('$(McProtocolOutputDir)\HslCommunication.dll')" />
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
