@@ -38,19 +38,6 @@
 			<UndefineProperties>RuntimeIdentifier</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
-	<!--
-    AutoVersionCss: cập nhật ?v=… trong index.html để bust browser cache.
-    Đã sửa: dùng -Raw + kiểm tra file rỗng + chỉ ghi khi có thay đổi
-    để tránh trường hợp PowerShell ghi đè file thành rỗng.
-  -->
-	<Target Name="AutoVersionCss" BeforeTargets="Build;Publish">
-		<PropertyGroup>
-			<VersionValue>$([System.DateTime]::Now.Ticks)</VersionValue>
-			<IndexHtmlPath>$(MSBuildProjectDirectory)\wwwroot\index.html</IndexHtmlPath>
-		</PropertyGroup>
-		<Message Importance="high" Text="Cập nhật version CSS trong index.html: v=$(VersionValue)" />
-		<Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;$path = '$(IndexHtmlPath)'; if (-not (Test-Path $path)) { exit 0 }; $content = Get-Content -Raw -Path $path -Encoding UTF8; if ([string]::IsNullOrWhiteSpace($content)) { Write-Host 'index.html rong, bo qua AutoVersionCss'; exit 0 }; $new = [System.Text.RegularExpressions.Regex]::Replace($content, '\?v=[0-9a-zA-Z.]+', '?v=$(VersionValue)'); if ($new -ne $content) { [System.IO.File]::WriteAllText($path, $new, (New-Object System.Text.UTF8Encoding($false))) }&quot;"
-			  ContinueOnError="true" />
-	</Target>
+
 
 </Project>

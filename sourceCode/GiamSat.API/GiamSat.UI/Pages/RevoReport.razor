@@ -209,9 +209,12 @@
                 else
                 {
                     <div style="overflow-x: auto; width: 100%;">
+                        @{
+                            var visibleRevoCount = _revoList.Count(r => _selectedRevoId == null || r.Id == _selectedRevoId);
+                        }
                         <RadzenDataGrid @ref="_hourGrid"
                                         class="hourly-report-grid"
-                                        Style="@($"min-width: {210 + (_revoList.Count * 250)}px; width: 100%;")"
+                                        Style="@($"min-width: {210 + (visibleRevoCount * 250)}px; width: 100%;")"
                                         Data="@_hourRows"
                                         TItem="RevoHourRow"
                                         AllowPaging="true"

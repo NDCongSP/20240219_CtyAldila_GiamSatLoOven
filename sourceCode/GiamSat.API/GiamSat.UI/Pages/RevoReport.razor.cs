@@ -341,7 +341,12 @@ namespace GiamSat.UI.Pages
                 DurationText = v.DurationText ?? "N/A",
                 IsAutoRolling = v.IsAutoRolling != 0,
                 HighlightIncomplete = v.HighlightIncomplete
-            }).ToList();
+            })
+            .OrderByDescending(x => x.Hour)
+            .ThenBy(x => x.ShaftNo)
+            .ThenBy(x => x.StepId ?? 0)
+            .ThenBy(x => x.StartedAt ?? DateTime.MinValue)
+            .ToList();
         }
 
         private static List<RevoShaftRow> MapShaftRows(IList<RevoReportShaftVm> data)
