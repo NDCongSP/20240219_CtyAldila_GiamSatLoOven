@@ -45,15 +45,16 @@
     </Reference>
     <!-- McProtocol SCADA driver (Mitsubishi MC Protocol — .NET Standard 2.0, compatible với .NET 4.8) -->
     <!-- Rebuild McProtocolScada.Lib trước để HslCommunication.dll xuất hiện cùng thư mục (CopyLocalLockFileAssemblies=true) -->
-    <Reference Include="HslCommunication">
-      <HintPath>..\..\..\..\Scada\202600120_Snap7\McProtocolScadaSolution\McProtocolScada.Core\bin\Debug\netstandard2.0\HslCommunication.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <!-- HslCommunication v11.6.4 (netstandard2.0) — phải khớp với version McProtocolScada.Lib.deps.json -->
+    <!-- KHÔNG dùng NuGet HslCommunication 12.8.3 — McProtocolScada.Lib cần 11.6.4, khác version gây crash khi load DLL -->
+    <Reference Include="HslCommunication, Version=11.6.4.0, Culture=neutral, PublicKeyToken=3d72ad3b6b5ec0e3, processorArchitecture=MSIL">
+      <HintPath>..\dll\HslCommunication.dll</HintPath>
     </Reference>
     <Reference Include="McProtocolScada.Lib">
       <HintPath>..\dll\McProtocolScada.Lib.dll</HintPath>
@@ -248,22 +249,9 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- ═══ Copy McProtocol dependencies vào output mỗi lần build ═══
-       Cần rebuild McProtocolScada.Lib trước (ít nhất 1 lần) để HslCommunication.dll
-       xuất hiện trong netstandard2.0 output (CopyLocalLockFileAssemblies=true).
-       Lưu ý: phải dùng bản netstandard2.0 — bản net8.0 sẽ lỗi "netstandard 2.1.0.0 not found" trên .NET 4.8. -->
-  <PropertyGroup>
-    <McProtocolOutputDir>$(MSBuildThisFileDirectory)..\..\..\..\..\Scada\202600120_Snap7\McProtocolScadaSolution\McProtocolScada.Core\bin\Debug\netstandard2.0</McProtocolOutputDir>
-  </PropertyGroup>
-  <Target Name="CopyMcProtocolDeps" AfterTargets="Build">
-    <ItemGroup>
-      <_McProtocolDlls Include="$(McProtocolOutputDir)\HslCommunication.dll" />
-      <_McProtocolDlls Include="$(McProtocolOutputDir)\System.IO.Ports.dll" Condition="Exists('$(McProtocolOutputDir)\System.IO.Ports.dll')" />
-    </ItemGroup>
-    <Copy SourceFiles="@(_McProtocolDlls)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" ContinueOnError="true" />
-    <Message Text="[McProtocol] Copied deps → $(OutputPath)" Importance="high" Condition="Exists('$(McProtocolOutputDir)\HslCommunication.dll')" />
-    <Warning Text="[McProtocol] HslCommunication.dll chưa có — hãy rebuild McProtocolScada.Lib trước!" Condition="!Exists('$(McProtocolOutputDir)\HslCommunication.dll')" />
-  </Target>
+  <!-- HslCommunication v11.6.4 và McProtocolScada.Lib đều reference từ dll\ folder.
+       MSBuild tự copy qua bin\ vì Private=True (CopyLocal mặc định).
+       Không cần CopyMcProtocolDeps target nữa. -->
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>

@@ -322,6 +322,27 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 
 ---
 
+### [2026-06-15] — Session: Fix HslCommunication DLL không load được trên PRD
+
+```
+[FIX]  Scada.TrackingTime_AutoRolling1.csproj
+                                  — Root cause: version mismatch giữa 2 bản HslCommunication.dll tranh nhau trong bin\Debug\:
+                                    NuGet HslCommunication 12.8.3 (net451) được copy vào bin\ khi build
+                                    McProtocolScada.Lib.deps.json khai báo cần HslCommunication 11.6.4
+                                    CopyMcProtocolDeps target luôn fail silently (path McProtocolScada.Core không tồn tại trên máy build)
+                                    → bin\Debug\HslCommunication.dll = 12.8.3 (sai) → copy qua PRD → crash "cannot load DLL"
+                                    Fix:
+                                    1. Xóa NuGet HslCommunication 12.8.3 khỏi packages.config và csproj
+                                    2. Copy HslCommunication 11.6.4 (netstandard2.0) từ NuGet cache vào dll\ folder cùng chỗ McProtocolScada.Lib.dll
+                                    3. Thêm Reference mới trỏ vào dll\HslCommunication.dll (Version=11.6.4.0)
+                                    4. Xóa CopyMcProtocolDeps MSBuild target (không cần nữa, DLL đã trong dll\)
+                                    Kết quả: bin\Debug\HslCommunication.dll = 11.6.4 (đúng), copy qua PRD hoạt động bình thường
+[CHORE] dll\HslCommunication.dll  — File mới: HslCommunication v11.6.4 netstandard2.0 (từ NuGet cache)
+                                    Nguồn: %USERPROFILE%\.nuget\packages\hslcommunication\11.6.4\lib\netstandard2.0\
+```
+
+---
+
 ### [2026-06-12] — Session: Fix first-shaft startup values = 0 + fire TimeRunStep on load
 
 ```
