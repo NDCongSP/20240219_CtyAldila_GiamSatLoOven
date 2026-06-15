@@ -277,6 +277,7 @@ namespace GiamSat.API
             services.AddScoped<ISFT16, SFT16>();
             services.AddScoped<SCommon>();
 
+
             services.AddSwaggerGen(c =>
             {
                 c.EnableAnnotations();
@@ -453,6 +454,7 @@ namespace GiamSat.API
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<LogsHub>(LogsHub.HubPath);
+                endpoints.MapHub<GiamSat.API.Hubs.ReportHub>("/hubs/report");
             });
             Log.Information("Configure: PIPELINE READY — API listening...");
         }

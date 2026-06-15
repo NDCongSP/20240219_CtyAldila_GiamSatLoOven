@@ -15,8 +15,14 @@ namespace GiamSat.UI.Pages
     {
         // Keep IHttpClientFactory only for PDF export (needs byte[] response)
         [Inject] private IHttpClientFactory HttpClientFactory { get; set; } = default!;
+        public ValueTask DisposeAsync()
+        {
+            return ValueTask.CompletedTask;
+        }
 
         private RadzenDataGrid<RevoStepRow> _stepGrid = default!;
+        private int _stepCount;
+                private int _hourCount;
         private RadzenDataGrid<RevoShaftRow> _shaftGrid = default!;
         private RadzenDataGrid<RevoHourRow> _hourGrid = default!;
         private DateTime _fromDate = DateTime.Now.AddDays(-7);
@@ -30,7 +36,7 @@ namespace GiamSat.UI.Pages
         private List<RevoStepRow> _stepRows = new();
         private List<RevoShaftRow> _shaftRows = new();
         private List<RevoHourRow> _hourRows = new();
-        private bool _gridInitialized = false;
+        
         private int _shaftCount = 0;
         /// <summary>Số bản ghi hiển thị theo phạm vi (đã hoàn thành = chỉ dòng thuộc shaft đủ TotalTime).</summary>
         private int _scopeRecordCount;
@@ -120,88 +126,22 @@ namespace GiamSat.UI.Pages
             await ExecuteSearch();
         }
 
-        private async Task ExecuteSearch()
+                private async Task ExecuteSearch()
         {
-            try
+            if (_reportMode == RevoReportMode.ByStep && _stepGrid != null)
             {
-                _isLoading = true;
-                StateHasChanged();
-                SyncShaftScopeFromSwitch();
-
-                // Use NSwag client for FT09 GetFilter
-                var filterModel = new ApiClient.RevoFilterModel
-                {
-                    GetAll = !_selectedRevoId.HasValue,
-                    RevoId = _selectedRevoId,
-                    FromDate = _fromDate,
-                    ToDate = _toDate,
-                    ShaftScope = ShaftScopeForApi
-                };
-
-                var result = await _fT09Client.GetFilterAsync(filterModel);
-                if (result.Succeeded && result.Data != null)
-                {
-                    // Map from APIClient model to Domain model for grid binding
-                    _rawData = result.Data
-                        .Select(x => new FT09_RevoDatalog
-                        {
-                            Id = x.Id,
-                            CreatedAt = x.CreatedAt,
-                            CreatedMachine = x.CreatedMachine,
-                            RevoId = x.RevoId,
-                            RevoName = x.RevoName,
-                            Work = x.Work,
-                            Part = x.Part,
-                            Rev = x.Rev,
-                            ColorCode = x.ColorCode,
-                            Mandrel = x.Mandrel,
-                            MandrelStart = x.MandrelStart,
-                            StepId = x.StepId,
-                            StepName = x.StepName,
-                            StartedAt = x.StartedAt,
-                            EndedAt = x.EndedAt,
-                            ShaftNum = x.ShaftNum,
-                            TotalTime = x.TotalTime
-                        })
-                        .OrderBy(x => x.ShaftNum ?? Guid.Empty)
-                        .ThenBy(x => x.StepId ?? 0)
-                        .ThenBy(x => x.StartedAt ?? x.CreatedAt ?? DateTime.MinValue)
-                        .ToList();
-
-                    await TryPopulateReportGridsFromDatabaseAsync(filterModel);
-                    _hasData = _rawData.Any();
-                    // Đếm shaft + bản ghi theo phạm vi (đồng bộ switch; GetFilter không lọc theo shaft)
-                    UpdateScopeSummaryCounts();
-                    _gridInitialized = false; // Reset to apply grouping on next render (step mode)
-                }
-                else
-                {
-                    _rawData = new List<FT09_RevoDatalog>();
-                    _stepRows = new();
-                    _shaftRows = new();
-                    _hourRows = new();
-                    _reportGridsFromDatabase = false;
-                    _hasData = false;
-                    _shaftCount = 0;
-                    _scopeRecordCount = 0;
-                    if (result.Messages != null && result.Messages.Count > 0)
-                    {
-                        var errorMessage = string.Join(", ", result.Messages);
-                        _notificationService.Notify(NotificationSeverity.Error, "Lỗi", errorMessage);
-                    }
-                }
+                await _stepGrid.GoToPage(0);
+                await _stepGrid.Reload();
             }
-            catch (Exception ex)
+            else if (_reportMode == RevoReportMode.ByShaft && _shaftGrid != null)
             {
-                _notificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Lỗi khi tải dữ liệu: {ex.Message}");
-                _hasData = false;
-                _shaftCount = 0;
-                _scopeRecordCount = 0;
+                await _shaftGrid.GoToPage(0);
+                await _shaftGrid.Reload();
             }
-            finally
+            else if (_reportMode == RevoReportMode.ByHour && _hourGrid != null)
             {
-                _isLoading = false;
-                StateHasChanged();
+                await _hourGrid.GoToPage(0);
+                await _hourGrid.Reload();
             }
         }
 
@@ -226,100 +166,108 @@ namespace GiamSat.UI.Pages
         private void OnModeChanged(object value)
         {
             // Radzen passes selected value (enum)
-            _gridInitialized = false;
-            if (_rawData.Count > 0 && !_reportGridsFromDatabase)
-            {
-                RebuildView();
-            }
+            
+            
             StateHasChanged();
         }
 
-        private async Task TryPopulateReportGridsFromDatabaseAsync(ApiClient.RevoFilterModel filterModel)
+        
+        private async Task LoadStepData(LoadDataArgs args)
         {
-            _reportGridsFromDatabase = false;
-            _stepRows.Clear();
-            _shaftRows.Clear();
-            _hourRows.Clear();
-
-            try
+            var filterModel = new ApiClient.RevoFilterModel
             {
-                var http = HttpClientFactory.CreateClient("GiamSatAPI");
-                var ok = _reportMode switch
-                {
-                    RevoReportMode.ByStep => await TryLoadStepViewAsync(http, filterModel),
-                    RevoReportMode.ByShaft => await TryLoadShaftViewAsync(http, filterModel),
-                    RevoReportMode.ByHour => false, // Always compute on client for ByHour mode
-                    _ => false
-                };
-
-                if (ok)
-                {
-                    _reportGridsFromDatabase = true;
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                _notificationService.Notify(NotificationSeverity.Warning, "Báo cáo", $"Lỗi gọi view SQL: {ex.Message}. Hiển thị theo tổng hợp trên client.");
-            }
-
-            RebuildView();
-        }
-
-        private void NotifyReportViewFallback(string? detail = null)
-        {
-            var err = string.IsNullOrWhiteSpace(detail) ? "Không tải được view báo cáo từ SQL" : detail;
-            _notificationService.Notify(NotificationSeverity.Warning, "Báo cáo", $"{err}. Hiển thị theo tổng hợp trên client.");
-        }
-
-        private async Task<bool> TryLoadStepViewAsync(HttpClient http, ApiClient.RevoFilterModel filterModel)
-        {
-            var res = await PostReportResultAsync<List<RevoReportStepVm>>(http, "api/FT09/GetReportStepView", filterModel);
+                GetAll = !_selectedRevoId.HasValue,
+                RevoId = _selectedRevoId,
+                FromDate = _fromDate,
+                ToDate = _toDate,
+                ShaftScope = ShaftScopeForApi
+            };
+            filterModel.Skip = args.Skip ?? 0;
+            filterModel.Take = args.Top ?? 20;
+            var http = HttpClientFactory.CreateClient("GiamSatAPI");
+            var res = await PostPagedReportResultAsync<ApiClient.RevoReportStepVm>(http, "api/FT09/GetReportStepView", filterModel);
             if (res?.Succeeded == true && res.Data != null)
             {
                 _stepRows = MapStepRows(res.Data);
-                return true;
+                _stepCount = res.TotalRecords;
+                _hasData = _stepCount > 0;
             }
-
-            NotifyReportViewFallback(res?.Messages?.FirstOrDefault());
-            return false;
+            else
+            {
+                _notificationService.Notify(NotificationSeverity.Warning, "Thông báo", res?.Messages?.FirstOrDefault() ?? "Không thể tải dữ liệu");
+                _stepRows = new();
+                _stepCount = 0;
+                _hasData = false;
+            }
         }
 
-        private async Task<bool> TryLoadShaftViewAsync(HttpClient http, ApiClient.RevoFilterModel filterModel)
+        private async Task LoadShaftData(LoadDataArgs args)
         {
-            var res = await PostReportResultAsync<List<RevoReportShaftVm>>(http, "api/FT09/GetReportShaftView", filterModel);
+            var filterModel = new ApiClient.RevoFilterModel
+            {
+                GetAll = !_selectedRevoId.HasValue,
+                RevoId = _selectedRevoId,
+                FromDate = _fromDate,
+                ToDate = _toDate,
+                ShaftScope = ShaftScopeForApi
+            };
+            filterModel.Skip = args.Skip ?? 0;
+            filterModel.Take = args.Top ?? 20;
+            var http = HttpClientFactory.CreateClient("GiamSatAPI");
+            var res = await PostPagedReportResultAsync<ApiClient.RevoReportShaftVm>(http, "api/FT09/GetReportShaftView", filterModel);
             if (res?.Succeeded == true && res.Data != null)
             {
                 _shaftRows = MapShaftRows(res.Data);
-                return true;
+                _shaftCount = res.TotalRecords;
+                _hasData = _shaftCount > 0;
             }
-
-            NotifyReportViewFallback(res?.Messages?.FirstOrDefault());
-            return false;
+            else
+            {
+                _notificationService.Notify(NotificationSeverity.Warning, "Thông báo", res?.Messages?.FirstOrDefault() ?? "Không thể tải dữ liệu");
+                _shaftRows = new();
+                _shaftCount = 0;
+                _hasData = false;
+            }
         }
 
-        private async Task<bool> TryLoadHourViewAsync(HttpClient http, ApiClient.RevoFilterModel filterModel)
+        private async Task LoadHourData(LoadDataArgs args)
         {
-            var res = await PostReportResultAsync<List<RevoReportHourVm>>(http, "api/FT09/GetReportHourView", filterModel);
+            var filterModel = new ApiClient.RevoFilterModel
+            {
+                GetAll = !_selectedRevoId.HasValue,
+                RevoId = _selectedRevoId,
+                FromDate = _fromDate,
+                ToDate = _toDate,
+                ShaftScope = ShaftScopeForApi
+            };
+            filterModel.Skip = args.Skip ?? 0;
+            filterModel.Take = args.Top ?? 20;
+            var http = HttpClientFactory.CreateClient("GiamSatAPI");
+            var res = await PostPagedReportResultAsync<ApiClient.RevoReportHourVm>(http, "api/FT09/GetReportHourView", filterModel);
             if (res?.Succeeded == true && res.Data != null)
             {
                 _hourRows = MapHourRows(res.Data);
-                return true;
+                _hourCount = res.TotalRecords;
+                _hasData = _hourCount > 0;
             }
-
-            NotifyReportViewFallback(res?.Messages?.FirstOrDefault());
-            return false;
+            else
+            {
+                _notificationService.Notify(NotificationSeverity.Warning, "Thông báo", res?.Messages?.FirstOrDefault() ?? "Không thể tải dữ liệu");
+                _hourRows = new();
+                _hourCount = 0;
+                _hasData = false;
+            }
         }
 
-        private static async Task<Result<T>?> PostReportResultAsync<T>(HttpClient http, string relativeUrl, ApiClient.RevoFilterModel body)
+        private static async Task<PagedResult<T>?> PostPagedReportResultAsync<T>(HttpClient http, string relativeUrl, ApiClient.RevoFilterModel body)
         {
             var response = await http.PostAsJsonAsync(relativeUrl, body);
             if (!response.IsSuccessStatusCode)
                 return null;
-            return await response.Content.ReadFromJsonAsync<Result<T>>(_jsonReadOptions);
+            return await response.Content.ReadFromJsonAsync<PagedResult<T>>(_jsonReadOptions);
         }
 
-        private static List<RevoStepRow> MapStepRows(IList<RevoReportStepVm> data)
+        private static List<RevoStepRow> MapStepRows(IList<ApiClient.RevoReportStepVm> data)
         {
             return data.Select(v => new RevoStepRow
             {
@@ -349,7 +297,7 @@ namespace GiamSat.UI.Pages
             .ToList();
         }
 
-        private static List<RevoShaftRow> MapShaftRows(IList<RevoReportShaftVm> data)
+        private static List<RevoShaftRow> MapShaftRows(IList<ApiClient.RevoReportShaftVm> data)
         {
             return data.Select(v => new RevoShaftRow
             {
@@ -372,7 +320,7 @@ namespace GiamSat.UI.Pages
             }).ToList();
         }
 
-        private static List<RevoHourRow> MapHourRows(IList<RevoReportHourVm> data)
+        private static List<RevoHourRow> MapHourRows(IList<ApiClient.RevoReportHourVm> data)
         {
             return data.Select(v => new RevoHourRow
             {
@@ -470,17 +418,15 @@ namespace GiamSat.UI.Pages
             if (_reportMode != RevoReportMode.ByStep)
                 return;
 
-            if (!_gridInitialized && _hasData && args.Grid != null)
+            if (_hasData && args.Grid != null && args.Grid.Groups.Count == 0)
             {
                 // Group by ShaftKey (unique string per physical shaft, e.g. "Shaft 1", "Shaft 2"...)
-                args.Grid.Groups.Clear();
                 args.Grid.Groups.Add(new GroupDescriptor
                 {
                     Property = "ShaftKey",
                     Title = "Shaft",
                     SortOrder = SortOrder.Ascending
                 });
-                _gridInitialized = true;
             }
         }
 

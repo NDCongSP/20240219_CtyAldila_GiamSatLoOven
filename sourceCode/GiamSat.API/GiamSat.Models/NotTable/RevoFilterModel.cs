@@ -17,5 +17,18 @@ namespace GiamSat.Models
 
         /// <summary>Phạm vi shaft báo cáo: "total" (tất cả) hoặc "finished" (chỉ shaft đã hoàn thành — mọi dòng TotalTime lớn hơn 0).</summary>
         public string? ShaftScope { get; set; } = "total";
+
+        // Pagination
+        public int Skip { get; set; } = 0;
+        public int Take { get; set; } = 50;
+        public string? SortColumn { get; set; }
+        public bool SortDescending { get; set; }
+        
+        // Export & SignalR
+        public bool IsExport { get; set; }
+        
+        public string? ConnectionId { get; set; }
+
+        public int ExportMode { get; set; }
     }
 }

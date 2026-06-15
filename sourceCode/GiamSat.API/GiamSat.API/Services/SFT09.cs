@@ -61,63 +61,103 @@ namespace GiamSat.API
             return s == "finished" ? "finished" : "total";
         }
 
-        public async Task<Result<List<RevoReportStepVm>>> GetReportStepView(RevoFilterModel model)
+        public async Task<PagedResult<RevoReportStepVm>> GetReportStepView(RevoFilterModel model)
         {
             try
             {
                 var p = ResolveRevoReportRange(model);
                 var shaftScope = NormalizeShaftScope(model.ShaftScope);
-                var list = await _context.Set<RevoReportStepVm>()
+                var query = _context.Set<RevoReportStepVm>()
                     .FromSqlRaw(
                         "SELECT * FROM dbo.fn_RevoReport_Step({0}, {1}, {2}, {3})",
                         p.from, p.toExclusive, p.revoId, shaftScope)
-                    .AsNoTracking()
+                    .AsNoTracking();
+
+                var totalRecords = await query.CountAsync();
+                
+                // Sorting logic (can be extended using System.Linq.Dynamic.Core later)
+                query = query.OrderByDescending(x => x.Hour).ThenBy(x => x.ShaftNo).ThenBy(x => x.StepId);
+
+                var take = model.Take == -1 ? int.MaxValue : model.Take;
+                var list = await query
+                    .Skip(model.Skip)
+                    .Take(take)
                     .ToListAsync();
-                return await Result<List<RevoReportStepVm>>.SuccessAsync(list);
+                    
+                return PagedResult<RevoReportStepVm>.Success(list, totalRecords);
             }
             catch (Exception ex)
             {
-                return await Result<List<RevoReportStepVm>>.FailAsync(ex.Message);
+                var res = new PagedResult<RevoReportStepVm>();
+                res.Succeeded = false;
+                res.Messages.Add(ex.Message);
+                return res;
             }
         }
 
-        public async Task<Result<List<RevoReportShaftVm>>> GetReportShaftView(RevoFilterModel model)
+        public async Task<PagedResult<RevoReportShaftVm>> GetReportShaftView(RevoFilterModel model)
         {
             try
             {
                 var p = ResolveRevoReportRange(model);
                 var shaftScope = NormalizeShaftScope(model.ShaftScope);
-                var list = await _context.Set<RevoReportShaftVm>()
+                var query = _context.Set<RevoReportShaftVm>()
                     .FromSqlRaw(
                         "SELECT * FROM dbo.fn_RevoReport_Shaft({0}, {1}, {2}, {3})",
                         p.from, p.toExclusive, p.revoId, shaftScope)
-                    .AsNoTracking()
+                    .AsNoTracking();
+
+                var totalRecords = await query.CountAsync();
+
+                query = query.OrderByDescending(x => x.Hour).ThenBy(x => x.ShaftNo);
+
+                var take = model.Take == -1 ? int.MaxValue : model.Take;
+                var list = await query
+                    .Skip(model.Skip)
+                    .Take(take)
                     .ToListAsync();
-                return await Result<List<RevoReportShaftVm>>.SuccessAsync(list);
+                    
+                return PagedResult<RevoReportShaftVm>.Success(list, totalRecords);
             }
             catch (Exception ex)
             {
-                return await Result<List<RevoReportShaftVm>>.FailAsync(ex.Message);
+                var res = new PagedResult<RevoReportShaftVm>();
+                res.Succeeded = false;
+                res.Messages.Add(ex.Message);
+                return res;
             }
         }
 
-        public async Task<Result<List<RevoReportHourVm>>> GetReportHourView(RevoFilterModel model)
+        public async Task<PagedResult<RevoReportHourVm>> GetReportHourView(RevoFilterModel model)
         {
             try
             {
                 var p = ResolveRevoReportRange(model);
                 var shaftScope = NormalizeShaftScope(model.ShaftScope);
-                var list = await _context.Set<RevoReportHourVm>()
+                var query = _context.Set<RevoReportHourVm>()
                     .FromSqlRaw(
                         "SELECT * FROM dbo.fn_RevoReport_Hour({0}, {1}, {2}, {3})",
                         p.from, p.toExclusive, p.revoId, shaftScope)
-                    .AsNoTracking()
+                    .AsNoTracking();
+
+                var totalRecords = await query.CountAsync();
+
+                query = query.OrderByDescending(x => x.Hour);
+
+                var take = model.Take == -1 ? int.MaxValue : model.Take;
+                var list = await query
+                    .Skip(model.Skip)
+                    .Take(take)
                     .ToListAsync();
-                return await Result<List<RevoReportHourVm>>.SuccessAsync(list);
+
+                return PagedResult<RevoReportHourVm>.Success(list, totalRecords);
             }
             catch (Exception ex)
             {
-                return await Result<List<RevoReportHourVm>>.FailAsync(ex.Message);
+                var res = new PagedResult<RevoReportHourVm>();
+                res.Succeeded = false;
+                res.Messages.Add(ex.Message);
+                return res;
             }
         }
 

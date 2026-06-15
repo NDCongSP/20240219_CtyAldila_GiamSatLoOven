@@ -1,4 +1,4 @@
-﻿{
+{
   "openapi": "3.0.1",
   "info": {
     "title": "GiamSat.API",
@@ -3328,6 +3328,61 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/FT15_SandingRealtimeResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/FT16/report": {
+      "get": {
+        "tags": [
+          "FT16"
+        ],
+        "operationId": "FT16_GetReport",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/EnumSandingMode"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT16_SandingLogDataListResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT16_SandingLogDataListResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FT16_SandingLogDataListResult"
                 }
               }
             }
@@ -7069,6 +7124,11 @@
             "type": "string",
             "nullable": true
           },
+          "stepId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "stepDisplay": {
             "type": "string",
             "nullable": true
@@ -7606,7 +7666,7 @@
   },
   "security": [
     {
-      "Bearer": []
+      "Bearer": [ ]
     }
   ]
 }

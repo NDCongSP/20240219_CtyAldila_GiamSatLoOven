@@ -173,11 +173,7 @@
                 }
                 else if (_reportMode == RevoReportMode.ByShaft)
                 {
-                    <RadzenDataGrid @ref="_shaftGrid"
-                                    Data="@_shaftRows"
-                                    TItem="RevoShaftRow"
-                                    AllowPaging="true"
-                                    PageSize="10"
+                    <RadzenDataGrid @ref="_shaftGrid" Data="@_shaftRows" Count="@_shaftCount" LoadData="@LoadShaftData" TItem="RevoShaftRow" AllowPaging="true" PageSize="10"
                                     AllowSorting="true"
                                     RowRender="@OnShaftRowRender"
                                     PagerHorizontalAlign="HorizontalAlign.Right"
@@ -212,12 +208,7 @@
                         @{
                             var visibleRevoCount = _revoList.Count(r => _selectedRevoId == null || r.Id == _selectedRevoId);
                         }
-                        <RadzenDataGrid @ref="_hourGrid"
-                                        class="hourly-report-grid"
-                                        Style="@($"min-width: {210 + (visibleRevoCount * 250)}px; width: 100%;")"
-                                        Data="@_hourRows"
-                                        TItem="RevoHourRow"
-                                        AllowPaging="true"
+                        <RadzenDataGrid @ref="_hourGrid" class="hourly-report-grid" Style="@($"min-width: {210 + (visibleRevoCount * 250)}px; width: 100%;")" Data="@_hourRows" Count="@_hourCount" LoadData="@LoadHourData" TItem="RevoHourRow" AllowPaging="true"
                                         PageSize="10"
                                         AllowSorting="true"
                                         RowRender="@OnHourRowRender"
