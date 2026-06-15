@@ -30,6 +30,7 @@ namespace GiamSat.UI.Pages
         private int? _selectedRevoId = null;
         private bool _isLoading = false;
         private bool _hasData = false;
+        private bool _hasSearched = false;
 
         private List<RevoDropdownModel> _revoList = new();
         private List<FT09_RevoDatalog> _rawData = new();
@@ -126,8 +127,15 @@ namespace GiamSat.UI.Pages
             await ExecuteSearch();
         }
 
-                private async Task ExecuteSearch()
+                        private async Task ExecuteSearch()
         {
+            if (!_hasSearched)
+            {
+                _hasSearched = true;
+                StateHasChanged();
+                await Task.Delay(50); // allow UI to render grids and populate @ref
+            }
+
             if (_reportMode == RevoReportMode.ByStep && _stepGrid != null)
             {
                 await _stepGrid.GoToPage(0);
@@ -153,6 +161,7 @@ namespace GiamSat.UI.Pages
             _shaftScope = RevoShaftScopeKind.Total;
             _shaftFinishedSwitch = false;
             _hasData = false;
+            _hasSearched = false;
             _shaftCount = 0;
             _scopeRecordCount = 0;
             _rawData.Clear();
@@ -198,6 +207,7 @@ namespace GiamSat.UI.Pages
                 _stepRows = new();
                 _stepCount = 0;
                 _hasData = false;
+            _hasSearched = false;
             }
         }
 
@@ -227,6 +237,7 @@ namespace GiamSat.UI.Pages
                 _shaftRows = new();
                 _shaftCount = 0;
                 _hasData = false;
+            _hasSearched = false;
             }
         }
 
@@ -256,6 +267,7 @@ namespace GiamSat.UI.Pages
                 _hourRows = new();
                 _hourCount = 0;
                 _hasData = false;
+            _hasSearched = false;
             }
         }
 
