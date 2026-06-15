@@ -133,7 +133,7 @@
                 @if (_reportMode == RevoReportMode.ByStep)
                 {
                     <RadzenDataGrid @ref="_stepGrid"
-                                    Data="@_stepRows"
+                                    Data="@_stepRows" Count="@_stepCount" LoadData="@LoadStepData"
                                     TItem="RevoStepRow"
                                     AllowPaging="true"
                                     PageSize="10"
