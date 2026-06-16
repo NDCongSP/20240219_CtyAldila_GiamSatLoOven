@@ -53,9 +53,6 @@
     </Reference>
     <!-- HslCommunication v11.6.4 (netstandard2.0) — phải khớp với version McProtocolScada.Lib.deps.json -->
     <!-- KHÔNG dùng NuGet HslCommunication 12.8.3 — McProtocolScada.Lib cần 11.6.4, khác version gây crash khi load DLL -->
-    <Reference Include="HslCommunication, Version=11.6.4.0, Culture=neutral, PublicKeyToken=3d72ad3b6b5ec0e3, processorArchitecture=MSIL">
-      <HintPath>..\dll\HslCommunication.dll</HintPath>
-    </Reference>
     <Reference Include="McProtocolScada.Lib">
       <HintPath>..\dll\McProtocolScada.Lib.dll</HintPath>
     </Reference>
