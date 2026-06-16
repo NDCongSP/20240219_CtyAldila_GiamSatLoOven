@@ -11,6 +11,10 @@ namespace GiamSat.UI.Components
         private FT14_TipOdFreq _model = new();
         private bool _isEdit;
 
+        // Ép RadzenNumeric dùng InvariantCulture ("." là dấu thập phân) để tránh lỗi
+        // Chrome theo locale máy (vd dấu phẩy) làm "280.56" bị parse thành 28056.
+        private readonly System.Globalization.CultureInfo _culture = System.Globalization.CultureInfo.InvariantCulture;
+
         protected override void OnParametersSet()
         {
             _isEdit = IsEdit;

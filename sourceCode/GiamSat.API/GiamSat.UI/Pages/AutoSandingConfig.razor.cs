@@ -14,6 +14,10 @@ namespace GiamSat.UI.Pages
 {
     public partial class AutoSandingConfig
     {
+        // Ép RadzenNumeric dùng InvariantCulture ("." là dấu thập phân) để tránh lỗi
+        // Chrome theo locale máy (vd dấu phẩy) làm "280.56" bị parse thành 28056.
+        private readonly System.Globalization.CultureInfo _culture = System.Globalization.CultureInfo.InvariantCulture;
+
         // ── State ────────────────────────────────────────────────────────────
         private int  _selectedTab    = 0;
         private bool _isLoading      = true;

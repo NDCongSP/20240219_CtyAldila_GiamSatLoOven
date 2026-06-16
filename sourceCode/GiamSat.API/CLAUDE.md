@@ -322,6 +322,25 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 
 ---
 
+### [2026-06-16] — Session: Fix RadzenNumeric nhập số lẻ bị mất dấu thập phân trên Chrome
+
+```
+[FIX]  DialogAutoSandingConfig.razor + .razor.cs
+                                  — Bug: màn hình tạo/sửa Part, nhập số lẻ (vd FreqTarget=280.56) → hiển thị + lưu DB
+                                    thành 28056 (mất dấu chấm). Chỉ bị trên Chrome, Edge bình thường.
+                                    Root cause: RadzenNumeric mặc định parse theo CurrentCulture phía client; Chrome đặt
+                                    locale máy (vd dấu thập phân là phẩy) → "." bị coi là group separator → 280.56 = 28056.
+                                    Server đã ép NumberDecimalSeparator="." (Program.cs) nhưng không cứu được parse phía input.
+                                    Fix: thêm field _culture = CultureInfo.InvariantCulture + Culture="@_culture" cho TẤT CẢ
+                                    RadzenNumeric (13 field: Length, OD_BOD, FreqTarget, Freq_LL/UL, Formula, A/B/C/D,
+                                    Diam_LL/UL 1-3) → "." luôn là dấu thập phân, không phụ thuộc locale trình duyệt.
+[FIX]  AutoSandingConfig.razor + .razor.cs
+                                  — Áp dụng cùng fix cho các RadzenNumeric Tab 2 (Offset Fre1/Fre2/Spine, Motor From/To/Step,
+                                    Fre1/Fre2/StiffnessY/BeltRotationRpm trong bảng): thêm _culture + Culture="@_culture".
+```
+
+---
+
 ### [2026-06-15] — Session: Fix HslCommunication DLL không load được trên PRD
 
 ```

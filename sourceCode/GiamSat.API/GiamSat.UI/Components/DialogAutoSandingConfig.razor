@@ -15,37 +15,37 @@
 
                 <div class="col-6 col-md-3">
                     <RadzenFormField Text="Length (mm)" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.Length" TValue="double?" Format="F1" Min="0" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.Length" TValue="double?" Culture="@_culture" Format="F1" Min="0" Style="width:100%" />
                     </RadzenFormField>
                 </div>
 
                 <div class="col-6 col-md-3">
                     <RadzenFormField Text="OD / BOD (mm)" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.OD_BOD" TValue="double?" Format="F3" Min="0" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.OD_BOD" TValue="double?" Culture="@_culture" Format="F3" Min="0" Style="width:100%" />
                     </RadzenFormField>
                 </div>
 
                 <div class="col-6 col-md-3">
                     <RadzenFormField Text="Freq Target (CPM)" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.FreqTarget" TValue="double?" Format="F1" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.FreqTarget" TValue="double?" Culture="@_culture" Format="F1" Style="width:100%" />
                     </RadzenFormField>
                 </div>
 
                 <div class="col-6 col-md-3">
                     <RadzenFormField Text="Freq LL (CPM)" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.Freq_LL" TValue="double?" Format="F1" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.Freq_LL" TValue="double?" Culture="@_culture" Format="F1" Style="width:100%" />
                     </RadzenFormField>
                 </div>
 
                 <div class="col-6 col-md-3">
                     <RadzenFormField Text="Freq UL (CPM)" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.Freq_UL" TValue="double?" Format="F1" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.Freq_UL" TValue="double?" Culture="@_culture" Format="F1" Style="width:100%" />
                     </RadzenFormField>
                 </div>
 
                 <div class="col-6 col-md-3">
                     <RadzenFormField Text="Formula" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.Formula" TValue="double?" Format="F0" Min="1" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.Formula" TValue="double?" Culture="@_culture" Format="F0" Min="1" Style="width:100%" />
                     </RadzenFormField>
                 </div>
 
@@ -61,22 +61,22 @@
             <div class="row g-3 rz-mt-1">
                 <div class="col-6 col-md-3">
                     <RadzenFormField Text="A" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.A" TValue="double?" Format="F4" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.A" TValue="double?" Culture="@_culture" Format="F4" Style="width:100%" />
                     </RadzenFormField>
                 </div>
                 <div class="col-6 col-md-3">
                     <RadzenFormField Text="B" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.B" TValue="double?" Format="F4" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.B" TValue="double?" Culture="@_culture" Format="F4" Style="width:100%" />
                     </RadzenFormField>
                 </div>
                 <div class="col-6 col-md-3">
                     <RadzenFormField Text="C" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.C" TValue="double?" Format="F4" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.C" TValue="double?" Culture="@_culture" Format="F4" Style="width:100%" />
                     </RadzenFormField>
                 </div>
                 <div class="col-6 col-md-3">
                     <RadzenFormField Text="D" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.D" TValue="double?" Format="F4" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.D" TValue="double?" Culture="@_culture" Format="F4" Style="width:100%" />
                     </RadzenFormField>
                 </div>
             </div>
@@ -92,12 +92,12 @@
                 </div>
                 <div class="col-4">
                     <RadzenFormField Text="Diam LL 1 (mm)" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.Diam_LL_1" TValue="double?" Format="F2" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.Diam_LL_1" TValue="double?" Culture="@_culture" Format="F2" Style="width:100%" />
                     </RadzenFormField>
                 </div>
                 <div class="col-4">
                     <RadzenFormField Text="Diam UL 1 (mm)" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.Diam_UL_1" TValue="double?" Format="F2" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.Diam_UL_1" TValue="double?" Culture="@_culture" Format="F2" Style="width:100%" />
                     </RadzenFormField>
                 </div>
                 <div class="col-4">
@@ -112,12 +112,12 @@
                 </div>
                 <div class="col-4">
                     <RadzenFormField Text="Diam LL 2 (mm)" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.Diam_LL_2" TValue="double?" Format="F2" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.Diam_LL_2" TValue="double?" Culture="@_culture" Format="F2" Style="width:100%" />
                     </RadzenFormField>
                 </div>
                 <div class="col-4">
                     <RadzenFormField Text="Diam UL 2 (mm)" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.Diam_UL_2" TValue="double?" Format="F2" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.Diam_UL_2" TValue="double?" Culture="@_culture" Format="F2" Style="width:100%" />
                     </RadzenFormField>
                 </div>
                 <div class="col-4">
@@ -132,12 +132,12 @@
                 </div>
                 <div class="col-4">
                     <RadzenFormField Text="Diam LL 3 (mm)" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.Diam_LL_3" TValue="double?" Format="F2" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.Diam_LL_3" TValue="double?" Culture="@_culture" Format="F2" Style="width:100%" />
                     </RadzenFormField>
                 </div>
                 <div class="col-4">
                     <RadzenFormField Text="Diam UL 3 (mm)" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.Diam_UL_3" TValue="double?" Format="F2" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.Diam_UL_3" TValue="double?" Culture="@_culture" Format="F2" Style="width:100%" />
                     </RadzenFormField>
                 </div>
                 <div class="col-4">

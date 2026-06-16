@@ -228,17 +228,17 @@
                                     <RadzenRow Gap="0.75rem" class="rz-mb-2">
                                         <RadzenColumn Size="12" SizeMD="4">
                                             <RadzenFormField Text="Offset Fre1 (CPM)" Variant="Variant.Outlined" Style="width:100%">
-                                                <RadzenNumeric @bind-Value="_offsetFre1" Format="F2" Style="width:100%" TValue="double" />
+                                                <RadzenNumeric @bind-Value="_offsetFre1" Format="F2" Style="width:100%" TValue="double" Culture="@_culture" />
                                             </RadzenFormField>
                                         </RadzenColumn>
                                         <RadzenColumn Size="12" SizeMD="4">
                                             <RadzenFormField Text="Offset Fre2 (CPM)" Variant="Variant.Outlined" Style="width:100%">
-                                                <RadzenNumeric @bind-Value="_offsetFre2" Format="F2" Style="width:100%" TValue="double" />
+                                                <RadzenNumeric @bind-Value="_offsetFre2" Format="F2" Style="width:100%" TValue="double" Culture="@_culture" />
                                             </RadzenFormField>
                                         </RadzenColumn>
                                         <RadzenColumn Size="12" SizeMD="4">
                                             <RadzenFormField Text="Offset Spine" Variant="Variant.Outlined" Style="width:100%">
-                                                <RadzenNumeric @bind-Value="_offsetSpine" Format="F2" Style="width:100%" TValue="double" />
+                                                <RadzenNumeric @bind-Value="_offsetSpine" Format="F2" Style="width:100%" TValue="double" Culture="@_culture" />
                                             </RadzenFormField>
                                         </RadzenColumn>
                                     </RadzenRow>
@@ -247,17 +247,17 @@
                                     <RadzenRow Gap="0.75rem" AlignItems="AlignItems.End">
                                         <RadzenColumn Size="6" SizeMD="2">
                                             <RadzenFormField Text="Tốc độ From (RPM)" Variant="Variant.Outlined" Style="width:100%">
-                                                <RadzenNumeric @bind-Value="_motorFrom" Format="F0" Style="width:100%" TValue="double" />
+                                                <RadzenNumeric @bind-Value="_motorFrom" Format="F0" Style="width:100%" TValue="double" Culture="@_culture" />
                                             </RadzenFormField>
                                         </RadzenColumn>
                                         <RadzenColumn Size="6" SizeMD="2">
                                             <RadzenFormField Text="To (RPM)" Variant="Variant.Outlined" Style="width:100%">
-                                                <RadzenNumeric @bind-Value="_motorTo" Format="F0" Style="width:100%" TValue="double" />
+                                                <RadzenNumeric @bind-Value="_motorTo" Format="F0" Style="width:100%" TValue="double" Culture="@_culture" />
                                             </RadzenFormField>
                                         </RadzenColumn>
                                         <RadzenColumn Size="6" SizeMD="2">
                                             <RadzenFormField Text="Bước nhảy (RPM)" Variant="Variant.Outlined" Style="width:100%">
-                                                <RadzenNumeric @bind-Value="_motorStep" Format="F0" Style="width:100%" TValue="double" Min="1" />
+                                                <RadzenNumeric @bind-Value="_motorStep" Format="F0" Style="width:100%" TValue="double" Culture="@_culture" Min="1" />
                                             </RadzenFormField>
                                         </RadzenColumn>
                                         <RadzenColumn Size="6" SizeMD="6">
@@ -450,10 +450,10 @@
                                                 {
                                                     <tr>
                                                         <td class="col-idx">@row.RowIndex</td>
-                                                        <td><RadzenNumeric @bind-Value="row.Fre1" Format="F1" Style="width:90px" TValue="double" /></td>
-                                                        <td><RadzenNumeric @bind-Value="row.BeltRotationRpm" Format="F0" Style="width:80px" TValue="double" /></td>
-                                                        <td><RadzenNumeric @bind-Value="row.Fre2" Format="F1" Style="width:90px" TValue="double" /></td>
-                                                        <td><RadzenNumeric @bind-Value="row.StiffnessY" Format="F3" Style="width:90px" TValue="double" /></td>
+                                                        <td><RadzenNumeric @bind-Value="row.Fre1" Format="F1" Style="width:90px" TValue="double" Culture="@_culture" /></td>
+                                                        <td><RadzenNumeric @bind-Value="row.BeltRotationRpm" Format="F0" Style="width:80px" TValue="double" Culture="@_culture" /></td>
+                                                        <td><RadzenNumeric @bind-Value="row.Fre2" Format="F1" Style="width:90px" TValue="double" Culture="@_culture" /></td>
+                                                        <td><RadzenNumeric @bind-Value="row.StiffnessY" Format="F3" Style="width:90px" TValue="double" Culture="@_culture" /></td>
                                                         <td class="col-diff">@row.FreqDiff.ToString("F1")</td>
                                                     </tr>
                                                 }
