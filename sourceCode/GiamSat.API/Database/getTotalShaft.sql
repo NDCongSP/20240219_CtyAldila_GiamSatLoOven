@@ -17,59 +17,55 @@ BEGIN
     DECLARE @lastHour DATETIME;
 
     -- Lấy mốc thời gian mới nhất của TOÀN HỆ THỐNG
-    SELECT @maxCreatedAt = MAX(CreatedAt) FROM FT09;
-
-    IF @maxCreatedAt IS NULL RETURN;
+    -- Thay vì MAX(CreatedAt) có thể gây full table scan và sai lệch do dữ liệu tương lai, dùng GETDATE()
+    SET @maxCreatedAt = GETDATE();
 
     -- Thiết lập khung giờ cố định
     SET @currentHour = DATEADD(HOUR, DATEDIFF(HOUR, 0, @maxCreatedAt), 0);
     SET @nextHour = DATEADD(HOUR, 1, @currentHour);
     SET @lastHour = DATEADD(HOUR, -1, @currentHour);
 
-    -- Lấy thông tin tổng hợp của từng Shaft (xét toàn bộ quá trình của shaft)
-    WITH ShaftStats AS (
-        SELECT 
-            RevoId,
-            ShaftNum,
-            MIN(CreatedAt) AS StartedAt,
-            MAX(CreatedAt) AS LastActivityAt,
-            CASE WHEN COUNT(*) = COUNT(CASE WHEN TotalTime > 0 THEN 1 END) THEN 1 ELSE 0 END AS IsFinished
+    -- Các CTE giữ nguyên logic lọc @RevoId theo giờ
+    WITH FinishedCurrent AS (
+        SELECT RevoId, ShaftNum
         FROM FT09
-        WHERE ShaftNum IS NOT NULL
+        WHERE CreatedAt >= @currentHour AND CreatedAt < @nextHour
+          AND ShaftNum IS NOT NULL
           AND (@RevoId IS NULL OR RevoId = @RevoId)
-          -- Tối ưu: chỉ xét dữ liệu trong vòng 48h qua để tránh full table scan
-          AND CreatedAt >= DATEADD(HOUR, -48, @lastHour)
         GROUP BY RevoId, ShaftNum
+        HAVING COUNT(*) = COUNT(CASE WHEN TotalTime > 0 THEN 1 END)
     ),
-    HourStats AS (
-        SELECT 
-            t.RevoId,
-            -- Shaft được coi là Total của giờ nếu có bất kỳ activity nào trong giờ đó
-            COUNT(DISTINCT CASE WHEN t.CreatedAt >= @currentHour AND t.CreatedAt < @nextHour THEN t.ShaftNum END) AS TotalShaftCurrentHour,
-            COUNT(DISTINCT CASE WHEN t.CreatedAt >= @lastHour AND t.CreatedAt < @currentHour THEN t.ShaftNum END) AS TotalShaftLastHour
-        FROM FT09 t
-        WHERE t.ShaftNum IS NOT NULL
-          AND (@RevoId IS NULL OR t.RevoId = @RevoId)
-          AND t.CreatedAt >= @lastHour AND t.CreatedAt < @nextHour 
-        GROUP BY t.RevoId
+    FinishedLast AS (
+        SELECT RevoId, ShaftNum
+        FROM FT09
+        WHERE CreatedAt >= @lastHour AND CreatedAt < @currentHour
+          AND ShaftNum IS NOT NULL
+          AND (@RevoId IS NULL OR RevoId = @RevoId)
+        GROUP BY RevoId, ShaftNum
+        HAVING COUNT(*) = COUNT(CASE WHEN TotalTime > 0 THEN 1 END)
     ),
-    FinishedStats AS (
-        SELECT 
-            RevoId,
-            -- Shaft hoàn thành được tính vào giờ của LastActivityAt
-            SUM(CASE WHEN IsFinished = 1 AND LastActivityAt >= @currentHour AND LastActivityAt < @nextHour THEN 1 ELSE 0 END) AS TotalShaftFinishCurrentHour,
-            SUM(CASE WHEN IsFinished = 1 AND LastActivityAt >= @lastHour AND LastActivityAt < @currentHour THEN 1 ELSE 0 END) AS TotalShaftFinshLastHour
-        FROM ShaftStats
-        GROUP BY RevoId
+    -- Lọc double rolling: Nếu shaft đã hoàn thành ở giờ hiện tại thì không tính hoàn thành ở giờ trước nữa
+    FinishedLast_Filtered AS (
+        SELECT fl.RevoId, fl.ShaftNum 
+        FROM FinishedLast fl
+        LEFT JOIN FinishedCurrent fc ON fl.RevoId = fc.RevoId AND fl.ShaftNum = fc.ShaftNum
+        WHERE fc.ShaftNum IS NULL
     )
-
+    
+    -- Query chính...
     SELECT 
-        h.RevoId,
-        ISNULL(h.TotalShaftCurrentHour, 0) AS TotalShaftCurrentHour,
-        ISNULL(f.TotalShaftFinishCurrentHour, 0) AS TotalShaftFinishCurrentHour,
-        ISNULL(h.TotalShaftLastHour, 0) AS TotalShaftLastHour,
-        ISNULL(f.TotalShaftFinshLastHour, 0) AS TotalShaftFinshLastHour
-    FROM HourStats h
-    LEFT JOIN FinishedStats f ON h.RevoId = f.RevoId;
+        t.RevoId,
+        COUNT(DISTINCT CASE WHEN t.CreatedAt >= @currentHour AND t.CreatedAt < @nextHour THEN t.ShaftNum END) AS TotalShaftCurrentHour,
+        COUNT(DISTINCT fc.ShaftNum) AS TotalShaftFinishCurrentHour,
+        COUNT(DISTINCT CASE WHEN t.CreatedAt >= @lastHour AND t.CreatedAt < @currentHour THEN t.ShaftNum END) AS TotalShaftLastHour,
+        COUNT(DISTINCT fl.ShaftNum) AS TotalShaftFinshLastHour
+    FROM FT09 t
+    LEFT JOIN FinishedCurrent fc ON t.RevoId = fc.RevoId AND t.ShaftNum = fc.ShaftNum
+    LEFT JOIN FinishedLast_Filtered fl ON t.RevoId = fl.RevoId AND t.ShaftNum = fl.ShaftNum
+    WHERE t.ShaftNum IS NOT NULL
+      AND (@RevoId IS NULL OR t.RevoId = @RevoId)
+      -- Quan trọng: Chỉ lấy dữ liệu trong 2 khung giờ đang xét để tránh quét toàn bộ bảng gây sai số
+      AND t.CreatedAt >= @lastHour AND t.CreatedAt < @nextHour 
+    GROUP BY t.RevoId;
 
 END
