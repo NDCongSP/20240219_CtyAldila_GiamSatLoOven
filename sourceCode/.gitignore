@@ -95,7 +95,7 @@ artifacts/
 *.swp
 *~.nib
 *.orig
-*.rar
+##*.rar
 *.zip
 
 ## Database files
