@@ -140,6 +140,44 @@ namespace GiamSat.API
             }
         }
 
+        public async Task<Result<PartWorksDto>> GetWorksAsync(string part)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(part))
+                    return await Result<PartWorksDto>.FailAsync("Part không được để trống.");
+
+                // Fre works từ external DB (DatalogFrequency) theo Part
+                var freWorks = await _extContext.FreMeasurements
+                    .AsNoTracking()
+                    .Where(r => r.Part == part && r.WorkOrder != null && r.WorkOrder != "")
+                    .Select(r => r.WorkOrder!)
+                    .Distinct()
+                    .OrderByDescending(w => w)
+                    .ToListAsync();
+
+                // Spine works từ FT16 (SandingMode=Test) theo Part
+                var spineWorks = await _mainContext.FT16_SandingLogDatas
+                    .AsNoTracking()
+                    .Where(r => r.Part == part && r.SandingMode == EnumSandingMode.Test
+                             && r.Work != null && r.Work != "")
+                    .Select(r => r.Work!)
+                    .Distinct()
+                    .OrderByDescending(w => w)
+                    .ToListAsync();
+
+                return await Result<PartWorksDto>.SuccessAsync(new PartWorksDto
+                {
+                    FreWorks = freWorks,
+                    SpineWorks = spineWorks
+                });
+            }
+            catch (Exception ex)
+            {
+                return await Result<PartWorksDto>.FailAsync(ex.Message);
+            }
+        }
+
         // Reading lưu dạng nvarchar — parse với InvariantCulture để xử lý dấu chấm thập phân
         private static double ParseReading(string? value)
         {

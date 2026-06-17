@@ -271,15 +271,19 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "DONE — Dialog Thêm Part: chuyển Formula vào chung hàng A,B,C,D + default null như ABCD"
+  current_task:     "DONE — Fix JS setupEnterNav undefined (eval-define, firstRender) + bật response compression API để load 12k part nhanh hơn"
   related_files:
-    - "GiamSat.UI/Components/DialogAutoSandingConfig.razor"
-    - "GiamSat.UI/Pages/AutoSandingConfig.razor.cs"
+    - "GiamSat.Models/NotTable/autosanding/FT14SyncDtos.cs (PartWorksDto)"
+    - "GiamSat.Models/Services/ISFT14_CalcData.cs (GetWorksAsync)"
+    - "GiamSat.API/Services/SFT14_CalcData.cs"
+    - "GiamSat.API/Controllers/FT14Controller.cs (GET works)"
+    - "GiamSat.APIClient/ApiClient/FT14CalcDataClient.Works.cs"
+    - "GiamSat.UI/Pages/AutoSandingConfig.razor(.cs)"
   blocked_by:       ""
   next_step:
-    - Xác nhận khóa thực tế của PartZM (hiện cấu hình HasNoKey vì PartID/ZMID đều nullable)
-    - Tạo service/query đọc Part + PartZM + ZMmeasType nếu cần cho UI/AutoSanding
-    - Verify mapping cột real→float, smallint→short, bit→bool khớp DB external
+    - CẦN RESTART API để có endpoint GET api/FT14/works
+    - Test dropdown Work: Fre works (external) + Spine works (FT16 Test) đúng theo part chưa
+    - Test thực tế nút Đồng bộ FT14 (session trước)
   last_session:     "2026-06-17"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
@@ -319,6 +323,117 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-06-17] — Session: Fix setupEnterNav undefined + nén response cho list Part nhanh
+
+```
+[FIX]  AutoSandingConfig.razor.cs — Lỗi "Could not find 'setupEnterNav'" (debugger break mỗi render):
+                                    nguyên nhân openfile.js cũ bị cache → hàm chưa có khi interop gọi.
+                                    Fix: định nghĩa window.setupEnterNav bằng eval (const EnterNavScript) ngay trong
+                                    OnAfterRenderAsync, CHỈ chạy firstRender → không phụ thuộc file tĩnh + không spam exception.
+[CHORE] openfile.js               — Gỡ setupEnterNav (đã chuyển sang eval trong C#).
+[PERF] Startup.cs                 — Bật AddResponseCompression (Brotli + Gzip, Fastest, +application/json) +
+                                    app.UseResponseCompression() đầu pipeline → payload JSON FT14 ~12k bản ghi co lại
+                                    nhiều lần → tải "Danh sách Part" nhanh hơn. Browser tự gửi Accept-Encoding + giải nén.
+                                    (Kiến trúc hiện phụ thuộc full list client-side: Export/Import/Apply ABCD/dropdown Tab2
+                                     đều duyệt _parts → chưa chuyển server-paging để tránh phá các tính năng đó.)
+```
+
+---
+
+### [2026-06-17] — Session: Bảng đo test — Enter để nhảy xuống ô cùng cột dòng dưới
+
+```
+[FEAT] openfile.js                — Thêm setupEnterNav(tableEl): event delegation keydown trên <table>,
+                                    Enter trong <input> → preventDefault + focus input cùng cellIndex ở dòng kế dưới
+                                    (select sẵn nội dung). Bind 1 lần/element (cờ _enterNavBound) → sống khi thêm/xóa dòng.
+[FEAT] AutoSandingConfig.razor    — Thêm @ref="_testTableRef" cho <table class="as-test-table">
+[FEAT] AutoSandingConfig.razor.cs — ElementReference _testTableRef + OnAfterRenderAsync gọi _js.InvokeVoidAsync("setupEnterNav", ref)
+                                    (bọc try/catch — element chưa sẵn sàng thì render sau gắn lại).
+```
+
+---
+
+### [2026-06-17] — Session: Tab Tính ABCD — nút Cancel + Fre2 về giữa (disable thay vì ẩn)
+
+```
+[FEAT] AutoSandingConfig.razor    — Thêm nút "Cancel" cạnh "Load Data từ DB" → reset Tab Tính ABCD về ban đầu.
+                                    Work Fre2 đưa về giữa (Fre1 | Fre2 | Spine); khi chưa chọn Fre1 thì DISABLE Fre2
+                                    (Disabled khi _workFre1 rỗng) thay vì ẩn cả cột như trước.
+[FEAT] AutoSandingConfig.razor.cs — OnResetCalcForm(): clear _selectedPartId, work, work-lists, offsets, formular(=1),
+                                    motor(100/500/100), _testRows, kết quả AB/CD + chart points.
+                                    (Work Spine vẫn đọc FT16 SandingMode=Test — đã đúng từ session trước.)
+```
+
+---
+
+### [2026-06-17] — Session: Tab Tính ABCD — Part dropdown nhanh + Work dropdown theo Part
+
+```
+[PERF] AutoSandingConfig.razor    — Part dropdown thêm AllowVirtualization="true" → mở list 12k+ part không còn lag
+                                    (Radzen chỉ render item trong viewport thay vì toàn bộ DOM).
+[FEAT] FT14SyncDtos.cs            — DTO mới PartWorksDto { FreWorks, SpineWorks }
+[FEAT] ISFT14_CalcData.cs        — Thêm GetWorksAsync(string part)
+[FEAT] SFT14_CalcData.cs         — GetWorksAsync: FreWorks = distinct WorkOrder external DB theo Part;
+                                    SpineWorks = distinct Work FT16 (SandingMode=Test) theo Part. OrderByDescending.
+[FEAT] FT14Controller.cs         — GET api/FT14/works?part=
+[FEAT] FT14CalcDataClient.Works.cs — File partial mới: IFT14CalcDataClient.GetWorksAsync + PartWorks/PartWorksResult
+                                    (dùng chung _httpClient + helper của FT14CalcDataClient.cs).
+[FEAT] AutoSandingConfig.razor    — Work Fre1/Fre2/Spine: TextBox → RadzenDropDown (filter + virtualize + clear).
+                                    Layout: Fre1 + Spine hiện trước; Fre2 chỉ hiện khi đã chọn Fre1.
+[FEAT] AutoSandingConfig.razor.cs — Fields _freWorks/_freWorks2/_spineWorks/_worksLoading.
+                                    OnPartSelected → async, reset work + gọi LoadWorksForPart (GetWorksAsync).
+                                    OnWorkFre1Changed: _freWorks2 = _freWorks trừ work đã chọn ở Fre1; clear Fre2 nếu trùng.
+```
+
+---
+
+### [2026-06-17] — Session: Fix đồng bộ FT14 lỗi toàn bộ batch (EF không dịch được query)
+
+```
+[FIX]  SFT14_Sync.cs              — Root cause: SyncPartsAsync dùng LINQ join PartZM ⋈ ZMmeasType + pz.PartID.Value
+                                    trong Contains trên cột nullable/entity keyless → EF Core không translate được
+                                    → ném InvalidOperationException ở MỌI batch → Succeeded=false → client cộng Failed.
+                                    Fix: bỏ join trong SQL. Lọc PartZM bằng List<int?>.Contains(pz.PartID) (→ IN(...) an toàn),
+                                    load ZMmeasType riêng rồi join trong bộ nhớ. Dùng partIdSet/partIdNullable thay .Value.
+[FIX]  AutoSandingConfig.razor.cs — OnSyncData: thu thập message lỗi thực từ res.Messages + res.Data.Messages
+                                    (trước đây nuốt mất) → hiển thị notification Warning với 3 message đầu khi có lỗi.
+[FIX]  SFT14_Sync.cs              — Sau khi surface message: lỗi thực = "Invalid column name 'LLI'/'LUI'".
+                                    Bảng PartNewSetting thực tế KHÔNG có cột LLI/LUI (entity map dư).
+                                    Fix: query PartNewSetting chỉ .Select(s => new { s.PartId, s.LStd }) — chỉ lấy cột cần
+                                    (Length = LStd) → EF không SELECT LLI/LUI nữa. settingByPart đổi thành Dictionary<int,float?>.
+```
+
+---
+
+### [2026-06-17] — Session: Đồng bộ dữ liệu Part từ external DB ALD_MFG → Oven.FT14
+
+```
+[FEAT] FT14SyncDtos.cs            — DTO mới: PartSyncSourceDto (PartId, PartName), FT14SyncResultDto (Inserted/Updated/Skipped/Failed/Messages)
+[FEAT] ISFT14_Sync.cs             — Interface: GetSyncSourcesAsync(), SyncPartsAsync(List<int> partIds)
+[FEAT] SFT14_Sync.cs              — Service: inject FreMeasurementDbContext (external ALD_MFG) + ApplicationDbContext.
+                                    GetSyncSourcesAsync: đọc bảng Part → list (PartId, Number).
+                                    SyncPartsAsync(batch): bulk-load Part + (PartZM join ZMmeasType) + PartNewSetting cho batch,
+                                    map → FT14, upsert theo PartName. Insert nếu chưa có; update nếu data đổi; skip nếu giống.
+                                    GIỮ NGUYÊN A/B/C/D/Formula/Z_Stiffness (do người dùng tự tính, sync không ghi đè).
+                                    Mapping:
+                                      Freq_LL = Part.Freq_LL + 1; Freq_UL = Part.Freq_UL + 1
+                                      FreqTarget = trung bình(Freq_LL, Freq_UL) tính TRÊN giá trị đã +1 (= avg(Part.Freq_LL,Part.Freq_UL) + 1)
+                                      OD_BOD = avg(Diam_LL, Diam_UL) của dòng PartZM Name chứa 'BOD', chọn số nhỏ nhất trong Name (cắt regex \d+)
+                                      TipOdLength_1..3 + Diam_LL/UL_1..3 = dòng Name chứa 'TOD', sort số tăng dần, lấy 3 điểm
+                                      Length = PartNewSetting.LStd
+[FEAT] FT14Controller.cs          — Thêm GET api/FT14/sync/sources + POST api/FT14/sync (body List<int>); inject ISFT14_Sync
+[CHORE] Startup.cs                — Đăng ký AddScoped<ISFT14_Sync, SFT14_Sync>()
+[FEAT] FT14SyncClient.cs          — File mới APIClient (viết tay, : IApiService → auto-register):
+                                    IFT14SyncClient.GetSyncSourcesAsync()/SyncPartsAsync() + DTO/Result wrappers (camelCase)
+[FEAT] AutoSandingConfig.razor    — Header Tab 1: nút "Đồng bộ dữ liệu" (sync) + RadzenProgressBar determinate hiển thị
+                                    %tiến độ + status (processed/total, Thêm/Cập nhật/Bỏ qua/Lỗi)
+[FEAT] AutoSandingConfig.razor.cs — OnSyncData(): lấy sources → chia batch 50 → gọi SyncPartsAsync, cộng dồn kết quả,
+                                    cập nhật _syncPercent mỗi batch; class SyncAccumulator tích lũy. Reload grid khi xong.
+[CHORE] _Imports.razor            — Thêm @inject IFT14SyncClient _ft14SyncClient
+```
 
 ---
 

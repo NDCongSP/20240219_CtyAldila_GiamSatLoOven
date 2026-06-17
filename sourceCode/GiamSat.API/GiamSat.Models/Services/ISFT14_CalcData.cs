@@ -22,5 +22,11 @@ namespace GiamSat.Models
             double motorFrom,
             double motorTo,
             double motorStep);
+
+        /// <summary>
+        /// Lấy danh sách Work Order liên quan tới một Part:
+        /// FreWorks (external DB) cho Fre1/Fre2, SpineWorks (FT16, Test) cho Stiffness.
+        /// </summary>
+        Task<Result<PartWorksDto>> GetWorksAsync(string part);
     }
 }

@@ -33,6 +33,10 @@
                                              style="flex-wrap:wrap" Gap="0.4rem">
                                     <RadzenText TextStyle="TextStyle.Subtitle1">Danh sách Part</RadzenText>
                                     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.4rem" AlignItems="AlignItems.Center">
+                                        <RadzenButton Icon="sync" Text="Đồng bộ dữ liệu"
+                                                      ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small"
+                                                      Click="@OnSyncData" IsBusy="@_isSyncing" BusyText="Đang đồng bộ..."
+                                                      Disabled="@_isSyncing" />
                                         <RadzenButton Icon="file_download" Text="Export Excel"
                                                       ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Small"
                                                       Click="@OnExportExcel" IsBusy="@_isExporting" BusyText="Đang xuất..." />
@@ -44,6 +48,21 @@
                                                       Click="@OnAddPart" />
                                     </RadzenStack>
                                 </RadzenStack>
+
+                                @* Progress đồng bộ dữ liệu Part từ DB ALD_MFG → FT14 *@
+                                @if (_isSyncing)
+                                {
+                                    <RadzenStack Gap="0.25rem">
+                                        <RadzenProgressBar Value="@_syncPercent" Max="100"
+                                                           Unit="%" Mode="ProgressBarMode.Determinate"
+                                                           ProgressBarStyle="ProgressBarStyle.Primary" />
+                                        <RadzenText TextStyle="TextStyle.Caption">
+                                            @_syncStatus (@_syncProcessed/@_syncTotal) —
+                                            Thêm: @_syncResult.Inserted | Cập nhật: @_syncResult.Updated |
+                                            Bỏ qua: @_syncResult.Skipped | Lỗi: @_syncResult.Failed
+                                        </RadzenText>
+                                    </RadzenStack>
+                                }
                                 @* Hidden file input for import *@
                                 <InputFile id="ft14ImportInput" style="display:none"
                                            OnChange="@OnImportFileSelected" accept=".xlsx" />
@@ -191,6 +210,7 @@
                                                                 ValueProperty="Id"
                                                                 Placeholder="-- Chọn part --"
                                                                 AllowFiltering="true"
+                                                                AllowVirtualization="true"
                                                                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                                                 Style="width:100%"
                                                                 Change="@OnPartSelected" />
@@ -205,21 +225,44 @@
                                         </RadzenColumn>
                                     </RadzenRow>
 
-                                    @* Dòng 1b: Work Order Fre1 / Fre2 / Spine (mỗi nguồn có work riêng) *@
+                                    @* Dòng 1b: Work Order — dropdown theo Part (Fre1 | Fre2 | Spine).
+                                       Fre2 bị disable cho tới khi chọn xong Work Fre1; list Fre2 loại work đã chọn ở Fre1. *@
                                     <RadzenRow Gap="0.75rem" class="rz-mb-2">
                                         <RadzenColumn Size="12" SizeMD="4">
                                             <RadzenFormField Text="Work Fre1 (*)" Variant="Variant.Outlined" Style="width:100%">
-                                                <RadzenTextBox @bind-Value="_workFre1" Placeholder="VD: 1794406" Style="width:100%" />
+                                                <RadzenDropDown @bind-Value="_workFre1"
+                                                                Data="@_freWorks"
+                                                                AllowFiltering="true" AllowClear="true"
+                                                                AllowVirtualization="true"
+                                                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                                                Placeholder="-- Chọn Work Fre1 --"
+                                                                Disabled="@(_worksLoading || _freWorks.Count == 0)"
+                                                                Change="@OnWorkFre1Changed"
+                                                                Style="width:100%" />
                                             </RadzenFormField>
                                         </RadzenColumn>
                                         <RadzenColumn Size="12" SizeMD="4">
                                             <RadzenFormField Text="Work Fre2 (để trống = dùng Fre1)" Variant="Variant.Outlined" Style="width:100%">
-                                                <RadzenTextBox @bind-Value="_workFre2" Placeholder="Để trống nếu cùng work Fre1" Style="width:100%" />
+                                                <RadzenDropDown @bind-Value="_workFre2"
+                                                                Data="@_freWorks2"
+                                                                AllowFiltering="true" AllowClear="true"
+                                                                AllowVirtualization="true"
+                                                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                                                Placeholder="-- Chọn Work Fre2 --"
+                                                                Disabled="@(string.IsNullOrWhiteSpace(_workFre1) || _freWorks2.Count == 0)"
+                                                                Style="width:100%" />
                                             </RadzenFormField>
                                         </RadzenColumn>
                                         <RadzenColumn Size="12" SizeMD="4">
                                             <RadzenFormField Text="Work Spine (để trống = dùng Fre1)" Variant="Variant.Outlined" Style="width:100%">
-                                                <RadzenTextBox @bind-Value="_workSpine" Placeholder="Để trống nếu cùng work Fre1" Style="width:100%" />
+                                                <RadzenDropDown @bind-Value="_workSpine"
+                                                                Data="@_spineWorks"
+                                                                AllowFiltering="true" AllowClear="true"
+                                                                AllowVirtualization="true"
+                                                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                                                Placeholder="-- Chọn Work Spine --"
+                                                                Disabled="@(_worksLoading || _spineWorks.Count == 0)"
+                                                                Style="width:100%" />
                                             </RadzenFormField>
                                         </RadzenColumn>
                                     </RadzenRow>
@@ -261,10 +304,15 @@
                                             </RadzenFormField>
                                         </RadzenColumn>
                                         <RadzenColumn Size="6" SizeMD="6">
-                                            <RadzenButton Icon="download" Text="Load Data từ DB"
-                                                          ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Medium"
-                                                          Click="@OnLoadDataFromDB" IsBusy="@_isLoadingCalc"
-                                                          BusyText="Đang load..." />
+                                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                                                <RadzenButton Icon="download" Text="Load Data từ DB"
+                                                              ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Medium"
+                                                              Click="@OnLoadDataFromDB" IsBusy="@_isLoadingCalc"
+                                                              BusyText="Đang load..." />
+                                                <RadzenButton Icon="cancel" Text="Cancel"
+                                                              ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Medium"
+                                                              Click="@OnResetCalcForm" Disabled="@_isLoadingCalc" />
+                                            </RadzenStack>
                                         </RadzenColumn>
                                     </RadzenRow>
                                 </RadzenCard>
@@ -430,7 +478,7 @@
                                 <RadzenCard class="rz-background-color-base-200 rz-p-2">
                                     <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-2">Dữ liệu đo test (Sand 1 → Sand 2)</RadzenText>
                                     <div style="overflow-x:auto">
-                                        <table class="as-test-table">
+                                        <table class="as-test-table" @ref="_testTableRef">
                                             <thead>
                                                 <tr>
                                                     <th rowspan="2" class="col-idx">#</th>

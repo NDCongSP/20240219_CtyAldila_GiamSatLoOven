@@ -25,6 +25,14 @@ namespace GiamSat.UI.Pages
         private bool _isLoadingCalc  = false;
         private bool _isExporting    = false;
         private bool _isImporting    = false;
+
+        // ── Đồng bộ Part từ external DB ALD_MFG → FT14 ───────────────────────
+        private bool   _isSyncing      = false;
+        private double _syncPercent    = 0;
+        private int    _syncProcessed  = 0;
+        private int    _syncTotal      = 0;
+        private string _syncStatus     = string.Empty;
+        private SyncAccumulator _syncResult = new();
         private bool _abcdCalculated = false;
         private bool _showGuide      = false;
 
@@ -41,6 +49,12 @@ namespace GiamSat.UI.Pages
         private string  _workFre1     = string.Empty;
         private string  _workFre2     = string.Empty;
         private string  _workSpine    = string.Empty;
+
+        // Tab 2 – danh sách Work theo Part (dropdown)
+        private List<string> _freWorks   = new();   // Fre1 (toàn bộ work của part)
+        private List<string> _freWorks2  = new();   // Fre2 = _freWorks trừ work đã chọn ở Fre1
+        private List<string> _spineWorks = new();   // Spine (FT16 Test)
+        private bool _worksLoading = false;
         private double  _offsetFre1   = 0;
         private double  _offsetFre2   = 0;
         private double  _offsetSpine  = 0;
@@ -55,10 +69,50 @@ namespace GiamSat.UI.Pages
         private List<ChartPoint> _chartCDPoints = new();
         private List<ChartPoint> _trendCDPoints = new();
 
+        // Ref tới bảng nhập liệu test để gắn điều hướng Enter (focus ô dưới cùng cột)
+        private ElementReference _testTableRef;
+
+        // JS điều hướng Enter — định nghĩa qua eval (không phụ thuộc file tĩnh bị cache),
+        // tránh lỗi "setupEnterNav undefined" + debugger break. Bind 1 lần/element.
+        private const string EnterNavScript = @"
+window.setupEnterNav = function (tableEl) {
+    if (!tableEl || tableEl._enterNavBound) return;
+    tableEl._enterNavBound = true;
+    tableEl.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter') return;
+        var input = e.target;
+        if (!input || input.tagName !== 'INPUT') return;
+        var td = input.closest('td');
+        var tr = input.closest('tr');
+        if (!td || !tr) return;
+        e.preventDefault();
+        var colIndex = td.cellIndex;
+        var nextTr = tr.nextElementSibling;
+        while (nextTr && nextTr.tagName !== 'TR') nextTr = nextTr.nextElementSibling;
+        if (!nextTr) { input.blur(); return; }
+        var nextTd = nextTr.cells ? nextTr.cells[colIndex] : null;
+        if (!nextTd) return;
+        var nextInput = nextTd.querySelector('input');
+        if (nextInput) { nextInput.focus(); if (nextInput.select) nextInput.select(); }
+    });
+};";
+
         // ── Lifecycle ────────────────────────────────────────────────────────
         protected override async Task OnInitializedAsync()
         {
             await LoadData();
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (!firstRender) return;
+            // Enter trong bảng test → nhảy ô dưới cùng cột. Định nghĩa hàm rồi gắn 1 lần.
+            try
+            {
+                await _js.InvokeVoidAsync("eval", EnterNavScript);
+                await _js.InvokeVoidAsync("setupEnterNav", _testTableRef);
+            }
+            catch { /* bỏ qua nếu JS chưa sẵn sàng */ }
         }
 
         // ── Tải dữ liệu từ DB ────────────────────────────────────────────────
@@ -126,6 +180,106 @@ namespace GiamSat.UI.Pages
             {
                 _notificationService.Notify(NotificationSeverity.Error, "Lỗi", ex.Message);
             }
+        }
+
+        // ── Đồng bộ dữ liệu Part từ external DB ALD_MFG → FT14 ───────────────
+        private async Task OnSyncData()
+        {
+            try
+            {
+                _isSyncing     = true;
+                _syncPercent   = 0;
+                _syncProcessed = 0;
+                _syncTotal     = 0;
+                _syncStatus    = "Đang lấy danh sách Part nguồn...";
+                _syncResult    = new SyncAccumulator();
+                StateHasChanged();
+
+                var sourcesRes = await _ft14SyncClient.GetSyncSourcesAsync();
+                if (sourcesRes == null || !sourcesRes.Succeeded || sourcesRes.Data == null)
+                {
+                    var m = sourcesRes?.Messages != null ? string.Join(", ", sourcesRes.Messages) : "Không lấy được danh sách Part nguồn";
+                    _notificationService.Notify(NotificationSeverity.Error, "Lỗi đồng bộ", m);
+                    return;
+                }
+
+                var ids = sourcesRes.Data.Select(s => s.PartId).Distinct().ToList();
+                _syncTotal = ids.Count;
+                if (_syncTotal == 0)
+                {
+                    _notificationService.Notify(NotificationSeverity.Info, "Đồng bộ", "Không có Part nào để đồng bộ.");
+                    return;
+                }
+
+                _syncStatus = "Đang đồng bộ vào FT14...";
+                var errorMessages = new HashSet<string>();
+                const int batchSize = 50;
+                for (int i = 0; i < ids.Count; i += batchSize)
+                {
+                    var batch = ids.Skip(i).Take(batchSize).ToList();
+                    try
+                    {
+                        var res = await _ft14SyncClient.SyncPartsAsync(batch);
+                        if (res != null && res.Succeeded && res.Data != null)
+                        {
+                            _syncResult.Inserted += res.Data.Inserted;
+                            _syncResult.Updated  += res.Data.Updated;
+                            _syncResult.Skipped  += res.Data.Skipped;
+                            _syncResult.Failed   += res.Data.Failed;
+                            if (res.Data.Messages != null)
+                                foreach (var m in res.Data.Messages) errorMessages.Add(m);
+                        }
+                        else
+                        {
+                            _syncResult.Failed += batch.Count;
+                            if (res?.Messages != null)
+                                foreach (var m in res.Messages) errorMessages.Add(m);
+                        }
+                    }
+                    catch (Exception exBatch)
+                    {
+                        _syncResult.Failed += batch.Count;
+                        errorMessages.Add(exBatch.Message);
+                    }
+
+                    _syncProcessed = Math.Min(i + batch.Count, _syncTotal);
+                    _syncPercent   = Math.Round((double)_syncProcessed / _syncTotal * 100, 1);
+                    StateHasChanged();
+                }
+
+                await LoadData();
+
+                if (_syncResult.Failed > 0)
+                {
+                    var detail = errorMessages.Count > 0 ? string.Join(" | ", errorMessages.Take(3)) : "Xem log API.";
+                    _notificationService.Notify(NotificationSeverity.Warning, "Đồng bộ xong (có lỗi)",
+                        $"Thêm {_syncResult.Inserted}, cập nhật {_syncResult.Updated}, bỏ qua {_syncResult.Skipped}, lỗi {_syncResult.Failed}. Lỗi: {detail}",
+                        duration: 12000);
+                }
+                else
+                {
+                    _notificationService.Notify(NotificationSeverity.Success, "Đồng bộ hoàn tất",
+                        $"Thêm {_syncResult.Inserted}, cập nhật {_syncResult.Updated}, bỏ qua {_syncResult.Skipped}.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _notificationService.Notify(NotificationSeverity.Error, "Lỗi đồng bộ", ex.Message);
+            }
+            finally
+            {
+                _isSyncing = false;
+                StateHasChanged();
+            }
+        }
+
+        // Tích lũy kết quả đồng bộ qua nhiều batch.
+        private class SyncAccumulator
+        {
+            public int Inserted { get; set; }
+            public int Updated  { get; set; }
+            public int Skipped  { get; set; }
+            public int Failed   { get; set; }
         }
 
         private async Task OnEditPart(FT14_TipOdFreq item)
@@ -379,14 +533,81 @@ namespace GiamSat.UI.Pages
         }
 
         // ── Tab 2 – Tính ABCD ────────────────────────────────────────────────
-        private void OnPartSelected(object value)
+        private async Task OnPartSelected(object value)
         {
             _abcdCalculated = false;
             _testRows       = new List<AutoSandingTestRow>();
 
+            // Reset lựa chọn work cũ
+            _workFre1 = _workFre2 = _workSpine = string.Empty;
+            _freWorks = new(); _freWorks2 = new(); _spineWorks = new();
+
             var part = _parts.FirstOrDefault(p => p.Id == _selectedPartId);
             if (part != null)
                 _formular = (int)(part.Formula ?? 1);
+
+            await LoadWorksForPart(part?.PartName);
+            StateHasChanged();
+        }
+
+        // Load danh sách Work liên quan tới Part (Fre từ external DB, Spine từ FT16)
+        private async Task LoadWorksForPart(string? partName)
+        {
+            if (string.IsNullOrWhiteSpace(partName)) return;
+            try
+            {
+                _worksLoading = true;
+                StateHasChanged();
+
+                var res = await _ft14CalcDataClient.GetWorksAsync(partName);
+                if (res != null && res.Succeeded && res.Data != null)
+                {
+                    _freWorks   = res.Data.FreWorks   ?? new();
+                    _spineWorks = res.Data.SpineWorks ?? new();
+                    _freWorks2  = new List<string>(_freWorks);
+                }
+                else
+                {
+                    var msg = res?.Messages != null ? string.Join(", ", res.Messages) : "Không tải được danh sách Work";
+                    _notificationService.Notify(NotificationSeverity.Warning, "Danh sách Work", msg);
+                }
+            }
+            catch (Exception ex)
+            {
+                _notificationService.Notify(NotificationSeverity.Error, "Lỗi tải Work", ex.Message);
+            }
+            finally
+            {
+                _worksLoading = false;
+                StateHasChanged();
+            }
+        }
+
+        // Khi chọn Work Fre1 → mở Fre2; list Fre2 không chứa work đã chọn ở Fre1
+        private void OnWorkFre1Changed(object value)
+        {
+            _freWorks2 = _freWorks.Where(w => w != _workFre1).ToList();
+            if (_workFre2 == _workFre1) _workFre2 = string.Empty;
+            StateHasChanged();
+        }
+
+        // Reset toàn bộ form Tab Tính ABCD về trạng thái ban đầu để chọn lại
+        private void OnResetCalcForm()
+        {
+            _selectedPartId = null;
+            _workFre1 = _workFre2 = _workSpine = string.Empty;
+            _freWorks = new(); _freWorks2 = new(); _spineWorks = new();
+
+            _offsetFre1 = _offsetFre2 = _offsetSpine = 0;
+            _formular   = 1;
+            _motorFrom  = 100; _motorTo = 500; _motorStep = 100;
+
+            _testRows       = new List<AutoSandingTestRow>();
+            _abcdCalculated = false;
+            _resultAB = new LinearRegressionResult();
+            _resultCD = new LinearRegressionResult();
+            _chartABPoints = new(); _trendABPoints = new();
+            _chartCDPoints = new(); _trendCDPoints = new();
 
             StateHasChanged();
         }

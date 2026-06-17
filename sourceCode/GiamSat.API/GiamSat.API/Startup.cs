@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -273,6 +274,7 @@ namespace GiamSat.API
             services.AddScoped<ISFT11, SFT11>();
             services.AddScoped<ISFT14, SFT14>();
             services.AddScoped<ISFT14_CalcData, SFT14_CalcData>();
+            services.AddScoped<ISFT14_Sync, SFT14_Sync>();
             services.AddScoped<ISFT15, SFT15>();
             services.AddScoped<ISFT16, SFT16>();
             services.AddScoped<SCommon>();
@@ -333,10 +335,23 @@ namespace GiamSat.API
                 options.AddPolicy("AllowAll", builder =>
                 {
                     builder.AllowAnyOrigin()
-                           .AllowAnyMethod()                           
+                           .AllowAnyMethod()
                            .AllowAnyHeader();
                 });
             });
+
+            // Nén response (Gzip/Brotli) — giảm mạnh payload JSON lớn (vd FT14 ~12k bản ghi)
+            // → tải danh sách Part nhanh hơn nhiều. Browser tự gửi Accept-Encoding + tự giải nén.
+            services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
+                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/json", "text/plain", "text/json" });
+            });
+            services.Configure<BrotliCompressionProviderOptions>(o => o.Level = System.IO.Compression.CompressionLevel.Fastest);
+            services.Configure<GzipCompressionProviderOptions>(o => o.Level = System.IO.Compression.CompressionLevel.Fastest);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -395,6 +410,9 @@ namespace GiamSat.API
                 }
             });
             #endregion
+
+            Log.Information("Configure: UseResponseCompression");
+            app.UseResponseCompression();
 
             Log.Information("Configure: UseCors");
             app.UseCors("AllowAll");

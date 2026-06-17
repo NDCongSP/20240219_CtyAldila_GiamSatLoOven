@@ -14,11 +14,13 @@ namespace GiamSat.API.Controllers
     {
         readonly SCommon _sCommon;
         readonly ISFT14_CalcData _calcDataService;
+        readonly ISFT14_Sync _syncService;
 
-        public FT14Controller(SCommon sCommon = null, ISFT14_CalcData calcDataService = null) : base(sCommon.SFT14)
+        public FT14Controller(SCommon sCommon = null, ISFT14_CalcData calcDataService = null, ISFT14_Sync syncService = null) : base(sCommon.SFT14)
         {
             _sCommon = sCommon;
             _calcDataService = calcDataService;
+            _syncService = syncService;
         }
 
         /// <summary>
@@ -37,6 +39,33 @@ namespace GiamSat.API.Controllers
             [FromQuery] double motorStep  = 100)
         {
             return await _calcDataService.GetCalcDataAsync(part, workFre1, workFre2, workSpine, offsetFre1, offsetFre2, motorFrom, motorTo, motorStep);
+        }
+
+        /// <summary>
+        /// Lấy danh sách Work Order liên quan tới một Part (cho dropdown Fre1/Fre2/Spine).
+        /// </summary>
+        [HttpGet("works")]
+        public async Task<Result<PartWorksDto>> GetWorks([FromQuery] string part)
+        {
+            return await _calcDataService.GetWorksAsync(part);
+        }
+
+        /// <summary>
+        /// Lấy danh sách Part nguồn (PartId + PartName) từ external DB ALD_MFG để chia batch đồng bộ.
+        /// </summary>
+        [HttpGet("sync/sources")]
+        public async Task<Result<List<PartSyncSourceDto>>> GetSyncSources()
+        {
+            return await _syncService.GetSyncSourcesAsync();
+        }
+
+        /// <summary>
+        /// Đồng bộ một batch Part (theo PartId) từ external DB vào bảng FT14.
+        /// </summary>
+        [HttpPost("sync")]
+        public async Task<Result<FT14SyncResultDto>> SyncParts([FromBody] List<int> partIds)
+        {
+            return await _syncService.SyncPartsAsync(partIds);
         }
     }
 }
