@@ -97,7 +97,7 @@ namespace GiamSat.UI.Pages
             {
                 Id      = System.Guid.Empty,
                 Actived = true,
-                Formula = 1,
+                // Formula để null như A,B,C,D — người dùng tự nhập
             };
 
             var saved = await OpenPartDialog("Thêm Part mới", blank, isEdit: false);

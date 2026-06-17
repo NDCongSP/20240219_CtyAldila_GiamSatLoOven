@@ -43,12 +43,6 @@
                     </RadzenFormField>
                 </div>
 
-                <div class="col-6 col-md-3">
-                    <RadzenFormField Text="Formula" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.Formula" TValue="double?" Culture="@_culture" Format="F0" Min="1" Style="width:100%" />
-                    </RadzenFormField>
-                </div>
-
             </div>
         </RadzenFieldset>
 
@@ -59,24 +53,29 @@
                 <strong>R = C·S + D</strong> (Belt Rotation vs Freq Diff)
             </RadzenAlert>
             <div class="row g-3 rz-mt-1">
-                <div class="col-6 col-md-3">
+                <div class="col-6 col-md">
                     <RadzenFormField Text="A" Style="width:100%">
                         <RadzenNumeric @bind-Value="@_model.A" TValue="double?" Culture="@_culture" Format="F4" Style="width:100%" />
                     </RadzenFormField>
                 </div>
-                <div class="col-6 col-md-3">
+                <div class="col-6 col-md">
                     <RadzenFormField Text="B" Style="width:100%">
                         <RadzenNumeric @bind-Value="@_model.B" TValue="double?" Culture="@_culture" Format="F4" Style="width:100%" />
                     </RadzenFormField>
                 </div>
-                <div class="col-6 col-md-3">
+                <div class="col-6 col-md">
                     <RadzenFormField Text="C" Style="width:100%">
                         <RadzenNumeric @bind-Value="@_model.C" TValue="double?" Culture="@_culture" Format="F4" Style="width:100%" />
                     </RadzenFormField>
                 </div>
-                <div class="col-6 col-md-3">
+                <div class="col-6 col-md">
                     <RadzenFormField Text="D" Style="width:100%">
                         <RadzenNumeric @bind-Value="@_model.D" TValue="double?" Culture="@_culture" Format="F4" Style="width:100%" />
+                    </RadzenFormField>
+                </div>
+                <div class="col-6 col-md">
+                    <RadzenFormField Text="Formula" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.Formula" TValue="double?" Culture="@_culture" Format="F0" Min="1" Style="width:100%" />
                     </RadzenFormField>
                 </div>
             </div>

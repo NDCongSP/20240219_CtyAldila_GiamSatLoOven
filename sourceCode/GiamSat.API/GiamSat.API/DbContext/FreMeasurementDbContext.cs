@@ -19,11 +19,20 @@ namespace GiamSat.API
         }
 
         public DbSet<FreMeasurementRecord> FreMeasurements { get; set; }
+        public DbSet<Part> Parts { get; set; }
+        public DbSet<PartZM> PartZMs { get; set; }
+        public DbSet<PartNewSetting> PartNewSettings { get; set; }
+        public DbSet<ZMmeasType> ZMmeasTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<FreMeasurementRecord>();
+            modelBuilder.Entity<Part>();
+            // PartZM không có khóa chính rõ ràng (PartID/ZMID đều nullable) — keyless, chỉ đọc
+            modelBuilder.Entity<PartZM>().HasNoKey();
+            modelBuilder.Entity<PartNewSetting>();
+            modelBuilder.Entity<ZMmeasType>();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

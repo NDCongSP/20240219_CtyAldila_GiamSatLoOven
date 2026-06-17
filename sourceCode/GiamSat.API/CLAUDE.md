@@ -271,16 +271,16 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "DONE — Scada.TrackingTime_AutoRolling1: redesign FT09 logging — insert on shaft reset (TotalTime=0), update on step time change"
+  current_task:     "DONE — Dialog Thêm Part: chuyển Formula vào chung hàng A,B,C,D + default null như ABCD"
   related_files:
-    - "Scada.TrackingTime_AutoRolling1/frmProduction.cs"
+    - "GiamSat.UI/Components/DialogAutoSandingConfig.razor"
+    - "GiamSat.UI/Pages/AutoSandingConfig.razor.cs"
   blocked_by:       ""
   next_step:
-    - Test kết nối thực tế với máy Auto Rolling 1/2/3
-    - Verify FT09: khi Part đổi hoặc StepRun=0 → INSERT rows TotalTime=0 cho shaft mới
-    - Verify FT09: khi TimeRunStep thay đổi → UPDATE TotalTime theo ShaftNum+StepId (không insert thêm)
-    - Rebuild McProtocolScada.Core trước, sau đó rebuild AutoRolling1
-  last_session:     "2026-06-12"
+    - Xác nhận khóa thực tế của PartZM (hiện cấu hình HasNoKey vì PartID/ZMID đều nullable)
+    - Tạo service/query đọc Part + PartZM + ZMmeasType nếu cần cho UI/AutoSanding
+    - Verify mapping cột real→float, smallint→short, bit→bool khớp DB external
+  last_session:     "2026-06-17"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
     - "Production appsettings có khác với appsettings.json không? Đang deploy ở đâu?"
@@ -319,6 +319,38 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-06-17] — Session: Dialog Thêm Part — Formula về chung hàng A,B,C,D + default null
+
+```
+[FIX]  DialogAutoSandingConfig.razor — Bỏ field Formula khỏi fieldset "Thông tin Part",
+                                    chuyển vào hàng "Tham số A, B, C, D" (A/B/C/D/Formula).
+                                    Đổi col-6 col-md-3 → col-6 col-md cho 5 field chia đều 1 hàng trên desktop.
+[FIX]  AutoSandingConfig.razor.cs   — OnAddPart: bỏ khởi tạo Formula = 1 → để null như A,B,C,D
+                                    (FT14_TipOdFreq.Formula client default = null).
+```
+
+---
+
+### [2026-06-17] — Session: Thêm 4 entity external DB cho FreMeasurementDbContext
+
+```
+[FEAT] Part.cs                    — Entity mới map bảng "Part" (external DB).
+                                    PK: ID (int) → [Column("ID")] Id. Number (nvarchar(18), not null).
+                                    real→float?: Flex_LL/UL, SW_LL/UL, SW_Wt_LL/UL, Freq_LL/UL, Freq_BSL.
+                                    SW_Meas_Type (nvarchar(25)) string?, Freq_Std int?, Freq_Wt (smallint)→short?.
+[FEAT] PartZM.cs                  — Entity mới map bảng "PartZM". Cột: PartID, ZMID (int?),
+                                    Diam_LL/UL, Min_Under, Max_Over (real→float?).
+                                    Keyless (HasNoKey) — PartID/ZMID đều nullable, không có PK rõ ràng.
+[FEAT] PartNewSetting.cs          — Entity mới map bảng "PartNewSetting" (1-1 với Part).
+                                    PK: PartId (int, not null). LLI/LUI/LStd/FR/Freq_CP/Freq_PD (real→float?), TL (bit→bool?).
+[FEAT] ZMmeasType.cs              — Entity mới map bảng "ZMmeasType". PK: ID (int) → [Column("ID")] Id.
+                                    Name (nvarchar(25), not null). ID khớp PartZM.ZMID.
+[CHORE] FreMeasurementDbContext.cs — Thêm 4 DbSet (Parts, PartZMs, PartNewSettings, ZMmeasTypes)
+                                    + đăng ký trong OnModelCreating; PartZM cấu hình .HasNoKey().
+```
 
 ---
 
