@@ -27,7 +27,8 @@
 
                 <div class="col-6 col-md-3">
                     <RadzenFormField Text="Freq Target (CPM)" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.FreqTarget" TValue="double?" Culture="@_culture" Format="F1" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.FreqTarget" TValue="double?" Culture="@_culture" Format="F1"
+                                       Change="@((double? _) => RecalcZStiffness())" Style="width:100%" />
                     </RadzenFormField>
                 </div>
 
@@ -43,6 +44,13 @@
                     </RadzenFormField>
                 </div>
 
+                <div class="col-6 col-md-3">
+                    <RadzenFormField Text="Z_Stiffness (tự tính = (FreqTarget − B) / A)" Style="width:100%">
+                        <RadzenNumeric @bind-Value="@_model.Z_Stiffness" TValue="double?" Culture="@_culture" Format="F3"
+                                       ReadOnly="true" Style="width:100%; color:#8e24aa; font-weight:600" />
+                    </RadzenFormField>
+                </div>
+
             </div>
         </RadzenFieldset>
 
@@ -55,12 +63,14 @@
             <div class="row g-3 rz-mt-1">
                 <div class="col-6 col-md">
                     <RadzenFormField Text="A" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.A" TValue="double?" Culture="@_culture" Format="F4" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.A" TValue="double?" Culture="@_culture" Format="F4"
+                                       Change="@((double? _) => RecalcZStiffness())" Style="width:100%" />
                     </RadzenFormField>
                 </div>
                 <div class="col-6 col-md">
                     <RadzenFormField Text="B" Style="width:100%">
-                        <RadzenNumeric @bind-Value="@_model.B" TValue="double?" Culture="@_culture" Format="F4" Style="width:100%" />
+                        <RadzenNumeric @bind-Value="@_model.B" TValue="double?" Culture="@_culture" Format="F4"
+                                       Change="@((double? _) => RecalcZStiffness())" Style="width:100%" />
                     </RadzenFormField>
                 </div>
                 <div class="col-6 col-md">

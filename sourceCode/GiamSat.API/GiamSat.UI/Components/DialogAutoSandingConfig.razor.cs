@@ -37,6 +37,7 @@ namespace GiamSat.UI.Components
                 B                    = Model.B,
                 C                    = Model.C,
                 D                    = Model.D,
+                Z_Stiffness          = Model.Z_Stiffness,
                 TipOdLength_1        = Model.TipOdLength_1,
                 Diam_LL_1            = Model.Diam_LL_1,
                 Diam_UL_1            = Model.Diam_UL_1,
@@ -47,6 +48,22 @@ namespace GiamSat.UI.Components
                 Diam_LL_3            = Model.Diam_LL_3,
                 Diam_UL_3            = Model.Diam_UL_3,
             };
+        }
+
+        /// <summary>
+        /// Tính lại Z_Stiffness từ A, B, FreqTarget — nghịch đảo hàm Y = A·Z + B → Z = (FreqTarget − B) / A.
+        /// Gọi mỗi khi A, B hoặc FreqTarget thay đổi để giá trị luôn đồng bộ với ABCD.
+        /// </summary>
+        private void RecalcZStiffness()
+        {
+            var a = _model.A ?? 0;
+            var b = _model.B ?? 0;
+            var freqTarget = _model.FreqTarget ?? 0;
+
+            // A ≈ 0 → không chia được → để null
+            _model.Z_Stiffness = Math.Abs(a) > 1e-10
+                ? Math.Round((freqTarget - b) / a, 3)
+                : (double?)null;
         }
 
         private void Submit(FT14_TipOdFreq arg)

@@ -73,15 +73,14 @@
                                                 AllowFiltering="true"
                                                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                                 FilterMode="FilterMode.SimpleWithMenu"
-                                                AllowPaging="true" PageSize="10"
-                                                PageSizeOptions="@(new int[]{5,10,20,50})"
+                                                AllowPaging="true" PageSize="50"
+                                                PageSizeOptions="@(new int[]{5,10,20,50,100,200,500})"
                                                 ShowPagingSummary="true"
                                                 PagingSummaryFormat="Hiển thị trang {0}/{1} (Tổng {2} bản ghi)"
                                                 EmptyText="Chưa có part nào. Nhấn &quot;Thêm Part&quot; để tạo mới."
                                                 Density="Density.Compact"
                                                 AllowColumnResize="true"
                                                 ColumnResizeMode="ColumnResizeMode.OnResize"
-                                                Style="height:500px"
                                                 class="rz-shadow-2 as-parts-grid">
                                     <Columns>
                                         <RadzenDataGridColumn TItem="FT14_TipOdFreq" Property="PartName" Title="Item Number" Width="145px" Frozen="true" />

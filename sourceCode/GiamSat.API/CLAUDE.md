@@ -271,20 +271,16 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "DONE — Fix JS setupEnterNav undefined (eval-define, firstRender) + bật response compression API để load 12k part nhanh hơn"
+  current_task:     "DONE — Dialog Part: thêm ô Z_Stiffness (readonly) tự tính = (FreqTarget − B)/A khi đổi A/B/FreqTarget + clone giữ Z_Stiffness. DataGrid Tab 1: page size {5,10,20,50,100,200,500}, grid tự cao theo số dòng."
   related_files:
-    - "GiamSat.Models/NotTable/autosanding/FT14SyncDtos.cs (PartWorksDto)"
-    - "GiamSat.Models/Services/ISFT14_CalcData.cs (GetWorksAsync)"
-    - "GiamSat.API/Services/SFT14_CalcData.cs"
-    - "GiamSat.API/Controllers/FT14Controller.cs (GET works)"
-    - "GiamSat.APIClient/ApiClient/FT14CalcDataClient.Works.cs"
-    - "GiamSat.UI/Pages/AutoSandingConfig.razor(.cs)"
+    - "GiamSat.UI/Components/DialogAutoSandingConfig.razor(.cs) (ô Z_Stiffness + RecalcZStiffness)"
+    - "GiamSat.UI/Pages/AutoSandingConfig.razor (PageSizeOptions, bỏ height cố định)"
+    - "GiamSat.UI/Pages/AutoSandingConfig.razor.cs (OnApplyAbcdToPart — công thức Z_Stiffness gốc)"
   blocked_by:       ""
   next_step:
-    - CẦN RESTART API để có endpoint GET api/FT14/works
-    - Test dropdown Work: Fre works (external) + Spine works (FT16 Test) đúng theo part chưa
-    - Test thực tế nút Đồng bộ FT14 (session trước)
-  last_session:     "2026-06-17"
+    - Build lại GiamSat.UI + reload để xem ô Z_Stiffness trong dialog Thêm/Sửa Part
+    - Test: đổi A/B/FreqTarget → Z_Stiffness tự cập nhật; Edit part đã có Z_Stiffness → không bị mất
+  last_session:     "2026-06-18"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
     - "Production appsettings có khác với appsettings.json không? Đang deploy ở đâu?"
@@ -323,6 +319,32 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-06-18] — Session: Dialog Part — thêm ô Z_Stiffness tự tính theo A,B,FreqTarget
+
+```
+[FEAT] DialogAutoSandingConfig.razor    — Thêm ô "Z_Stiffness" (readonly, màu tím) cạnh Freq UL trong fieldset
+                                    "Thông tin Part". Tự cập nhật khi đổi A, B (fieldset ABCD) hoặc FreqTarget
+                                    qua Change="@(... => RecalcZStiffness())".
+[FEAT] DialogAutoSandingConfig.razor.cs — RecalcZStiffness(): Z = (FreqTarget − B) / A, làm tròn 3 số;
+                                    A≈0 → null. Đồng bộ công thức với OnApplyAbcdToPart ở AutoSandingConfig.razor.cs.
+[FIX]  DialogAutoSandingConfig.razor.cs — Clone OnParametersSet thêm Z_Stiffness = Model.Z_Stiffness
+                                    (trước đây bị mất khi Edit → lưu lại null).
+```
+
+---
+
+### [2026-06-18] — Session: DataGrid Tab 1 — page size 50/100/200/500 + full màn hình
+
+```
+[FEAT] AutoSandingConfig.razor    — DataGrid "Danh sách Part": PageSizeOptions {5,10,20,50} → {5,10,20,50,100,200,500},
+                                    PageSize mặc định 10 → 50.
+[FIX]  AutoSandingConfig.razor    — Bỏ Style height cố định (500px/calc) + bỏ AllowVirtualization → grid tự cao
+                                    theo số dòng của page size đang chọn (không còn khoảng trắng thừa bên dưới).
+                                    Grid vẫn full width do nằm trong RadzenColumn Size=12.
+```
 
 ---
 
