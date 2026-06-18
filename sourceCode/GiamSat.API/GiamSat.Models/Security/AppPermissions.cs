@@ -56,6 +56,7 @@ namespace GiamSat.Models
         public const string Sanding_Config_Delete = "Sanding_Config.Delete";
 
         public const string Sanding_Report_View = "Sanding_Report.View";
+        public const string Sanding_Report_Export = "Sanding_Report.Export";
 
         /// <summary>
         /// Gets all defined permission codes automatically using reflection.

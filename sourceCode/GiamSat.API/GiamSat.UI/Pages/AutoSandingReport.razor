@@ -55,12 +55,14 @@
                                       IsBusy="@_isLoading"
                                       BusyText="Đang tải..." />
 
-                        <RadzenButton Icon="file_download" Text="Xuất Excel"
-                                      ButtonStyle="ButtonStyle.Success"
-                                      Click="@OnExportExcel"
-                                      IsBusy="@_isExporting"
-                                      BusyText="Đang xuất..."
-                                      Disabled="@(_data == null || _data.Count == 0)" />
+                        <AuthorizeView Policy="@AppPermissions.Sanding_Report_Export">
+                            <RadzenButton Icon="file_download" Text="Xuất Excel"
+                                          ButtonStyle="ButtonStyle.Success"
+                                          Click="@OnExportExcel"
+                                          IsBusy="@_isExporting"
+                                          BusyText="Đang xuất..."
+                                          Disabled="@(_data == null || _data.Count == 0)" />
+                        </AuthorizeView>
                     </RadzenStack>
                 </RadzenCard>
 

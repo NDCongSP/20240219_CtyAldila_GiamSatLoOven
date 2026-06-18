@@ -52,7 +52,8 @@ namespace GiamSat.API
             ("Sanding_Config", "Create", "Thêm cấu hình Sanding"),
             ("Sanding_Config", "Edit", "Sửa cấu hình Sanding"),
             ("Sanding_Config", "Delete", "Xóa cấu hình Sanding"),
-            ("Sanding_Report", "View", "Xem báo cáo Sanding")
+            ("Sanding_Report", "View", "Xem báo cáo Sanding"),
+            ("Sanding_Report", "Export", "Xuất file báo cáo Sanding")
         };
 
         public static async Task SeedAsync(ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager)

@@ -271,15 +271,17 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "DONE — Dialog Part: thêm ô Z_Stiffness (readonly) tự tính = (FreqTarget − B)/A khi đổi A/B/FreqTarget + clone giữ Z_Stiffness. DataGrid Tab 1: page size {5,10,20,50,100,200,500}, grid tự cao theo số dòng."
+  current_task:     "DONE — Hoàn thiện phân quyền Sanding: thêm Sanding_Report.Export + seeder; bọc AuthorizeView quanh nút Đồng bộ/Import/Thêm Part/Edit/Delete (Config) và Xuất Excel (Report) giống các page khác. (Trước đó: ô Z_Stiffness dialog Part; DataGrid page size + auto height.)"
   related_files:
-    - "GiamSat.UI/Components/DialogAutoSandingConfig.razor(.cs) (ô Z_Stiffness + RecalcZStiffness)"
-    - "GiamSat.UI/Pages/AutoSandingConfig.razor (PageSizeOptions, bỏ height cố định)"
-    - "GiamSat.UI/Pages/AutoSandingConfig.razor.cs (OnApplyAbcdToPart — công thức Z_Stiffness gốc)"
+    - "GiamSat.Models/Security/AppPermissions.cs (Sanding_Report_Export)"
+    - "GiamSat.API/PermissionSeeder.cs (PermissionDefs — Sanding_Report Export)"
+    - "GiamSat.UI/Pages/AutoSandingConfig.razor (AuthorizeView các nút)"
+    - "GiamSat.UI/Pages/AutoSandingReport.razor (AuthorizeView nút Xuất Excel)"
   blocked_by:       ""
   next_step:
-    - Build lại GiamSat.UI + reload để xem ô Z_Stiffness trong dialog Thêm/Sửa Part
-    - Test: đổi A/B/FreqTarget → Z_Stiffness tự cập nhật; Edit part đã có Z_Stiffness → không bị mất
+    - CẦN RESTART API để PermissionSeeder seed Sanding_Report.Export + cấp cho Admin
+    - Test: tạo role chỉ có Sanding_Config_View → không thấy nút Thêm/Sửa/Xóa/Đồng bộ/Import
+    - Test: role có Sanding_Report_View nhưng không có Export → ẩn nút Xuất Excel
   last_session:     "2026-06-18"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
@@ -319,6 +321,26 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-06-18] — Session: Hoàn thiện phân quyền Sanding (giống các phần khác)
+
+```
+[FEAT] AppPermissions.cs          — Thêm Sanding_Report_Export = "Sanding_Report.Export"
+                                    (các report khác Oven/Revo/Temperature đều có Export → Sanding cũng vậy).
+[FEAT] PermissionSeeder.cs        — Thêm dòng ("Sanding_Report","Export","Xuất file báo cáo Sanding") vào PermissionDefs.
+                                    Seeder idempotent → chạy lại tự thêm permission còn thiếu + cấp cho role Admin.
+                                    (Policy tự đăng ký động từ AppPermissions.GetAll() ở cả API Startup.cs lẫn UI Program.cs.)
+[FEAT] AutoSandingConfig.razor    — Bọc AuthorizeView quanh các nút theo đúng pattern OvenConfig/TemperatureConfig:
+                                    Đồng bộ dữ liệu + Import Excel → Sanding_Config_Edit;
+                                    Thêm Part → Sanding_Config_Create;
+                                    nút Edit/Delete trong cột "Hành động" → Sanding_Config_Edit/Sanding_Config_Delete.
+                                    (Export Excel để mức View — ai xem được thì xuất được danh sách đang xem.)
+                                    Mỗi AuthorizeView dùng Context riêng (authSync/authImport/authAdd/authEdit/authDel)
+                                    tránh đụng Context="p" của DataGridColumn Template.
+[FEAT] AutoSandingReport.razor    — Bọc nút "Xuất Excel" trong AuthorizeView Policy=Sanding_Report_Export.
+```
 
 ---
 

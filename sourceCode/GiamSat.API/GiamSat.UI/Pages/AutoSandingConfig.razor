@@ -33,19 +33,25 @@
                                              style="flex-wrap:wrap" Gap="0.4rem">
                                     <RadzenText TextStyle="TextStyle.Subtitle1">Danh sách Part</RadzenText>
                                     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.4rem" AlignItems="AlignItems.Center">
-                                        <RadzenButton Icon="sync" Text="Đồng bộ dữ liệu"
-                                                      ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small"
-                                                      Click="@OnSyncData" IsBusy="@_isSyncing" BusyText="Đang đồng bộ..."
-                                                      Disabled="@_isSyncing" />
+                                        <AuthorizeView Policy="@AppPermissions.Sanding_Config_Edit" Context="authSync">
+                                            <RadzenButton Icon="sync" Text="Đồng bộ dữ liệu"
+                                                          ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small"
+                                                          Click="@OnSyncData" IsBusy="@_isSyncing" BusyText="Đang đồng bộ..."
+                                                          Disabled="@_isSyncing" />
+                                        </AuthorizeView>
                                         <RadzenButton Icon="file_download" Text="Export Excel"
                                                       ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Small"
                                                       Click="@OnExportExcel" IsBusy="@_isExporting" BusyText="Đang xuất..." />
-                                        <RadzenButton Icon="file_upload" Text="Import Excel"
-                                                      ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small"
-                                                      Click="@OnImportClick" IsBusy="@_isImporting" BusyText="Đang nhập..." />
-                                        <RadzenButton Icon="add_circle" Text="Thêm Part"
-                                                      ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Small"
-                                                      Click="@OnAddPart" />
+                                        <AuthorizeView Policy="@AppPermissions.Sanding_Config_Edit" Context="authImport">
+                                            <RadzenButton Icon="file_upload" Text="Import Excel"
+                                                          ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small"
+                                                          Click="@OnImportClick" IsBusy="@_isImporting" BusyText="Đang nhập..." />
+                                        </AuthorizeView>
+                                        <AuthorizeView Policy="@AppPermissions.Sanding_Config_Create" Context="authAdd">
+                                            <RadzenButton Icon="add_circle" Text="Thêm Part"
+                                                          ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Small"
+                                                          Click="@OnAddPart" />
+                                        </AuthorizeView>
                                     </RadzenStack>
                                 </RadzenStack>
 
@@ -169,18 +175,22 @@
                                         <RadzenDataGridColumn TItem="FT14_TipOdFreq" Title="Hành động" Sortable="false" Filterable="false" Width="100px" TextAlign="TextAlign.Center">
                                             <Template Context="p">
                                                 <RadzenStack Orientation="Orientation.Horizontal" Gap="0.3rem" JustifyContent="JustifyContent.Center">
-                                                    <RadzenButton Icon="edit"
-                                                                  ButtonStyle="ButtonStyle.Primary"
-                                                                  Size="ButtonSize.Small"
-                                                                  Variant="Variant.Flat"
-                                                                  Click="@(() => OnEditPart(p))"
-                                                                  title="Chỉnh sửa" />
-                                                    <RadzenButton Icon="delete"
-                                                                  ButtonStyle="ButtonStyle.Danger"
-                                                                  Size="ButtonSize.Small"
-                                                                  Variant="Variant.Flat"
-                                                                  Click="@(() => OnDeletePart(p))"
-                                                                  title="Xóa" />
+                                                    <AuthorizeView Policy="@AppPermissions.Sanding_Config_Edit" Context="authEdit">
+                                                        <RadzenButton Icon="edit"
+                                                                      ButtonStyle="ButtonStyle.Primary"
+                                                                      Size="ButtonSize.Small"
+                                                                      Variant="Variant.Flat"
+                                                                      Click="@(() => OnEditPart(p))"
+                                                                      title="Chỉnh sửa" />
+                                                    </AuthorizeView>
+                                                    <AuthorizeView Policy="@AppPermissions.Sanding_Config_Delete" Context="authDel">
+                                                        <RadzenButton Icon="delete"
+                                                                      ButtonStyle="ButtonStyle.Danger"
+                                                                      Size="ButtonSize.Small"
+                                                                      Variant="Variant.Flat"
+                                                                      Click="@(() => OnDeletePart(p))"
+                                                                      title="Xóa" />
+                                                    </AuthorizeView>
                                                 </RadzenStack>
                                             </Template>
                                         </RadzenDataGridColumn>
