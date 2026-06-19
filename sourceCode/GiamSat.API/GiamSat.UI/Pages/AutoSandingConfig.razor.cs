@@ -319,13 +319,11 @@ window.setupEnterNav = function (tableEl) {
 
             try
             {
-                // Soft-delete: set Actived = false
-                item.Actived    = false;
-                item.UpdateddAt = DateTime.Now;
-                var result = await _fT14Client.UpdateAsync(item);
+                // Hard-delete: xóa hẳn bản ghi khỏi database (không soft-delete Actived=0)
+                var result = await _fT14Client.DeleteAsync(item.Id);
                 if (result.Succeeded)
                 {
-                    _notificationService.Notify(NotificationSeverity.Success, "Đã xóa", $"Đã xóa part \"{item.PartName}\".");
+                    _notificationService.Notify(NotificationSeverity.Success, "Đã xóa", $"Đã xóa part \"{item.PartName}\" khỏi database.");
                     await LoadData();
                 }
                 else

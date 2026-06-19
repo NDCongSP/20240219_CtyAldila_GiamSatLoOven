@@ -271,18 +271,18 @@ var config = JsonConvert.DeserializeObject<ConfigModel>(entity.C000);
 ```yaml
 # Cập nhật phần này MỖI KHI kết thúc session làm việc
 active_context:
-  current_task:     "DONE — Hoàn thiện phân quyền Sanding: thêm Sanding_Report.Export + seeder; bọc AuthorizeView quanh nút Đồng bộ/Import/Thêm Part/Edit/Delete (Config) và Xuất Excel (Report) giống các page khác. (Trước đó: ô Z_Stiffness dialog Part; DataGrid page size + auto height.)"
+  current_task:     "DONE — FT14: hard-delete Part (xóa hẳn khỏi DB qua DELETE api/FT14/{id}) thay soft-delete Actived=0; thêm nút Tải lại grid Danh sách Part. (Trước đó: phân quyền Sanding + AuthorizeView; ô Z_Stiffness dialog; DataGrid page size + auto height.)"
   related_files:
-    - "GiamSat.Models/Security/AppPermissions.cs (Sanding_Report_Export)"
-    - "GiamSat.API/PermissionSeeder.cs (PermissionDefs — Sanding_Report Export)"
-    - "GiamSat.UI/Pages/AutoSandingConfig.razor (AuthorizeView các nút)"
-    - "GiamSat.UI/Pages/AutoSandingReport.razor (AuthorizeView nút Xuất Excel)"
+    - "GiamSat.Models/Conts/ApiRoutes.cs (Delete) + GiamSat.Models/Services/ISFT14.cs (Delete)"
+    - "GiamSat.API/Controllers/FT14Controller.cs (HttpDelete) — SFT14.Delete đã có sẵn Remove()"
+    - "GiamSat.APIClient/ApiClient/FT14Client.Delete.cs (DeleteAsync + BooleanResult)"
+    - "GiamSat.UI/Pages/AutoSandingConfig.razor(.cs) (OnDeletePart hard-delete + nút Tải lại)"
   blocked_by:       ""
   next_step:
-    - CẦN RESTART API để PermissionSeeder seed Sanding_Report.Export + cấp cho Admin
-    - Test: tạo role chỉ có Sanding_Config_View → không thấy nút Thêm/Sửa/Xóa/Đồng bộ/Import
-    - Test: role có Sanding_Report_View nhưng không có Export → ẩn nút Xuất Excel
-  last_session:     "2026-06-18"
+    - CẦN RESTART API để có endpoint DELETE api/FT14/{id}
+    - Test: xóa Part → kiểm tra bản ghi biến mất khỏi DB (không còn dòng Actived=0)
+    - (Còn nợ session trước) RESTART API để seed Sanding_Report.Export cho Admin
+  last_session:     "2026-06-19"
   open_questions:
     - "FT03, FT04, FT05, FT06 chứa dữ liệu gì? (DataLog / Alarm / Profile / Control PLC?)"
     - "Production appsettings có khác với appsettings.json không? Đang deploy ở đâu?"
@@ -321,6 +321,24 @@ Task hiện tại: [mô tả]. File cần làm việc: [list file].
 > Ghi lại **mọi thay đổi đáng kể** theo thứ tự ngược (mới nhất lên đầu).  
 > Format: `[YYYY-MM-DD] [TYPE] [File/Module] — Mô tả`  
 > Types: `FEAT` · `FIX` · `REFACTOR` · `PERF` · `TEST` · `DOCS` · `CHORE` · `BREAK`
+
+---
+
+### [2026-06-19] — Session: Hard-delete Part (FT14) + nút Tải lại grid
+
+```
+[FEAT] ApiRoutes.cs               — Thêm const Delete = "{id}" (HttpDelete).
+[FEAT] ISFT14.cs                  — Expose Task<Result<bool>> Delete([Path] Guid id) ([Delete(ApiRoutes.Delete)]).
+                                    (SFT14.Delete đã có sẵn — xóa cứng Remove() khỏi DbSet, chỉ chưa expose ra interface/controller.)
+[FEAT] FT14Controller.cs          — Thêm [HttpDelete(ApiRoutes.Delete)] Delete([FromRoute] Guid id) → _sCommon.SFT14.Delete(id).
+[FEAT] FT14Client.Delete.cs       — File partial mới mở rộng IFT14Client/FT14Client (NSwag): DeleteAsync(Guid id)
+                                    gọi HTTP DELETE api/FT14/{id}, dùng chung _httpClient + helper của FT14Client.
+                                    Thêm class BooleanResult (Result<bool> wrapper). Partial nên an toàn nếu NSwag regenerate.
+[FIX]  AutoSandingConfig.razor.cs — OnDeletePart: bỏ soft-delete (Actived=false + UpdateAsync) → gọi _fT14Client.DeleteAsync(item.Id)
+                                    xóa hẳn bản ghi khỏi database.
+[FEAT] AutoSandingConfig.razor    — Thêm nút "Tải lại" (refresh, ButtonStyle.Secondary) đầu thanh nút → Click=@LoadData,
+                                    IsBusy=@_isLoading. Không gắn permission (ai xem được thì tải lại được).
+```
 
 ---
 

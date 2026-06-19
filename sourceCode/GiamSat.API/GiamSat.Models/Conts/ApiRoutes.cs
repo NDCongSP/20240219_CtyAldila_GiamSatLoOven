@@ -13,6 +13,10 @@ namespace GiamSat.Models
         public const string GetById = "{id}";
         public const string GetAll = "";
         /// <summary>
+        /// HttpDelete — xóa cứng theo Id (route "{id}").
+        /// </summary>
+        public const string Delete = "{id}";
+        /// <summary>
         /// HttpPost.
         /// </summary>
         public const string Update = "update";

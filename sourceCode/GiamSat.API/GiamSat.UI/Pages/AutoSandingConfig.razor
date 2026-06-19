@@ -33,6 +33,9 @@
                                              style="flex-wrap:wrap" Gap="0.4rem">
                                     <RadzenText TextStyle="TextStyle.Subtitle1">Danh sách Part</RadzenText>
                                     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.4rem" AlignItems="AlignItems.Center">
+                                        <RadzenButton Icon="refresh" Text="Tải lại"
+                                                      ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small"
+                                                      Click="@LoadData" IsBusy="@_isLoading" BusyText="Đang tải..." />
                                         <AuthorizeView Policy="@AppPermissions.Sanding_Config_Edit" Context="authSync">
                                             <RadzenButton Icon="sync" Text="Đồng bộ dữ liệu"
                                                           ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small"

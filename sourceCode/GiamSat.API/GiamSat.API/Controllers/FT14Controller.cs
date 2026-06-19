@@ -67,5 +67,14 @@ namespace GiamSat.API.Controllers
         {
             return await _syncService.SyncPartsAsync(partIds);
         }
+
+        /// <summary>
+        /// Xóa cứng một Part khỏi database theo Id (không soft-delete Actived=0).
+        /// </summary>
+        [HttpDelete(ApiRoutes.Delete)]
+        public Task<Result<bool>> Delete([FromRoute] Guid id)
+        {
+            return _sCommon.SFT14.Delete(id);
+        }
     }
 }
