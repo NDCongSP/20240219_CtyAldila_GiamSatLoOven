@@ -15,7 +15,7 @@ CREATE NONCLUSTERED INDEX IX_FT09_CreatedAt
 ON FT09 (CreatedAt);
 -----------------------------------------------------------------------------------------------------------------------
 DB OVEN: oven-revo-auto rolling-temperature-sanding
-Server=Server=192.168.96.22;Database=oven;User Id=mfg;Password=Mfg@321!;TrustServerCertificate=True;
+Server=192.168.96.8;Database=oven;User Id=oven;Password=Mfg@321!;TrustServerCertificate=True;Connection Timeout=10" providerName="System.Data.SqlClient
 
 DB ALD_MFG: lấy thông tin của các máy đo D Frequency
 Server=Server=192.168.96.8;Database=ALD_MFG;User Id=mfg;Password=Mfg@321!;TrustServerCertificate=True;
