@@ -60,7 +60,7 @@ namespace GiamSat.API.Services.ExportWorker
         public DateTime? StartedAt { get; set; }
         public DateTime? EndedAt { get; set; }
         public TimeSpan TotalTime { get; set; }
-        public string TotalTimeText => $"{(int)TotalTime.TotalHours:D2}:{TotalTime.Minutes:D2}:{TotalTime.Seconds:D2}";
+        public string TotalTimeText { get; set; } = string.Empty;
         public bool IsShaftFinished { get; set; }
         public bool HighlightIncomplete { get; set; }
     }

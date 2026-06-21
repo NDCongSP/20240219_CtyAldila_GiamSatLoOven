@@ -81,13 +81,15 @@
                                       Text="Xuất Excel"
                                       ButtonStyle="ButtonStyle.Success"
                                       Click="@OnExportExcel"
-                                      Disabled="@(!_hasData || _isLoading)" />
+                                      Disabled="@(!_hasData || _isLoading || _isExporting)"
+                                      IsBusy="@_isExporting"
+                                      BusyText="Đang xuất..." />
                         @* Tạm ẩn PDF *@
                         @* <RadzenButton Icon="picture_as_pdf" 
-                                  Text="Xuất PDF" 
-                                  ButtonStyle="ButtonStyle.Danger" 
-                                  Click="@OnExportPDF"
-                                  Disabled="@(!_hasData || _isLoading)" /> *@
+                                   Text="Xuất PDF" 
+                                   ButtonStyle="ButtonStyle.Danger" 
+                                   Click="@OnExportPDF"
+                                   Disabled="@(!_hasData || _isLoading)" /> *@
                     </RadzenStack>
                 </AuthorizeView>
             </RadzenStack>
@@ -134,6 +136,7 @@
                 {
                     <RadzenDataGrid @ref="_stepGrid"
                                     Data="@_stepRows" Count="@_stepCount" LoadData="@LoadStepData"
+                                    IsLoading="@_isGridLoading"
                                     TItem="RevoStepRow"
                                     AllowPaging="true"
                                     PageSize="10"
@@ -174,6 +177,7 @@
                 else if (_reportMode == RevoReportMode.ByShaft)
                 {
                     <RadzenDataGrid @ref="_shaftGrid" Data="@_shaftRows" Count="@_shaftCount" LoadData="@LoadShaftData" TItem="RevoShaftRow" AllowPaging="true" PageSize="10"
+                                    IsLoading="@_isGridLoading"
                                     AllowSorting="true"
                                     RowRender="@OnShaftRowRender"
                                     PagerHorizontalAlign="HorizontalAlign.Right"
@@ -209,6 +213,7 @@
                             var visibleRevoCount = _revoList.Count(r => _selectedRevoId == null || r.Id == _selectedRevoId);
                         }
                         <RadzenDataGrid @ref="_hourGrid" class="hourly-report-grid" Style="@($"min-width: {210 + (visibleRevoCount * 250)}px; width: 100%;")" Data="@_hourRows" Count="@_hourCount" LoadData="@LoadHourData" TItem="RevoHourRow" AllowPaging="true"
+                                        IsLoading="@_isGridLoading"
                                         PageSize="10"
                                         AllowSorting="true"
                                         RowRender="@OnHourRowRender"

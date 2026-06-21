@@ -8,16 +8,90 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using ApiClient = GiamSat.APIClient;
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Configuration;
 
 namespace GiamSat.UI.Pages
 {
-    public partial class RevoReport
+    public partial class RevoReport : IAsyncDisposable
     {
         // Keep IHttpClientFactory only for PDF export (needs byte[] response)
         [Inject] private IHttpClientFactory HttpClientFactory { get; set; } = default!;
-        public ValueTask DisposeAsync()
+        [Inject] private IConfiguration Configuration { get; set; } = default!;
+        [Inject] private Blazored.LocalStorage.ILocalStorageService LocalStorage { get; set; } = default!;
+
+        private HubConnection? _hubConnection;
+        private int _exportProgress;
+        private bool _isExporting;
+
+        public async ValueTask DisposeAsync()
         {
-            return ValueTask.CompletedTask;
+            if (_hubConnection != null)
+            {
+                try { await _hubConnection.DisposeAsync(); } catch { /* ignore */ }
+                _hubConnection = null;
+            }
+        }
+
+        private async Task StartHubConnectionAsync()
+        {
+            if (_hubConnection != null && _hubConnection.State != HubConnectionState.Disconnected)
+            {
+                return;
+            }
+
+            var baseUrl = (Configuration["AppSettings:ApiBaseUrl"] ?? string.Empty).TrimEnd('/');
+            var hubUrl = baseUrl + "/hubs/report";
+
+            _hubConnection = new HubConnectionBuilder()
+                .WithUrl(hubUrl, options =>
+                {
+                    options.AccessTokenProvider = async () =>
+                        await LocalStorage.GetItemAsync<string>(StorageConts.AuthToken);
+                })
+                .WithAutomaticReconnect()
+                .Build();
+
+            _hubConnection.On<int>("ExportProgress", percent =>
+            {
+                _exportProgress = percent;
+                _notificationService.Notify(NotificationSeverity.Info, "Xuất Excel", $"Đang xử lý... ({percent}%)", duration: 3000);
+                StateHasChanged();
+            });
+
+            _hubConnection.On<string>("ExportCompleted", async fileUrl =>
+            {
+                _exportProgress = 100;
+                StateHasChanged();
+
+                try
+                {
+                    var httpClient = HttpClientFactory.CreateClient("GiamSatAPI");
+                    var fileBytes = await httpClient.GetByteArrayAsync(fileUrl);
+                    var filename = fileUrl.Substring(fileUrl.LastIndexOf('/') + 1);
+
+                    await _js.InvokeVoidAsync("BlazorDownloadFile", filename, fileBytes);
+                    _notificationService.Notify(NotificationSeverity.Success, "Thành công", "Đã xuất file Excel thành công");
+                }
+                catch (Exception ex)
+                {
+                    _notificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Lỗi khi tải file: {ex.Message}");
+                }
+                finally
+                {
+                    _isExporting = false;
+                    StateHasChanged();
+                }
+            });
+
+            _hubConnection.On<string>("ExportFailed", error =>
+            {
+                _notificationService.Notify(NotificationSeverity.Error, "Lỗi", error);
+                _isExporting = false;
+                StateHasChanged();
+            });
+
+            await _hubConnection.StartAsync();
         }
 
         private RadzenDataGrid<RevoStepRow> _stepGrid = default!;
@@ -31,6 +105,7 @@ namespace GiamSat.UI.Pages
         private bool _isLoading = false;
         private bool _hasData = false;
         private bool _hasSearched = false;
+        private bool _isGridLoading = false;
 
         private List<RevoDropdownModel> _revoList = new();
         private List<FT09_RevoDatalog> _rawData = new();
@@ -136,6 +211,8 @@ namespace GiamSat.UI.Pages
                 await Task.Delay(50); // allow UI to render grids and populate @ref
             }
 
+            _ = LoadSummaryCounts();
+
             if (_reportMode == RevoReportMode.ByStep && _stepGrid != null)
             {
                 await _stepGrid.GoToPage(0);
@@ -150,6 +227,44 @@ namespace GiamSat.UI.Pages
             {
                 await _hourGrid.GoToPage(0);
                 await _hourGrid.Reload();
+            }
+        }
+
+        private async Task LoadSummaryCounts()
+        {
+            try
+            {
+                var filterModel = new ApiClient.RevoFilterModel
+                {
+                    GetAll = !_selectedRevoId.HasValue,
+                    RevoId = _selectedRevoId,
+                    FromDate = _fromDate,
+                    ToDate = _toDate,
+                    ShaftScope = ShaftScopeForApi,
+                    Skip = 0,
+                    Take = 1
+                };
+                var http = HttpClientFactory.CreateClient("GiamSatAPI");
+                
+                // Query total step records (Total records in scope)
+                var stepRes = await PostPagedReportResultAsync<ApiClient.RevoReportStepVm>(http, "api/FT09/GetReportStepView", filterModel);
+                if (stepRes?.Succeeded == true)
+                {
+                    _scopeRecordCount = stepRes.TotalRecords;
+                }
+
+                // Query total shaft count (Total shafts in scope)
+                var shaftRes = await PostPagedReportResultAsync<ApiClient.RevoReportShaftVm>(http, "api/FT09/GetReportShaftView", filterModel);
+                if (shaftRes?.Succeeded == true)
+                {
+                    _shaftCount = shaftRes.TotalRecords;
+                }
+                
+                StateHasChanged();
+            }
+            catch
+            {
+                // Ignore
             }
         }
 
@@ -183,91 +298,115 @@ namespace GiamSat.UI.Pages
         
         private async Task LoadStepData(LoadDataArgs args)
         {
-            var filterModel = new ApiClient.RevoFilterModel
+            _isGridLoading = true;
+            try
             {
-                GetAll = !_selectedRevoId.HasValue,
-                RevoId = _selectedRevoId,
-                FromDate = _fromDate,
-                ToDate = _toDate,
-                ShaftScope = ShaftScopeForApi
-            };
-            filterModel.Skip = args.Skip ?? 0;
-            filterModel.Take = args.Top ?? 20;
-            var http = HttpClientFactory.CreateClient("GiamSatAPI");
-            var res = await PostPagedReportResultAsync<ApiClient.RevoReportStepVm>(http, "api/FT09/GetReportStepView", filterModel);
-            if (res?.Succeeded == true && res.Data != null)
-            {
-                _stepRows = MapStepRows(res.Data);
-                _stepCount = res.TotalRecords;
-                _hasData = _stepCount > 0;
+                var filterModel = new ApiClient.RevoFilterModel
+                {
+                    GetAll = !_selectedRevoId.HasValue,
+                    RevoId = _selectedRevoId,
+                    FromDate = _fromDate,
+                    ToDate = _toDate,
+                    ShaftScope = ShaftScopeForApi
+                };
+                filterModel.Skip = args.Skip ?? 0;
+                filterModel.Take = args.Top ?? 20;
+                var http = HttpClientFactory.CreateClient("GiamSatAPI");
+                var res = await PostPagedReportResultAsync<ApiClient.RevoReportStepVm>(http, "api/FT09/GetReportStepView", filterModel);
+                if (res?.Succeeded == true && res.Data != null)
+                {
+                    _stepRows = MapStepRows(res.Data);
+                    _stepCount = res.TotalRecords;
+                    _hasData = _stepCount > 0;
+                }
+                else
+                {
+                    _notificationService.Notify(NotificationSeverity.Warning, "Thông báo", res?.Messages?.FirstOrDefault() ?? "Không thể tải dữ liệu");
+                    _stepRows = new();
+                    _stepCount = 0;
+                    _hasData = false;
+                    _hasSearched = false;
+                }
             }
-            else
+            finally
             {
-                _notificationService.Notify(NotificationSeverity.Warning, "Thông báo", res?.Messages?.FirstOrDefault() ?? "Không thể tải dữ liệu");
-                _stepRows = new();
-                _stepCount = 0;
-                _hasData = false;
-            _hasSearched = false;
+                _isGridLoading = false;
             }
         }
 
         private async Task LoadShaftData(LoadDataArgs args)
         {
-            var filterModel = new ApiClient.RevoFilterModel
+            _isGridLoading = true;
+            try
             {
-                GetAll = !_selectedRevoId.HasValue,
-                RevoId = _selectedRevoId,
-                FromDate = _fromDate,
-                ToDate = _toDate,
-                ShaftScope = ShaftScopeForApi
-            };
-            filterModel.Skip = args.Skip ?? 0;
-            filterModel.Take = args.Top ?? 20;
-            var http = HttpClientFactory.CreateClient("GiamSatAPI");
-            var res = await PostPagedReportResultAsync<ApiClient.RevoReportShaftVm>(http, "api/FT09/GetReportShaftView", filterModel);
-            if (res?.Succeeded == true && res.Data != null)
-            {
-                _shaftRows = MapShaftRows(res.Data);
-                _shaftCount = res.TotalRecords;
-                _hasData = _shaftCount > 0;
+                var filterModel = new ApiClient.RevoFilterModel
+                {
+                    GetAll = !_selectedRevoId.HasValue,
+                    RevoId = _selectedRevoId,
+                    FromDate = _fromDate,
+                    ToDate = _toDate,
+                    ShaftScope = ShaftScopeForApi
+                };
+                filterModel.Skip = args.Skip ?? 0;
+                filterModel.Take = args.Top ?? 20;
+                var http = HttpClientFactory.CreateClient("GiamSatAPI");
+                var res = await PostPagedReportResultAsync<ApiClient.RevoReportShaftVm>(http, "api/FT09/GetReportShaftView", filterModel);
+                if (res?.Succeeded == true && res.Data != null)
+                {
+                    _shaftRows = MapShaftRows(res.Data);
+                    _shaftCount = res.TotalRecords;
+                    _hasData = _shaftCount > 0;
+                }
+                else
+                {
+                    _notificationService.Notify(NotificationSeverity.Warning, "Thông báo", res?.Messages?.FirstOrDefault() ?? "Không thể tải dữ liệu");
+                    _shaftRows = new();
+                    _shaftCount = 0;
+                    _hasData = false;
+                    _hasSearched = false;
+                }
             }
-            else
+            finally
             {
-                _notificationService.Notify(NotificationSeverity.Warning, "Thông báo", res?.Messages?.FirstOrDefault() ?? "Không thể tải dữ liệu");
-                _shaftRows = new();
-                _shaftCount = 0;
-                _hasData = false;
-            _hasSearched = false;
+                _isGridLoading = false;
             }
         }
 
         private async Task LoadHourData(LoadDataArgs args)
         {
-            var filterModel = new ApiClient.RevoFilterModel
+            _isGridLoading = true;
+            try
             {
-                GetAll = !_selectedRevoId.HasValue,
-                RevoId = _selectedRevoId,
-                FromDate = _fromDate,
-                ToDate = _toDate,
-                ShaftScope = ShaftScopeForApi
-            };
-            filterModel.Skip = args.Skip ?? 0;
-            filterModel.Take = args.Top ?? 20;
-            var http = HttpClientFactory.CreateClient("GiamSatAPI");
-            var res = await PostPagedReportResultAsync<ApiClient.RevoReportHourVm>(http, "api/FT09/GetReportHourView", filterModel);
-            if (res?.Succeeded == true && res.Data != null)
-            {
-                _hourRows = MapHourRows(res.Data);
-                _hourCount = res.TotalRecords;
-                _hasData = _hourCount > 0;
+                var filterModel = new ApiClient.RevoFilterModel
+                {
+                    GetAll = !_selectedRevoId.HasValue,
+                    RevoId = _selectedRevoId,
+                    FromDate = _fromDate,
+                    ToDate = _toDate,
+                    ShaftScope = ShaftScopeForApi
+                };
+                filterModel.Skip = args.Skip ?? 0;
+                filterModel.Take = args.Top ?? 20;
+                var http = HttpClientFactory.CreateClient("GiamSatAPI");
+                var res = await PostPagedReportResultAsync<ApiClient.RevoReportHourVm>(http, "api/FT09/GetReportHourView", filterModel);
+                if (res?.Succeeded == true && res.Data != null)
+                {
+                    _hourRows = MapHourRows(res.Data);
+                    _hourCount = res.TotalRecords;
+                    _hasData = _hourCount > 0;
+                }
+                else
+                {
+                    _notificationService.Notify(NotificationSeverity.Warning, "Thông báo", res?.Messages?.FirstOrDefault() ?? "Không thể tải dữ liệu");
+                    _hourRows = new();
+                    _hourCount = 0;
+                    _hasData = false;
+                    _hasSearched = false;
+                }
             }
-            else
+            finally
             {
-                _notificationService.Notify(NotificationSeverity.Warning, "Thông báo", res?.Messages?.FirstOrDefault() ?? "Không thể tải dữ liệu");
-                _hourRows = new();
-                _hourCount = 0;
-                _hasData = false;
-            _hasSearched = false;
+                _isGridLoading = false;
             }
         }
 
@@ -350,33 +489,75 @@ namespace GiamSat.UI.Pages
 
         private async Task OnExportExcel()
         {
+            if (_isExporting)
+            {
+                return;
+            }
+
             try
             {
-                if (!_hasData || _rawData.Count == 0)
+                if (!_hasData)
                 {
-                    _notificationService.Notify(NotificationSeverity.Warning, "Cảnh báo", "Không có dữ liệu để xuất");
+                    _notificationService.Notify(NotificationSeverity.Warning, "Cảnh báo", "Không có dữ liệu để xuất. Vui lòng truy vấn trước.");
                     return;
                 }
 
-                var excel = new ExcelExportRevo();
-                var excelBytes = excel.GenerateExcelFileAsync(
-                    _rawData,
-                    $"{_fromDate:yyyy-MM-dd HH:mm:ss} đến {_toDate:yyyy-MM-dd HH:mm:ss}",
-                    _reportMode,
-                    _shaftFinishedSwitch ? RevoShaftScopeKind.Finished : RevoShaftScopeKind.Total,
-                    _reportGridsFromDatabase,
-                    _stepRows,
-                    _shaftRows,
-                    _hourRows,
-                    _revoList);
-                var filename = $"BaoCao_REVO_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
-                
-                await _js.InvokeVoidAsync("BlazorDownloadFile", filename, excelBytes);
-                _notificationService.Notify(NotificationSeverity.Success, "Thành công", "Đã xuất file Excel thành công");
+                _isExporting = true;
+                _exportProgress = 0;
+                _notificationService.Notify(NotificationSeverity.Info, "Xuất Excel", "Đang khởi tạo kết nối... (0%)", duration: 3000);
+                StateHasChanged();
+
+                await StartHubConnectionAsync();
+
+                if (_hubConnection == null || _hubConnection.State != HubConnectionState.Connected)
+                {
+                    _notificationService.Notify(NotificationSeverity.Error, "Lỗi", "Không thể kết nối đến máy chủ thời gian thực (SignalR).");
+                    _isExporting = false;
+                    StateHasChanged();
+                    return;
+                }
+
+                var connectionId = _hubConnection.ConnectionId;
+                if (string.IsNullOrEmpty(connectionId))
+                {
+                    _notificationService.Notify(NotificationSeverity.Error, "Lỗi", "Không lấy được ID kết nối từ máy chủ.");
+                    _isExporting = false;
+                    StateHasChanged();
+                    return;
+                }
+
+                _exportProgress = 30;
+                _notificationService.Notify(NotificationSeverity.Info, "Xuất Excel", "Đang gửi yêu cầu xuất file... (30%)", duration: 3000);
+                StateHasChanged();
+
+                var filterModel = new ApiClient.RevoFilterModel
+                {
+                    GetAll = !_selectedRevoId.HasValue,
+                    RevoId = _selectedRevoId,
+                    FromDate = _fromDate,
+                    ToDate = _toDate,
+                    ShaftScope = ShaftScopeForApi,
+                    ConnectionId = connectionId,
+                    ExportMode = (int)_reportMode,
+                    IsExport = true
+                };
+
+                var httpClient = HttpClientFactory.CreateClient("GiamSatAPI");
+                var response = await httpClient.PostAsJsonAsync("api/FT09/ExportExcelAsync", filterModel);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorMsg = await response.Content.ReadAsStringAsync();
+                    _notificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Yêu cầu xuất Excel thất bại: {errorMsg}");
+                    _isExporting = false;
+                    StateHasChanged();
+                }
             }
             catch (Exception ex)
             {
                 _notificationService.Notify(NotificationSeverity.Error, "Lỗi", $"Lỗi khi xuất Excel: {ex.Message}");
+                _isExporting = false;
+                StateHasChanged();
             }
         }
 

@@ -444,6 +444,9 @@ namespace GiamSat.API
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GiamSat.API v1"));
 
+            Log.Information("Configure: UseStaticFiles");
+            app.UseStaticFiles();
+
             Log.Information("Configure: UseRouting + Authentication + Authorization");
             app.UseRouting();
             app.UseAuthentication();

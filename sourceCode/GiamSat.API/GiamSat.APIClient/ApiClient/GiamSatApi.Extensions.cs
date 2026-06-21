@@ -37,5 +37,8 @@ namespace GiamSat.APIClient
 
         [System.Text.Json.Serialization.JsonPropertyName("connectionId")]
         public string? ConnectionId { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("exportMode")]
+        public int ExportMode { get; set; }
     }
 }

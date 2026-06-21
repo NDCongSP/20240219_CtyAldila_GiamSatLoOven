@@ -402,3 +402,4 @@ appsettings.Development.Local.json
 
 # GSD planning files
 .planning/
+/sourceCode/GiamSat.API/GiamSat.API/wwwroot/reports
